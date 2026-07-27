@@ -50,6 +50,10 @@ function mt_register_ruta_cpt() {
         'publicly_queryable'    => true,
         'capability_type'       => 'page',
         'show_in_rest'          => true, // Habilitar Gutenberg
+        'rewrite'               => array(
+            'slug'       => 'ruta',
+            'with_front' => false,
+        ),
     );
     register_post_type( 'ruta', $args );
 }
