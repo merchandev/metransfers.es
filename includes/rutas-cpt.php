@@ -31,25 +31,32 @@ function mt_register_ruta_cpt() {
         'not_found_in_trash'    => __( 'No encontrada en la papelera', 'me-transfers' ),
     );
     $args = array(
-        'label'              => __( 'Ruta', 'me-transfers' ),
-        'description'        => __( 'Landing pages para rutas comerciales', 'me-transfers' ),
-        'labels'             => $labels,
-        'supports'           => array(
+        'label'                 => __( 'Ruta', 'me-transfers' ),
+        'description'           => __( 'Landing pages para rutas comerciales', 'me-transfers' ),
+        'labels'                => $labels,
+        'supports'              => array(
             'title',
             'editor',
             'thumbnail',
             'page-attributes',
             'custom-fields',
         ),
-        'public'             => true,
-        'publicly_queryable' => true,
-        'show_ui'            => true,
-        'show_in_rest'       => true,
-        'has_archive'        => false,
-        'rewrite'            => array(
-            'slug'       => 'ruta',
+        'hierarchical'          => false,
+        'public'                => true,
+        'show_ui'               => true,
+        'show_in_menu'          => true,
+        'show_in_rest'          => true,
+        'exclude_from_search'   => false,
+        'publicly_queryable'    => true,
+
+        'has_archive'           => 'rutas',
+
+        'rewrite'               => array(
+            'slug'       => 'rutas',
             'with_front' => false,
         ),
+
+        'capability_type'       => 'page',
     );
     register_post_type( 'ruta', $args );
 }

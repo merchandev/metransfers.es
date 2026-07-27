@@ -917,7 +917,7 @@ function me_transfers_custom_redirects() {
 // 1. Theme Support & Setup
 // ==========================================
 require_once get_template_directory() . '/mt-seo-importer.php';
-// DESACTIVADO POR AUDITORÍA SEO: La importación debe ser una acción manual
+// No ejecutar automáticamente.
 // add_action( 'admin_init', 'mt_run_seo_importer_phase_1' );
 
 // ==========================================
