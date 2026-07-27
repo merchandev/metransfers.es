@@ -11,10 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 // 0. Auto-ejecución transparente para garantizar que las rutas existan
 add_action( 'init', 'mt_auto_build_routes_once' );
 function mt_auto_build_routes_once() {
-    if ( ! get_transient( 'mt_auto_built_routes_v3_flat' ) ) {
+    // Clave versionada: incrementar cuando se añadan rutas nuevas
+    if ( ! get_transient( 'mt_auto_built_routes_v4_expanded' ) ) {
         if ( function_exists( 'mt_execute_route_builder' ) ) {
             mt_execute_route_builder();
-            set_transient( 'mt_auto_built_routes_v3_flat', true, YEAR_IN_SECONDS );
+            set_transient( 'mt_auto_built_routes_v4_expanded', true, YEAR_IN_SECONDS );
         }
     }
 }
@@ -118,24 +119,91 @@ function mt_render_route_builder_page() {
     <?php
 }
 
-// 3. Lógica de ejecución
+// 3. Catálogo completo de rutas
 function mt_get_phase1_routes() {
     return array(
-        'aeropuerto-barcelona-lloret-de-mar' => 'Aeropuerto de Barcelona–Lloret de Mar',
-        'aeropuerto-girona-lloret-de-mar'    => 'Aeropuerto de Girona–Lloret de Mar',
-        'barcelona-lloret-de-mar'            => 'Barcelona centro–Lloret de Mar',
-        'puerto-barcelona-lloret-de-mar'     => 'Puerto de Barcelona–Lloret de Mar',
-        'estacion-sants-lloret-de-mar'       => 'Estación de Sants–Lloret de Mar',
-        
-        'aeropuerto-barcelona-salou'         => 'Aeropuerto de Barcelona–Salou',
-        'aeropuerto-reus-salou'              => 'Aeropuerto de Reus–Salou',
-        'barcelona-salou'                    => 'Barcelona centro–Salou',
-        'puerto-barcelona-salou'             => 'Puerto de Barcelona–Salou',
-        'estacion-sants-salou'               => 'Estación de Sants–Salou',
-        
-        'aeropuerto-barcelona-portaventura'  => 'Aeropuerto de Barcelona–PortAventura',
-        'aeropuerto-reus-portaventura'       => 'Aeropuerto de Reus–PortAventura',
-        'salou-portaventura'                 => 'Salou–PortAventura',
+
+        // ── FASE 1: Lloret de Mar ───────────────────────────────────
+        'aeropuerto-barcelona-lloret-de-mar'   => 'Aeropuerto de Barcelona–Lloret de Mar',
+        'aeropuerto-girona-lloret-de-mar'      => 'Aeropuerto de Girona–Lloret de Mar',
+        'barcelona-lloret-de-mar'              => 'Barcelona centro–Lloret de Mar',
+        'puerto-barcelona-lloret-de-mar'       => 'Puerto de Barcelona–Lloret de Mar',
+        'estacion-sants-lloret-de-mar'         => 'Estación de Sants–Lloret de Mar',
+
+        // ── FASE 1: Salou ───────────────────────────────────────────
+        'aeropuerto-barcelona-salou'           => 'Aeropuerto de Barcelona–Salou',
+        'aeropuerto-reus-salou'                => 'Aeropuerto de Reus–Salou',
+        'barcelona-salou'                      => 'Barcelona centro–Salou',
+        'puerto-barcelona-salou'               => 'Puerto de Barcelona–Salou',
+        'estacion-sants-salou'                 => 'Estación de Sants–Salou',
+
+        // ── FASE 1: PortAventura ────────────────────────────────────
+        'aeropuerto-barcelona-portaventura'    => 'Aeropuerto de Barcelona–PortAventura',
+        'aeropuerto-reus-portaventura'         => 'Aeropuerto de Reus–PortAventura',
+        'salou-portaventura'                   => 'Salou–PortAventura',
+
+        // ── FASE 2: Sitges ──────────────────────────────────────────
+        'aeropuerto-barcelona-sitges'          => 'Aeropuerto de Barcelona–Sitges',
+        'barcelona-sitges'                     => 'Barcelona centro–Sitges',
+        'puerto-barcelona-sitges'              => 'Puerto de Barcelona–Sitges',
+        'estacion-sants-sitges'                => 'Estación de Sants–Sitges',
+
+        // ── FASE 2: Tarragona ───────────────────────────────────────
+        'aeropuerto-barcelona-tarragona'       => 'Aeropuerto de Barcelona–Tarragona',
+        'barcelona-tarragona'                  => 'Barcelona centro–Tarragona',
+        'puerto-barcelona-tarragona'           => 'Puerto de Barcelona–Tarragona',
+        'estacion-sants-tarragona'             => 'Estación de Sants–Tarragona',
+
+        // ── FASE 2: Cambrils ────────────────────────────────────────
+        'aeropuerto-barcelona-cambrils'        => 'Aeropuerto de Barcelona–Cambrils',
+        'barcelona-cambrils'                   => 'Barcelona centro–Cambrils',
+        'puerto-barcelona-cambrils'            => 'Puerto de Barcelona–Cambrils',
+
+        // ── FASE 2: Girona ──────────────────────────────────────────
+        'aeropuerto-barcelona-girona'          => 'Aeropuerto de Barcelona–Girona',
+        'barcelona-girona'                     => 'Barcelona centro–Girona',
+        'estacion-sants-girona'                => 'Estación de Sants–Girona',
+
+        // ── FASE 2: Costa Brava Norte ───────────────────────────────
+        'aeropuerto-barcelona-tossa-de-mar'    => 'Aeropuerto de Barcelona–Tossa de Mar',
+        'barcelona-tossa-de-mar'               => 'Barcelona centro–Tossa de Mar',
+        'aeropuerto-barcelona-blanes'          => 'Aeropuerto de Barcelona–Blanes',
+        'barcelona-blanes'                     => 'Barcelona centro–Blanes',
+        'aeropuerto-barcelona-calella'         => 'Aeropuerto de Barcelona–Calella',
+        'barcelona-calella'                    => 'Barcelona centro–Calella',
+        'aeropuerto-barcelona-roses'           => 'Aeropuerto de Barcelona–Roses',
+        'barcelona-roses'                      => 'Barcelona centro–Roses',
+        'aeropuerto-barcelona-cadaques'        => 'Aeropuerto de Barcelona–Cadaqués',
+        'barcelona-cadaques'                   => 'Barcelona centro–Cadaqués',
+        'aeropuerto-barcelona-platja-daro'     => 'Aeropuerto de Barcelona–Platja d\'Aro',
+        'barcelona-platja-daro'                => 'Barcelona centro–Platja d\'Aro',
+
+        // ── FASE 2: Andorra ─────────────────────────────────────────
+        'aeropuerto-barcelona-andorra'         => 'Aeropuerto de Barcelona–Andorra la Vella',
+        'barcelona-andorra'                    => 'Barcelona centro–Andorra la Vella',
+        'estacion-sants-andorra'               => 'Estación de Sants–Andorra la Vella',
+
+        // ── FASE 2: Montserrat ──────────────────────────────────────
+        'aeropuerto-barcelona-montserrat'      => 'Aeropuerto de Barcelona–Montserrat',
+        'barcelona-montserrat'                 => 'Barcelona centro–Montserrat',
+
+        // ── FASE 2: Reus / Aeropuerto de Reus ──────────────────────
+        'aeropuerto-barcelona-reus'            => 'Aeropuerto de Barcelona–Reus',
+        'barcelona-reus'                       => 'Barcelona centro–Reus',
+
+        // ── FASE 2: Otras Costa Daurada ─────────────────────────────
+        'aeropuerto-barcelona-vilanova'        => 'Aeropuerto de Barcelona–Vilanova i la Geltrú',
+        'barcelona-vilanova'                   => 'Barcelona centro–Vilanova i la Geltrú',
+        'aeropuerto-barcelona-calafell'        => 'Aeropuerto de Barcelona–Calafell',
+        'barcelona-calafell'                   => 'Barcelona centro–Calafell',
+        'aeropuerto-barcelona-la-pineda'       => 'Aeropuerto de Barcelona–La Pineda',
+        'barcelona-la-pineda'                  => 'Barcelona centro–La Pineda',
+
+        // ── FASE 2: Pirineos / Nieve ────────────────────────────────
+        'aeropuerto-barcelona-la-molina'       => 'Aeropuerto de Barcelona–La Molina',
+        'barcelona-la-molina'                  => 'Barcelona centro–La Molina',
+        'aeropuerto-barcelona-baqueira-beret'  => 'Aeropuerto de Barcelona–Baqueira Beret',
+        'barcelona-baqueira-beret'             => 'Barcelona centro–Baqueira Beret',
     );
 }
 
