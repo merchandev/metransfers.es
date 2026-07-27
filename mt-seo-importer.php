@@ -75,11 +75,22 @@ function mt_run_seo_importer_phase_1() {
         // Verificar si la ruta ya existe
         $ruta_existente = get_page_by_path( $slug, OBJECT, 'ruta' );
         if ( ! $ruta_existente ) {
+            $parts = explode( '–', $title );
+            $origen = isset( $parts[0] ) ? trim( $parts[0] ) : '';
+            $destino = isset( $parts[1] ) ? trim( $parts[1] ) : '';
+
             wp_insert_post( array(
                 'post_title'   => $title,
                 'post_name'    => $slug,
                 'post_status'  => 'draft',
                 'post_type'    => 'ruta',
+                'meta_input'   => array(
+                    '_mt_ruta_origen'   => $origen,
+                    '_mt_ruta_destino'  => $destino,
+                    '_mt_ruta_duracion' => '60 min',
+                    '_mt_ruta_pax'      => '1-8',
+                    '_mt_ruta_maletas'  => '8',
+                ),
             ) );
         }
     }

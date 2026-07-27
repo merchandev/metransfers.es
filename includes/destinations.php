@@ -25,54 +25,58 @@ function me_transfers_get_destination_catalog() {
 		return $catalog;
 	}
 
-	$titles  = array(
-		'Madrid',
-		'Palamos',
-		'Baqueira Beret',
-		'Tossa de Mar',
-		'La Escala',
-		'Cap de Creus',
-		'Calella de Palafrugell',
-		'Begur',
-		'Costa Brava',
-		'Santa Susanna',
-		'Cadaques',
-		'Marbella',
-		'Roses',
-		'Camping El Delfin Verde',
-		'Salou',
-		'Tarragona',
-		'Perpignan',
-		'Figueres',
-		'Almeria',
-		'Sitges',
-		'Vall de Nuria',
-		'Calella',
-		'Cambrils',
-		'Lourdes',
-		'Santiago de Compostela',
-		'Lloret de Mar',
-		'Valencia',
-		'Granada',
-		'Andorra',
-		'Malgrat',
-		'San Sebastian',
-		'Bilbao',
-		'Benidorm',
-		'Vigo',
-		'Sevilla',
-		'Reus',
-		'PortAventura',
-		'Pineda de Mar',
-	);
 	$catalog = array();
 
-	foreach ( $titles as $index => $title ) {
+	// 1. Destinos configurados manualmente con contenido específico y SEO local
+	$catalog['salou'] = array(
+		'title'       => 'Salou',
+		'slug'        => 'salou',
+		'h1'          => 'Transfer privado a Salou',
+		'order'       => 1,
+		'related'     => array( 'cambrils', 'tarragona', 'reus', 'portaventura', 'pineda-de-mar' ),
+		'summary'     => 'Reserva tu transfer privado a Salou desde el Aeropuerto de Reus (a 10 km), el Aeropuerto de Barcelona (a 95 km), la estación del AVE Camp de Tarragona o cualquier hotel. Viaja cómodo, sin esperas y a precio cerrado.',
+		'travel_note' => 'Salou es el epicentro de la Costa Dorada, conocido por sus playas, su animada vida turística y su cercanía a PortAventura World. Coordinamos tu llegada directa a tu hotel, apartamento o resort con la máxima puntualidad.',
+		'highlights' => array(
+			'Recogida puntual en el Aeropuerto de Reus, Aeropuerto de Barcelona o estación del AVE.',
+			'Vehículos adecuados para familias con niños, grupos grandes o equipaje especial.',
+			'Ruta directa por autopista (AP-7) para que llegues a Salou de forma rápida y segura.',
+		),
+	);
+
+	$catalog['lloret-de-mar'] = array(
+		'title'       => 'Lloret de Mar',
+		'slug'        => 'lloret-de-mar',
+		'h1'          => 'Transfer privado a Lloret de Mar',
+		'order'       => 2,
+		'related'     => array( 'tossa-de-mar', 'calella', 'malgrat', 'costa-brava', 'blanes' ),
+		'summary'     => 'Reserva tu traslado privado a Lloret de Mar desde el Aeropuerto de Girona (a 30 km) o el Aeropuerto de Barcelona (a 90 km). Disfruta de un viaje directo a la capital de la Costa Brava Sur con chófer profesional.',
+		'travel_note' => 'Lloret de Mar es uno de los destinos más populares de la Costa Brava, ideal para vacaciones de sol y playa. Ofrecemos traslados puerta a puerta para que no dependas de autobuses o trenes con transbordos.',
+		'highlights' => array(
+			'Conexión directa y privada desde el Aeropuerto de Girona o El Prat hasta tu hotel en Lloret.',
+			'Flota de sedanes, minivans y minibuses para adaptarnos a parejas, familias o grupos de amigos.',
+			'Tarifa plana sin sorpresas ni recargos por tráfico o retrasos en el vuelo.',
+		),
+	);
+
+	// 2. Destinos genéricos que aún no tienen contenido específico
+	$generic_titles = array(
+		'Madrid', 'Palamos', 'Baqueira Beret', 'Tossa de Mar', 'La Escala', 'Cap de Creus',
+		'Calella de Palafrugell', 'Begur', 'Costa Brava', 'Santa Susanna', 'Cadaques', 'Marbella',
+		'Roses', 'Camping El Delfin Verde', 'Tarragona', 'Perpignan', 'Figueres', 'Almeria',
+		'Sitges', 'Vall de Nuria', 'Calella', 'Cambrils', 'Lourdes', 'Santiago de Compostela',
+		'Valencia', 'Granada', 'Andorra', 'Malgrat', 'San Sebastian', 'Bilbao', 'Benidorm',
+		'Vigo', 'Sevilla', 'Reus', 'PortAventura', 'Pineda de Mar'
+	);
+
+	$index = 3;
+	foreach ( $generic_titles as $title ) {
 		$slug             = sanitize_title( $title );
 		$catalog[ $slug ] = array(
 			'title'       => $title,
 			'slug'        => $slug,
-			'order'       => $index + 1,
+			'h1'          => $title, // Fallback genérico para H1
+			'order'       => $index++,
+			'related'     => array(), // Vacío por defecto
 			'summary'     => sprintf(
 				/* translators: %s: destination title. */
 				__( 'Solicita información para tu traslado privado a %s con recogida en Barcelona, aeropuerto, hotel o puerto y un servicio premium adaptado a tu itinerario.', 'me-transfers' ),
@@ -84,13 +88,13 @@ function me_transfers_get_destination_catalog() {
 				$title
 			),
 			'highlights'  => array(
-				__( 'Recogida puerta a puerta y presupuesto personalizado segÃºn horario, punto de salida y nÃºmero de pasajeros.', 'me-transfers' ),
+				__( 'Recogida puerta a puerta y presupuesto personalizado según horario, punto de salida y número de pasajeros.', 'me-transfers' ),
 				sprintf(
 					/* translators: %s: destination title. */
-					__( 'Opciones de ida, ida y vuelta o disposiciÃ³n por horas para viajes hacia %s.', 'me-transfers' ),
+					__( 'Opciones de ida, ida y vuelta o disposición por horas para viajes hacia %s.', 'me-transfers' ),
 					$title
 				),
-				__( 'VehÃ­culos premium, seguimiento operativo y asistencia para hoteles, aeropuertos, cruceros y reuniones corporativas.', 'me-transfers' ),
+				__( 'Vehículos premium, seguimiento operativo y asistencia para hoteles, aeropuertos, cruceros y reuniones corporativas.', 'me-transfers' ),
 			),
 		);
 	}

@@ -1,13 +1,20 @@
 <?php
 $current_destination = me_transfers_get_current_destination( get_post() );
 $page_content = trim( wp_strip_all_tags( strip_shortcodes( get_the_content() ) ) );
-			$other_destinations = array_filter(
-				me_transfers_get_destination_catalog(),
-				static function( $item ) use ( $current_destination ) {
-					return $item['slug'] !== $current_destination['slug'];
+			$catalog = me_transfers_get_destination_catalog();
+			$other_destinations = array();
+			if ( ! empty( $current_destination['related'] ) ) {
+				foreach ( $current_destination['related'] as $rel_slug ) {
+					if ( isset( $catalog[ $rel_slug ] ) ) {
+						$other_destinations[] = $catalog[ $rel_slug ];
+					}
 				}
-			);
-			$other_destinations = array_slice( array_values( $other_destinations ), 0, 6 );
+			} else {
+				$fallback_destinations = array_filter( $catalog, static function( $item ) use ( $current_destination ) {
+					return $item['slug'] !== $current_destination['slug'];
+				});
+				$other_destinations = array_slice( array_values( $fallback_destinations ), 0, 6 );
+			}
 			$destination_service_cards = array(
 				array(
 					'title' => 'Recogida personalizada',
@@ -47,12 +54,35 @@ $page_content = trim( wp_strip_all_tags( strip_shortcodes( get_the_content() ) )
 					'text'  => sprintf( 'Una vez aceptado, dejamos coordinado el punto de encuentro y el trayecto hacia %s para que viajes sin friccion.', $current_destination['title'] ),
 				),
 			);
-			$destination_routes = array(
-				sprintf( 'Barcelona centro - %s', $current_destination['title'] ),
-				sprintf( 'Aeropuerto de Barcelona - %s', $current_destination['title'] ),
-				sprintf( 'Puerto de Barcelona - %s', $current_destination['title'] ),
-				sprintf( 'Hotel, apartamento o evento - %s', $current_destination['title'] ),
-			);
+			$route_query = new WP_Query( array(
+				'post_type'      => 'ruta',
+				'post_status'    => 'publish',
+				'posts_per_page' => 8,
+				'meta_query'     => array(
+					'relation' => 'OR',
+					array(
+						'key'     => '_mt_ruta_origen',
+						'value'   => $current_destination['title'],
+						'compare' => 'LIKE',
+					),
+					array(
+						'key'     => '_mt_ruta_destino',
+						'value'   => $current_destination['title'],
+						'compare' => 'LIKE',
+					),
+				),
+			) );
+
+			if ( ! $route_query->have_posts() ) {
+				// Fallback por si aún no tienen meta
+				$route_query = new WP_Query( array(
+					'post_type'      => 'ruta',
+					'post_status'    => 'publish',
+					'posts_per_page' => 8,
+					's'              => $current_destination['title'],
+				) );
+			}
+			$destination_routes = $route_query->posts;
 			?>
 			<section class="destination-page-hero">
 				<div class="container destination-page-hero__inner">
@@ -65,7 +95,7 @@ $page_content = trim( wp_strip_all_tags( strip_shortcodes( get_the_content() ) )
 					</nav>
 
 					<span class="destination-page-kicker"><?php esc_html_e( 'Solicitud de traslado premium', 'me-transfers' ); ?></span>
-					<h1 class="destination-page-title"><?php echo esc_html( $current_destination['title'] ); ?></h1>
+					<h1 class="destination-page-title"><?php echo esc_html( $current_destination['h1'] ?? $current_destination['title'] ); ?></h1>
 					<p class="destination-page-summary"><?php echo esc_html( $current_destination['summary'] ); ?></p>
 
 					<div class="destination-page-pills">
@@ -175,9 +205,14 @@ $page_content = trim( wp_strip_all_tags( strip_shortcodes( get_the_content() ) )
 						</div>
 
 						<ul class="destination-routes-list">
-							<?php foreach ( $destination_routes as $destination_route ) : ?>
-								<li><?php echo esc_html( $destination_route ); ?></li>
-							<?php endforeach; ?>
+							<?php if ( ! empty( $destination_routes ) ) : ?>
+								<?php foreach ( $destination_routes as $route_post ) : ?>
+									<li><a href="<?php echo esc_url( get_permalink( $route_post->ID ) ); ?>"><?php echo esc_html( $route_post->post_title ); ?></a></li>
+								<?php endforeach; ?>
+							<?php else : ?>
+								<li><?php echo esc_html( sprintf( 'Traslados directos hacia %s', $current_destination['title'] ) ); ?></li>
+								<li><?php echo esc_html( sprintf( 'Aeropuerto de Barcelona a %s', $current_destination['title'] ) ); ?></li>
+							<?php endif; ?>
 						</ul>
 					</div>
 				</div>
@@ -233,8 +268,8 @@ $page_content = trim( wp_strip_all_tags( strip_shortcodes( get_the_content() ) )
 									<path d="M15 3a9 9 0 0 1 9 9"/>
 								</svg>
 							</div>
-							<h2>Soporte Telefónico 24 Horas</h2>
-							<p>Servicio 24/7 para que tu experiencia sea inolvidable, ya sea por teléfono, email o WhatsApp.</p>
+							<h2>Asistencia Ininterrumpida</h2>
+							<p>Nuestros agentes monitorizan tu vuelo o llegada para coordinar recogidas eficaces en cualquier momento, siempre mediante un contacto directo.</p>
 						</article>
 					</div>
 				</div>

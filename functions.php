@@ -1251,8 +1251,8 @@ add_action( 'wp_head', function() {
 		echo '<link rel="preload" as="image" href="' . esc_url( get_template_directory_uri() . '/assets/img/V2.webp' ) . '" fetchpriority="high">' . "\n";
 	}
 
-	// 2. Breadcrumbs & Service (PÃ¡ginas de servicio, tours, destinos)
-	if ( is_page() && ! is_front_page() ) {
+	// 2. Breadcrumbs & Service (Páginas de servicio, tours, destinos, rutas)
+	if ( ( is_page() && ! is_front_page() ) || is_singular( 'ruta' ) ) {
 		$current_post = get_post();
 		$breadcrumbs = array(
 			array(
@@ -1263,7 +1263,41 @@ add_action( 'wp_head', function() {
 			),
 		);
 
-		if ( $service = me_transfers_get_current_service( $current_post ) ) {
+		if ( is_singular( 'ruta' ) ) {
+			// Service Schema para Ruta
+			$origen  = get_post_meta( get_the_ID(), '_mt_ruta_origen', true );
+			$destino = get_post_meta( get_the_ID(), '_mt_ruta_destino', true );
+			$area_served = array();
+			if ( $origen ) $area_served[] = array( '@type' => 'City', 'name' => $origen );
+			if ( $destino ) $area_served[] = array( '@type' => 'City', 'name' => $destino );
+			if ( empty( $area_served ) ) {
+				$area_served = array( '@type' => 'City', 'name' => 'Barcelona' );
+			}
+
+			$schema[] = array(
+				'@context' => 'https://schema.org',
+				'@type' => 'Service',
+				'@id' => get_permalink() . '#service',
+				'name' => get_the_title(),
+				'serviceType' => 'Traslado privado con chófer',
+				'provider' => array( '@id' => home_url( '/#organization' ) ),
+				'areaServed' => $area_served,
+				'url' => get_permalink(),
+			);
+
+			$breadcrumbs[] = array(
+				'@type' => 'ListItem',
+				'position' => 2,
+				'name' => 'Rutas',
+				'item' => home_url( '/#rutas' ), // Enlace genérico o al hub si existe
+			);
+			$breadcrumbs[] = array(
+				'@type' => 'ListItem',
+				'position' => 3,
+				'name' => get_the_title(),
+				'item' => get_permalink(),
+			);
+		} elseif ( $service = me_transfers_get_current_service( $current_post ) ) {
 			// Service Schema
 			$schema[] = array(
 				'@context' => 'https://schema.org',
