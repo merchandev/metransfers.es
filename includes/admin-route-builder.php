@@ -16,9 +16,68 @@ function mt_auto_build_routes_once() {
         if ( function_exists( 'mt_execute_route_builder' ) ) {
             mt_execute_route_builder();
             set_transient( 'mt_auto_built_routes_v4_expanded', true, YEAR_IN_SECONDS );
+            // Limpiar caché de Yoast SEO tras crear las rutas
+            mt_clear_yoast_sitemap_cache();
         }
     }
 }
+
+// 0b. Integración con Yoast SEO ─────────────────────────────────────────────
+
+/**
+ * Asegurar que el CPT 'ruta' está incluido en el sitemap de Yoast.
+ * Necesario porque Yoast a veces excluye CPTs registrados después de su init.
+ */
+add_filter( 'wpseo_sitemap_exclude_post_type', 'mt_yoast_include_ruta_cpt', 10, 2 );
+function mt_yoast_include_ruta_cpt( $exclude, $post_type ) {
+    if ( 'ruta' === $post_type ) {
+        return false; // nunca excluir
+    }
+    return $exclude;
+}
+
+/**
+ * Forzar que las rutas sin imagen se muestren en el sitemap
+ * (Yoast puede omitir posts sin featured image en ciertos modos).
+ */
+add_filter( 'wpseo_sitemap_entry', 'mt_yoast_ruta_sitemap_entry', 10, 3 );
+function mt_yoast_ruta_sitemap_entry( $url, $type, $object ) {
+    if ( 'ruta' === get_post_type( $object ) ) {
+        // Forzar prioridad y frecuencia para todas las rutas
+        $url['pri']  = '0.8';
+        $url['chf']  = 'weekly';
+    }
+    return $url;
+}
+
+/**
+ * Limpiar la caché del sitemap de Yoast SEO.
+ * Se llama tras crear o actualizar rutas.
+ */
+function mt_clear_yoast_sitemap_cache() {
+    if ( class_exists( 'WPSEO_Sitemaps_Router' ) ) {
+        WPSEO_Sitemaps_Router::invalidate_sitemap();
+    }
+    // Método alternativo para versiones anteriores de Yoast
+    if ( function_exists( 'wpseo_invalidate_sitemap_cache' ) ) {
+        wpseo_invalidate_sitemap_cache( 'ruta' );
+    }
+    // Fallback: borrar directamente las opciones de caché de Yoast
+    delete_option( 'wpseo_sitemap_cache_validator_all' );
+    delete_transient( 'wpseo_sitemap_cache_validator_all' );
+    // Flush rewrite rules para que el sitemap reaparezca
+    delete_option( 'rewrite_rules' );
+}
+
+/**
+ * Limpiar caché de Yoast automáticamente cuando se publica una ruta.
+ */
+add_action( 'save_post_ruta', 'mt_on_ruta_saved', 10, 1 );
+function mt_on_ruta_saved( $post_id ) {
+    if ( wp_is_post_revision( $post_id ) ) return;
+    mt_clear_yoast_sitemap_cache();
+}
+
 
 // 1. Añadir submenú bajo el CPT 'ruta'
 add_action( 'admin_menu', 'mt_add_route_builder_menu' );
@@ -40,31 +99,57 @@ function mt_render_route_builder_page() {
     }
 
     $action_triggered = false;
+    $cache_cleared    = false;
 
     if ( isset( $_POST['mt_build_routes'] ) && check_admin_referer( 'mt_build_routes_action', 'mt_build_routes_nonce' ) ) {
         mt_execute_route_builder();
+        mt_clear_yoast_sitemap_cache();
         $action_triggered = true;
+    }
+
+    if ( isset( $_POST['mt_clear_sitemap_cache'] ) && check_admin_referer( 'mt_build_routes_action', 'mt_build_routes_nonce' ) ) {
+        mt_clear_yoast_sitemap_cache();
+        // Forzar flush de rewrite rules
+        flush_rewrite_rules( true );
+        $cache_cleared = true;
     }
 
     ?>
     <div class="wrap">
         <h1>Constructor de Rutas MeTransfers</h1>
-        <p>Esta herramienta crea, publica y rellena automáticamente los datos SEO (origen, destino, etc.) de las 13 rutas de la Fase 1.</p>
-        
+        <p>Esta herramienta crea, publica y rellena automáticamente los datos SEO de las <?php echo count( mt_get_phase1_routes() ); ?> rutas del catálogo.</p>
+
         <?php if ( $action_triggered ) : ?>
             <div class="notice notice-success is-dismissible">
-                <p><strong>¡Éxito!</strong> Las rutas han sido creadas/actualizadas, publicadas y las reglas de enlaces permanentes han sido regeneradas.</p>
+                <p><strong>✅ ¡Éxito!</strong> Las rutas han sido creadas/actualizadas, publicadas. La caché de Yoast SEO ha sido limpiada. Visita <a href="<?php echo home_url('/ruta-sitemap.xml'); ?>" target="_blank">ruta-sitemap.xml</a> para confirmar que muestra las rutas.</p>
             </div>
         <?php endif; ?>
 
-        <form method="post" action="">
-            <?php wp_nonce_field( 'mt_build_routes_action', 'mt_build_routes_nonce' ); ?>
-            <p>
+        <?php if ( $cache_cleared ) : ?>
+            <div class="notice notice-success is-dismissible">
+                <p><strong>✅ Caché limpiada.</strong> La caché del sitemap de Yoast ha sido regenerada y los rewrite rules han sido actualizados. Ahora puedes ir a <a href="https://search.google.com/search-console/sitemaps" target="_blank">Google Search Console</a> y solicitar la reinspección del sitemap <code>/ruta-sitemap.xml</code>.</p>
+            </div>
+        <?php endif; ?>
+
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem;">
+            <form method="post" action="" style="display:inline;">
+                <?php wp_nonce_field( 'mt_build_routes_action', 'mt_build_routes_nonce' ); ?>
                 <button type="submit" name="mt_build_routes" class="button button-primary button-hero">
-                    Crear, completar y publicar las 13 rutas
+                    🚀 Crear, completar y publicar las <?php echo count( mt_get_phase1_routes() ); ?> rutas
                 </button>
-            </p>
-        </form>
+            </form>
+
+            <form method="post" action="" style="display:inline;">
+                <?php wp_nonce_field( 'mt_build_routes_action', 'mt_build_routes_nonce' ); ?>
+                <button type="submit" name="mt_clear_sitemap_cache" class="button button-secondary button-hero">
+                    🗺️ Limpiar caché Yoast + Flush rewrite rules
+                </button>
+            </form>
+
+            <a href="<?php echo esc_url( home_url( '/ruta-sitemap.xml' ) ); ?>" target="_blank" class="button button-hero" style="line-height:2.4;">
+                🔍 Ver sitemap de rutas
+            </a>
+        </div>
 
         <h2>Estado de las Rutas</h2>
         <table class="wp-list-table widefat fixed striped">
