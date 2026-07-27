@@ -22,33 +22,14 @@ require_once get_template_directory() . '/includes/services.php';
 require_once get_template_directory() . '/includes/request-cpt.php'; // Updated to trigger sync v6
 require_once get_template_directory() . '/includes/tour-bookings.php';
 
-// One-time script to update all page titles in the database
-add_action( 'admin_init', 'mt_update_all_page_titles_once' );
+// DESACTIVADO: mt_update_all_page_titles_once() anteponía "MeTransfers Barcelona -" a TODOS
+// los títulos editoriales de las páginas, mezclando el título interno con el título SEO.
+// Los tres conceptos deben estar separados: título interno, H1 visible y <title> SEO.
+// Si necesitas renombrar páginas, hazlo manualmente desde el panel de WordPress.
+// add_action( 'admin_init', 'mt_update_all_page_titles_once' );
 function mt_update_all_page_titles_once() {
-    if ( get_option( 'mt_titles_updated_to_metransfers' ) ) {
-        return;
-    }
-    
-    $pages = get_posts( array(
-        'post_type'   => 'page',
-        'numberposts' => -1,
-        'post_status' => 'any',
-    ) );
-    
-    foreach ( $pages as $page ) {
-        $title = $page->post_title;
-        if ( strpos( $title, 'MeTransfers Barcelona' ) === false ) {
-            $clean_title = str_replace( array( 'Me Transfers Barcelona - ', 'Me Transfers Barcelona', 'MeTransfers - ' ), '', $title );
-            $new_title = 'MeTransfers Barcelona - ' . trim( $clean_title, ' -' );
-            wp_update_post( array(
-                'ID'         => $page->ID,
-                'post_title' => $new_title,
-                'post_name'  => $page->post_name, 
-            ) );
-        }
-    }
-    
-    update_option( 'mt_titles_updated_to_metransfers', true );
+    // Función conservada por si se necesita referenciar el historial de migración.
+    // No conectada a ningún hook. No se ejecuta automáticamente.
 }
 
 
@@ -935,30 +916,12 @@ function me_transfers_custom_redirects() {
             }
         }
 
-        // SMART GUESS REDIRECT: Intenta recuperar visitas perdidas (Recomendación SEO)
-        // Si el slug tiene suficientes palabras, busca si coincide con un post o página viva.
-        $slug_parts = explode('/', trim( parse_url($requested_url, PHP_URL_PATH), '/' ));
-        $last_part = end($slug_parts);
-        
-        if ( !empty($last_part) && strlen($last_part) > 6 ) {
-            // Convierte guiones en espacios para buscar
-            $search_term = str_replace( array('-', '_'), ' ', $last_part );
-            
-            $smart_query = new WP_Query( array(
-                's' => $search_term,
-                'post_type' => array('post', 'page', 'tour', 'product'),
-                'post_status' => 'publish',
-                'posts_per_page' => 1,
-                'fields' => 'ids',
-                'no_found_rows' => true,
-            ) );
-            
-            if ( $smart_query->have_posts() ) {
-                $match_id = $smart_query->posts[0];
-                wp_redirect( get_permalink( $match_id ), 301 );
-                exit;
-            }
-        }
+        // SMART REDIRECT ELIMINADO: El sistema anterior hacía una WP_Query con búsqueda de texto
+        // libre y redirigía 301 permanentemente al primer resultado. Esto podía enviar a Google
+        // y a los usuarios a páginas completamente no equivalentes, dañando el SEO.
+        //
+        // Si necesitas recuperar una URL específica, añade la redirección manualmente
+        // en el array $redirects_301 de arriba con la URL de destino correcta.
     }
 }
 
@@ -974,65 +937,49 @@ add_action( 'admin_init', 'mt_run_seo_importer_phase_1' );
 add_action( 'wp_ajax_mt_save_lead', 'mt_ajax_save_lead' );
 add_action( 'wp_ajax_nopriv_mt_save_lead', 'mt_ajax_save_lead' );
 
-// =================================================================
-// 21. AUTO-CREAR PÁGINAS ESENCIALES (CONTACTO, RESERVACIONES)
-// =================================================================
-add_action( 'init', function() {
-    $pages_to_create = [
-        'contacto' => [
-            'title' => 'Contacto',
-            'template' => 'page-contacto.php'
-        ],
-        'reservaciones' => [
-            'title' => 'Reservaciones',
-            'template' => 'page-reservaciones.php'
-        ]
-    ];
-
-    foreach ( $pages_to_create as $slug => $data ) {
-        $page_check = get_page_by_path( $slug, OBJECT, 'page' );
-        
-        // Si no existe, o existe pero no está publicada (ej. papelera o borrador), creamos/publicamos
-        if ( ! $page_check || $page_check->post_status !== 'publish' ) {
-            $page_data = [
-                'post_type'   => 'page',
-                'post_title'  => $data['title'],
-                'post_name'   => $slug,
-                'post_status' => 'publish',
-                'post_author' => 1,
-            ];
-            
-            // Si existe pero está en papelera/borrador, le pasamos el ID para actualizarla y publicarla
-            if ( $page_check && isset( $page_check->ID ) ) {
-                $page_data['ID'] = $page_check->ID;
-            }
-            
-            $new_page_id = wp_insert_post( $page_data );
-            if ( $new_page_id && ! is_wp_error( $new_page_id ) ) {
-                update_post_meta( $new_page_id, '_wp_page_template', $data['template'] );
-            }
-        }
-    }
-} );
+// ELIMINADO: El bloque AUTO-CREAR PÁGINAS ESENCIALES re-publicaba /contacto y /reservaciones
+// en cada carga de WordPress, incluso si se habían dejado como borrador o papelera intencionalmente.
+// Las páginas esenciales deben gestionarse manualmente desde el panel de WordPress.
+// Si las páginas no existen, créalas una vez desde Páginas > Añadir nueva.
 
 function mt_ajax_save_lead() {
     check_ajax_referer( 'mt_lead_nonce', 'security' );
 
-    $origen    = isset( $_POST['origen'] )    ? sanitize_text_field( $_POST['origen'] )    : 'formulario';
-    $nombre    = isset( $_POST['nombre'] )    ? sanitize_text_field( $_POST['nombre'] )    : '';
-    $email     = isset( $_POST['email'] )     ? sanitize_email( $_POST['email'] )          : '';
-    $telefono  = isset( $_POST['telefono'] )  ? sanitize_text_field( $_POST['telefono'] )  : '';
-    $servicio  = isset( $_POST['servicio'] )  ? sanitize_text_field( $_POST['servicio'] )  : '';
-    $mensaje   = isset( $_POST['mensaje'] )   ? sanitize_textarea_field( $_POST['mensaje'] ) : '';
-    $gdpr      = isset( $_POST['gdpr_aceptado'] ) ? '1' : '0';
-    $gdpr_fecha = isset( $_POST['gdpr_fecha'] ) ? sanitize_text_field( $_POST['gdpr_fecha'] ) : current_time( 'c' );
+    $origen   = isset( $_POST['origen'] )   ? sanitize_text_field( $_POST['origen'] )      : 'formulario';
+    $nombre   = isset( $_POST['nombre'] )   ? sanitize_text_field( $_POST['nombre'] )      : '';
+    $email    = isset( $_POST['email'] )    ? sanitize_email( $_POST['email'] )            : '';
+    $telefono = isset( $_POST['telefono'] ) ? sanitize_text_field( $_POST['telefono'] )    : '';
+    $servicio = isset( $_POST['servicio'] ) ? sanitize_text_field( $_POST['servicio'] )    : '';
+    $mensaje  = isset( $_POST['mensaje'] )  ? sanitize_textarea_field( $_POST['mensaje'] ) : '';
+    $gdpr     = isset( $_POST['gdpr_aceptado'] ) && '1' === $_POST['gdpr_aceptado'] ? '1' : '0';
 
-    if ( empty( $nombre ) ) {
+    // Fecha del servidor — no confiar en el reloj del navegador
+    $gdpr_fecha_servidor = current_time( 'c' );
+    // Versión de la política activa (incrementar manualmente al actualizar la política)
+    $gdpr_version = '2025-01-01';
+
+    // Validación: nombre obligatorio
+    if ( empty( trim( $nombre ) ) ) {
         wp_send_json_error( array( 'message' => 'El nombre es obligatorio.' ) );
+        return;
     }
 
+    // Validación: email obligatorio y formato correcto
+    if ( empty( $email ) || ! is_email( $email ) ) {
+        wp_send_json_error( array( 'message' => 'Introduce un correo electrónico válido.' ) );
+        return;
+    }
+
+    // Validación: longitudes máximas para prevenir abuso
+    if ( mb_strlen( $nombre ) > 120 || mb_strlen( $mensaje ) > 3000 || mb_strlen( $telefono ) > 30 ) {
+        wp_send_json_error( array( 'message' => 'Algún campo supera la longitud permitida.' ) );
+        return;
+    }
+
+    // Validación: consentimiento GDPR obligatorio
     if ( '1' !== $gdpr ) {
         wp_send_json_error( array( 'message' => 'Debes aceptar la política de privacidad.' ) );
+        return;
     }
 
     $title = $nombre . ' - ' . date_i18n( 'd/m/Y H:i' );
@@ -1040,7 +987,7 @@ function mt_ajax_save_lead() {
     $post_data = array(
         'post_title'  => $title,
         'post_type'   => 'mensaje',
-        'post_status' => 'publish',
+        'post_status' => 'private', // Privado: no accesible públicamente, visible sólo para admins
     );
 
     $post_id = wp_insert_post( $post_data );
@@ -1050,28 +997,33 @@ function mt_ajax_save_lead() {
         update_post_meta( $post_id, '_mt_mensaje_nombre',   $nombre );
         update_post_meta( $post_id, '_mt_mensaje_email',    $email );
         update_post_meta( $post_id, '_mt_mensaje_telefono', $telefono );
-        update_post_meta( $post_id, '_mt_mensaje_servicio', $servicio );
-        update_post_meta( $post_id, '_mt_mensaje_texto',    $mensaje );
-        update_post_meta( $post_id, '_mt_gdpr_aceptado',    $gdpr );
-        update_post_meta( $post_id, '_mt_gdpr_fecha',       $gdpr_fecha );
+        update_post_meta( $post_id, '_mt_mensaje_servicio',  $servicio );
+        update_post_meta( $post_id, '_mt_mensaje_texto',     $mensaje );
+        update_post_meta( $post_id, '_mt_gdpr_aceptado',     '1' );
+        update_post_meta( $post_id, '_mt_gdpr_fecha',        $gdpr_fecha_servidor ); // Fecha del servidor
+        update_post_meta( $post_id, '_mt_gdpr_version',      $gdpr_version );
 
         // Enviar notificación por email
         $to      = get_option( 'admin_email', 'info@metransfers.es' );
         $subject = 'Nueva consulta web: ' . $nombre;
 
-        $body  = "Has recibido una nueva consulta desde la web de MeTransfers.\n\n";
+        $body  = "Nueva consulta desde la web de MeTransfers.\n\n";
         $body .= "Nombre: {$nombre}\n";
         $body .= "Email: {$email}\n";
         $body .= "Teléfono: {$telefono}\n";
         $body .= "Servicio: {$servicio}\n";
         $body .= "Origen: {$origen}\n\n";
         $body .= "Mensaje:\n{$mensaje}\n\n";
-        $body .= "GDPR aceptado: Sí (fecha: {$gdpr_fecha})\n";
-        $body .= "Gestiona este lead en: " . admin_url( 'edit.php?post_type=mensaje' ) . "\n";
+        $body .= "GDPR: Aceptado (servidor: {$gdpr_fecha_servidor}, política v{$gdpr_version})\n";
+        $body .= "Gestionar: " . admin_url( 'edit.php?post_type=mensaje' ) . "\n";
 
-        $headers = array( 'Reply-To: ' . $nombre . ' <' . $email . '>' );
+        $headers    = array( 'Reply-To: ' . $nombre . ' <' . $email . '>' );
+        $mail_sent  = wp_mail( $to, $subject, $body, $headers );
 
-        wp_mail( $to, $subject, $body, $headers );
+        // Registrar si el correo falló (sin bloquear la respuesta al cliente)
+        if ( ! $mail_sent ) {
+            update_post_meta( $post_id, '_mt_email_fallido', '1' );
+        }
 
         wp_send_json_success( array( 'message' => '¡Solicitud recibida correctamente! Te responderemos muy pronto.' ) );
     } else {
@@ -1083,7 +1035,10 @@ function mt_ajax_save_lead() {
 // 5. Force-assign template-servicio.php to all service pages
 //    and create missing pages (chofer-por-horas, grupos, etc.)
 // ==========================================
-add_action( 'admin_init', 'mt_ensure_service_pages_and_templates' );
+// DESACTIVADO: mt_ensure_service_pages_and_templates() creaba y publicaba páginas de servicios
+// automáticamente cada 24h, sin revisión editorial. Las páginas de servicios deben crearse
+// manualmente desde el panel de WordPress con contenido propio.
+// add_action( 'admin_init', 'mt_ensure_service_pages_and_templates' );
 
 function mt_ensure_service_pages_and_templates() {
     // Only run once per day to avoid overhead.
@@ -1414,7 +1369,12 @@ add_filter( 'wp_robots', static function ( array $robots ): array {
 /**
  * Full restoration of legal pages (Title, Slug, Content) to fix 404s and empty content.
  */
-add_action( 'admin_init', 'mt_full_restore_legal_pages_once' );
+// DESACTIVADO: mt_full_restore_legal_pages_once() sobreescribía el contenido de las páginas
+// legales con texto hardcodeado en functions.php en cada instalación nueva.
+// Las páginas legales deben editarse desde el panel de WordPress. El contenido de esta
+// función se conserva como referencia pero NO debe re-activarse: cualquier actualización del
+// tema sobreescribiría cambios legales aprobados.
+// add_action( 'admin_init', 'mt_full_restore_legal_pages_once' );
 function mt_full_restore_legal_pages_once() {
     if ( get_transient( 'mt_full_restored_legal_pages_v1' ) ) {
         return;

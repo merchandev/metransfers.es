@@ -50,26 +50,75 @@ body .hero-booking-card {
 }
 /* GTranslate antiguo eliminado — usar plugin GCT Translator */
 </style>
-<script>
-// FIX CERO PARPADEO BTT
-if (window.location.search.indexOf('source=BTT') !== -1) {
-    document.write('<style>#page { display: none !important; } .btt-global-loader { display: flex !important; }<\/' + 'style>');
-    document.write('<div class="btt-global-loader" style="position: fixed; inset: 0; background: linear-gradient(180deg, rgba(0, 58, 82, 0.96) 0%, rgba(5, 23, 61, 1) 100%); z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;">' +
-        '<style>.btt-spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.2); border-top-color: white; border-radius: 50%; animation: btt-spin 1s linear infinite; margin-bottom: 20px; } @keyframes btt-spin { 100% { transform: rotate(360deg); } }</style>' +
-        '<div class="btt-spinner"></div>' +
-        '<h2 style="color: white; font-weight: 300; letter-spacing: 1px;">Calculando su mejor ruta...</h2>' +
-    '</div>');
+<style id="btt-loader-style">
+/* Loader BTT: activo solo cuando llega desde la app con ?source=BTT */
+.btt-global-loader {
+    display: none;
+    position: fixed; inset: 0;
+    background: linear-gradient(180deg, rgba(0,58,82,.96) 0%, rgba(5,23,61,1) 100%);
+    z-index: 999999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
 }
-</script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-7ZFL53LYFN"></script>
+.btt-global-loader.is-active { display: flex; }
+.btt-spinner {
+    width: 50px; height: 50px;
+    border: 4px solid rgba(255,255,255,.2);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: btt-spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+@keyframes btt-spin { 100% { transform: rotate(360deg); } }
+</style>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-7ZFL53LYFN');
+// Loader BTT — sin document.write
+(function() {
+    if (window.location.search.indexOf('source=BTT') !== -1) {
+        document.documentElement.classList.add('btt-loading');
+        var loader = document.createElement('div');
+        loader.className = 'btt-global-loader is-active';
+        loader.innerHTML = '<div class="btt-spinner"></div><h2 style="font-weight:300;letter-spacing:1px">Calculando su mejor ruta...</h2>';
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.appendChild(loader);
+            document.getElementById('page') && (document.getElementById('page').style.display = 'none');
+        });
+    }
+}());
 </script>
+<?php
+// ── Google Analytics ──────────────────────────────────────────────────────
+// Se carga SOLO si el usuario ha aceptado la categoría analítica.
+// La cookie mt_analytics_consent='granted' se establece desde el banner de cookies.
+// Sin consentimiento: se inicializa en modo denegado (recomendado por Google).
+$ga_id = 'G-7ZFL53LYFN';
+$consent_granted = isset( $_COOKIE['mt_analytics_consent'] ) && 'granted' === $_COOKIE['mt_analytics_consent'];
+?>
+<!-- Google Analytics con gestión de consentimiento -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+<?php if ( $consent_granted ) : ?>
+// Consentimiento aceptado: carga completa de Analytics
+gtag('consent', 'update', { analytics_storage: 'granted' });
+<?php else : ?>
+// Sin consentimiento: modo denegado (no envía datos de usuario)
+gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    wait_for_update: 500
+});
+<?php endif; ?>
+gtag('js', new Date());
+gtag('config', '<?php echo esc_js( $ga_id ); ?>', { anonymize_ip: true });
+</script>
+<?php if ( $consent_granted ) : ?>
+<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo esc_attr( $ga_id ); ?>"></script>
+<?php endif; ?>
+
 </head>
 
 <body <?php body_class(); ?>>
