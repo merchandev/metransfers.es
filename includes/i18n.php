@@ -63,7 +63,7 @@ add_action( 'init', function() {
         'top'
     );
     add_rewrite_rule(
-        '^(' . $lang_pattern . ')/([^/]+)/?$',
+        '^(' . $lang_pattern . ')/(.+?)/?$',
         'index.php?mt_lang=$matches[1]&mt_page=$matches[2]',
         'top'
     );
@@ -79,7 +79,7 @@ add_action( 'after_switch_theme', function() { flush_rewrite_rules(); } );
 
 add_action( 'init', function() {
     // Bump this string whenever you add/remove languages to force a rules flush
-    $i18n_version = 'v2-ca-ru-zh-ja';
+    $i18n_version = 'v2-ca-ru-zh-ja-nested';
     if ( get_option('mt_i18n_rules_flushed') !== $i18n_version ) {
         flush_rewrite_rules();
         update_option( 'mt_i18n_rules_flushed', $i18n_version );
@@ -109,27 +109,59 @@ add_action( 'template_redirect', function() {
         'flota'                      => 'template-flota.php',
     ];
 
-    if ( ! isset( $template_map[ $page ] ) ) {
-        $wp_page = get_page_by_path( $page );
-        if ( $wp_page ) {
-            $tpl = get_page_template_slug( $wp_page->ID );
-            $template_map[ $page ] = ( $tpl && file_exists( get_template_directory() . '/' . $tpl ) )
-                ? $tpl
-                : 'page.php';
+    $is_valid = false;
+    $original_post = null;
+
+    if ( isset( $template_map[ $page ] ) ) {
+        $is_valid = true;
+    } else {
+        // Soporte para URLs anidadas: /rutas/barcelona-salou/ o /destinos/salou/
+        $post_id = url_to_postid( home_url( '/' . $page ) );
+        if ( $post_id ) {
+            $is_valid = true;
+            $original_post = get_post( $post_id );
+            
+            $tpl = get_page_template_slug( $post_id );
+            if ( $tpl && file_exists( get_template_directory() . '/' . $tpl ) ) {
+                $template_map[ $page ] = $tpl;
+            } elseif ( $original_post->post_type === 'ruta' ) {
+                $template_map[ $page ] = 'single-ruta.php';
+            } elseif ( $original_post->post_type === 'post' ) {
+                $template_map[ $page ] = 'single.php';
+            } else {
+                $template_map[ $page ] = 'page.php';
+            }
         }
+    }
+
+    if ( ! $is_valid ) {
+        global $wp_query;
+        $wp_query->set_404();
+        status_header( 404 );
+        nocache_headers();
+        return; // Devuelve 404 real, evita soft 404
     }
 
     $template_file = $template_map[ $page ] ?? 'index.php';
     $full_path     = get_template_directory() . '/' . $template_file;
 
     if ( file_exists( $full_path ) ) {
-        if ( in_array( $template_file, ['template-servicio.php', 'template-tours.php', 'template-flota.php'] ) ) {
-            $original_page = get_page_by_path( $page );
-            if ( $original_page ) {
+        if ( $original_post ) {
+            global $post, $wp_query;
+            $post = $original_post;
+            $wp_query->queried_object    = $original_post;
+            $wp_query->queried_object_id = $original_post->ID;
+            $wp_query->is_page           = ( $original_post->post_type === 'page' );
+            $wp_query->is_singular       = true;
+            $wp_query->is_single         = ( $original_post->post_type !== 'page' );
+            setup_postdata( $post );
+        } elseif ( in_array( $template_file, ['template-servicio.php', 'template-tours.php', 'template-flota.php'] ) ) {
+            $fallback = get_page_by_path( $page );
+            if ( $fallback ) {
                 global $post, $wp_query;
-                $post = $original_page;
-                $wp_query->queried_object    = $original_page;
-                $wp_query->queried_object_id = $original_page->ID;
+                $post = $fallback;
+                $wp_query->queried_object    = $fallback;
+                $wp_query->queried_object_id = $fallback->ID;
                 $wp_query->is_page           = true;
                 $wp_query->is_singular       = true;
                 setup_postdata( $post );
