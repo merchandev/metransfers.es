@@ -9,13 +9,25 @@
 get_header();
 
 // Fetch Meta Data
-$ruta_id = get_the_ID();
-$origen = get_post_meta( $ruta_id, '_mt_ruta_origen', true );
-$destino = get_post_meta( $ruta_id, '_mt_ruta_destino', true );
+$ruta_id  = get_the_ID();
+$origen   = get_post_meta( $ruta_id, '_mt_ruta_origen',   true );
+$destino  = get_post_meta( $ruta_id, '_mt_ruta_destino',  true );
 $duracion = get_post_meta( $ruta_id, '_mt_ruta_duracion', true );
-$pax = get_post_meta( $ruta_id, '_mt_ruta_pax', true );
-$maletas = get_post_meta( $ruta_id, '_mt_ruta_maletas', true );
-$precio = get_post_meta( $ruta_id, '_mt_ruta_precio', true );
+$pax      = get_post_meta( $ruta_id, '_mt_ruta_pax',      true );
+$maletas  = get_post_meta( $ruta_id, '_mt_ruta_maletas',  true );
+$precio   = get_post_meta( $ruta_id, '_mt_ruta_precio',   true );
+
+// H1 SEO: construido desde los metadatos de la ruta, no desde el título interno
+if ( $origen && $destino ) {
+    $h1_text = sprintf(
+        'Transfer privado del %s a %s',
+        esc_html( $origen ),
+        esc_html( $destino )
+    );
+} else {
+    // Fallback al título del post si faltan los metadatos
+    $h1_text = get_the_title();
+}
 
 $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
 if ( ! $hero_bg ) {
@@ -42,13 +54,10 @@ if ( ! $hero_bg ) {
                     <div class="hero-badge">
                         <span class="hero-badge-dot"></span> Ruta Premium Garantizada
                     </div>
-                    <h1 class="hero-title"><?php the_title(); ?></h1>
-                    
+                    <h1 class="hero-title"><?php echo wp_kses_post( $h1_text ); ?></h1>
+
                     <p class="hero-subtitle">
-                        <?php if($origen && $destino): ?>
-                            Traslado privado desde <strong><?php echo esc_html($origen); ?></strong> hasta <strong><?php echo esc_html($destino); ?></strong>. 
-                        <?php endif; ?>
-                        Vehículos Mercedes-Benz, presupuesto a medida y conductor profesional esperándote.
+                        Traslado privado con vehículos Mercedes-Benz, conductor profesional y presupuesto cerrado sin sorpresas.
                     </p>
 
                     <div class="hero-actions">

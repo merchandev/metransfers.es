@@ -69,9 +69,15 @@ if ( ! defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) ) {
 
 // Centralized Versioning
 if ( ! defined( 'ME_TRANSFERS_VERSION' ) ) {
-	// Reemplace el nÃºmero de versiÃ³n del tema en cada lanzamiento.
-	define( 'ME_TRANSFERS_VERSION', '3.0.0' );
+	define( 'ME_TRANSFERS_VERSION', '3.1.0' );
 }
+
+// Forzar UTF-8 en cabeceras HTTP para evitar caracteres corruptos (tildes, ñ)
+add_action( 'send_headers', function() {
+    if ( ! headers_sent() ) {
+        header( 'Content-Type: text/html; charset=UTF-8' );
+    }
+} );
 
 /**
  * Sets up theme defaults and registers support for various WordPress features.
@@ -860,8 +866,51 @@ function me_transfers_custom_redirects() {
         $requested_url = $_SERVER['REQUEST_URI'];
         
         // Array de redirecciones 301 exactas. Formato: '/url-antigua/' => '/url-nueva/'
+        // Incluye redirecciones masivas de /taxis-* y /traslados-* hacia URLs canónicas SEO.
         $redirects_301 = array(
+            // Post viral antiguo
             '/transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v/' => '/tours/',
+
+            // ── Páginas estáticas /taxis-* ──────────────────────────────────
+            '/taxis-privado-barcelona/'           => '/traslados-privados/',
+            '/taxis-barcelona-port-aventura/'     => '/destinos/portaventura/',
+            '/taxis-barcelona-salou/'             => '/rutas/barcelona-salou/',
+            '/taxis-barcelona-costa-brava/'       => '/destinos/costa-brava/',
+            '/taxis-barcelona-girona/'            => '/destinos/girona/',
+
+            // ── Landings dinámicas /taxis-barcelona-[destino] ───────────────
+            '/taxis-barcelona-andorra/'           => '/rutas/barcelona-lloret-de-mar/',
+            '/taxis-barcelona-taull/'             => '/destinos/lloret-de-mar/',
+            '/taxis-barcelona-vielha/'            => '/destinos/lloret-de-mar/',
+            '/taxis-barcelona-tossa-de-mar/'      => '/destinos/tossa-de-mar/',
+            '/taxis-barcelona-cadaques/'          => '/destinos/lloret-de-mar/',
+            '/taxis-barcelona-besalu/'            => '/destinos/lloret-de-mar/',
+            '/taxis-barcelona-bagur/'             => '/destinos/lloret-de-mar/',
+            '/taxis-barcelona-delta-del-ebro/'    => '/destinos/salou/',
+            '/taxis-barcelona-peniscola/'         => '/destinos/salou/',
+            '/taxis-barcelona-morella/'           => '/destinos/salou/',
+            '/taxis-barcelona-altea/'             => '/destinos/salou/',
+            '/taxis-barcelona-valderrobres/'      => '/destinos/salou/',
+            '/taxis-barcelona-alquezar/'          => '/destinos/lloret-de-mar/',
+            '/taxis-barcelona-colliure/'          => '/destinos/lloret-de-mar/',
+            '/taxis-barcelona-carcasona/'         => '/destinos/lloret-de-mar/',
+
+            // ── Landings dinámicas /traslados-barcelona-[destino] ───────────
+            '/traslados-barcelona-andorra/'       => '/rutas/barcelona-lloret-de-mar/',
+            '/traslados-barcelona-taull/'         => '/destinos/lloret-de-mar/',
+            '/traslados-barcelona-vielha/'        => '/destinos/lloret-de-mar/',
+            '/traslados-barcelona-tossa-de-mar/'  => '/destinos/tossa-de-mar/',
+            '/traslados-barcelona-cadaques/'      => '/destinos/lloret-de-mar/',
+            '/traslados-barcelona-besalu/'        => '/destinos/lloret-de-mar/',
+            '/traslados-barcelona-bagur/'         => '/destinos/lloret-de-mar/',
+            '/traslados-barcelona-delta-del-ebro/' => '/destinos/salou/',
+            '/traslados-barcelona-peniscola/'     => '/destinos/salou/',
+            '/traslados-barcelona-morella/'       => '/destinos/salou/',
+            '/traslados-barcelona-altea/'         => '/destinos/salou/',
+            '/traslados-barcelona-valderrobres/'  => '/destinos/salou/',
+            '/traslados-barcelona-alquezar/'      => '/destinos/lloret-de-mar/',
+            '/traslados-barcelona-colliure/'      => '/destinos/lloret-de-mar/',
+            '/traslados-barcelona-carcasona/'     => '/destinos/lloret-de-mar/',
         );
 
         foreach ( $redirects_301 as $old => $new ) {
@@ -969,56 +1018,64 @@ add_action( 'init', function() {
 function mt_ajax_save_lead() {
     check_ajax_referer( 'mt_lead_nonce', 'security' );
 
-    $origen = isset($_POST['origen']) ? sanitize_text_field($_POST['origen']) : 'formulario';
-    $nombre = isset($_POST['nombre']) ? sanitize_text_field($_POST['nombre']) : '';
-    $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
-    $telefono = isset($_POST['telefono']) ? sanitize_text_field($_POST['telefono']) : '';
-    $servicio = isset($_POST['servicio']) ? sanitize_text_field($_POST['servicio']) : '';
-    $mensaje = isset($_POST['mensaje']) ? sanitize_textarea_field($_POST['mensaje']) : '';
+    $origen    = isset( $_POST['origen'] )    ? sanitize_text_field( $_POST['origen'] )    : 'formulario';
+    $nombre    = isset( $_POST['nombre'] )    ? sanitize_text_field( $_POST['nombre'] )    : '';
+    $email     = isset( $_POST['email'] )     ? sanitize_email( $_POST['email'] )          : '';
+    $telefono  = isset( $_POST['telefono'] )  ? sanitize_text_field( $_POST['telefono'] )  : '';
+    $servicio  = isset( $_POST['servicio'] )  ? sanitize_text_field( $_POST['servicio'] )  : '';
+    $mensaje   = isset( $_POST['mensaje'] )   ? sanitize_textarea_field( $_POST['mensaje'] ) : '';
+    $gdpr      = isset( $_POST['gdpr_aceptado'] ) ? '1' : '0';
+    $gdpr_fecha = isset( $_POST['gdpr_fecha'] ) ? sanitize_text_field( $_POST['gdpr_fecha'] ) : current_time( 'c' );
 
-    if ( empty($nombre) ) {
-        wp_send_json_error( 'El nombre es obligatorio.' );
+    if ( empty( $nombre ) ) {
+        wp_send_json_error( array( 'message' => 'El nombre es obligatorio.' ) );
     }
 
-    $title = $nombre . ' - ' . date_i18n('d/m/Y H:i');
+    if ( '1' !== $gdpr ) {
+        wp_send_json_error( array( 'message' => 'Debes aceptar la política de privacidad.' ) );
+    }
+
+    $title = $nombre . ' - ' . date_i18n( 'd/m/Y H:i' );
 
     $post_data = array(
-        'post_title'   => $title,
-        'post_type'    => 'mensaje',
-        'post_status'  => 'publish',
+        'post_title'  => $title,
+        'post_type'   => 'mensaje',
+        'post_status' => 'publish',
     );
 
     $post_id = wp_insert_post( $post_data );
 
-    if ( $post_id ) {
-        update_post_meta( $post_id, '_mt_mensaje_origen', $origen );
-        update_post_meta( $post_id, '_mt_mensaje_nombre', $nombre );
-        update_post_meta( $post_id, '_mt_mensaje_email', $email );
+    if ( $post_id && ! is_wp_error( $post_id ) ) {
+        update_post_meta( $post_id, '_mt_mensaje_origen',   $origen );
+        update_post_meta( $post_id, '_mt_mensaje_nombre',   $nombre );
+        update_post_meta( $post_id, '_mt_mensaje_email',    $email );
         update_post_meta( $post_id, '_mt_mensaje_telefono', $telefono );
         update_post_meta( $post_id, '_mt_mensaje_servicio', $servicio );
-        update_post_meta( $post_id, '_mt_mensaje_texto', $mensaje );
+        update_post_meta( $post_id, '_mt_mensaje_texto',    $mensaje );
+        update_post_meta( $post_id, '_mt_gdpr_aceptado',    $gdpr );
+        update_post_meta( $post_id, '_mt_gdpr_fecha',       $gdpr_fecha );
 
         // Enviar notificación por email
-        $to = 'info@metransfers.es';
-        $subject = 'Nuevo mensaje web de: ' . $nombre;
-        
-        $body  = "Has recibido un nuevo mensaje desde la web.\n\n";
-        $body .= "Detalles del contacto:\n";
-        $body .= "Origen: " . $origen . "\n";
-        $body .= "Nombre: " . $nombre . "\n";
-        $body .= "Email: " . $email . "\n";
-        $body .= "Teléfono: " . $telefono . "\n";
-        $body .= "Servicio: " . $servicio . "\n";
-        $body .= "Mensaje:\n" . $mensaje . "\n\n";
-        $body .= "Puedes ver y gestionar este mensaje en el panel de WordPress (Mensajes Web).\n";
-        
+        $to      = get_option( 'admin_email', 'info@metransfers.es' );
+        $subject = 'Nueva consulta web: ' . $nombre;
+
+        $body  = "Has recibido una nueva consulta desde la web de MeTransfers.\n\n";
+        $body .= "Nombre: {$nombre}\n";
+        $body .= "Email: {$email}\n";
+        $body .= "Teléfono: {$telefono}\n";
+        $body .= "Servicio: {$servicio}\n";
+        $body .= "Origen: {$origen}\n\n";
+        $body .= "Mensaje:\n{$mensaje}\n\n";
+        $body .= "GDPR aceptado: Sí (fecha: {$gdpr_fecha})\n";
+        $body .= "Gestiona este lead en: " . admin_url( 'edit.php?post_type=mensaje' ) . "\n";
+
         $headers = array( 'Reply-To: ' . $nombre . ' <' . $email . '>' );
-        
+
         wp_mail( $to, $subject, $body, $headers );
 
-        wp_send_json_success( 'Lead guardado correctamente.' );
+        wp_send_json_success( array( 'message' => '¡Solicitud recibida correctamente! Te responderemos muy pronto.' ) );
     } else {
-        wp_send_json_error( 'Error al guardar el lead.' );
+        wp_send_json_error( array( 'message' => 'Error al guardar la solicitud. Por favor, inténtalo de nuevo.' ) );
     }
 }
 
@@ -1072,7 +1129,10 @@ function mt_ensure_service_pages_and_templates() {
 	set_transient( 'mt_service_pages_synced', true, DAY_IN_SECONDS );
 }
 
-add_action( 'admin_init', 'mt_ensure_seo_pages' );
+// DESACTIVADO: mt_ensure_seo_pages() generaba automáticamente 35 páginas /taxis-* y /traslados-*
+// que competían directamente con el CPT /rutas/* y /destinos/*.
+// Las URLs antiguas se gestionan mediante redirecciones 301 (ver me_transfers_custom_redirects).
+// add_action( 'admin_init', 'mt_ensure_seo_pages' );
 function mt_ensure_seo_pages() {
     $seo_pages = array(
         array(
@@ -1180,16 +1240,33 @@ function mt_ensure_seo_pages() {
 }
 
 /**
- * Ensure MeTransfers brand consistency in title
+ * SEO Title: Separado del H1 visible.
+ * - Para el CPT "ruta": "Transfer privado [Origen]–[Destino] | MeTransfers"
+ * - Para el resto: normaliza el nombre de la marca.
  */
 add_filter( 'document_title_parts', function( $title ) {
-	if ( isset( $title['site'] ) ) {
-		$title['site'] = str_replace( 'Me Transfers', 'MeTransfers', $title['site'] );
-	}
-	if ( isset( $title['title'] ) ) {
-		$title['title'] = str_replace( 'Me Transfers', 'MeTransfers', $title['title'] );
-	}
-	return $title;
+    // Normalizar marca
+    if ( isset( $title['site'] ) ) {
+        $title['site'] = str_replace( 'Me Transfers', 'MeTransfers', $title['site'] );
+    }
+    if ( isset( $title['title'] ) ) {
+        $title['title'] = str_replace( 'Me Transfers', 'MeTransfers', $title['title'] );
+    }
+
+    // Título SEO específico para rutas comerciales
+    if ( is_singular( 'ruta' ) ) {
+        $post_id = get_the_ID();
+        $origen  = get_post_meta( $post_id, '_mt_ruta_origen',  true );
+        $destino = get_post_meta( $post_id, '_mt_ruta_destino', true );
+
+        if ( $origen && $destino ) {
+            $title['title'] = sprintf( 'Transfer privado %s–%s', $origen, $destino );
+        }
+        // La marca siempre al final, nunca al principio
+        $title['site'] = 'MeTransfers';
+    }
+
+    return $title;
 }, 99 );
 
 add_filter( 'option_blogname', function( $name ) {
