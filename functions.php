@@ -914,6 +914,12 @@ function me_transfers_custom_redirects() {
 }
 
 // ==========================================
+// 1. Theme Support & Setup
+// ==========================================
+require_once get_template_directory() . '/mt-seo-importer.php';
+add_action( 'admin_init', 'mt_run_seo_importer_phase_1' );
+
+// ==========================================
 // 4. AJAX Handlers for Leads (Form & WhatsApp)
 // ==========================================
 add_action( 'wp_ajax_mt_save_lead', 'mt_ajax_save_lead' );
