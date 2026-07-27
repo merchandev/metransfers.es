@@ -9995,3 +9995,28 @@ body .page-banner__meta {
 @media (max-width: 480px) {
     .rutas-cards { grid-template-columns: 1fr; }
 }
+
+/* ===========================================
+   OVERRIDE: Ruta hero = mismo tamaño que home
+   =========================================== */
+.ruta-page .ruta-hero {
+    min-height: 100svh !important;
+}
+.ruta-hero__inner {
+    padding-top: 120px !important;
+    padding-bottom: 5rem !important;
+    min-height: 100svh;
+    align-content: center;
+}
+/* Archive hero mismo alto que home */
+.rutas-archive .rutas-hero {
+    min-height: 100svh !important;
+}
+.rutas-hero__inner {
+    padding-top: 120px !important;
+    padding-bottom: 5rem !important;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

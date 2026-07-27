@@ -34,9 +34,16 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
 
 <main id="primary" class="site-main ruta-page">
 
-    <!-- HERO COMPACTO -->
-    <section class="ruta-hero"<?php if ( $hero_bg ) echo ' style="background-image:url(' . esc_url( $hero_bg ) . ');"'; ?>>
-        <div class="ruta-hero__overlay"></div>
+    <!-- HERO — mismo tamaño y estructura que el home -->
+    <section class="ruta-hero"<?php if ( $hero_bg ) echo ' style="background-image:url(' . esc_url( $hero_bg ) . '); background-size:cover; background-position:center;"'; ?>>
+
+        <?php if ( ! $hero_bg ) : ?>
+        <iframe class="hero-video-bg" src="https://player.vimeo.com/video/1200289297?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1&quality=1080p" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <?php endif; ?>
+
+        <div class="hero-overlay-dark"></div>
+        <div class="hero-overlay-vignette"></div>
+
         <div class="container ruta-hero__inner">
             <div class="ruta-hero__left gs-reveal">
                 <div class="hero-badge">
