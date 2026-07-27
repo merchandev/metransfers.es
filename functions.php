@@ -1451,3 +1451,71 @@ function mt_full_restore_legal_pages_once() {
     
     set_transient( 'mt_full_restored_legal_pages_v1', true, DAY_IN_SECONDS * 365 );
 }
+
+/**
+ * Publicar rutas de la Fase 1 automáticamente.
+ * Las 13 rutas de Salou, Lloret y PortAventura estaban creadas como borradores, 
+ * arrojando errores 404 en front. Esta función las publica y rellena su meta.
+ */
+add_action( 'init', 'mt_publish_phase1_routes_once' );
+function mt_publish_phase1_routes_once() {
+    // Solo ejecutar una vez
+    if ( get_transient( 'mt_published_phase1_routes_v1' ) ) {
+        return;
+    }
+
+    $rutas = array(
+        'aeropuerto-barcelona-lloret-de-mar' => 'Aeropuerto de Barcelona–Lloret de Mar',
+        'aeropuerto-girona-lloret-de-mar'    => 'Aeropuerto de Girona–Lloret de Mar',
+        'barcelona-lloret-de-mar'            => 'Barcelona centro–Lloret de Mar',
+        'puerto-barcelona-lloret-de-mar'     => 'Puerto de Barcelona–Lloret de Mar',
+        'estacion-sants-lloret-de-mar'       => 'Estación de Sants–Lloret de Mar',
+        
+        'aeropuerto-barcelona-salou'         => 'Aeropuerto de Barcelona–Salou',
+        'aeropuerto-reus-salou'              => 'Aeropuerto de Reus–Salou',
+        'barcelona-salou'                    => 'Barcelona centro–Salou',
+        'puerto-barcelona-salou'             => 'Puerto de Barcelona–Salou',
+        'estacion-sants-salou'               => 'Estación de Sants–Salou',
+        
+        'aeropuerto-barcelona-portaventura'  => 'Aeropuerto de Barcelona–PortAventura',
+        'aeropuerto-reus-portaventura'       => 'Aeropuerto de Reus–PortAventura',
+        'salou-portaventura'                 => 'Salou–PortAventura',
+    );
+
+    foreach ( $rutas as $slug => $title ) {
+        $page = get_page_by_path( $slug, OBJECT, 'ruta' );
+        $parts = explode( '–', $title );
+        $origen = isset( $parts[0] ) ? trim( $parts[0] ) : '';
+        $destino = isset( $parts[1] ) ? trim( $parts[1] ) : '';
+
+        if ( $page ) {
+            // Actualizar si existe (para cambiar a publish y añadir meta)
+            wp_update_post( array(
+                'ID'          => $page->ID,
+                'post_status' => 'publish'
+            ) );
+            update_post_meta( $page->ID, '_mt_ruta_origen', $origen );
+            update_post_meta( $page->ID, '_mt_ruta_destino', $destino );
+            update_post_meta( $page->ID, '_mt_ruta_duracion', '60 min' );
+            update_post_meta( $page->ID, '_mt_ruta_pax', '1-8' );
+            update_post_meta( $page->ID, '_mt_ruta_maletas', '8' );
+        } else {
+            // Crear si no existe
+            wp_insert_post( array(
+                'post_title'   => $title,
+                'post_name'    => $slug,
+                'post_status'  => 'publish',
+                'post_type'    => 'ruta',
+                'meta_input'   => array(
+                    '_mt_ruta_origen'   => $origen,
+                    '_mt_ruta_destino'  => $destino,
+                    '_mt_ruta_duracion' => '60 min',
+                    '_mt_ruta_pax'      => '1-8',
+                    '_mt_ruta_maletas'  => '8',
+                )
+            ) );
+        }
+    }
+
+    set_transient( 'mt_published_phase1_routes_v1', true, YEAR_IN_SECONDS );
+}
