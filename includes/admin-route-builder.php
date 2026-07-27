@@ -8,6 +8,17 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// 0. Auto-ejecución transparente para garantizar que las rutas existan
+add_action( 'init', 'mt_auto_build_routes_once' );
+function mt_auto_build_routes_once() {
+    if ( ! get_transient( 'mt_auto_built_routes_v3_flat' ) ) {
+        if ( function_exists( 'mt_execute_route_builder' ) ) {
+            mt_execute_route_builder();
+            set_transient( 'mt_auto_built_routes_v3_flat', true, YEAR_IN_SECONDS );
+        }
+    }
+}
+
 // 1. Añadir submenú bajo el CPT 'ruta'
 add_action( 'admin_menu', 'mt_add_route_builder_menu' );
 function mt_add_route_builder_menu() {
@@ -149,6 +160,7 @@ function mt_execute_route_builder() {
             'post_name'    => $slug,
             'post_status'  => 'publish', // Forzar siempre publicación
             'post_type'    => 'ruta',
+            'post_content' => '',
         );
 
         $post_id = 0;
