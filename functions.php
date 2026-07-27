@@ -359,7 +359,7 @@ function me_transfers_create_checkhoteles_role() {
         $role->remove_cap( 'edit_published_posts' );
         $role->remove_cap( 'publish_posts' );
         
-        // AÃ±adir capacidades especÃ­ficas
+        // Añadir capacidades especÃ­ficas
         $role->add_cap( 'read_transfer_requests' );
         $role->add_cap( 'edit_transfer_requests' );
         $role->add_cap( 'read_tour_bookings' );
@@ -519,7 +519,7 @@ function me_transfers_migrate_content_to_editor() {
     if ( $hub && empty( trim( $hub->post_content ) ) ) {
         wp_update_post( array(
             'ID' => $hub->ID,
-            'post_content' => 'Explora los destinos mÃ¡s solicitados y accede a una ficha rÃ¡pida para pedir informaciÃ³n de traslados privados, recogidas en aeropuerto, hoteles, puertos y rutas personalizadas.'
+            'post_content' => 'Explora los destinos más solicitados y accede a una ficha rápida para pedir información de traslados privados, recogidas en aeropuerto, hoteles, puertos y rutas personalizadas.'
         ) );
     }
 
@@ -633,7 +633,7 @@ function me_transfers_migrate_legal_to_editor() {
 <h2>3. Datos Objeto de Tratamiento</h2>
 <p>Recopilamos los datos estrictamente necesarios para la prestaciÃ³n del servicio:</p>
 <ul>
-<li><strong>Datos de Reserva:</strong> Nombre, apellidos, telÃ©fono, correo electrÃ³nico y detalles del trayecto/servicio solicitado.</li>
+<li><strong>Datos de Reserva:</strong> Nombre, apellidos, teléfono, correo electrónico y detalles del trayecto/servicio solicitado.</li>
 <li><strong>Datos de FacturaciÃ³n:</strong> DirecciÃ³n postal y NIF/DNI (segÃºn los datos de registro fiscal de la entidad).</li>
 <li><strong>Datos de NavegaciÃ³n:</strong> DirecciÃ³n IP, cookies y metadatos para garantizar la seguridad del sitio.</li>
 </ul>
@@ -641,7 +641,7 @@ function me_transfers_migrate_legal_to_editor() {
 <p>Sus datos serÃ¡n tratados con el fin de:</p>
 <ul>
 <li><strong>GestiÃ³n de Reservas:</strong> Tramitar, confirmar y ejecutar los servicios de transporte o gestiÃ³n contratados.</li>
-<li><strong>AtenciÃ³n al Cliente:</strong> Resolver dudas y proporcionar soporte a travÃ©s del punto Ãºnico de contacto <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</li>
+<li><strong>AtenciÃ³n al Cliente:</strong> Resolver dudas y proporcionar soporte a través del punto Ãºnico de contacto <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</li>
 <li><strong>Cumplimiento Legal:</strong> Emitir facturas y cumplir con las obligaciones tributarias ante la AEAT.</li>
 <li><strong>Seguridad:</strong> Prevenir fraudes y usos no autorizados de la plataforma.</li>
 </ul>
@@ -649,7 +649,7 @@ function me_transfers_migrate_legal_to_editor() {
 <p>La base legal para el tratamiento es:</p>
 <ul>
 <li><strong>EjecuciÃ³n Contractual:</strong> Necesaria para procesar su reserva y prestarle el servicio solicitado.</li>
-<li><strong>ObligaciÃ³n Legal:</strong> Derivada de la normativa fiscal y mercantil vigente en EspaÃ±a.</li>
+<li><strong>ObligaciÃ³n Legal:</strong> Derivada de la normativa fiscal y mercantil vigente en España.</li>
 <li><strong>Consentimiento:</strong> Otorgado explÃ­citamente al marcar la casilla de aceptaciÃ³n en nuestros formularios.</li>
 </ul>
 <h2>6. ConservaciÃ³n y Destinatarios</h2>
@@ -662,7 +662,7 @@ function me_transfers_migrate_legal_to_editor() {
 <p><strong>RazÃ³n social:</strong> METRANSFERS GESTION SL</p>
 <p><strong>NIF:</strong> B22522353</p>
 <p><strong>Domicilio:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÃ (BARCELONA)</p>
-<p><strong>Correo electrÃ³nico:</strong> <a href="mailto:info@metransfers.es">info@metransfers.es</a></p>
+<p><strong>Correo electrónico:</strong> <a href="mailto:info@metransfers.es">info@metransfers.es</a></p>
 <h2>2. QuÃ© son las cookies</h2>
 <p>Las cookies son pequeÃ±os archivos que se descargan en su dispositivo al acceder a determinadas pÃ¡ginas web. Permiten, entre otras cosas, reconocer su navegador, mantener la sesiÃ³n, recordar preferencias, reforzar la seguridad o facilitar determinadas funcionalidades tÃ©cnicas del sitio.</p>
 <h2>3. Tipos de cookies</h2>
@@ -696,13 +696,13 @@ function me_transfers_migrate_legal_to_editor() {
 <h2>8. Cookies de terceros</h2>
 <p>La aceptaciÃ³n, configuraciÃ³n y uso de cookies de terceros se rige por las polÃ­ticas propias de dichos proveedores. METRANSFERS GESTION SL no puede controlar en todo momento las actualizaciones que esos terceros realicen en sus polÃ­ticas, por lo que se recomienda al usuario revisar directamente sus condiciones cuando interactÃºe con herramientas externas integradas o enlazadas desde la web.</p>
 <h2>9. InformaciÃ³n adicional y contacto</h2>
-<p>Para obtener mÃ¡s informaciÃ³n sobre el tratamiento de datos personales, puede consultar nuestra <a href="' . home_url( '/privacidad' ) . '">PolÃ­tica de Privacidad</a>. Si necesita aclaraciones sobre el uso de cookies en este sitio web, puede escribir a <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</p>
-<p>La presente PolÃ­tica de Cookies podrÃ¡ actualizarse cuando se produzcan cambios normativos, tÃ©cnicos o funcionales en el sitio web. Se recomienda revisarla periÃ³dicamente.</p>',
+<p>Para obtener más información sobre el tratamiento de datos personales, puede consultar nuestra <a href="' . home_url( '/privacidad' ) . '">Política de Privacidad</a>. Si necesita aclaraciones sobre el uso de cookies en este sitio web, puede escribir a <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</p>
+<p>La presente Política de Cookies podrÃ¡ actualizarse cuando se produzcan cambios normativos, tÃ©cnicos o funcionales en el sitio web. Se recomienda revisarla periÃ³dicamente.</p>',
         'terminos-y-condiciones' => '<h2>1. MARCO LEGAL APLICABLE</h2>
 <p>El presente contrato se rige por lo dispuesto en la legislaciÃ³n espaÃ±ola vigente, especÃ­ficamente:</p>
 <ul>
 <li>Ley 16/1987, de 30 de julio, de OrdenaciÃ³n de los Transportes Terrestres (LOTT) y su Reglamento (ROTT).</li>
-<li>Ley 34/2002 (LSSI-CE) sobre servicios de la sociedad de la informaciÃ³n.</li>
+<li>Ley 34/2002 (LSSI-CE) sobre servicios de la sociedad de la información.</li>
 <li>Real Decreto Legislativo 1/2007, por el que se aprueba el texto refundido de la Ley General para la Defensa de los Consumidores y Usuarios.</li>
 <li>Reglamento (UE) 2016/679 (RGPD) en materia de protecciÃ³n de datos.</li>
 </ul>
@@ -718,7 +718,7 @@ function me_transfers_migrate_legal_to_editor() {
 <h3>3.3. Transporte de Mascotas</h3>
 <p>El transporte de animales domÃ©sticos estÃ¡ sujeto a notificaciÃ³n previa y debe realizarse en trasportines homologados proporcionados por el cliente, salvo acuerdo en contrario. Los perros guÃ­a viajarÃ¡n sin coste adicional conforme a la normativa vigente.</p>
 <h2>4. PASARELA DE PAGO Y SEGURIDAD (REDSYS)</h2>
-<p>El pago de los servicios se efectuarÃ¡ mediante tarjeta de crÃ©dito o dÃ©bito a travÃ©s de la pasarela de pago segura Redsys.</p>
+<p>El pago de los servicios se efectuarÃ¡ mediante tarjeta de crÃ©dito o dÃ©bito a través de la pasarela de pago segura Redsys.</p>
 <ul>
 <li><strong>Seguridad:</strong> El sistema utiliza protocolos de encriptaciÃ³n SSL y autenticaciÃ³n 3D Secure (Verified by Visa / Mastercard ID Check).</li>
 <li><strong>ConfirmaciÃ³n:</strong> El contrato se perfecciona en el momento en que EL PRESTADOR recibe la confirmaciÃ³n de la autorizaciÃ³n de pago por parte de la entidad bancaria.</li>
@@ -735,17 +735,17 @@ function me_transfers_migrate_legal_to_editor() {
 <p>EL PRESTADOR no serÃ¡ responsable por incumplimientos derivados de:</p>
 <ul>
 <li>Fuerza mayor o causas fortuitas (cortes de carretera, condiciones climÃ¡ticas adversas, huelgas generales).</li>
-<li>Errores en los datos facilitados por el cliente en el formulario de reserva (ej. fecha errÃ³nea o nÃºmero de telÃ©fono incorrecto).</li>
+<li>Errores en los datos facilitados por el cliente en el formulario de reserva (ej. fecha errÃ³nea o nÃºmero de teléfono incorrecto).</li>
 <li>Incumplimiento de las normas de seguridad por parte de los pasajeros (uso de cinturÃ³n, comportamiento disruptivo).</li>
 </ul>
 <h2>7. JURISDICCIÃ“N Y LEY APLICABLE</h2>
 <p>Para la resoluciÃ³n de cualquier litigio derivado de la interpretaciÃ³n o ejecuciÃ³n de este contrato, las partes se someten a la legislaciÃ³n espaÃ±ola. En caso de controversia, se recurrirÃ¡ a los Juzgados y Tribunales de Barcelona, salvo que el cliente ostente la condiciÃ³n de consumidor, en cuyo caso se atenderÃ¡ a la competencia territorial establecida por ley.</p>',
         'aviso-legal' => '<h2>1. INFORMACIÃ“N IDENTIFICATIVA</h2>
-<p>En cumplimiento con el deber de informaciÃ³n recogido en el artÃ­culo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la InformaciÃ³n y del Comercio ElectrÃ³nico (LSSI-CE), a continuaciÃ³n se reflejan los siguientes datos:</p>
+<p>En cumplimiento con el deber de información recogido en el artÃ­culo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la InformaciÃ³n y del Comercio ElectrÃ³nico (LSSI-CE), a continuación se reflejan los siguientes datos:</p>
 <p><strong>Titular del sitio web:</strong> METRANSFERS GESTION SL</p>
 <p><strong>NIF:</strong> B22522353</p>
 <p><strong>Domicilio Social:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÃ &ndash; (BARCELONA)</p>
-<p><strong>Correo electrÃ³nico de contacto:</strong> <a href="mailto:info@metransfers.es">info@metransfers.es</a></p>
+<p><strong>Correo electrónico de contacto:</strong> <a href="mailto:info@metransfers.es">info@metransfers.es</a></p>
 <p><strong>Actividad:</strong> Transporte de viajeros y gestiÃ³n de servicios turÃ­sticos.</p>
 <h2>2. CONDICIONES DE USO</h2>
 <p>El acceso y/o uso de este portal atribuye la condiciÃ³n de USUARIO, que acepta, desde dicho acceso y/o uso, las Condiciones Generales de Uso aquÃ­ reflejadas.</p>
@@ -756,13 +756,13 @@ function me_transfers_migrate_legal_to_editor() {
 <h2>4. EXCLUSIÃ“N DE GARANTÃAS Y RESPONSABILIDAD</h2>
 <p>EL PRESTADOR no se hace responsable, en ningÃºn caso, de los daÃ±os y perjuicios de cualquier naturaleza que pudieran ocasionar, a tÃ­tulo enunciativo: errores u omisiones en los contenidos, falta de disponibilidad del portal o la transmisiÃ³n de virus o programas maliciosos o lesivos en los contenidos, a pesar de haber adoptado todas las medidas tecnolÃ³gicas necesarias para evitarlo.</p>
 <h2>5. MODIFICACIONES</h2>
-<p>METRANSFERS GESTION SL se reserva el derecho de efectuar sin previo aviso las modificaciones que considere oportunas en su portal, pudiendo cambiar, suprimir o aÃ±adir tanto los contenidos y servicios que se presten a travÃ©s de la misma como la forma en la que Ã©stos aparezcan presentados o localizados en su portal.</p>
+<p>METRANSFERS GESTION SL se reserva el derecho de efectuar sin previo aviso las modificaciones que considere oportunas en su portal, pudiendo cambiar, suprimir o aÃ±adir tanto los contenidos y servicios que se presten a través de la misma como la forma en la que éstos aparezcan presentados o localizados en su portal.</p>
 <h2>6. ENLACES (LINKS)</h2>
 <p>En el caso de que en el sitio web se dispusiesen enlaces o hipervÃ­nculos hacÃ­a otros sitios de Internet, METRANSFERS GESTION SL no ejercerÃ¡ ningÃºn tipo de control sobre dichos sitios y contenidos. En ningÃºn caso asumirÃ¡ responsabilidad alguna por los contenidos de algÃºn enlace perteneciente a un sitio web ajeno.</p>
 <h2>7. DERECHO DE EXCLUSIÃ“N</h2>
 <p>METRANSFERS GESTION SL se reserva el derecho a denegar o retirar el acceso al portal y/o los servicios ofrecidos sin necesidad de preaviso, a instancia propia o de un tercero, a aquellos usuarios que incumplan las presentes Condiciones Generales de Uso.</p>
 <h2>8. PROTECCIÃ“N DE DATOS</h2>
-<p>Todo lo relativo a la polÃ­tica de protecciÃ³n de datos se encuentra recogido en el documento de PolÃ­tica de Privacidad de la entidad, conforme al Reglamento (UE) 2016/679 (RGPD) y la Ley OrgÃ¡nica 3/2018 (LOPDGDD).</p>
+<p>Todo lo relativo a la polÃ­tica de protecciÃ³n de datos se encuentra recogido en el documento de Política de Privacidad de la entidad, conforme al Reglamento (UE) 2016/679 (RGPD) y la Ley OrgÃ¡nica 3/2018 (LOPDGDD).</p>
 <h2>9. LEGISLACIÃ“N APLICABLE Y JURISDICCIÃ“N</h2>
 <p>La relaciÃ³n entre METRANSFERS GESTION SL y el USUARIO se regirÃ¡ por la normativa espaÃ±ola vigente y cualquier controversia se someterÃ¡ a los Juzgados y Tribunales de la ciudad de Barcelona.</p>'
     );
@@ -813,7 +813,7 @@ add_filter( 'pre_get_document_title', function( $title ) {
 add_action( 'wp_head', function() {
     // Only output meta description if Yoast SEO is NOT active (avoids duplication).
     if ( ( is_front_page() || is_home() ) && ! defined( 'WPSEO_VERSION' ) && ! function_exists( 'the_seo_framework' ) ) {
-        echo '<meta name="description" content="Traslados Privados y Tours privados en Barcelona. Reserva tu servicio de chÃ³fer privado en MeTransfers para un viaje seguro, cÃ³modo y exclusivo.">' . "\n";
+        echo '<meta name="description" content="Traslados Privados y Tours privados en Barcelona. Reserva tu servicio de chófer privado en MeTransfers para un viaje seguro, cómodo y exclusivo.">' . "\n";
     }
 
     // Inyectar noindex si no es dominio de producciÃ³n (protecciÃ³n staging)
@@ -844,76 +844,64 @@ if ( defined( 'WPSEO_VERSION' ) ) {
 add_action( 'template_redirect', 'me_transfers_custom_redirects' );
 function me_transfers_custom_redirects() {
     if ( is_404() ) {
-        $requested_url = $_SERVER['REQUEST_URI'];
+        $path = wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), PHP_URL_PATH );
+        $path = trailingslashit( '/' . trim( $path, '/' ) );
         
         // Array de redirecciones 301 exactas. Formato: '/url-antigua/' => '/url-nueva/'
-        // Incluye redirecciones masivas de /taxis-* y /traslados-* hacia URLs canónicas SEO.
         $redirects_301 = array(
-            // Post viral antiguo
             '/transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v/' => '/tours/',
-
-            // ── Páginas estáticas /taxis-* ──────────────────────────────────
             '/taxis-privado-barcelona/'           => '/traslados-privados/',
             '/taxis-barcelona-port-aventura/'     => '/destinos/portaventura/',
             '/taxis-barcelona-salou/'             => '/rutas/barcelona-salou/',
             '/taxis-barcelona-costa-brava/'       => '/destinos/costa-brava/',
             '/taxis-barcelona-girona/'            => '/destinos/girona/',
-
-            // ── Landings dinámicas /taxis-barcelona-[destino] ───────────────
-            '/taxis-barcelona-andorra/'           => '/rutas/barcelona-lloret-de-mar/',
-            '/taxis-barcelona-taull/'             => '/destinos/lloret-de-mar/',
-            '/taxis-barcelona-vielha/'            => '/destinos/lloret-de-mar/',
             '/taxis-barcelona-tossa-de-mar/'      => '/destinos/tossa-de-mar/',
-            '/taxis-barcelona-cadaques/'          => '/destinos/lloret-de-mar/',
-            '/taxis-barcelona-besalu/'            => '/destinos/lloret-de-mar/',
-            '/taxis-barcelona-bagur/'             => '/destinos/lloret-de-mar/',
-            '/taxis-barcelona-delta-del-ebro/'    => '/destinos/salou/',
-            '/taxis-barcelona-peniscola/'         => '/destinos/salou/',
-            '/taxis-barcelona-morella/'           => '/destinos/salou/',
-            '/taxis-barcelona-altea/'             => '/destinos/salou/',
-            '/taxis-barcelona-valderrobres/'      => '/destinos/salou/',
-            '/taxis-barcelona-alquezar/'          => '/destinos/lloret-de-mar/',
-            '/taxis-barcelona-colliure/'          => '/destinos/lloret-de-mar/',
-            '/taxis-barcelona-carcasona/'         => '/destinos/lloret-de-mar/',
-
-            // ── Landings dinámicas /traslados-barcelona-[destino] ───────────
-            '/traslados-barcelona-andorra/'       => '/rutas/barcelona-lloret-de-mar/',
-            '/traslados-barcelona-taull/'         => '/destinos/lloret-de-mar/',
-            '/traslados-barcelona-vielha/'        => '/destinos/lloret-de-mar/',
             '/traslados-barcelona-tossa-de-mar/'  => '/destinos/tossa-de-mar/',
-            '/traslados-barcelona-cadaques/'      => '/destinos/lloret-de-mar/',
-            '/traslados-barcelona-besalu/'        => '/destinos/lloret-de-mar/',
-            '/traslados-barcelona-bagur/'         => '/destinos/lloret-de-mar/',
-            '/traslados-barcelona-delta-del-ebro/' => '/destinos/salou/',
-            '/traslados-barcelona-peniscola/'     => '/destinos/salou/',
-            '/traslados-barcelona-morella/'       => '/destinos/salou/',
-            '/traslados-barcelona-altea/'         => '/destinos/salou/',
-            '/traslados-barcelona-valderrobres/'  => '/destinos/salou/',
-            '/traslados-barcelona-alquezar/'      => '/destinos/lloret-de-mar/',
-            '/traslados-barcelona-colliure/'      => '/destinos/lloret-de-mar/',
-            '/traslados-barcelona-carcasona/'     => '/destinos/lloret-de-mar/',
         );
 
-        foreach ( $redirects_301 as $old => $new ) {
-            if ( strpos( $requested_url, $old ) !== false ) {
-                wp_redirect( home_url( $new ), 301 );
-                exit;
-            }
+        if ( isset( $redirects_301[ $path ] ) ) {
+            wp_safe_redirect( home_url( $redirects_301[ $path ] ), 301 );
+            exit;
         }
         
         // Array de URLS 410 (Gone) para eliminar definitivamente de Google
         $gone_urls = array(
-            // '/pagina-eliminada-permanentemente/'
+            '/taxis-barcelona-andorra/',
+            '/taxis-barcelona-taull/',
+            '/taxis-barcelona-vielha/',
+            '/taxis-barcelona-cadaques/',
+            '/taxis-barcelona-besalu/',
+            '/taxis-barcelona-bagur/',
+            '/taxis-barcelona-delta-del-ebro/',
+            '/taxis-barcelona-peniscola/',
+            '/taxis-barcelona-morella/',
+            '/taxis-barcelona-altea/',
+            '/taxis-barcelona-valderrobres/',
+            '/taxis-barcelona-alquezar/',
+            '/taxis-barcelona-colliure/',
+            '/taxis-barcelona-carcasona/',
+            '/traslados-barcelona-andorra/',
+            '/traslados-barcelona-taull/',
+            '/traslados-barcelona-vielha/',
+            '/traslados-barcelona-cadaques/',
+            '/traslados-barcelona-besalu/',
+            '/traslados-barcelona-bagur/',
+            '/traslados-barcelona-delta-del-ebro/',
+            '/traslados-barcelona-peniscola/',
+            '/traslados-barcelona-morella/',
+            '/traslados-barcelona-altea/',
+            '/traslados-barcelona-valderrobres/',
+            '/traslados-barcelona-alquezar/',
+            '/traslados-barcelona-colliure/',
+            '/traslados-barcelona-carcasona/',
         );
         
-        foreach ( $gone_urls as $gone ) {
-            if ( strpos( $requested_url, $gone ) !== false ) {
-                global $wp_query;
-                $wp_query->set_404();
-                status_header( 410 );
-                nocache_headers();
-                return;
-            }
+        if ( in_array( $path, $gone_urls, true ) ) {
+            global $wp_query;
+            $wp_query->set_404();
+            status_header( 410 );
+            nocache_headers();
+            return;
         }
 
         // SMART REDIRECT ELIMINADO: El sistema anterior hacía una WP_Query con búsqueda de texto
@@ -929,7 +917,8 @@ function me_transfers_custom_redirects() {
 // 1. Theme Support & Setup
 // ==========================================
 require_once get_template_directory() . '/mt-seo-importer.php';
-add_action( 'admin_init', 'mt_run_seo_importer_phase_1' );
+// DESACTIVADO POR AUDITORÍA SEO: La importación debe ser una acción manual
+// add_action( 'admin_init', 'mt_run_seo_importer_phase_1' );
 
 // ==========================================
 // 4. AJAX Handlers for Leads (Form & WhatsApp)
@@ -1255,7 +1244,7 @@ add_action( 'wp_head', function() {
 				'contactType' => 'customer service',
 				'availableLanguage' => array( 'es', 'en' ),
 			),
-			'areaServed' => array( 'Barcelona', 'CataluÃ±a', 'EspaÃ±a', 'Andorra' ),
+			'areaServed' => array( 'Barcelona', 'Cataluña', 'España', 'Andorra' ),
 		);
 
 		// Preload LCP image for front page
@@ -1281,7 +1270,7 @@ add_action( 'wp_head', function() {
 				'@type' => 'Service',
 				'@id' => get_permalink() . '#service',
 				'name' => get_the_title(),
-				'serviceType' => 'Traslado privado con chÃ³fer',
+				'serviceType' => 'Traslado privado con chófer',
 				'provider' => array( '@id' => home_url( '/#organization' ) ),
 				'areaServed' => array( '@type' => 'City', 'name' => 'Barcelona' ),
 				'url' => get_permalink(),

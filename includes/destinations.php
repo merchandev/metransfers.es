@@ -75,12 +75,12 @@ function me_transfers_get_destination_catalog() {
 			'order'       => $index + 1,
 			'summary'     => sprintf(
 				/* translators: %s: destination title. */
-				__( 'Solicita informaciÃ³n para tu traslado privado a %s con recogida en Barcelona, aeropuerto, hotel o puerto y un servicio premium adaptado a tu itinerario.', 'me-transfers' ),
+				__( 'Solicita información para tu traslado privado a %s con recogida en Barcelona, aeropuerto, hotel o puerto y un servicio premium adaptado a tu itinerario.', 'me-transfers' ),
 				$title
 			),
 			'travel_note' => sprintf(
 				/* translators: %s: destination title. */
-				__( 'Coordinamos traslados hacia %s para viajeros particulares, familias, empresas, hoteles y eventos, con chÃ³fer profesional y atenciÃ³n personalizada.', 'me-transfers' ),
+				__( 'Coordinamos traslados hacia %s para viajeros particulares, familias, empresas, hoteles y eventos, con chófer profesional y atención personalizada.', 'me-transfers' ),
 				$title
 			),
 			'highlights'  => array(
@@ -321,7 +321,8 @@ function me_transfers_maybe_sync_destination_pages() {
 
 	me_transfers_sync_destination_pages();
 }
-add_action( 'admin_init', 'me_transfers_maybe_sync_destination_pages' );
+// DESACTIVADO POR AUDITORÍA SEO: El contenido debe publicarse manualmente
+// add_action( 'admin_init', 'me_transfers_maybe_sync_destination_pages' );
 
 /**
  * Forces a destination sync when the theme is activated.
@@ -351,7 +352,7 @@ function me_transfers_get_destination_request_notice( $slug ) {
 	if ( 'success' === $status ) {
 		return array(
 			'type'    => 'success',
-			'message' => __( 'Hemos recibido tu solicitud. Te contactaremos lo antes posible con la informaciÃ³n del traslado.', 'me-transfers' ),
+			'message' => __( 'Hemos recibido tu solicitud. Te contactaremos lo antes posible con la información del traslado.', 'me-transfers' ),
 		);
 	}
 
@@ -443,7 +444,7 @@ function me_transfers_render_destination_request_form( $destination ) {
 						<span>
 							<?php esc_html_e( 'Acepto que mis datos se utilicen para responder a esta solicitud.', 'me-transfers' ); ?>
 							<?php if ( $privacy_url ) : ?>
-								<a href="<?php echo esc_url( $privacy_url ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'PolÃ­tica de privacidad', 'me-transfers' ); ?></a>
+								<a href="<?php echo esc_url( $privacy_url ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Política de privacidad', 'me-transfers' ); ?></a>
 							<?php endif; ?>
 						</span>
 					</label>
@@ -454,7 +455,7 @@ function me_transfers_render_destination_request_form( $destination ) {
 					<input id="mt-company" type="text" name="company" tabindex="-1" autocomplete="off">
 				</div>
 
-				<button type="submit" class="btn btn-primary destination-request-submit"><?php esc_html_e( 'Solicitar informaciÃ³n', 'me-transfers' ); ?></button>
+				<button type="submit" class="btn btn-primary destination-request-submit"><?php esc_html_e( 'Solicitar información', 'me-transfers' ); ?></button>
 			</form>
 		</div>
 	<?php

@@ -464,6 +464,12 @@
                 <div class="wa-fg">
                     <textarea name="mensaje" placeholder="Tu consulta..." required></textarea>
                 </div>
+                <div class="wa-fg" style="margin-bottom:15px; font-size:13px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                        <input type="checkbox" name="gdpr_aceptado" value="1" required style="width:auto; margin:0;">
+                        <span>He leído y acepto la política de privacidad.</span>
+                    </label>
+                </div>
                 <button type="submit" class="wa-submit">
                 	<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Iniciar Chat
                 </button>
@@ -528,27 +534,29 @@ document.addEventListener('DOMContentLoaded', function() {
 			formData.append('security', window.mtAjax ? mtAjax.nonce : '');
 			formData.append('origen', 'whatsapp');
 
-			// Check if mtAjax is available (we added it to main-js dependencies)
 			if(!window.mtAjax) {
-				console.warn('mtAjax no está definido. Asegúrate de cargar functions.php correctamente.');
+				console.error('Error crítico: mtAjax no definido. Abortando envío.');
+				alert('Ocurrió un error en la configuración. Por favor recargue la página.');
+				btn.innerHTML = originalHtml;
+				btn.disabled = false;
+				return;
 			}
 
-			const url = window.mtAjax ? mtAjax.ajaxurl : '/wp-admin/admin-ajax.php';
-
-			fetch(url, {
+			fetch(mtAjax.ajaxurl, {
 				method: 'POST',
 				body: formData
 			})
 			.then(response => response.json())
 			.then(data => {
-				// Guardado con éxito o error, redirigimos a WA igualmente para no bloquear al usuario
+				if (!data.success) {
+					throw new Error(data.data?.message || 'No se pudo guardar la solicitud.');
+				}
 				const msg = encodeURIComponent(formData.get('mensaje') + '\n\n*Nombre:* ' + formData.get('nombre') + '\n*Teléfono:* ' + formData.get('telefono'));
 				window.location.href = 'https://wa.me/34662024136?text=' + msg;
 			})
 			.catch(err => {
-				// Fallback, redirigir a WA si falla
-				const msg = encodeURIComponent(formData.get('mensaje') + '\n\n*Nombre:* ' + formData.get('nombre') + '\n*Teléfono:* ' + formData.get('telefono'));
-				window.location.href = 'https://wa.me/34662024136?text=' + msg;
+				console.error(err);
+				alert(err.message || 'Error de conexión. Inténtelo de nuevo.');
 			})
 			.finally(() => {
 				btn.innerHTML = originalHtml;

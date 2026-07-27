@@ -21,78 +21,78 @@ if ( ! defined( 'ME_TRANSFERS_FAQ_SYNC_VERSION' ) ) {
 function me_transfers_get_faq_items() {
 	return array(
 		array(
-			'question' => 'Â¿CÃ³mo puedo reservar un traslado privado?',
+			'question' => '¿CÃ³mo puedo reservar un traslado privado?',
 			'answer'   => array(
 				'Puedes reservar tu traslado directamente en nuestra web en menos de 2 minutos.',
-				'Solo elige el origen, destino y vehÃ­culo. RecibirÃ¡s confirmaciÃ³n inmediata y podrÃ¡s pagar de forma 100% segura.',
+				'Solo elige el origen, destino y vehÃ­culo. Recibirás confirmaciÃ³n inmediata y podrÃ¡s pagar de forma 100% segura.',
 			),
 		),
 		array(
-			'question' => 'Â¿QuÃ© tipos de vehÃ­culos ofrecen?',
+			'question' => '¿QuÃ© tipos de vehÃ­culos ofrecen?',
 			'answer'   => array(
-				'Contamos con una flota moderna y diversa: sedanes estÃ¡ndar, minivans familiares, sedanes ejecutivos y minivans V-Class de lujo.',
+				'Contamos con una flota moderna y diversa: sedanes estándar, minivans familiares, sedanes ejecutivos y minivans V-Class de lujo.',
 				'Todos nuestros vehÃ­culos disponen de aire acondicionado, limpieza impecable y conductores profesionales.',
 			),
 		),
 		array(
-			'question' => 'Â¿Puedo cancelar mi reserva?',
+			'question' => '¿Puedo cancelar mi reserva?',
 			'answer'   => array(
-				'SÃ­. Puedes cancelar tu traslado sin coste hasta 24 horas antes.',
-				'Es una opciÃ³n ideal si cambian tus planes de viaje.',
+				'Sí. Puedes cancelar tu traslado sin coste hasta 24 horas antes.',
+				'Es una opción ideal si cambian tus planes de viaje.',
 			),
 		),
 		array(
-			'question' => 'Â¿DÃ³nde me encuentro con el conductor en el aeropuerto?',
+			'question' => '¿DÃ³nde me encuentro con el conductor en el aeropuerto?',
 			'answer'   => array(
 				'Tu conductor te esperarÃ¡ en la sala de llegadas con un cartel con tu nombre.',
-				'Si lo prefieres, tambiÃ©n puedes indicar otro punto de encuentro personalizado.',
+				'Si lo prefieres, también puedes indicar otro punto de encuentro personalizado.',
 			),
 		),
 		array(
-			'question' => 'Â¿Ofrecen traslados a otras ciudades fuera de Barcelona?',
+			'question' => '¿Ofrecen traslados a otras ciudades fuera de Barcelona?',
 			'answer'   => array(
-				'SÃ­. Realizamos transfers privados desde Barcelona a ciudades como Madrid, Valencia, Andorra, Sitges y Costa Brava, entre otras.',
+				'Sí. Realizamos transfers privados desde Barcelona a ciudades como Madrid, Valencia, Andorra, Sitges y Costa Brava, entre otras.',
 			),
 		),
 		array(
-			'question' => 'Â¿QuÃ© pasa si mi vuelo se retrasa?',
+			'question' => '¿QuÃ© pasa si mi vuelo se retrasa?',
 			'answer'   => array(
 				'No te preocupes. Monitorizamos los vuelos en tiempo real.',
-				'Si tu vuelo se retrasa, ajustamos la recogida automÃ¡ticamente sin recargos.',
+				'Si tu vuelo se retrasa, ajustamos la recogida automáticamente sin recargos.',
 			),
 		),
 		array(
-			'question' => 'Â¿Puedo solicitar una silla para niÃ±os?',
+			'question' => '¿Puedo solicitar una silla para niños?',
 			'answer'   => array(
-				'SÃ­. Ofrecemos sillas de bebÃ© y elevadores para niÃ±os sin coste adicional.',
+				'Sí. Ofrecemos sillas de bebé y elevadores para niños sin coste adicional.',
 				'Solo tienes que indicarlo durante la reserva.',
 			),
 		),
 		array(
-			'question' => 'Â¿CÃ³mo puedo contactar con atenciÃ³n al cliente?',
+			'question' => '¿CÃ³mo puedo contactar con atención al cliente?',
 			'answer'   => array(
-				'Estamos disponibles 24/7 por telÃ©fono, email y WhatsApp.',
-				'RecibirÃ¡s una atenciÃ³n rÃ¡pida y personalizada.',
+				'Estamos disponibles 24/7 por teléfono, email y WhatsApp.',
+				'Recibirás una atención rápida y personalizada.',
 			),
 		),
 		array(
-			'question' => 'Â¿QuÃ© mÃ©todos de pago aceptan?',
+			'question' => '¿QuÃ© mÃ©todos de pago aceptan?',
 			'answer'   => array(
-				'Puedes pagar de forma segura con tarjetas de crÃ©dito o dÃ©bito, Apple Pay, Google Pay y transferencias electrÃ³nicas seguras.',
+				'Puedes pagar de forma segura con tarjetas de crédito o débito, Apple Pay, Google Pay y transferencias electrÃ³nicas seguras.',
 			),
 		),
 		array(
-			'question' => 'Â¿Ofrecen servicio de chÃ³fer por horas?',
+			'question' => '¿Ofrecen servicio de chófer por horas?',
 			'answer'   => array(
-				'SÃ­. Ofrecemos alquiler de coche con conductor por horas para eventos, reuniones o visitas privadas.',
-				'TÃº decides el horario y el itinerario.',
+				'Sí. Ofrecemos alquiler de coche con conductor por horas para eventos, reuniones o visitas privadas.',
+				'Tú decides el horario y el itinerario.',
 			),
 		),
 		array(
-			'question' => 'Â¿CÃ³mo gestionan mis datos personales?',
+			'question' => '¿CÃ³mo gestionan mis datos personales?',
 			'answer'   => array(
 				'En Metransfers Barcelona nos tomamos muy en serio la privacidad de tus datos.',
-				'Puedes consultar nuestra polÃ­tica de privacidad completa desde el enlace correspondiente del sitio.',
+				'Puedes consultar nuestra política de privacidad completa desde el enlace correspondiente del sitio.',
 			),
 		),
 	);

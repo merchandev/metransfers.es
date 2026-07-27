@@ -18,8 +18,8 @@ function me_transfers_register_request_cpt() {
 		'singular_name'         => 'Solicitud',
 		'menu_name'             => 'Solicitudes',
 		'all_items'             => 'Todas las Solicitudes',
-		'add_new'               => 'AÃ±adir nueva',
-		'add_new_item'          => 'AÃ±adir nueva Solicitud',
+		'add_new'               => 'Añadir nueva',
+		'add_new_item'          => 'Añadir nueva Solicitud',
 		'edit_item'             => 'Editar Solicitud',
 		'new_item'              => 'Nueva Solicitud',
 		'view_item'             => 'Ver Solicitud',
@@ -98,7 +98,7 @@ function me_transfers_ajax_destination_request() {
 
 	wp_mail( $admin_email, $subject, $message, $headers );
 
-	wp_send_json_success( array( 'message' => 'Â¡Solicitud enviada correctamente! Nos pondremos en contacto contigo pronto.' ) );
+	wp_send_json_success( array( 'message' => '¡Solicitud enviada correctamente! Nos pondremos en contacto contigo pronto.' ) );
 }
 add_action( 'wp_ajax_me_transfers_ajax_destination_request', 'me_transfers_ajax_destination_request' );
 add_action( 'wp_ajax_nopriv_me_transfers_ajax_destination_request', 'me_transfers_ajax_destination_request' );

@@ -18,8 +18,8 @@ function me_transfers_register_tour_booking_cpt() {
 		'singular_name'      => 'Reserva Tour',
 		'menu_name'          => 'Reservas Tours',
 		'all_items'          => 'Todas las Reservas',
-		'add_new'            => 'AÃ±adir nueva',
-		'add_new_item'       => 'AÃ±adir nueva Reserva',
+		'add_new'            => 'Añadir nueva',
+		'add_new_item'       => 'Añadir nueva Reserva',
 		'edit_item'          => 'Ver Reserva',
 		'new_item'           => 'Nueva Reserva',
 		'view_item'          => 'Ver Reserva',
@@ -75,7 +75,7 @@ function me_transfers_ajax_tour_booking() {
 	}
 
 	if ( ! is_email( $email ) ) {
-		wp_send_json_error( array( 'message' => 'El correo electrÃ³nico no es vÃ¡lido.' ) );
+		wp_send_json_error( array( 'message' => 'El correo electrónico no es válido.' ) );
 	}
 
 	if ( strlen( $name ) > 100 || strlen( $phone ) > 50 || strlen( $tour_name ) > 150 ) {
@@ -137,12 +137,12 @@ function me_transfers_ajax_tour_booking() {
 		$wa_text .= "ðŸ“… Fecha deseada: $tour_date\n";
 	}
 	$wa_text  .= "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n";
-	$wa_text  .= "Quiero reservar este tour. Â¿Tienen disponibilidad?";
+	$wa_text  .= "Quiero reservar este tour. ¿Tienen disponibilidad?";
 
 	$wa_url = 'https://wa.me/' . $wa_number . '?text=' . rawurlencode( $wa_text );
 
 	wp_send_json_success( array(
-		'message'      => 'Â¡Reserva enviada correctamente! Te redirigimos a WhatsApp...',
+		'message'      => '¡Reserva enviada correctamente! Te redirigimos a WhatsApp...',
 		'whatsapp_url' => $wa_url,
 	) );
 }
