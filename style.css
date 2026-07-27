@@ -9501,3 +9501,256 @@ body .page-banner__meta {
 .svc-form-divider { border:none; border-top:1.5px solid #e2e8f0; margin:1.5rem 0; }
 .svc-form-section-title { font-size:13px; font-weight:700; color:#1e40af; text-transform:uppercase; letter-spacing:.08em; margin-bottom:1rem; display:flex; align-items:center; gap:8px; }
 @keyframes spin { 100%{transform:rotate(360deg)} }
+
+/* ===========================================
+   RUTA PAGE — Diseno Premium v2
+   =========================================== */
+
+/* ---- Hero compacto ---- */
+.ruta-page .ruta-hero {
+    position: relative;
+    min-height: 88vh;
+    background: #0D1B2A no-repeat center center / cover;
+    display: flex;
+    align-items: center;
+}
+.ruta-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, rgba(10,20,40,.88) 45%, rgba(10,20,40,.55) 100%);
+    z-index: 1;
+}
+.ruta-hero__inner {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 3rem;
+    align-items: center;
+    padding-top: 7rem;
+    padding-bottom: 5rem;
+}
+.ruta-hero__title {
+    font-size: clamp(1.75rem, 3.5vw, 3rem) !important;
+    font-weight: 800 !important;
+    color: #fff !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.03em !important;
+    margin: 0.75rem 0 1rem !important;
+    max-width: 640px;
+}
+.ruta-hero__subtitle {
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
+    color: rgba(255,255,255,.8);
+    line-height: 1.65;
+    max-width: 520px;
+    margin-bottom: 1.5rem;
+}
+.ruta-hero__route {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+}
+.ruta-hero__route-point {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    letter-spacing: 0.01em;
+}
+.ruta-hero__route-point--origin {
+    background: rgba(255,255,255,.15);
+    color: #fff;
+    backdrop-filter: blur(4px);
+}
+.ruta-hero__route-point--dest {
+    background: var(--color-primary, #004E9A);
+    color: #fff;
+}
+.ruta-hero__route-arrow { color: rgba(255,255,255,.5); flex-shrink:0; }
+.ruta-hero__actions {
+    display: flex;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+}
+.btn-outline-white {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.7rem 1.4rem;
+    border: 1.5px solid rgba(255,255,255,.45);
+    border-radius: 100px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .2s, border-color .2s;
+}
+.btn-outline-white:hover {
+    background: rgba(255,255,255,.1);
+    border-color: rgba(255,255,255,.7);
+    color: #fff;
+}
+.ruta-statsbar {
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 4px 24px rgba(0,0,0,.06);
+}
+.ruta-statsbar__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 0;
+}
+.ruta-statsbar__item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    flex: 1;
+    min-width: 140px;
+    border-right: 1px solid #f1f5f9;
+}
+.ruta-statsbar__item:last-child { border-right: none; }
+.ruta-statsbar__icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #f0f6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #004E9A;
+}
+.ruta-statsbar__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+.ruta-statsbar__value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0D1B2A;
+}
+.ruta-incluye { background: #f8fafc; }
+.ruta-section-header {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 3rem;
+}
+.ruta-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+.ruta-feature {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.75rem 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    transition: box-shadow .2s, transform .2s;
+}
+.ruta-feature:hover {
+    box-shadow: 0 8px 32px rgba(0,78,154,.08);
+    transform: translateY(-3px);
+}
+.ruta-feature__icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #e8f2ff, #c7deff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #004E9A;
+    flex-shrink: 0;
+}
+.ruta-feature__body h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0D1B2A;
+    margin: 0 0 0.4rem;
+}
+.ruta-feature__body p {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0;
+}
+.ruta-content__inner {
+    max-width: 820px;
+    margin: 0 auto;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #334155;
+}
+.ruta-cta-strip {
+    background: linear-gradient(135deg, #004E9A 0%, #0072d6 100%);
+    padding: 4rem 0;
+}
+.ruta-cta-strip__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+.ruta-cta-strip__text h2 {
+    color: #fff;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 800;
+    margin: 0 0 0.4rem;
+}
+.ruta-cta-strip__text p {
+    color: rgba(255,255,255,.8);
+    margin: 0;
+    font-size: 1rem;
+}
+.ruta-cta-strip__actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.btn-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.6rem;
+    background: #25D366;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: background .2s, transform .2s;
+}
+.btn-whatsapp:hover {
+    background: #1ab254;
+    transform: translateY(-2px);
+    color: #fff;
+}
+@media (max-width: 1024px) {
+    .ruta-hero__inner { grid-template-columns: 1fr; }
+    .ruta-hero__right { display: none; }
+    .ruta-features { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+    .ruta-hero { min-height: 70vh; }
+    .ruta-hero__title { font-size: clamp(1.5rem, 6vw, 2rem) !important; }
+    .ruta-features { grid-template-columns: 1fr; }
+    .ruta-statsbar__item { flex: 0 0 50%; }
+    .ruta-cta-strip__inner { flex-direction: column; text-align: center; }
+}
