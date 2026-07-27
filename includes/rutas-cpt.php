@@ -31,26 +31,22 @@ function mt_register_ruta_cpt() {
         'not_found_in_trash'    => __( 'No encontrada en la papelera', 'me-transfers' ),
     );
     $args = array(
-        'label'                 => __( 'Ruta', 'me-transfers' ),
-        'description'           => __( 'Landing pages para rutas comerciales', 'me-transfers' ),
-        'labels'                => $labels,
-        'supports'              => array( 'title', 'editor', 'thumbnail', 'page-attributes', 'custom-fields' ),
-        'taxonomies'            => array( 'category' ),
-        'hierarchical'          => true, // Para permitir rutas hijas si es necesario
-        'public'                => true,
-        'show_ui'               => true,
-        'show_in_menu'          => true,
-        'menu_position'         => 20,
-        'menu_icon'             => 'dashicons-location-alt',
-        'show_in_admin_bar'     => true,
-        'show_in_nav_menus'     => true,
-        'can_export'            => true,
-        'has_archive'           => false,
-        'exclude_from_search'   => false,
-        'publicly_queryable'    => true,
-        'capability_type'       => 'page',
-        'show_in_rest'          => true, // Habilitar Gutenberg
-        'rewrite'               => array(
+        'label'              => __( 'Ruta', 'me-transfers' ),
+        'description'        => __( 'Landing pages para rutas comerciales', 'me-transfers' ),
+        'labels'             => $labels,
+        'supports'           => array(
+            'title',
+            'editor',
+            'thumbnail',
+            'page-attributes',
+            'custom-fields',
+        ),
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_rest'       => true,
+        'has_archive'        => false,
+        'rewrite'            => array(
             'slug'       => 'ruta',
             'with_front' => false,
         ),
