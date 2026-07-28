@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Header - Me Transfers Premium
  * @package Me_Transfers
@@ -90,7 +90,7 @@ body .hero-booking-card {
 </script>
 <?php
 // ── Google Analytics ──────────────────────────────────────────────────────
-// Se carga SOLO si el usuario ha aceptado la categorÍa analÍtica.
+// Se carga SOLO si el usuario ha aceptado la categoría analÍtica.
 // La cookie mt_analytics_consent='granted' se establece desde el banner de cookies.
 // Sin consentimiento: se inicializa en modo denegado (recomendado por Google).
 $ga_id = 'G-7ZFL53LYFN';
@@ -262,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCustomLang();
 });
 </script>
+
 
 
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * FAQ page helpers.
  *
@@ -24,20 +24,20 @@ function me_transfers_get_faq_items() {
 			'question' => '¿Cómo puedo reservar un traslado privado?',
 			'answer'   => array(
 				'Puedes reservar tu traslado directamente en nuestra web en menos de 2 minutos.',
-				'Solo elige el origen, destino y vehÍculo. Recibirás confirmación inmediata y podrás pagar de forma 100% segura.',
+				'Solo elige el origen, destino y vehículo. Recibirás confirmación inmediata y podrás pagar de forma 100% segura.',
 			),
 		),
 		array(
-			'question' => '¿Qué tipos de vehÍculos ofrecen?',
+			'question' => '¿Qué tipos de vehículos ofrecen?',
 			'answer'   => array(
 				'Contamos con una flota moderna y diversa: sedanes estándar, minivans familiares, sedanes ejecutivos y minivans V-Class de lujo.',
-				'Todos nuestros vehÍculos disponen de aire acondicionado, limpieza impecable y conductores profesionales.',
+				'Todos nuestros vehículos disponen de aire acondicionado, limpieza impecable y conductores profesionales.',
 			),
 		),
 		array(
 			'question' => '¿Puedo cancelar mi reserva?',
 			'answer'   => array(
-				'SÍ. Puedes cancelar tu traslado sin coste hasta 24 horas antes.',
+				'Sí. Puedes cancelar tu traslado sin coste hasta 24 horas antes.',
 				'Es una opción ideal si cambian tus planes de viaje.',
 			),
 		),
@@ -51,7 +51,7 @@ function me_transfers_get_faq_items() {
 		array(
 			'question' => '¿Ofrecen traslados a otras ciudades fuera de Barcelona?',
 			'answer'   => array(
-				'SÍ. Realizamos transfers privados desde Barcelona a ciudades como Madrid, Valencia, Andorra, Sitges y Costa Brava, entre otras.',
+				'Sí. Realizamos transfers privados desde Barcelona a ciudades como Madrid, Valencia, Andorra, Sitges y Costa Brava, entre otras.',
 			),
 		),
 		array(
@@ -64,7 +64,7 @@ function me_transfers_get_faq_items() {
 		array(
 			'question' => '¿Puedo solicitar una silla para niños?',
 			'answer'   => array(
-				'SÍ. Ofrecemos sillas de bebé y elevadores para niños sin coste adicional.',
+				'Sí. Ofrecemos sillas de bebé y elevadores para niños sin coste adicional.',
 				'Solo tienes que indicarlo durante la reserva.',
 			),
 		),
@@ -84,7 +84,7 @@ function me_transfers_get_faq_items() {
 		array(
 			'question' => '¿Ofrecen servicio de chófer por horas?',
 			'answer'   => array(
-				'SÍ. Ofrecemos alquiler de coche con conductor por horas para eventos, reuniones o visitas privadas.',
+				'Sí. Ofrecemos alquiler de coche con conductor por horas para eventos, reuniones o visitas privadas.',
 				'Tú decides el horario y el itinerario.',
 			),
 		),
@@ -190,3 +190,4 @@ function me_transfers_force_faq_page_sync() {
 	me_transfers_sync_faq_page();
 }
 add_action( 'after_switch_theme', 'me_transfers_force_faq_page_sync' );
+

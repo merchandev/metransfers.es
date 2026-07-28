@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Template for displaying single blog posts.
  *
@@ -186,7 +186,7 @@ while ( have_posts() ) :
 							
 							<div class="widget cta-widget">
 								<h3 class="widget-title">Reserva tu traslado</h3>
-								<p>VehÍculos premium, conductores profesionales y cancelación gratuita.</p>
+								<p>Vehículos premium, conductores profesionales y cancelación gratuita.</p>
 								<a href="<?php echo esc_url( me_transfers_get_section_url( 'search' ) ); ?>" class="btn btn-solid" style="width:100%; justify-content:center; margin-bottom:12px;">Presupuesto online</a>
 								<a href="https://wa.me/34662024136?text=Hola,%20me%20gustar%C3%ADa%20informaci%C3%B3n%20sobre%20un%20traslado%20privado." target="_blank" rel="noopener" class="btn btn-ghost-inv" style="width:100%; justify-content:center; border:2px solid #25D366; color:#25D366;">
 									Consultar por WhatsApp
@@ -280,3 +280,4 @@ while ( have_posts() ) :
 <?php endwhile; ?>
 
 <?php get_footer(); ?>
+

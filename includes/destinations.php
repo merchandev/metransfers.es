@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Destination hub and destination-request helpers.
  *
@@ -38,7 +38,7 @@ function me_transfers_get_destination_catalog() {
 		'travel_note' => 'Salou es el epicentro de la Costa Dorada, conocido por sus playas, su animada vida turÍstica y su cercanÍa a PortAventura World. Coordinamos tu llegada directa a tu hotel, apartamento o resort con la máxima puntualidad.',
 		'highlights' => array(
 			'Recogida puntual en el Aeropuerto de Reus, Aeropuerto de Barcelona o estación del AVE.',
-			'VehÍculos adecuados para familias con niños, grupos grandes o equipaje especial.',
+			'Vehículos adecuados para familias con niños, grupos grandes o equipaje especial.',
 			'Ruta directa por autopista (AP-7) para que llegues a Salou de forma rápida y segura.',
 		),
 	);
@@ -94,7 +94,7 @@ function me_transfers_get_destination_catalog() {
 					__( 'Opciones de ida, ida y vuelta o disposición por horas para viajes hacia %s.', 'me-transfers' ),
 					$title
 				),
-				__( 'VehÍculos premium, seguimiento operativo y asistencia para hoteles, aeropuertos, cruceros y reuniones corporativas.', 'me-transfers' ),
+				__( 'Vehículos premium, seguimiento operativo y asistencia para hoteles, aeropuertos, cruceros y reuniones corporativas.', 'me-transfers' ),
 			),
 		);
 	}
@@ -439,7 +439,7 @@ function me_transfers_render_destination_request_form( $destination ) {
 
 				<div class="destination-request-field destination-request-field--full">
 					<label for="mt-message"><?php esc_html_e( 'Detalles del traslado', 'me-transfers' ); ?></label>
-					<textarea id="mt-message" name="message" rows="6" placeholder="<?php esc_attr_e( 'IndÍcanos horarios, puntos de recogida, equipaje, niños, necesidades especiales o cualquier dato relevante.', 'me-transfers' ); ?>" required></textarea>
+					<textarea id="mt-message" name="message" rows="6" placeholder="<?php esc_attr_e( 'Indícanos horarios, puntos de recogida, equipaje, niños, necesidades especiales o cualquier dato relevante.', 'me-transfers' ); ?>" required></textarea>
 				</div>
 
 				<div class="destination-request-consent">
@@ -565,3 +565,4 @@ function me_transfers_handle_destination_request() {
 }
 add_action( 'admin_post_nopriv_me_transfers_destination_request', 'me_transfers_handle_destination_request' );
 add_action( 'admin_post_me_transfers_destination_request', 'me_transfers_handle_destination_request' );
+

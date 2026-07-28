@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * The template for displaying the footer
  *
@@ -337,7 +337,7 @@
 						<?php bloginfo( 'name' ); ?>
 					</a>
 				<?php endif; ?>
-				<p class="footer-brand-desc">Traslados privados, tours y servicios con chófer en Barcelona y larga distancia. VehÍculos Mercedes y atención personalizada 24/7.</p>
+				<p class="footer-brand-desc">Traslados privados, tours y servicios con chófer en Barcelona y larga distancia. Vehículos Mercedes y atención personalizada 24/7.</p>
 			</div>
 
 			<!-- Servicios -->
@@ -570,3 +570,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
+

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Template Name: SEO - Aterrizaje Dinámico (Taxis / Traslados)
  * 
@@ -43,7 +43,7 @@ if ( empty($destino) ) {
 }
 
 $title_hero = sprintf('%s desde Barcelona a %s', $keyword, $destino);
-$lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Reserva tu %s desde el Aeropuerto de Barcelona o el centro de la ciudad hasta %s. Viaja en vehÍculos premium con un chófer profesional a tu disposición.', strtolower($tipo_servicio), $destino);
+$lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Reserva tu %s desde el Aeropuerto de Barcelona o el centro de la ciudad hasta %s. Viaja en vehículos premium con un chófer profesional a tu disposición.', strtolower($tipo_servicio), $destino);
 
 ?>
 
@@ -154,7 +154,7 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
                 </p>
                 <div class="hero__checks">
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Precio fijo sin cargos ocultos</span>
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> VehÍculos modernos y limpios</span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos modernos y limpios</span>
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Seguimiento de vuelos en tiempo real</span>
                 </div>
             </div>
@@ -210,7 +210,7 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
           <div>
             <p class="tag">Reserva tu próximo traslado</p>
             <h2>Tu viaje comienza con una recogida bien organizada</h2>
-            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehÍculo que mejor se adapta a tu trayecto.</p>
+            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
           </div>
           <div class="cta__btns">
             <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
@@ -222,3 +222,4 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
 </main>
 
 <?php get_footer(); ?>
+

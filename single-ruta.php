@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Template Name: Ruta Comercial
  * Template Post Type: post, page, ruta
@@ -55,7 +55,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                 </div>
                 <h1 class="ruta-hero__title"><?php echo wp_kses_post( $h1_text ); ?></h1>
                 <p class="ruta-hero__subtitle">
-                    VehÍculo Mercedes-Benz, conductor profesional y precio cerrado. Sin taxÍmetros ni sorpresas.
+                    Vehículo Mercedes-Benz, conductor profesional y precio cerrado. Sin taxÍmetros ni sorpresas.
                 </p>
 
                 <!-- BREADCRUMB ORIGEN → DESTINO -->
@@ -141,7 +141,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
                     </div>
                     <div>
-                        <div class="ruta-statsbar__label">VehÍculo</div>
+                        <div class="ruta-statsbar__label">Vehículo</div>
                         <div class="ruta-statsbar__value">Mercedes-Benz</div>
                     </div>
                 </div>
@@ -152,7 +152,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                     </div>
                     <div>
                         <div class="ruta-statsbar__label">Disponibilidad</div>
-                        <div class="ruta-statsbar__value">24h · 7 dÍas</div>
+                        <div class="ruta-statsbar__value">24h · 7 días</div>
                     </div>
                 </div>
             </div>
@@ -209,7 +209,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                     </div>
                     <div class="ruta-feature__body">
                         <h3>Equipaje Incluido</h3>
-                        <p>Maletero amplio para toda tu equipaje sin cargos extra. Informamos de lÍmites si los hay.</p>
+                        <p>Maletero amplio para toda tu equipaje sin cargos extra. Informamos de límites si los hay.</p>
                     </div>
                 </div>
                 <div class="ruta-feature">
@@ -277,3 +277,4 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
 </main>
 
 <?php get_footer(); ?>
+

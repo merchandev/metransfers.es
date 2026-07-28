@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Template Name: Contacto
  * 
@@ -67,7 +67,7 @@ get_header(); ?>
                             </div>
                             <div>
                                 <div class="contact__label"><?php echo mt_translate( 'Horario de atención', 'Business Hours' ); ?></div>
-                                <span class="contact__val" style="font-weight:600;font-size:18px;color:var(--muted);"><?php echo mt_translate( '24 horas, 7 dÍas a la semana', '24 hours, 7 days a week' ); ?></span>
+                                <span class="contact__val" style="font-weight:600;font-size:18px;color:var(--muted);"><?php echo mt_translate( '24 horas, 7 días a la semana', '24 hours, 7 days a week' ); ?></span>
                             </div>
                         </li>
                     </ul>
@@ -176,3 +176,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <?php get_footer(); ?>
+

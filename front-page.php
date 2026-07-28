@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * The template for the front page
  *
@@ -601,7 +601,7 @@ a.contact__val:hover{color:var(--blue);}
 <section class="sp bg-white" id="servicios">
   <div class="wrap">
     <p class="tag tc" style="justify-content:center;">Servicios de transporte privado desde Barcelona</p>
-    <h2 class="tc">Un vehÍculo con chófer para cada trayecto desde Barcelona</h2>
+    <h2 class="tc">Un vehículo con chófer para cada trayecto desde Barcelona</h2>
     <p class="lead tc" style="margin:20px auto 0;">Desde una recogida en el aeropuerto hasta una jornada corporativa o un tour privado, organizamos cada salida desde Barcelona según tu ruta, horario y número de pasajeros.</p>
 
     <div class="srv__grid">
@@ -626,7 +626,7 @@ a.contact__val:hover{color:var(--blue);}
         <span class="srv__num">03</span>
         <div class="srv__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
         <h3>Chófer privado por horas</h3>
-        <p>Dispón de un vehÍculo con conductor durante el tiempo contratado. Ideal para reuniones, compras, cenas o agendas con varias paradas.</p>
+        <p>Dispón de un vehículo con conductor durante el tiempo contratado. Ideal para reuniones, compras, cenas o agendas con varias paradas.</p>
         <a href="/chofer-por-horas/" class="btn-link">Ver servicio por horas <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
@@ -634,7 +634,7 @@ a.contact__val:hover{color:var(--blue);}
         <span class="srv__num">04</span>
         <div class="srv__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
         <h3>Empresas y Grupos</h3>
-        <p>Coordinamos la movilidad de directivos, invitados y familias numerosas. VehÍculos MINI VAN «V» Class disponibles para hasta 7 pasajeros con equipaje.</p>
+        <p>Coordinamos la movilidad de directivos, invitados y familias numerosas. Vehículos MINI VAN «V» Class disponibles para hasta 7 pasajeros con equipaje.</p>
         <a href="/grupos/" class="btn-link">Consultar para empresas y grupos <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
@@ -650,7 +650,7 @@ a.contact__val:hover{color:var(--blue);}
       <div>
         <p class="tag">Reserva fácil</p>
         <h2>Reserva en pocos minutos y viaja sin complicaciones</h2>
-        <p class="lead" style="margin-top:20px;">El proceso está diseñado para que conozcas la ruta, el vehÍculo, las opciones y las condiciones antes de confirmar tu reserva.</p>
+        <p class="lead" style="margin-top:20px;">El proceso está diseñado para que conozcas la ruta, el vehículo, las opciones y las condiciones antes de confirmar tu reserva.</p>
         <a href="#panel" class="btn btn-solid" style="margin-top:32px;">Iniciar reserva</a>
       </div>
       <div class="how__steps">
@@ -664,7 +664,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="how__step">
           <div class="how__n">2</div>
           <div class="how__text">
-            <h3>Elige tu vehÍculo</h3>
+            <h3>Elige tu vehículo</h3>
             <p>Selecciona la opción que mejor encaje con los pasajeros, el equipaje y el nivel de confort.</p>
           </div>
         </div>
@@ -703,7 +703,7 @@ a.contact__val:hover{color:var(--blue);}
           <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Presupuesto a medida y condiciones visibles antes de confirmar</li>
           <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Seguimiento del vuelo y recogida en la terminal</li>
           <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Chóferes profesionales, discretos y bilingües</li>
-          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> VehÍculos Mercedes seleccionados para cada servicio</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos Mercedes seleccionados para cada servicio</li>
           <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Cancelación gratuita hasta 24 horas antes</li>
           <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Atención 24/7 por teléfono, email y WhatsApp</li>
         </ul>
@@ -719,7 +719,7 @@ a.contact__val:hover{color:var(--blue);}
   <div class="wrap">
     <p class="tag tc" style="justify-content:center;">Flota Mercedes</p>
     <h2 class="tc">El espacio y el confort adecuados para cada reserva</h2>
-    <p class="lead tc" style="margin:20px auto 0;">Asignamos el vehÍculo según el número de pasajeros, el equipaje y el tipo de viaje. Todos los modelos se mantienen bajo estándares de limpieza y seguridad.</p>
+    <p class="lead tc" style="margin:20px auto 0;">Asignamos el vehículo según el número de pasajeros, el equipaje y el tipo de viaje. Todos los modelos se mantienen bajo estándares de limpieza y seguridad.</p>
 
     <div class="fleet__grid">
 
@@ -770,7 +770,7 @@ a.contact__val:hover{color:var(--blue);}
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> Hasta 7 pasajeros</span>
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Capacidad máxima de equipaje</span>
           </div>
-          <a href="#reservar" class="btn btn-ghost" style="text-align:center;justify-content:center;">Reservar vehÍculo para grupos</a>
+          <a href="#reservar" class="btn btn-ghost" style="text-align:center;justify-content:center;">Reservar vehículo para grupos</a>
         </div>
       </div>
 
@@ -787,12 +787,12 @@ a.contact__val:hover{color:var(--blue);}
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> Hasta 7 pasajeros</span>
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Capacidad estándar de equipaje</span>
           </div>
-          <a href="#reservar" class="btn btn-ghost" style="text-align:center;justify-content:center;">Reservar vehÍculo para grupos</a>
+          <a href="#reservar" class="btn btn-ghost" style="text-align:center;justify-content:center;">Reservar vehículo para grupos</a>
         </div>
       </div>
 
     </div>
-    <p class="fleet__note">El modelo concreto puede variar por otro vehÍculo de categorÍa y caracterÍsticas equivalentes según disponibilidad.</p>
+    <p class="fleet__note">El modelo concreto puede variar por otro vehículo de categoría y características equivalentes según disponibilidad.</p>
   </div>
 </section>
 
@@ -851,7 +851,7 @@ a.contact__val:hover{color:var(--blue);}
   <div class="wrap">
     <p class="tag tc" style="justify-content:center;">Tours y excursiones privadas</p>
     <h2 class="tc">Descubre Cataluña a tu ritmo</h2>
-    <p class="lead tc" style="margin:20px auto 0;color:rgba(255,255,255,.75);">Recogida puerta a puerta, horarios flexibles y vehÍculo Mercedes reservado solo para ti y tus acompañantes.</p>
+    <p class="lead tc" style="margin:20px auto 0;color:rgba(255,255,255,.75);">Recogida puerta a puerta, horarios flexibles y vehículo Mercedes reservado solo para ti y tus acompañantes.</p>
 
     <div class="tours__grid">
 
@@ -860,7 +860,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="tour__img" style="background-image:url('<?php echo $arts; ?>/descubre-barcelona-en-4-6-u-8-horas-elige-el-tour-en-coche-a-tu-medida-4144.jpg');"></div>
         <div class="tour__content">
           <h3>Tour privado por Barcelona</h3>
-          <p>Sagrada Familia, Passeig de Gràcia, Barrio Gótico y Montjuïc. Itinerario flexible de 4, 6 u 8 horas con vehÍculo Mercedes.</p>
+          <p>Sagrada Familia, Passeig de Gràcia, Barrio Gótico y Montjuïc. Itinerario flexible de 4, 6 u 8 horas con vehículo Mercedes.</p>
           <a href="/tour-en-barcelona/#tour-booking" class="tour__cta-btn">Más información</a>
         </div>
       </div>
@@ -919,7 +919,7 @@ a.contact__val:hover{color:var(--blue);}
     <div class="rev__grid">
       <div class="rev__card">
         <div class="rev__stars">★★★★★</div>
-        <p class="rev__quote">"El chófer fue muy puntual y nos ayudó con todo el equipaje. El vehÍculo estaba impecable y el viaje desde el aeropuerto al hotel fue muy cómodo tras un vuelo largo. Sin duda repetiremos."</p>
+        <p class="rev__quote">"El chófer fue muy puntual y nos ayudó con todo el equipaje. El vehículo estaba impecable y el viaje desde el aeropuerto al hotel fue muy cómodo tras un vuelo largo. Sin duda repetiremos."</p>
         <span class="rev__author">James S.</span>
         <span class="rev__meta">Reino Unido · Agosto 2024 · Traslado aeropuerto</span>
       </div>
@@ -954,7 +954,7 @@ a.contact__val:hover{color:var(--blue);}
       </div>
       <div class="faq__item">
         <button class="faq__q">¿Podéis llevarme desde Barcelona al Aeropuerto de El Prat? <span class="faq__icon"></span></button>
-        <div class="faq__a">SÍ. Puedes reservar traslados privados desde Barcelona al Aeropuerto Josep Tarradellas Barcelona-El Prat. Al confirmar la reserva, indica la hora de salida de tu vuelo para que calculemos la hora de recogida óptima.</div>
+        <div class="faq__a">Sí. Puedes reservar traslados privados desde Barcelona al Aeropuerto Josep Tarradellas Barcelona-El Prat. Al confirmar la reserva, indica la hora de salida de tu vuelo para que calculemos la hora de recogida óptima.</div>
       </div>
       <div class="faq__item">
         <button class="faq__q">¿Qué ocurre si mi vuelo se retrasa? <span class="faq__icon"></span></button>
@@ -974,15 +974,15 @@ a.contact__val:hover{color:var(--blue);}
       </div>
       <div class="faq__item">
         <button class="faq__q">¿Puedo solicitar una silla infantil? <span class="faq__icon"></span></button>
-        <div class="faq__a">SÍ. Puedes solicitar sillas infantiles o elevadores al realizar la reserva. Indica la edad y el peso aproximado del menor para confirmar la opción adecuada y su disponibilidad.</div>
+        <div class="faq__a">Sí. Puedes solicitar sillas infantiles o elevadores al realizar la reserva. Indica la edad y el peso aproximado del menor para confirmar la opción adecuada y su disponibilidad.</div>
       </div>
       <div class="faq__item">
-        <button class="faq__q">¿Tenéis vehÍculos para grupos y equipaje voluminoso? <span class="faq__icon"></span></button>
-        <div class="faq__a">SÍ. La MINI VAN «V» Class permite viajar hasta siete pasajeros, dependiendo del equipaje. Para maletas especiales o material deportivo, indÍcalo antes de confirmar para asignar el vehÍculo correcto.</div>
+        <button class="faq__q">¿Tenéis vehículos para grupos y equipaje voluminoso? <span class="faq__icon"></span></button>
+        <div class="faq__a">Sí. La MINI VAN «V» Class permite viajar hasta siete pasajeros, dependiendo del equipaje. Para maletas especiales o material deportivo, indícalo antes de confirmar para asignar el vehículo correcto.</div>
       </div>
       <div class="faq__item">
         <button class="faq__q">¿Puedo contratar un coche con chófer por horas? <span class="faq__icon"></span></button>
-        <div class="faq__a">SÍ. El servicio por horas es ideal para reuniones, cenas, compras, eventos o agendas con varias paradas. EnvÍanos el horario aproximado y el recorrido para preparar una propuesta.</div>
+        <div class="faq__a">Sí. El servicio por horas es ideal para reuniones, cenas, compras, eventos o agendas con varias paradas. EnvÍanos el horario aproximado y el recorrido para preparar una propuesta.</div>
       </div>
       <div class="faq__item">
         <button class="faq__q">¿Qué formas de pago están disponibles? <span class="faq__icon"></span></button>
@@ -1001,7 +1001,7 @@ a.contact__val:hover{color:var(--blue);}
       <div>
         <p class="tag">Reserva tu próximo traslado</p>
         <h2>Tu viaje comienza con una recogida bien organizada</h2>
-        <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehÍculo que mejor se adapta a tu trayecto.</p>
+        <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
       </div>
       <div class="cta__btns">
         <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
@@ -1037,7 +1037,7 @@ a.contact__val:hover{color:var(--blue);}
           </li>
           <li class="contact__li">
             <div class="contact__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-            <div><div class="contact__label">Horario de atención</div><span class="contact__val" style="font-weight:600;font-size:18px;color:var(--muted);">24 horas, 7 dÍas a la semana</span></div>
+            <div><div class="contact__label">Horario de atención</div><span class="contact__val" style="font-weight:600;font-size:18px;color:var(--muted);">24 horas, 7 días a la semana</span></div>
           </li>
         </ul>
         <div style="margin-top:48px;">
@@ -1136,3 +1136,4 @@ if(cform){
 </script>
 
 <?php get_footer(); ?>
+

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Template Name: SEO - Taxis Barcelona a Port Aventura
  * 
@@ -110,10 +110,10 @@ get_header(); ?>
                 <div class="hero-badge-seo">Directo al parque | Precio fijo garantizado</div>
                 <h1 class="hero-title-seo">Taxis y traslados desde Barcelona a Port Aventura</h1>
                 <p class="hero-lead-seo">
-                    Reserva tu traslado privado desde Barcelona hasta el parque de atracciones Port Aventura. Viaje directo, cómodo y sin complicaciones para disfrutar de tu dÍa al máximo con toda la familia.
+                    Reserva tu traslado privado desde Barcelona hasta el parque de atracciones Port Aventura. Viaje directo, cómodo y sin complicaciones para disfrutar de tu día al máximo con toda la familia.
                 </p>
                 <div class="hero__checks">
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> VehÍculos espaciosos (hasta 8 pax)</span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos espaciosos (hasta 8 pax)</span>
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Sillas infantiles bajo petición</span>
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Recogida en hotel o aeropuerto</span>
                 </div>
@@ -155,13 +155,13 @@ get_header(); ?>
 
             <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">Reserva de ida y vuelta para mayor tranquilidad</h3>
             <p>
-                Después de un largo dÍa caminando y disfrutando en Port Aventura, Ferrari Land o Caribe Aquatic Park, lo último que deseas es preocuparte por cómo volver a Barcelona. Reserva tu traslado de ida y vuelta con nosotros y un conductor privado te estará esperando a la hora acordada a la salida del parque, o en tu hotel, para llevarte de regreso a tu destino.
+                Después de un largo día caminando y disfrutando en Port Aventura, Ferrari Land o Caribe Aquatic Park, lo último que deseas es preocuparte por cómo volver a Barcelona. Reserva tu traslado de ida y vuelta con nosotros y un conductor privado te estará esperando a la hora acordada a la salida del parque, o en tu hotel, para llevarte de regreso a tu destino.
             </p>
 
             <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
                 <h4 style="margin-top:0; color:#856404;">INFORMACIÓN ÚTIL: Horarios de recogida</h4>
                 <p style="margin-bottom:0; color: #856404;">
-                    Si reservas tu regreso el mismo dÍa, te recomendamos programar la recogida entre 30 y 45 minutos después del cierre del parque para evitar aglomeraciones en la salida, dándote tiempo para salir tranquilamente de las instalaciones.
+                    Si reservas tu regreso el mismo día, te recomendamos programar la recogida entre 30 y 45 minutos después del cierre del parque para evitar aglomeraciones en la salida, dándote tiempo para salir tranquilamente de las instalaciones.
                 </p>
             </div>
 
@@ -189,7 +189,7 @@ get_header(); ?>
           </div>
           <div class="rev__card" style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
             <div class="rev__stars" style="color: #FBBF24; font-size: 1.2rem; margin-bottom: 15px;">★★★★★</div>
-            <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"El trayecto de vuelta después de un dÍa agotador en Port Aventura fue un lujo. El coche nos estaba esperando exactamente a la hora y lugar acordados. Servicio impecable de 10."</p>
+            <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"El trayecto de vuelta después de un día agotador en Port Aventura fue un lujo. El coche nos estaba esperando exactamente a la hora y lugar acordados. Servicio impecable de 10."</p>
             <span class="rev__author" style="display: block; font-weight: bold; color: #1E293B;">Thomas K.</span>
             <span class="rev__meta" style="font-size: 0.9rem; color: #94A3B8;">Alemania · Septiembre 2024</span>
           </div>
@@ -204,7 +204,7 @@ get_header(); ?>
           <div>
             <p class="tag">Reserva tu próximo traslado</p>
             <h2>Tu viaje comienza con una recogida bien organizada</h2>
-            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehÍculo que mejor se adapta a tu trayecto.</p>
+            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
           </div>
           <div class="cta__btns">
             <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
@@ -216,3 +216,4 @@ get_header(); ?>
 </main>
 
 <?php get_footer(); ?>
+

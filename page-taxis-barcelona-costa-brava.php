@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Template Name: SEO - Taxis Barcelona a Costa Brava
  * 
@@ -114,7 +114,7 @@ get_header(); ?>
                 </p>
                 <div class="hero__checks">
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Choferes experimentados</span>
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> VehÍculos clase VIP disponibles</span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos clase VIP disponibles</span>
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Puntualidad y discreción</span>
                 </div>
             </div>
@@ -159,13 +159,13 @@ get_header(); ?>
 
             <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">La comodidad de un coche privado</h3>
             <p>
-                Todos nuestros vehÍculos están equipados con aire acondicionado, asientos confortables y amplio espacio para el equipaje, algo esencial si viajas para unas vacaciones largas en la playa o si llevas material deportivo (como palos de golf o equipo de buceo).
+                Todos nuestros vehículos están equipados con aire acondicionado, asientos confortables y amplio espacio para el equipaje, algo esencial si viajas para unas vacaciones largas en la playa o si llevas material deportivo (como palos de golf o equipo de buceo).
             </p>
 
             <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
-                <h4 style="margin-top:0; color:#0066CC;">INFORMACIÓN: Chófer por horas o excursiones de un dÍa</h4>
+                <h4 style="margin-top:0; color:#0066CC;">INFORMACIÓN: Chófer por horas o excursiones de un día</h4>
                 <p style="margin-bottom:0;">
-                    Si prefieres no alojarte allÍ pero deseas explorar la Costa Brava durante un dÍa, puedes contratar nuestro servicio de "Chófer por horas". Tu conductor personal te llevará a los pueblos que elijas, esperará por ti y te traerá de vuelta a Barcelona por la tarde.
+                    Si prefieres no alojarte allÍ pero deseas explorar la Costa Brava durante un día, puedes contratar nuestro servicio de "Chófer por horas". Tu conductor personal te llevará a los pueblos que elijas, esperará por ti y te traerá de vuelta a Barcelona por la tarde.
                 </p>
             </div>
 
@@ -179,7 +179,7 @@ get_header(); ?>
           <div>
             <p class="tag">Reserva tu próximo traslado</p>
             <h2>Tu viaje comienza con una recogida bien organizada</h2>
-            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehÍculo que mejor se adapta a tu trayecto.</p>
+            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
           </div>
           <div class="cta__btns">
             <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
@@ -191,3 +191,4 @@ get_header(); ?>
 </main>
 
 <?php get_footer(); ?>
+

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Me Transfers functions and definitions
  *
@@ -714,7 +714,7 @@ function me_transfers_migrate_legal_to_editor() {
 <h3>3.1. Sistemas de Retención Infantil (SRI)</h3>
 <p>Conforme al ArtÍculo 117 del Reglamento General de Circulación, es obligatorio el uso de sillas homologadas para menores de estatura igual o inferior a 135 cm. El Cliente debe seleccionar el número y tipo de sillas necesarias en el formulario. La omisión de este dato facultará al conductor a denegar el servicio por razones de seguridad, sin derecho a reembolso.</p>
 <h3>3.2. Equipaje Extraordinario</h3>
-<p>La capacidad del vehÍculo está limitada por su ficha técnica. El transporte de maletas adicionales, material deportivo (golf, esquÍ) o bultos voluminosos debe ser notificado. EL PRESTADOR se reserva el derecho de cobrar suplementos o denegar el transporte si el volumen excede la capacidad del maletero del vehÍculo contratado.</p>
+<p>La capacidad del vehículo está limitada por su ficha técnica. El transporte de maletas adicionales, material deportivo (golf, esquÍ) o bultos voluminosos debe ser notificado. EL PRESTADOR se reserva el derecho de cobrar suplementos o denegar el transporte si el volumen excede la capacidad del maletero del vehículo contratado.</p>
 <h3>3.3. Transporte de Mascotas</h3>
 <p>El transporte de animales domésticos está sujeto a notificación previa y debe realizarse en trasportines homologados proporcionados por el cliente, salvo acuerdo en contrario. Los perros guÍa viajarán sin coste adicional conforme a la normativa vigente.</p>
 <h2>4. PASARELA DE PAGO Y SEGURIDAD (REDSYS)</h2>
@@ -905,7 +905,7 @@ function me_transfers_custom_redirects() {
         }
 
         // SMART REDIRECT ELIMINADO: El sistema anterior hacÍa una WP_Query con búsqueda de texto
-        // libre y redirigÍa 301 permanentemente al primer resultado. Esto podÍa enviar a Google
+        // libre y redirigÍa 301 permanentemente al primer resultado. Esto podía enviar a Google
         // y a los usuarios a páginas completamente no equivalentes, dañando el SEO.
         //
         // Si necesitas recuperar una URL especÍfica, añade la redirección manualmente
@@ -2094,4 +2094,5 @@ function mt_auto_create_seniors_lonjas_posts() {
 
     update_option( 'mt_seniors_lonjas_posts_created_v1', true );
 }
+
 

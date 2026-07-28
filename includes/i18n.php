@@ -25,6 +25,11 @@ if ( ! defined('MT_LANGS') ) {
     ] );
 }
 
+if ( ! defined('MT_ACTIVE_LANGS') ) {
+    // Only 'es' is active to prevent incomplete indexing. 'en' can be added when translated.
+    define( 'MT_ACTIVE_LANGS', [ 'es' ] );
+}
+
 // =================================================================
 // 2. DETECTAR IDIOMA ACTUAL DESDE LA URL
 // =================================================================
@@ -318,6 +323,7 @@ function gct_render_language_switcher(): void {
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </li>
         <?php foreach ( MT_LANGS as $code => $lang_info ) :
+            if ( ! in_array( $code, MT_ACTIVE_LANGS, true ) ) continue;
             $url = ( $code === 'es' )
                 ? home_url( '/' . ( $slug ? $slug . '/' : '' ) )
                 : home_url( '/' . $code . '/' . ( $slug ? $slug . '/' : '' ) );
@@ -543,6 +549,11 @@ add_action( 'wp_head', function() {
 
     // Inyectar hreflang para decirle a Google que son variantes de idioma y no duplicados
     foreach ( MT_LANGS as $code => $info ) {
+        // Solo emitir hreflang para idiomas activos (Phase 1 SEO constraint)
+        if ( ! in_array( $code, MT_ACTIVE_LANGS, true ) ) {
+            continue;
+        }
+
         $url = ( $code === 'es' )
             ? home_url( '/' . ( $slug ? $slug . '/' : '' ) )
             : home_url( '/' . $code . '/' . ( $slug ? $slug . '/' : '' ) );

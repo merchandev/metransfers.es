@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Template Name: SEO - Taxis Barcelona a Girona
  * 
@@ -159,9 +159,9 @@ get_header(); ?>
             </p>
 
             <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
-                <h4 style="margin-top:0; color:#0066CC;">CONSEJO: Viajes de un dÍa (Tour privado)</h4>
+                <h4 style="margin-top:0; color:#0066CC;">CONSEJO: Viajes de un día (Tour privado)</h4>
                 <p style="margin-bottom:0;">
-                    Girona se puede ver perfectamente en una excursión de un dÍa. Consúltanos por nuestros tours privados en los que te llevamos a Girona por la mañana y regresamos contigo a Barcelona por la tarde.
+                    Girona se puede ver perfectamente en una excursión de un día. Consúltanos por nuestros tours privados en los que te llevamos a Girona por la mañana y regresamos contigo a Barcelona por la tarde.
                 </p>
             </div>
 
@@ -175,7 +175,7 @@ get_header(); ?>
           <div>
             <p class="tag">Reserva tu próximo traslado</p>
             <h2>Tu viaje comienza con una recogida bien organizada</h2>
-            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehÍculo que mejor se adapta a tu trayecto.</p>
+            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
           </div>
           <div class="cta__btns">
             <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
@@ -187,3 +187,4 @@ get_header(); ?>
 </main>
 
 <?php get_footer(); ?>
+

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Template Name: Página de Servicio
  *
@@ -261,7 +261,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 								<option value="">Selecciona...</option>
 								<option>3 horas</option><option>4 horas</option><option>5 horas</option>
 								<option>6 horas</option><option>8 horas</option>
-								<option>10 horas (dÍa completo)</option>
+								<option>10 horas (día completo)</option>
 							</select>
 						</div>
 						<div class="sfg">
@@ -299,11 +299,11 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-vehiculos">VehÍculos</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-vehiculos">Vehículos</label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-vehiculos" name="extra_vehiculos">
 								<option value="">Selecciona...</option>
-								<option>1 vehÍculo</option><option>2 vehÍculos</option>
-								<option>3-5 vehÍculos</option><option>Más de 5</option>
+								<option>1 vehículo</option><option>2 vehículos</option>
+								<option>3-5 vehículos</option><option>Más de 5</option>
 							</select>
 						</div>
 						<div class="sfg">
@@ -513,3 +513,4 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 </style>
 
 <?php get_footer(); ?>
+

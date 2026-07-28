@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Tours Management Logic
  *
@@ -24,7 +24,7 @@ function me_transfers_get_tour_catalog() {
 			'group_size' => 'Hasta 7 personas',
 			'img'        => 'https://images.unsplash.com/photo-1583422409516-2895a77efded?q=80&w=1200&auto=format&fit=crop',
 			'desc'       => 'Descubre Barcelona con un recorrido por sus monumentos icónicos, como la Sagrada Familia, el Barrio Gótico y el Paseo de Gracia. Disfruta de la arquitectura de GaudÍ y la vibrante cultura catalana en un tour inolvidable.',
-			'full_desc'  => 'Barcelona es una de las ciudades más fascinantes de Europa, y nuestro tour privado te permite descubrirla a tu ritmo, sin aglomeraciones y con la comodidad de un vehÍculo Mercedes de alta gama con chófer profesional.
+			'full_desc'  => 'Barcelona es una de las ciudades más fascinantes de Europa, y nuestro tour privado te permite descubrirla a tu ritmo, sin aglomeraciones y con la comodidad de un vehículo Mercedes de alta gama con chófer profesional.
 
 Comenzamos el recorrido con la recogida puerta a puerta en tu hotel, apartamento o cualquier punto de Barcelona. Nuestro conductor, completamente bilingüe, te acompañará durante toda la jornada y te dará contexto sobre cada lugar que visitéis.
 
@@ -34,7 +34,7 @@ Continuamos hacia el Parque Güell, otro de los tesoros de GaudÍ, donde los mos
 
 El recorrido sigue por el corazón histórico de Barcelona: el Barrio Gótico, con sus calles estrechas medievales, la Catedral de Barcelona y las plazas escondidas que guardan siglos de historia. Pasearemos por Las Ramblas, el bulevar más famoso de España, y el Mercado de la BoquerÍa con sus colores y aromas.
 
-Finalizamos con una subida a Montjuïc, la colina que domina la ciudad, donde disfrutarás de las mejores vistas panorámicas de Barcelona, el puerto y el mar. Es el cierre perfecto para un dÍa completo de descubrimiento.
+Finalizamos con una subida a Montjuïc, la colina que domina la ciudad, donde disfrutarás de las mejores vistas panorámicas de Barcelona, el puerto y el mar. Es el cierre perfecto para un día completo de descubrimiento.
 
 Este tour es completamente personalizable: si prefieres visitar el Camp Nou, el barrio de la Barceloneta o hacer una parada para comer en un restaurante local, solo tienes que decÍrnoslo.',
 			'itinerary'  => array(
@@ -48,7 +48,7 @@ Este tour es completamente personalizable: si prefieres visitar el Camp Nou, el 
 			),
 			'includes'   => array(
 				'Chófer privado profesional bilingüe (español/inglés)',
-				'VehÍculo Mercedes de alta gama (MINI VAN «V» Class o ECONOMIC CLASS)',
+				'Vehículo Mercedes de alta gama (MINI VAN «V» Class o ECONOMIC CLASS)',
 				'Recogida y devolución puerta a puerta',
 				'Agua frÍa y WiFi a bordo',
 				'Flexibilidad total de horario y paradas',
@@ -73,7 +73,7 @@ Al llegar, visitarás la BasÍlica del Monasterio de Montserrat, un impresionant
 
 Si la visita coincide con el horario, podrás escuchar a la EscolanÍa de Montserrat, uno de los coros de niños más antiguos de Europa, cuyas voces llenan la basÍlica con una acústica sobrecogedora.
 
-El tour incluye tiempo libre para subir en el funicular de Sant Joan hasta el punto más alto accesible de la montaña, desde donde las vistas son absolutamente extraordinarias: en dÍas claros puedes ver hasta Mallorca. También puedes optar por el funicular de Santa Cova, que baja hasta la cueva donde según la leyenda se encontró la imagen de la Virgen.
+El tour incluye tiempo libre para subir en el funicular de Sant Joan hasta el punto más alto accesible de la montaña, desde donde las vistas son absolutamente extraordinarias: en días claros puedes ver hasta Mallorca. También puedes optar por el funicular de Santa Cova, que baja hasta la cueva donde según la leyenda se encontró la imagen de la Virgen.
 
 Antes de regresar, hacemos una parada para degustar los famosos licores artesanales que elaboran los monjes del monasterio, asÍ como quesos y productos locales de la región. Es una experiencia gastronómica que complementa perfectamente la visita cultural.
 
@@ -89,13 +89,13 @@ El regreso a Barcelona se realiza a tu ritmo, con la posibilidad de hacer parada
 			),
 			'includes'   => array(
 				'Chófer privado profesional bilingüe',
-				'VehÍculo Mercedes de alta gama',
+				'Vehículo Mercedes de alta gama',
 				'Recogida y devolución puerta a puerta',
 				'Agua frÍa y WiFi a bordo',
 				'Degustación de productos locales',
 				'Seguro de responsabilidad civil completo',
 			),
-			'highlights' => array( 'AbadÍa de Montserrat', 'La Moreneta', 'Funicular de Sant Joan', 'Degustación de licores' ),
+			'highlights' => array( 'Abadía de Montserrat', 'La Moreneta', 'Funicular de Sant Joan', 'Degustación de licores' ),
 		),
 
 		'tour-costa-brava' => array(
@@ -105,7 +105,7 @@ El regreso a Barcelona se realiza a tu ritmo, con la posibilidad de hacer parada
 			'duration'   => '8-10 horas',
 			'group_size' => 'Hasta 7 personas',
 			'img'        => get_template_directory_uri() . '/assets/img/V1.png',
-			'desc'       => 'Sumérgete en las aguas cristalinas y paisajes únicos de la Costa Brava. Recorre encantadores pueblos pesqueros, calas escondidas y disfruta de la mejor gastronomÍa mediterránea en un entorno paradisÍaco.',
+			'desc'       => 'Sumérgete en las aguas cristalinas y paisajes únicos de la Costa Brava. Recorre encantadores pueblos pesqueros, calas escondidas y disfruta de la mejor gastronomía mediterránea en un entorno paradisÍaco.',
 			'full_desc'  => 'La Costa Brava es sin duda uno de los destinos más espectaculares del Mediterráneo occidental. Con nuestro tour privado, recorrerás los pueblos más bonitos de esta costa salvaje y escarpada, lejos de las rutas turÍsticas masificadas, con la libertad de parar donde y cuando quieras.
 
 Salimos de Barcelona por la mañana y en aproximadamente una hora y media llegamos a Tossa de Mar, nuestro primer destino. Este pueblo medieval amurallado, que cautivó al mismÍsimo Marc Chagall, tiene una de las playas urbanas más bonitas de la Costa Brava, coronada por las ruinas de la Vila Vella, la única ciudad medieval fortificada que se conserva en el litoral catalán.
@@ -116,7 +116,7 @@ El recorrido incluye una caminata por un tramo de los Caminos de Ronda, los anti
 
 Dependiendo de la temporada y tus preferencias, podemos incluir una visita a Pals o Peratallada, dos pueblos medievales del interior que han sido declarados conjuntos histórico-artÍsticos, con calles empedradas, murallas y torres que parecen detenidas en el tiempo.
 
-El regreso a Barcelona se realiza al atardecer, el momento perfecto para contemplar la puesta de sol sobre los campos y viñedos del Empordà desde la comodidad de nuestro vehÍculo Mercedes. Un dÍa que combina playa, cultura, gastronomÍa y naturaleza en su máxima expresión.',
+El regreso a Barcelona se realiza al atardecer, el momento perfecto para contemplar la puesta de sol sobre los campos y viñedos del Empordà desde la comodidad de nuestro vehículo Mercedes. Un día que combina playa, cultura, gastronomía y naturaleza en su máxima expresión.',
 			'itinerary'  => array(
 				'Recogida en su hotel en Barcelona por la mañana',
 				'Trayecto escénico hasta Tossa de Mar (~1.5 horas)',
@@ -129,7 +129,7 @@ El regreso a Barcelona se realiza al atardecer, el momento perfecto para contemp
 			),
 			'includes'   => array(
 				'Chófer privado profesional bilingüe',
-				'VehÍculo Mercedes de alta gama',
+				'Vehículo Mercedes de alta gama',
 				'Recogida y devolución puerta a puerta',
 				'Agua frÍa y WiFi a bordo',
 				'Paradas ilimitadas para fotos y exploración',
@@ -171,7 +171,7 @@ Para el almuerzo, podemos hacer una parada en alguno de los restaurantes del cas
 			),
 			'includes'   => array(
 				'Chófer privado profesional bilingüe',
-				'VehÍculo Mercedes de alta gama',
+				'Vehículo Mercedes de alta gama',
 				'Recogida y devolución puerta a puerta',
 				'Agua frÍa y WiFi a bordo',
 				'Flexibilidad total de horario y paradas',
@@ -243,3 +243,4 @@ function me_transfers_sync_tour_pages() {
 }
 add_action( 'after_switch_theme', 'me_transfers_sync_tour_pages' );
 add_action( 'admin_init', 'me_transfers_sync_tour_pages' );
+

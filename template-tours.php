@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Template Name: Tours y Excursiones
  *
@@ -56,7 +56,7 @@ get_header(); ?>
 						</div>
 					</div>
 					<div class="tour-content" style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column;">
-						<p style="color: #475569; line-height: 1.6; font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1;">Sumérgete en las aguas cristalinas y paisajes únicos de la Costa Brava. Recorre encantadores pueblos pesqueros, calas escondidas y disfruta de la mejor gastronomÍa mediterránea en un entorno paradisÍaco.</p>
+						<p style="color: #475569; line-height: 1.6; font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1;">Sumérgete en las aguas cristalinas y paisajes únicos de la Costa Brava. Recorre encantadores pueblos pesqueros, calas escondidas y disfruta de la mejor gastronomía mediterránea en un entorno paradisÍaco.</p>
 						<a href="#contacto" class="tour-btn" style="color: #004E9A; font-weight: 700; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid transparent; transition: border-color 0.3s ease; align-self: flex-start; padding-bottom: 2px;">DETALLES</a>
 					</div>
 				</div>
@@ -116,3 +116,4 @@ get_header(); ?>
 </style>
 
 <?php get_footer(); ?>
+

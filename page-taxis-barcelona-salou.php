@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Template Name: SEO - Taxis Barcelona a Salou
  * 
@@ -110,11 +110,11 @@ get_header(); ?>
                 <div class="hero-badge-seo">De puerta a puerta | Confort garantizado</div>
                 <h1 class="hero-title-seo">Taxis y traslados desde Barcelona a Salou</h1>
                 <p class="hero-lead-seo">
-                    Inicia tus vacaciones en la Costa Dorada sin estrés. Reserva tu traslado privado desde el Aeropuerto de Barcelona o la ciudad hasta tu hotel o apartamento en Salou. Viaja en vehÍculos premium con un chófer profesional a tu disposición.
+                    Inicia tus vacaciones en la Costa Dorada sin estrés. Reserva tu traslado privado desde el Aeropuerto de Barcelona o la ciudad hasta tu hotel o apartamento en Salou. Viaja en vehículos premium con un chófer profesional a tu disposición.
                 </p>
                 <div class="hero__checks">
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Precio fijo sin cargos ocultos</span>
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> VehÍculos modernos y limpios</span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos modernos y limpios</span>
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Seguimiento de vuelos en tiempo real</span>
                 </div>
             </div>
@@ -175,7 +175,7 @@ get_header(); ?>
           <div>
             <p class="tag">Reserva tu próximo traslado</p>
             <h2>Tu viaje comienza con una recogida bien organizada</h2>
-            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehÍculo que mejor se adapta a tu trayecto.</p>
+            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
           </div>
           <div class="cta__btns">
             <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
@@ -187,3 +187,4 @@ get_header(); ?>
 </main>
 
 <?php get_footer(); ?>
+

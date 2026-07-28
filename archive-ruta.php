@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Archivo de todas las Rutas — MeTransfers
  * URL: /rutas/
@@ -80,7 +80,7 @@ $total = count( $all_rutas );
                 Todas nuestras <span class="text-gradient">Rutas</span>
             </h1>
             <p class="rutas-hero__subtitle gs-reveal">
-                <?php echo $total; ?> rutas disponibles con vehÍculo privado Mercedes-Benz, conductor profesional y precio cerrado.
+                <?php echo $total; ?> rutas disponibles con vehículo privado Mercedes-Benz, conductor profesional y precio cerrado.
                 Aeropuerto, Puerto, Sants o cualquier punto de Barcelona.
             </p>
             <div class="rutas-hero__search gs-reveal">
@@ -217,3 +217,4 @@ $total = count( $all_rutas );
 </script>
 
 <?php get_footer(); ?>
+
