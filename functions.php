@@ -1922,3 +1922,68 @@ function mt_auto_create_generic_pages() {
     update_option( 'mt_generic_pages_created_v1', true );
 }
 
+// =========================================================================
+// AUTO-CREAR ARTÍCULO VIP ARTISTAS Y MÚSICOS
+// =========================================================================
+add_action( 'init', 'mt_auto_create_artist_post' );
+function mt_auto_create_artist_post() {
+    if ( get_option( 'mt_artist_post_created_v1' ) ) {
+        return;
+    }
+
+    $slug = 'movilidad-vip-para-artistas-y-musicos-en-barcelona-discrecion-y-gran-capacidad-de-maletero-para-instrumentos';
+    $post = get_page_by_path( $slug, OBJECT, 'post' );
+    
+    $excerpt = 'Descubre por qué MeTransfers es la agencia de movilidad de confianza para artistas, bandas musicales y talentos internacionales en Barcelona. Ofrecemos máxima discreción, puntualidad milimétrica para conciertos y furgonetas Mercedes de gran capacidad para el transporte seguro de instrumentos y equipos delicados.';
+    
+    $content = '<p class="lead-text">' . $excerpt . '</p>
+        <h2>Servicio de Chófer VIP para el Sector Musical en Barcelona</h2>
+        <p>Barcelona es una de las capitales europeas de la música, albergando festivales de renombre mundial como el Primavera Sound, Sónar, y conciertos multitudinarios en el Palau Sant Jordi o el Estadi Olímpic. La logística para un artista internacional o una banda requiere un nivel de excelencia y adaptabilidad que el transporte convencional no puede ofrecer.</p>
+        <p>En <strong>MeTransfers</strong> nos especializamos en la <em>movilidad premium para el sector del entretenimiento</em>. Entendemos las exigencias de las giras, los horarios de los estudios de grabación y la necesidad de mantener un perfil bajo ante la prensa y los fans.</p>
+
+        <h2>Máxima Discreción y Privacidad</h2>
+        <p>Sabemos que para una celebridad, la privacidad no es un lujo, sino una necesidad. Nuestros servicios de transfer están diseñados para garantizar la tranquilidad del talento:</p>
+        <ul>
+            <li><strong>Cristales tintados y vehículos sin distintivos:</strong> Nuestras furgonetas y berlinas Mercedes-Benz pasan completamente desapercibidas en la ciudad.</li>
+            <li><strong>Chóferes formados en protocolo:</strong> Nuestro equipo firma estrictos acuerdos de confidencialidad (NDA). Operan con la máxima discreción, evitando interacciones innecesarias y asegurando un entorno relajado para el artista.</li>
+            <li><strong>Rutas seguras y accesos VIP:</strong> Coordinamos con los equipos de producción y seguridad de los recintos (hoteles, arenas, festivales) para utilizar accesos traseros o privados, evitando aglomeraciones.</li>
+        </ul>
+
+        <h2>Furgonetas Minivan: Gran Capacidad para Instrumentos y Equipo</h2>
+        <p>Uno de los mayores retos para los músicos en gira es el transporte de su equipo (guitarras, teclados, amplificadores, vestuario). Moverse en taxis convencionales suele ser una pesadilla logística.</p>
+        <p>Nuestra flota de <strong>Mercedes Clase V Extra Largas (Minivans)</strong> es la solución definitiva:</p>
+        <ul>
+            <li><strong>Maletero extragrande:</strong> Capacidad sobrada para albergar estuches rígidos, instrumentos delicados y múltiples maletas de gran tamaño sin sacrificar el confort de los pasajeros.</li>
+            <li><strong>Conducción suave:</strong> La suspensión neumática de nuestros vehículos garantiza que los instrumentos más sensibles (como violonchelos o equipos de grabación) no sufran durante los trayectos urbanos.</li>
+            <li><strong>Espacio para el equipo:</strong> Con capacidad para hasta 7 pasajeros, el artista puede viajar cómodamente junto a su mánager, personal de seguridad o técnicos clave en un mismo vehículo.</li>
+        </ul>
+
+        <h2>Puntualidad Milimétrica y Disponibilidad 24/7</h2>
+        <p>En la industria musical, llegar tarde a una prueba de sonido o a una entrevista de promoción no es una opción. Ofrecemos un servicio de <em>disposición por horas</em> que otorga flexibilidad total a la agenda del artista.</p>
+        <p>Tu chófer privado estará esperando fuera del estudio de grabación a altas horas de la madrugada, o en la puerta del hotel listo para un traslado exprés al aeropuerto Josep Tarradellas Barcelona-El Prat. Monitorizamos constantemente el tráfico en Barcelona para evitar atascos y asegurar llegadas puntuales.</p>
+        
+        <hr/>
+        <h3>Reserva la movilidad de tu próxima gira</h3>
+        <p>Si eres mánager, promotor o formas parte del equipo de producción de un evento, no dejes la logística terrestre al azar. <a href="/contacto">Contacta con nosotros hoy mismo</a> para planificar los traslados VIP de tu talento. Te proporcionaremos presupuestos personalizados para varios días o flotas de múltiples vehículos simultáneos.</p>
+    ';
+
+    if ( ! $post ) {
+        wp_insert_post( array(
+            'post_title'   => 'Movilidad VIP para Artistas y Músicos en Barcelona: Discreción y Espacio para Instrumentos',
+            'post_name'    => $slug,
+            'post_content' => trim( $content ),
+            'post_excerpt' => $excerpt,
+            'post_status'  => 'publish',
+            'post_type'    => 'post'
+        ) );
+    } else {
+        wp_update_post( array(
+            'ID'           => $post->ID,
+            'post_content' => trim( $content ),
+            'post_excerpt' => $excerpt,
+        ) );
+    }
+
+    update_option( 'mt_artist_post_created_v1', true );
+}
+
