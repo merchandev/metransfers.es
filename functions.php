@@ -1603,3 +1603,147 @@ function mt_auto_create_blog_page() {
     update_option( 'mt_blog_page_created_v2', true );
 }
 
+// =========================================================================
+// AUTO-ACTUALIZAR CONTENIDO DE ENTRADAS DE RUTAS (UNA SOLA VEZ)
+// =========================================================================
+add_action( 'init', 'mt_auto_update_routes_content' );
+function mt_auto_update_routes_content() {
+    if ( get_option( 'mt_routes_content_updated_v1' ) ) {
+        return;
+    }
+
+    $routes_content = array(
+        'ruta-de-juego-de-tronos-tour-desde-barcelona-a-girona' => '
+            <h2>Descubre Desembarco del Rey y Braavos en la vida real</h2>
+            <p>Si eres un verdadero fanático de <strong>Juego de Tronos</strong>, este tour privado desde Barcelona a Girona es una experiencia obligatoria. La ciudad de Girona, con su impresionante arquitectura medieval y su historia milenaria, fue elegida por HBO para representar algunos de los escenarios más icónicos de la sexta temporada de la serie.</p>
+            <p>Con nuestro servicio de <em>traslado privado premium</em>, te recogeremos directamente en tu hotel en Barcelona y te llevaremos en un vehículo de alta gama (Mercedes-Benz) hacia esta joya de Cataluña, garantizando un viaje cómodo, seguro y con estilo.</p>
+            
+            <h3>¿Qué verás en nuestro tour por Girona?</h3>
+            <p>Una vez en Girona, te adentrarás en las calles empedradas que dieron vida a las Ciudades Libres y a la capital de los Siete Reinos:</p>
+            <ul>
+                <li><strong>La Catedral de Santa María (El Gran Septo de Baelor):</strong> Sube la majestuosa escalinata donde la Reina Margaery iba a realizar su Paseo de la Vergüenza antes de la intervención de Jaime Lannister.</li>
+                <li><strong>El Barrio Judío (Call Jueu):</strong> Piérdete por el laberinto de callejuelas estrechas que se transformaron en las calles de Braavos, donde Arya Stark entrenó con la Niña Abandonada.</li>
+                <li><strong>Los Baños Árabes y la Plaza de los Jurados:</strong> Escenarios que sirvieron como telón de fondo para el teatro callejero en Braavos y los rincones oscuros donde Arya fue perseguida.</li>
+                <li><strong>El Monasterio de Sant Pere de Galligants:</strong> Que en la ficción albergó la Ciudadela de Antigua, donde Samwell Tarly acudió para formarse como Maestre.</li>
+            </ul>
+
+            <h3>Una experiencia gastronómica y cultural</h3>
+            <p>Más allá de Juego de Tronos, Girona es un destino culinario de primer nivel mundial (hogar de El Celler de Can Roca). Durante el tour, tendrás tiempo libre para disfrutar de la excelente gastronomía local en sus encantadores restaurantes, pasear por la muralla carolingia o admirar las coloridas casas sobre el río Onyar.</p>
+            
+            <h3>Ventajas de nuestro traslado privado</h3>
+            <ul>
+                <li><strong>Flexibilidad total:</strong> Tú marcas los tiempos. Sin las prisas de los tours en grupo.</li>
+                <li><strong>Confort garantizado:</strong> Vehículos climatizados, Wi-Fi a bordo y agua de cortesía.</li>
+                <li><strong>Chófer profesional:</strong> Discreto, puntual y gran conocedor de las rutas de Cataluña.</li>
+            </ul>
+            
+            <p>No pierdas la oportunidad de vivir tu propia aventura épica. <a href="/contacto">Reserva hoy tu traslado privado a Girona</a> y siéntete como un verdadero Stark o Lannister recorriendo las calles de Poniente.</p>
+        ',
+        'tour-privado-por-los-pueblos-medievales-de-cataluna-desde-barcelona' => '
+            <h2>Un viaje en el tiempo a la Cataluña Medieval</h2>
+            <p>Escapa del bullicio de Barcelona y embárcate en un viaje en el tiempo a través de los <strong>pueblos medievales más encantadores de Cataluña</strong>. Nuestro tour privado te llevará a descubrir joyas arquitectónicas, calles de piedra y castillos de cuento de hadas en la Costa Brava y el Empordà, todo con la exclusividad y el confort de nuestros vehículos de lujo.</p>
+            
+            <h3>Itinerario destacado de la ruta medieval</h3>
+            <p>Esta ruta está diseñada para mostrarte la esencia histórica de la región, visitando pueblos que han conservado intacto su trazado original durante siglos:</p>
+            <ul>
+                <li><strong>Rupit:</strong> Un pueblo de postal escondido entre montañas, famoso por su puente colgante de madera y sus robustas casas de piedra de los siglos XVI y XVII.</li>
+                <li><strong>Besalú:</strong> Te dará la bienvenida con su espectacular e icónico puente románico fortificado del siglo XI sobre el río Fluvià. Su judería y sus baños purificadores (mikvé) son únicos en Europa.</li>
+                <li><strong>Peratallada:</strong> Declarado conjunto histórico-artístico, es considerado uno de los núcleos medievales mejor conservados de Cataluña, con su foso excavado en la roca y su castillo-palacio.</li>
+                <li><strong>Pals:</strong> Un recinto gótico impecable situado en lo alto de una colina, con vistas panorámicas a las Islas Medas y rodeado de arrozales.</li>
+            </ul>
+
+            <h3>Disfruta del paisaje y la gastronomía local</h3>
+            <p>El trayecto entre estos pueblos es en sí mismo una experiencia, recorriendo sinuosas carreteras entre densos bosques de pinos, campos de cultivo y masías tradicionales catalanas. Además, esta región es célebre por su rica gastronomía. Podrás degustar platos típicos como carnes a la brasa, embutidos artesanales y vinos locales de la DO Empordà en restaurantes rústicos de innegable encanto.</p>
+            
+            <h3>Por qué elegir MeTransfers para tu ruta</h3>
+            <p>Realizar este recorrido por tu cuenta requiere una compleja logística de alquiler de vehículos y navegación por carreteras secundarias. Con nuestro servicio de <em>alquiler de vehículos con conductor</em>, solo tienes que preocuparte de disfrutar:</p>
+            <ul>
+                <li><strong>Servicio Puerta a Puerta:</strong> Recogida y regreso en tu hotel de Barcelona.</li>
+                <li><strong>Vehículos de Lujo:</strong> Mercedes Clase E, S o Minivan Clase V para grupos y familias.</li>
+                <li><strong>Privacidad y Exclusividad:</strong> Un tour diseñado a tu medida, pudiendo ajustar las paradas según tus intereses.</li>
+            </ul>
+        ',
+        'tour-de-compras-vip-en-barcelona-la-roca-village' => '
+            <h2>Una experiencia de compras de lujo sin igual</h2>
+            <p>Si amas la moda y las marcas exclusivas, el <strong>Tour de Compras VIP a La Roca Village</strong> es la escapada perfecta durante tu estancia en Barcelona. A tan solo 40 minutos de la ciudad, este prestigioso <em>outlet de lujo al aire libre</em> alberga más de 140 boutiques de las mejores marcas nacionales e internacionales de moda, belleza y estilo de vida, ofreciendo descuentos de hasta un 60% sobre el precio original durante todo el año.</p>
+            
+            <h3>Viaja con el máximo confort y estilo</h3>
+            <p>Sabemos que un día de compras intenso requiere comodidad. Al reservar nuestro traslado privado a La Roca Village, evitarás las molestias de los autobuses abarrotados o los problemas de aparcamiento. Nuestro chófer te recogerá en la puerta de tu hotel en un elegante vehículo Mercedes-Benz, proporcionándote un viaje relajante para que llegues fresco y con energía.</p>
+            
+            <h3>¿Qué marcas te esperan en La Roca Village?</h3>
+            <p>El village cuenta con una selección inmejorable de firmas de alta costura y diseño contemporáneo, diseñadas como una pequeña y encantadora villa mediterránea:</p>
+            <ul>
+                <li><strong>Alta Costura:</strong> Prada, Gucci, Armani, Balenciaga, Saint Laurent y Loewe.</li>
+                <li><strong>Estilo de Vida y Deporte:</strong> Polo Ralph Lauren, Tommy Hilfiger, Nike, y Moncler.</li>
+                <li><strong>Joyería y Relojería:</strong> Bulgari, TAG Heuer y Montblanc.</li>
+            </ul>
+
+            <h3>Beneficios VIP de nuestro servicio</h3>
+            <p>Con MeTransfers, la experiencia de compras se eleva al siguiente nivel:</p>
+            <ul>
+                <li><strong>Gran capacidad de maletero:</strong> Nuestros vehículos (especialmente las Mercedes Clase V) tienen espacio más que suficiente para que no tengas que preocuparte por el número de bolsas y compras que realices.</li>
+                <li><strong>Chófer a disposición:</strong> Tu conductor estará esperándote para asistirte con las bolsas, permitiéndote volver al coche a dejar tus compras y seguir explorando las tiendas cómodamente sin cargar peso.</li>
+                <li><strong>Horario flexible:</strong> Regresa a Barcelona exactamente cuando lo desees, sin depender de horarios de transporte público.</li>
+            </ul>
+            
+            <p>Completa tu día de shopping disfrutando de la exquisita oferta gastronómica de los restaurantes y cafeterías del Village. Solicita ya tu <strong>traslado VIP a La Roca Village</strong> y disfruta del lujo desde el primer kilómetro.</p>
+        ',
+        'excursion-privada-de-barcelona-a-sitges-y-tarragona' => '
+            <h2>Descubre la magia del Mediterráneo y el Imperio Romano</h2>
+            <p>Combina el encanto costero, el modernismo y el imponente legado de la antigua Roma en una sola jornada con nuestra <strong>Excursión Privada a Sitges y Tarragona</strong>. Este tour te llevará por la hermosa costa al sur de Barcelona, descubriendo dos de los destinos más atractivos de Cataluña a bordo de nuestros confortables vehículos premium.</p>
+            
+            <h3>Primera parada: Sitges, la Blanca Subur</h3>
+            <p>Situada a escasos 40 kilómetros de Barcelona, Sitges es conocida mundialmente por sus hermosas playas, su vibrante vida cultural y su patrimonio modernista. Durante tu visita podrás:</p>
+            <ul>
+                <li>Pasear por su icónico <strong>Paseo Marítimo</strong> flanqueado por palmeras y mansiones indianas.</li>
+                <li>Visitar la emblemática <strong>Iglesia de San Bartolomé y Santa Tecla</strong>, que se alza majestuosa sobre el mar ofreciendo la imagen más famosa de la villa.</li>
+                <li>Perderte por su encantador casco antiguo, de calles estrechas y casas blancas, y descubrir museos fascinantes como el <em>Cau Ferrat</em> o el <em>Palau Maricel</em>.</li>
+            </ul>
+
+            <h3>Segunda parada: Tarragona (Tarraco Romana)</h3>
+            <p>Siguiendo la costa hacia el sur, llegaremos a Tarragona, una ciudad declarada <strong>Patrimonio de la Humanidad por la UNESCO</strong> gracias a sus extraordinariamente conservadas ruinas romanas. Hace dos mil años, Tarraco fue una de las ciudades más importantes del Imperio Romano en la Península Ibérica.</p>
+            <ul>
+                <li><strong>El Anfiteatro Romano:</strong> Un espectacular coliseo del siglo II d.C. construido junto a la orilla del mar Mediterráneo, donde antaño luchaban gladiadores.</li>
+                <li><strong>El Circo Romano y la Torre del Pretorio:</strong> Pasea por las bóvedas subterráneas de uno de los circos mejor conservados del mundo.</li>
+                <li><strong>El Acueducto de les Ferreres (Pont del Diable):</strong> Una imponente obra de ingeniería romana situada en los bosques a las afueras de la ciudad.</li>
+                <li><strong>Balcón del Mediterráneo:</strong> Termina la visita asomándote a este famoso mirador que ofrece unas vistas inolvidables del mar y la costa dorada.</li>
+            </ul>
+
+            <h3>Confort absoluto en ruta</h3>
+            <p>Esta excursión de día completo es ideal para realizarla con nuestro servicio de <em>coche con conductor</em>. Disfrutarás del trayecto por la pintoresca carretera de las Costas del Garraf con la máxima seguridad, parando en miradores si lo deseas y escuchando las recomendaciones locales de nuestro chófer experto.</p>
+        ',
+        'tour-panoramico-por-barcelona-en-coche-privado' => '
+            <h2>La esencia de Barcelona desde la comodidad de un vehículo premium</h2>
+            <p>Si dispones de poco tiempo en la ciudad o simplemente quieres evitar largas caminatas y las aglomeraciones del transporte público, nuestro <strong>Tour Panorámico por Barcelona en Coche Privado</strong> es la solución perfecta. Te ofrecemos un recorrido exclusivo y eficiente que te permitirá contemplar las obras maestras y los rincones más espectaculares de la capital catalana sin bajar de tu vehículo de lujo (o realizando paradas estratégicas y breves para tomar fotografías).</p>
+            
+            <h3>Los imprescindibles de la ciudad condal</h3>
+            <p>A lo largo de este tour panorámico, nuestro chófer profesional trazará una ruta optimizada que incluye los grandes hitos de la arquitectura y la historia de Barcelona:</p>
+            <ul>
+                <li><strong>La Sagrada Familia:</strong> Contempla la majestuosidad de la obra cumbre e inacabada de Antoni Gaudí, admirando los intrincados detalles de sus diferentes fachadas directamente desde el confort de tu asiento.</li>
+                <li><strong>Paseo de Gracia:</strong> Recorre la avenida más lujosa de la ciudad, flanqueada por boutiques de diseño y las célebres casas modernistas, incluyendo la <em>Casa Batlló</em> y <em>La Pedrera (Casa Milà)</em>.</li>
+                <li><strong>Montjuïc y la Plaza España:</strong> Ascenderemos a la montaña de Montjuïc pasando por las Torres Venecianas y el Palacio Nacional. Desde lo alto, disfrutarás de las mejores <strong>vistas panorámicas de toda Barcelona</strong> y su puerto, además de ver las instalaciones del Anillo Olímpico de 1992.</li>
+                <li><strong>Frente Marítimo y Puerto Olímpico:</strong> Siente la brisa mediterránea recorriendo el litoral barcelonés, desde el Monumento a Colón y el Port Vell hasta las modernas playas de la Vila Olímpica.</li>
+                <li><strong>Arco de Triunfo y Parque de la Ciutadella:</strong> Iconos de la Exposición Universal de 1888 que aportan un aire monumental e histórico al trayecto.</li>
+            </ul>
+
+            <h3>Un tour diseñado a tu medida</h3>
+            <p>La mayor ventaja de nuestro <em>servicio de transfer y tour privado</em> es la personalización absoluta. Si deseas alterar la ruta para pasar por el Camp Nou, acercarte al moderno distrito 22@, o hacer una parada exprés para degustar unas tapas, tu chófer estará a tu completa disposición para adaptar el itinerario al momento.</p>
+            
+            <p>Viaja con la elegancia de nuestra flota de vehículos Mercedes, equipados con climatización, asientos de cuero y cristales tintados para tu máxima privacidad. Convierte tu visita a Barcelona en una experiencia de cinco estrellas, libre de estrés y fatiga.</p>
+        '
+    );
+
+    foreach ( $routes_content as $slug => $content ) {
+        $post = get_page_by_path( $slug, OBJECT, 'post' );
+        if ( $post && $post instanceof WP_Post ) {
+            // Update the post content
+            wp_update_post( array(
+                'ID'           => $post->ID,
+                'post_content' => trim( $content )
+            ) );
+        }
+    }
+
+    update_option( 'mt_routes_content_updated_v1', true );
+}
+
