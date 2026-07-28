@@ -84,8 +84,12 @@ function mt_ruta_details_callback( $post ) {
     $pax = get_post_meta( $post->ID, '_mt_ruta_pax', true );
     $maletas = get_post_meta( $post->ID, '_mt_ruta_maletas', true );
     $precio = get_post_meta( $post->ID, '_mt_ruta_precio', true );
+    $h1_seo = get_post_meta( $post->ID, '_mt_ruta_h1', true );
 
     echo '<table class="form-table">';
+    echo '<tr><th><label for="mt_ruta_h1">H1 SEO (Opcional)</label></th>';
+    echo '<td><input type="text" id="mt_ruta_h1" name="mt_ruta_h1" value="' . esc_attr( $h1_seo ) . '" size="40" placeholder="Ej. Taxis desde Barcelona a Sitges" /><br><small>Si se deja en blanco, se usará el título del post.</small></td></tr>';
+
     echo '<tr><th><label for="mt_ruta_origen">Origen</label></th>';
     echo '<td><input type="text" id="mt_ruta_origen" name="mt_ruta_origen" value="' . esc_attr( $origen ) . '" size="25" placeholder="Ej. Aeropuerto BCN" /></td></tr>';
     
@@ -117,7 +121,7 @@ function mt_ruta_save_meta_box_data( $post_id ) {
         return;
     }
 
-    $fields = array( 'origen', 'destino', 'duracion', 'pax', 'maletas', 'precio' );
+    $fields = array( 'h1', 'origen', 'destino', 'duracion', 'pax', 'maletas', 'precio' );
     foreach ( $fields as $field ) {
         if ( isset( $_POST["mt_ruta_$field"] ) ) {
             update_post_meta( $post_id, "_mt_ruta_$field", sanitize_text_field( $_POST["mt_ruta_$field"] ) );

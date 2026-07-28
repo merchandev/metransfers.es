@@ -1400,8 +1400,112 @@ add_filter( 'wp_robots', static function ( array $robots ): array {
 		return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
 	}
 
+	// 4. Umbral de calidad para rutas (Phase 2)
+	if ( is_singular( 'ruta' ) ) {
+		$precio = get_post_meta( get_the_ID(), '_mt_ruta_precio', true );
+		if ( empty( $precio ) ) {
+			return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
+		}
+	}
+
 	return $robots;
 }, 99 );
+
+// ==========================================
+// YOAST SEO: Excluir rutas de baja calidad del sitemap
+// ==========================================
+add_filter( 'wpseo_exclude_from_sitemap_by_post_ids', function( $excluded ) {
+	$args = array(
+		'post_type'      => 'ruta',
+		'posts_per_page' => -1,
+		'fields'         => 'ids',
+		'meta_query'     => array(
+			array(
+				'key'     => '_mt_ruta_precio',
+				'compare' => 'NOT EXISTS',
+			),
+			array(
+				'key'     => '_mt_ruta_precio',
+				'value'   => '',
+				'compare' => '=',
+			),
+			'relation' => 'OR',
+		),
+	);
+	$poor_routes = get_posts( $args );
+	
+	if ( ! empty( $poor_routes ) ) {
+		$excluded = array_merge( $excluded, $poor_routes );
+	}
+	
+	return $excluded;
+} );
+
+// Excluir taxonomías y tipos de contenido irrelevantes del Sitemap
+add_filter( 'wpseo_sitemap_exclude_taxonomy', function( $exclude, $taxonomy ) {
+	// Excluir etiquetas (tags) y categorías vacías si las hay
+	if ( $taxonomy === 'post_tag' ) {
+		return true;
+	}
+	return $exclude;
+}, 10, 2 );
+
+add_filter( 'wpseo_sitemap_exclude_post_type', function( $exclude, $post_type ) {
+	// Excluir attachments
+	if ( $post_type === 'attachment' ) {
+		return true;
+	}
+	return $exclude;
+}, 10, 2 );
+
+add_filter( 'wpseo_sitemap_exclude_author', '__return_true' );
+
+// ==========================================
+// YOAST SEO: Optimización de CTR para Home y Hubs
+// ==========================================
+add_filter( 'wpseo_title', function( $title ) {
+	if ( is_front_page() || is_home() ) {
+		return 'Traslados Privados y Taxis en Barcelona | Precio Cerrado | MeTransfers';
+	}
+	if ( is_page( 'taxis-privado-barcelona' ) ) {
+		return 'Taxi Privado en Barcelona - Traslados VIP y Premium | MeTransfers';
+	}
+	if ( is_page( 'taxis-barcelona-costa-brava' ) ) {
+		return 'Traslados Barcelona - Costa Brava | Taxis Privados | MeTransfers';
+	}
+	if ( is_page( 'taxis-barcelona-salou' ) ) {
+		return 'Traslado Barcelona a Salou | Taxi Privado Directo | MeTransfers';
+	}
+	if ( is_page( 'taxis-barcelona-port-aventura' ) ) {
+		return 'Taxi Barcelona a PortAventura | Traslados Privados | MeTransfers';
+	}
+	if ( is_page( 'taxis-barcelona-girona' ) ) {
+		return 'Traslados Barcelona - Girona | Aeropuerto y Ciudad | MeTransfers';
+	}
+	return $title;
+} );
+
+add_filter( 'wpseo_metadesc', function( $desc ) {
+	if ( is_front_page() || is_home() ) {
+		return 'Reserva tu traslado privado en Barcelona con MeTransfers. Vehículos Mercedes, conductores profesionales y precios fijos sin sorpresas. Cancelación gratuita.';
+	}
+	if ( is_page( 'taxis-privado-barcelona' ) ) {
+		return 'Servicio de taxi privado y chófer en Barcelona. Traslados al aeropuerto, puerto y eventos en vehículos de alta gama. Reserva con precio cerrado.';
+	}
+	if ( is_page( 'taxis-barcelona-costa-brava' ) ) {
+		return 'Viaja a la Costa Brava desde Barcelona con total comodidad. Taxis privados y traslados puerta a puerta. Espacio para equipaje garantizado.';
+	}
+	if ( is_page( 'taxis-barcelona-salou' ) ) {
+		return 'Reserva tu traslado directo desde Barcelona o el Aeropuerto de El Prat hasta Salou. Conductores expertos y vehículos cómodos. Precio fijo.';
+	}
+	if ( is_page( 'taxis-barcelona-port-aventura' ) ) {
+		return 'Traslados privados a PortAventura desde Barcelona. La forma más rápida y cómoda de viajar en familia o con amigos. Sillas infantiles bajo petición.';
+	}
+	if ( is_page( 'taxis-barcelona-girona' ) ) {
+		return 'Conexión directa entre Barcelona y Girona. Traslados privados al aeropuerto o centro de la ciudad. Vehículos Mercedes y atención personalizada.';
+	}
+	return $desc;
+} );
 
 /**
  * Full restoration of legal pages (Title, Slug, Content) to fix 404s and empty content.

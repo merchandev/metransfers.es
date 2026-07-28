@@ -17,8 +17,11 @@ $pax      = get_post_meta( $ruta_id, '_mt_ruta_pax',      true );
 $maletas  = get_post_meta( $ruta_id, '_mt_ruta_maletas',  true );
 $precio   = get_post_meta( $ruta_id, '_mt_ruta_precio',   true );
 
-// H1 SEO: construido desde los metadatos de la ruta, no desde el tÍtulo interno
-if ( $origen && $destino ) {
+// H1 SEO: construido desde los metadatos de la ruta, no desde el título interno
+$h1_seo = get_post_meta( $ruta_id, '_mt_ruta_h1', true );
+if ( ! empty( $h1_seo ) ) {
+    $h1_text = $h1_seo;
+} elseif ( $origen && $destino ) {
     $h1_text = sprintf(
         'Transfer privado del %s a %s',
         esc_html( $origen ),
