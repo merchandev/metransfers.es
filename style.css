@@ -6603,6 +6603,134 @@ p {
     border-bottom: 1px solid rgba(0, 86, 179, 0.07) !important;
 }
 
+.single-article-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .single-article-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.single-article-shell {
+    background: #FFFFFF !important;
+    border: var(--surface-border) !important;
+    box-shadow: var(--shadow-lg) !important;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+/* Sidebar y Widgets */
+.single-article-sidebar {
+    position: relative;
+    height: 100%;
+}
+
+.sidebar-sticky {
+    position: sticky;
+    top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.widget {
+    background: #fff;
+    border: 1px solid rgba(0, 86, 179, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+
+.widget-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #004E9A;
+    margin-bottom: 16px;
+    border-bottom: 2px solid rgba(0, 86, 179, 0.1);
+    padding-bottom: 8px;
+}
+
+/* Tabla de Contenidos (TOC) */
+.toc-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.toc-nav li {
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.toc-nav a {
+    color: #001c38;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+    display: block;
+}
+
+.toc-nav a:hover {
+    color: #004E9A;
+}
+
+.toc-level-h3 {
+    padding-left: 16px;
+    font-size: 0.9rem;
+}
+
+/* Caja de Autor */
+.article-author-box {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    background: rgba(0, 86, 179, 0.04);
+    padding: 24px;
+    border-radius: 16px;
+    margin-top: 40px;
+    border: 1px solid rgba(0, 86, 179, 0.1);
+}
+
+.author-avatar img {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.author-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #004E9A;
+    margin-bottom: 4px;
+}
+
+.author-bio {
+    font-size: 0.95rem;
+    color: #001c38;
+    margin-bottom: 8px;
+}
+
+.author-link {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #004E9A;
+    text-decoration: none;
+}
+
+.author-link:hover {
+    text-decoration: underline;
+}
+
 .search-plugin-wrapper {
     background: #FFFFFF !important;
     border: var(--surface-border) !important;

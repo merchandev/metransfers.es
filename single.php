@@ -148,33 +148,97 @@ while ( have_posts() ) :
 
 		<div class="single-article-main">
 			<div class="container">
-				<div class="single-article-shell">
-					<div class="single-article-body">
-						<div class="entry-content luxury-prose">
-							<?php the_content(); ?>
+				<div class="single-article-layout">
+					
+					<div class="single-article-shell">
+						<div class="single-article-body">
+							<div class="entry-content luxury-prose js-toc-content">
+								<?php the_content(); ?>
+							</div>
+
+							<!-- Author Box -->
+							<div class="article-author-box">
+								<div class="author-avatar">
+									<?php echo get_avatar( get_the_author_meta( 'ID' ), 80 ); ?>
+								</div>
+								<div class="author-info">
+									<h4 class="author-name"><?php echo esc_html( get_the_author() ); ?></h4>
+									<p class="author-bio"><?php echo esc_html( get_the_author_meta( 'description' ) ); ?></p>
+									<a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>" class="author-link">Ver más artÍculos de <?php echo esc_html( get_the_author() ); ?> →</a>
+								</div>
+							</div>
 						</div>
+
+						<footer class="single-article-footer">
+							<div class="single-article-utility">
+								<div class="single-share">
+									<span class="single-share-label" style="color: var(--text-secondary) !important; font-weight: bold;"><?php esc_html_e( 'Compartir', 'me-transfers' ); ?></span>
+									<a href="https://wa.me/?text=<?php echo urlencode( get_the_title( $post_id ) . ' ' . get_permalink( $post_id ) ); ?>" target="_blank" rel="noopener" class="share-btn share-wa">WhatsApp</a>
+								</div>
+							</div>
+
+							<div class="single-cta-box">
+								<div class="single-cta-copy">
+									<span class="single-cta-eyebrow"><?php esc_html_e( 'Reserva privada', 'me-transfers' ); ?></span>
+									<h2 class="single-cta-title"><?php esc_html_e( '¿Listo para tu próximo traslado?', 'me-transfers' ); ?></h2>
+									<p><?php esc_html_e( 'Reserva tu traslado privado o tour personalizado en Barcelona con una experiencia premium, puntual y adaptada a tu agenda.', 'me-transfers' ); ?></p>
+								</div>
+								<a href="<?php echo esc_url( me_transfers_get_section_url( 'search' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Reservar ahora', 'me-transfers' ); ?></a>
+							</div>
+						</footer>
 					</div>
 
-					<footer class="single-article-footer">
-						<div class="single-article-utility">
-							<div class="single-share">
-								<span class="single-share-label" style="color: var(--text-secondary) !important; font-weight: bold;"><?php esc_html_e( 'Compartir', 'me-transfers' ); ?></span>
-								<a href="https://wa.me/?text=<?php echo urlencode( get_the_title( $post_id ) . ' ' . get_permalink( $post_id ) ); ?>" target="_blank" rel="noopener" class="share-btn share-wa">WhatsApp</a>
+					<!-- Sidebar -->
+					<aside class="single-article-sidebar">
+						<div class="sidebar-sticky">
+							<div class="widget toc-widget">
+								<h3 class="widget-title">Índice de contenidos</h3>
+								<nav id="toc-container" class="toc-nav"></nav>
+							</div>
+							
+							<div class="widget cta-widget">
+								<h3 class="widget-title">Reserva tu traslado</h3>
+								<p>VehÍculos premium, conductores profesionales y cancelación gratuita.</p>
+								<a href="<?php echo esc_url( me_transfers_get_section_url( 'search' ) ); ?>" class="btn btn-solid" style="width:100%; justify-content:center; margin-bottom:12px;">Presupuesto online</a>
+								<a href="https://wa.me/34662024136?text=Hola,%20me%20gustar%C3%ADa%20informaci%C3%B3n%20sobre%20un%20traslado%20privado." target="_blank" rel="noopener" class="btn btn-ghost-inv" style="width:100%; justify-content:center; border:2px solid #25D366; color:#25D366;">
+									Consultar por WhatsApp
+								</a>
 							</div>
 						</div>
+					</aside>
 
-						<div class="single-cta-box">
-							<div class="single-cta-copy">
-								<span class="single-cta-eyebrow"><?php esc_html_e( 'Reserva privada', 'me-transfers' ); ?></span>
-								<h2 class="single-cta-title"><?php esc_html_e( '¿Listo para tu próximo traslado?', 'me-transfers' ); ?></h2>
-								<p><?php esc_html_e( 'Reserva tu traslado privado o tour personalizado en Barcelona con una experiencia premium, puntual y adaptada a tu agenda.', 'me-transfers' ); ?></p>
-							</div>
-							<a href="<?php echo esc_url( me_transfers_get_section_url( 'search' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Reservar ahora', 'me-transfers' ); ?></a>
-						</div>
-					</footer>
 				</div>
 			</div>
 		</div>
+
+		<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const content = document.querySelector('.js-toc-content');
+			const tocContainer = document.getElementById('toc-container');
+			
+			if (content && tocContainer) {
+				const headers = content.querySelectorAll('h2, h3');
+				if (headers.length > 0) {
+					const list = document.createElement('ul');
+					headers.forEach(function(header, index) {
+						if (!header.id) {
+							header.id = 'seccion-' + index;
+						}
+						const li = document.createElement('li');
+						li.className = 'toc-item toc-level-' + header.tagName.toLowerCase();
+						const a = document.createElement('a');
+						a.href = '#' + header.id;
+						a.textContent = header.textContent;
+						li.appendChild(a);
+						list.appendChild(li);
+					});
+					tocContainer.appendChild(list);
+				} else {
+					document.querySelector('.toc-widget').style.display = 'none';
+				}
+			}
+		});
+		</script>
 
 		<?php if ( $related_posts->have_posts() ) : ?>
 			<section class="single-related-section" aria-labelledby="related-posts-title">
