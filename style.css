@@ -6665,25 +6665,69 @@ p {
 }
 
 .toc-nav li {
-    margin-bottom: 8px;
-    line-height: 1.4;
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+.toc-nav li:last-child {
+    margin-bottom: 0;
 }
 
 .toc-nav a {
-    color: #001c38;
+    color: #1a2b40;
     text-decoration: none;
     font-size: 0.95rem;
-    transition: color 0.2s;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.toc-nav a::before {
+    content: "";
     display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #cbd5e1;
+    margin-top: 8px;
+    flex-shrink: 0;
+    transition: background-color 0.2s ease;
 }
 
 .toc-nav a:hover {
     color: #004E9A;
 }
 
+.toc-nav a:hover::before {
+    background-color: #004E9A;
+}
+
 .toc-level-h3 {
+    margin-top: -6px;
     padding-left: 16px;
-    font-size: 0.9rem;
+}
+
+.toc-level-h3 a {
+    font-size: 0.88rem;
+    color: #475569;
+}
+
+.toc-level-h3 a::before {
+    width: 4px;
+    height: 4px;
+    background-color: transparent;
+    border: 1px solid #cbd5e1;
+    margin-top: 7px;
+}
+
+.toc-level-h3 a:hover {
+    color: #004E9A;
+}
+
+.toc-level-h3 a:hover::before {
+    border-color: #004E9A;
+    background-color: #004E9A;
 }
 
 /* Caja de Autor */
