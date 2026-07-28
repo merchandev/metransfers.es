@@ -1747,3 +1747,88 @@ function mt_auto_update_routes_content() {
     update_option( 'mt_routes_content_updated_v1', true );
 }
 
+// =========================================================================
+// AUTO-CREAR ARTÍCULO TAX FREE (UNA SOLA VEZ)
+// =========================================================================
+add_action( 'init', 'mt_auto_create_tax_free_post' );
+function mt_auto_create_tax_free_post() {
+    if ( get_option( 'mt_tax_free_post_created_v1' ) ) {
+        return;
+    }
+
+    $slug = 'recuperar-el-iva-en-el-aeropuerto';
+    $post = get_page_by_path( $slug, OBJECT, 'post' );
+    
+    $excerpt = 'Si has disfrutado de una jornada de compras por la ciudad condal y resides fuera de la Unión Europea, tienes derecho a solicitar la devolución del Impuesto sobre el Valor Añadido (IVA) de tus adquisiciones. El Aeropuerto Josep Tarradellas Barcelona-El Prat cuenta con el sistema digital DIVA, el cual ha simplificado enormemente este trámite. A continuación, te presentamos el paso a paso detallado para realizar la gestión de tu Tax Free de forma rápida, segura y sin contratiempos antes de tu vuelo de regreso.';
+    
+    $content = '<p class="lead-text">' . $excerpt . '</p>
+        <h2>Requisitos Previos para el Tax Free en España</h2>
+        <p>Antes de iniciar el proceso, es indispensable cumplir con ciertos criterios estipulados por la normativa aduanera española:</p>
+        <ul>
+            <li><strong>Residencia:</strong> Debes tener tu residencia habitual fuera de la Unión Europea (o en territorios específicos como Canarias, Ceuta o Melilla).</li>
+            <li><strong>Tipo de bienes:</strong> Los artículos comprados deben ser para uso personal o regalo, y deben salir de la UE en tu equipaje personal en un plazo máximo de tres meses desde la compra.</li>
+            <li><strong>Sin importe mínimo:</strong> Actualmente en España no existe una cantidad mínima de gasto para tener derecho a la devolución del IVA.</li>
+        </ul>
+
+        <h2>Paso 1: En la Tienda (Solicitud del Formulario)</h2>
+        <p>El proceso para recuperar tus impuestos comienza mucho antes de llegar al aeropuerto, concretamente en el momento de realizar el pago en el comercio.</p>
+        <ul>
+            <li>Informa al personal de la tienda que deseas el formulario Tax Free.</li>
+            <li>Muestra tu pasaporte original para que puedan registrar tus datos correctamente.</li>
+            <li>Asegúrate de recibir el documento con el logotipo DIVA y un código de barras o código QR. Guarda este recibo junto con el ticket de compra original.</li>
+        </ul>
+
+        <h2>Paso 2: Llegada al Aeropuerto El Prat</h2>
+        <p>El día de tu vuelo, la planificación del tiempo es crucial. El proceso de aduanas puede tener colas, especialmente en temporada alta de vacaciones.</p>
+        <ul>
+            <li>Llega al aeropuerto con al menos 3 horas de antelación respecto a la salida de tu vuelo.</li>
+            <li>Para garantizar la puntualidad y evitar el estrés del transporte público con todo el equipaje y las compras, reservar un traslado privado directamente hasta tu terminal de salida es una excelente estrategia logística.</li>
+            <li><strong>Regla de oro:</strong> Bajo ninguna circunstancia factures el equipaje que contiene tus compras antes de realizar el trámite. La aduana requiere verificar que la mercancía abandona efectivamente el territorio.</li>
+        </ul>
+
+        <h2>Paso 3: Validación en los Quioscos Digitales DIVA</h2>
+        <p>Una vez en el aeropuerto, y siempre antes de pasar el control de seguridad, debes dirigirte a las máquinas de validación automática DIVA.</p>
+        
+        <h3>Ubicaciones de los Quioscos DIVA</h3>
+        <p>Encontrarás las terminales interactivas DIVA estratégicamente ubicadas en las zonas de Salidas del aeropuerto, generalmente cerca de los mostradores de facturación y junto a las oficinas de la Guardia Civil (Aduanas).</p>
+
+        <h3>Proceso de Escaneo</h3>
+        <ul>
+            <li>Selecciona tu idioma en la pantalla táctil de la máquina.</li>
+            <li>Pasa el código de barras de cada uno de tus formularios Tax Free por el lector óptico.</li>
+            <li><strong>Mensaje Verde:</strong> El formulario está aprobado. El trámite aduanero ha finalizado con éxito.</li>
+            <li><strong>Mensaje Rojo:</strong> La máquina no puede validar la compra de forma automática. Deberás dar un par de pasos hacia el mostrador contiguo de la Guardia Civil (Aduanas) para una revisión manual, presentando tus mercancías y pasaporte.</li>
+        </ul>
+
+        <h2>Paso 4: Cobro del Reembolso</h2>
+        <p>Con los formularios validados (ya sea digital o manualmente), el último paso es materializar la devolución del dinero. Puedes facturar tu equipaje en este momento si lo deseas y luego proceder al cobro.</p>
+        
+        <h3>Opciones de Cobro Disponibles</h3>
+        <ul>
+            <li><strong>Oficinas de Reembolso (Global Blue, Planet, Innova):</strong> Encontrarás mostradores de estas agencias operadoras distribuidos tanto en la zona pública (antes del control de seguridad) como en la zona de embarque (después del control de pasaportes). Presenta tus documentos validados para recibir el dinero.</li>
+            <li><strong>Reembolso en Efectivo:</strong> Recibirás el dinero al instante en la moneda seleccionada, pero la agencia deducirá una comisión por gastos de gestión.</li>
+            <li><strong>Reembolso en Tarjeta de Crédito:</strong> Recuperarás el importe íntegro correspondiente. El dinero suele reflejarse en tu cuenta bancaria en un plazo de unos días hábiles.</li>
+            <li><strong>Buzones de Correo:</strong> Si prefieres evitar las colas o tu vuelo sale de madrugada cuando las oficinas están cerradas, introduce el formulario validado en el sobre prefranqueado que te entregaron en la tienda, escribe los datos de tu tarjeta de crédito y deposítalo en los buzones de la empresa operadora correspondientes.</li>
+        </ul>
+    ';
+
+    if ( ! $post ) {
+        wp_insert_post( array(
+            'post_title'   => 'Guía Definitiva: Cómo Recuperar el IVA (Tax Free) en el Aeropuerto de Barcelona – El Prat',
+            'post_name'    => $slug,
+            'post_content' => trim( $content ),
+            'post_excerpt' => $excerpt,
+            'post_status'  => 'publish',
+            'post_type'    => 'post'
+        ) );
+    } else {
+        wp_update_post( array(
+            'ID'           => $post->ID,
+            'post_content' => trim( $content ),
+            'post_excerpt' => $excerpt,
+        ) );
+    }
+
+    update_option( 'mt_tax_free_post_created_v1', true );
+}
+
