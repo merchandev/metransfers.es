@@ -372,7 +372,6 @@
 					<li><a href="/sobre-nosotros/">Sobre nosotros</a></li>
 					<li><a href="/blog/">Blog</a></li>
 					<li><a href="/faq/">FAQ</a></li>
-					<li><a href="/mi-cuenta/">Mi cuenta</a></li>
 					<li><a href="/contacto/">Contacto</a></li>
 				</ul>
 			</div>

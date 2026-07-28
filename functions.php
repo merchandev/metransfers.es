@@ -1832,3 +1832,93 @@ function mt_auto_create_tax_free_post() {
     update_option( 'mt_tax_free_post_created_v1', true );
 }
 
+// =========================================================================
+// AUTO-CREAR PÁGINAS GENÉRICAS (FAQ, SOBRE NOSOTROS)
+// =========================================================================
+add_action( 'init', 'mt_auto_create_generic_pages' );
+function mt_auto_create_generic_pages() {
+    if ( get_option( 'mt_generic_pages_created_v1' ) ) {
+        return;
+    }
+
+    $pages = array(
+        'faq' => array(
+            'title'   => 'Preguntas Frecuentes (FAQ)',
+            'content' => '
+                <div class="luxury-prose">
+                    <h2>Resolvemos tus dudas sobre nuestros traslados privados</h2>
+                    <p>En MeTransfers queremos que tu experiencia sea perfecta desde el momento en que realizas tu reserva. A continuación, hemos recopilado las preguntas más habituales de nuestros clientes.</p>
+
+                    <h3>1. ¿Cómo funciona la recogida en el aeropuerto?</h3>
+                    <p>Nuestro conductor monitorizará el estado de tu vuelo en tiempo real. Te estará esperando en la zona de llegadas (Arrivals) con un cartel con tu nombre o el logotipo de tu empresa, justo después de que recojas tu equipaje. Te ayudará con las maletas y te acompañará hasta el vehículo VIP estacionado en la zona reservada.</p>
+
+                    <h3>2. ¿Qué pasa si mi vuelo se retrasa?</h3>
+                    <p>No tienes de qué preocuparte. Incluimos <strong>hasta 60 minutos de espera de cortesía gratuita</strong> desde el momento en que aterriza el vuelo. Dado que monitorizamos los vuelos, si hay un retraso ajustaremos automáticamente la hora de recogida sin ningún coste adicional para ti.</p>
+
+                    <h3>3. ¿Los vehículos disponen de sillas para niños o bebés?</h3>
+                    <p>Sí, la seguridad de los más pequeños es nuestra prioridad. Ofrecemos sillas infantiles y elevadores homologados sin coste adicional. Solo necesitas indicarnos la edad y el peso de los niños en el formulario de reserva o a través de WhatsApp para que tengamos el vehículo preparado.</p>
+
+                    <h3>4. ¿Cuál es la política de cancelación?</h3>
+                    <p>Ofrecemos total flexibilidad. Puedes cancelar o modificar tu reserva de forma gratuita hasta <strong>24 horas antes</strong> de la hora de recogida programada. Si cancelas con menos antelación, ponte en contacto con nuestro equipo de soporte para revisar tu caso concreto.</p>
+
+                    <h3>5. ¿Puedo llevar equipaje especial o voluminoso (bicicletas, esquís)?</h3>
+                    <p>¡Por supuesto! Disponemos de furgonetas Mercedes Clase V extra largas (Minivans) ideales para transportar equipaje deportivo, sillas de ruedas o simplemente muchas maletas. Solo te pedimos que nos lo indiques al hacer la reserva para asegurarnos de enviar el vehículo adecuado.</p>
+                    
+                    <h3>6. ¿Los precios son cerrados o hay cargos extra?</h3>
+                    <p>Todos nuestros presupuestos son finales. El precio que ves al reservar incluye impuestos (IVA), peajes, propinas y tiempos de espera de cortesía. <strong>No hay sorpresas ni costes ocultos.</strong></p>
+                    
+                    <hr/>
+                    <p>¿Tienes alguna otra pregunta? No dudes en escribirnos por WhatsApp o utilizar nuestro <a href="/contacto/">formulario de contacto</a>. Nuestro equipo de atención al cliente está disponible 24/7 para ayudarte.</p>
+                </div>
+            '
+        ),
+        'sobre-nosotros' => array(
+            'title'   => 'Sobre Nosotros',
+            'content' => '
+                <div class="luxury-prose">
+                    <h2>MeTransfers: Excelencia en Movilidad Privada</h2>
+                    <p>Somos una agencia boutique de traslados privados y chóferes VIP con base en Barcelona. Nacimos con un objetivo claro: elevar los estándares del transporte de pasajeros en Cataluña, transformando un simple trayecto en una <strong>experiencia de lujo, confort y fiabilidad.</strong></p>
+                    
+                    <h3>Nuestra Filosofía</h3>
+                    <p>Entendemos que el tiempo de nuestros clientes es su activo más valioso. Ya sea que viajes por negocios, asistas a un congreso internacional (como el Mobile World Congress) o disfrutes de unas merecidas vacaciones en la Costa Brava, nuestro equipo se encarga de toda la logística para que tú solo tengas que relajarte y disfrutar del viaje.</p>
+                    
+                    <h3>La Flota: Confort de Primera Clase</h3>
+                    <p>No creemos en los compromisos cuando se trata de seguridad y comodidad. Por ello, operamos exclusivamente con vehículos premium de última generación de la marca <strong>Mercedes-Benz</strong>:</p>
+                    <ul>
+                        <li><strong>Clase E y Clase S:</strong> Elegancia y sofisticación absolutas para ejecutivos, diplomáticos y parejas.</li>
+                        <li><strong>Clase V (Minivan):</strong> El espacio definitivo para familias y grupos corporativos de hasta 7 personas, con asientos enfrentables y amplio espacio para equipaje.</li>
+                    </ul>
+                    <p>Todos nuestros vehículos se desinfectan tras cada servicio y cuentan con climatización independiente, agua de cortesía y conexión Wi-Fi gratuita.</p>
+
+                    <h3>Nuestros Chóferes: Los Mejores Anfitriones</h3>
+                    <p>La tecnología y los coches de lujo no son nada sin el toque humano. Nuestro equipo de conductores profesionales destaca por su <strong>discreción, puntualidad extrema y conocimiento exhaustivo</strong> de Barcelona y sus alrededores. Completamente bilingües y con una impecable presentación en traje oscuro, están capacitados para ofrecer un servicio diplomático y adaptarse a cualquier imprevisto en la ruta.</p>
+                    
+                    <h3>Compromiso Medioambiental</h3>
+                    <p>En MeTransfers miramos hacia el futuro. Estamos en un proceso activo de renovación de nuestra flota hacia opciones híbridas y eléctricas de lujo para reducir nuestra huella de carbono, sin sacrificar ni un ápice del rendimiento y la comodidad que nos caracteriza.</p>
+                </div>
+            '
+        )
+    );
+
+    foreach ( $pages as $slug => $data ) {
+        $page = get_page_by_path( $slug, OBJECT, 'page' );
+        
+        if ( ! $page ) {
+            wp_insert_post( array(
+                'post_title'   => $data['title'],
+                'post_name'    => $slug,
+                'post_content' => trim( $data['content'] ),
+                'post_status'  => 'publish',
+                'post_type'    => 'page'
+            ) );
+        } else {
+            wp_update_post( array(
+                'ID'           => $page->ID,
+                'post_content' => trim( $data['content'] ),
+            ) );
+        }
+    }
+
+    update_option( 'mt_generic_pages_created_v1', true );
+}
+
