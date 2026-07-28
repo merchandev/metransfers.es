@@ -10103,21 +10103,31 @@ body .page-banner__meta {
 .ruta-card:hover::before { transform: scaleX(1); }
 
 .ruta-card__icon {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     line-height: 1;
+    flex-shrink: 0;
+    margin-top: 0.25rem;
 }
 .ruta-card__body {
     display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    flex: 1;
 }
 .ruta-card__origen {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     font-weight: 700;
-    color: #475569;
+    color: #0D1B2A;
+    line-height: 1.2;
 }
-.ruta-card__arrow { color: #cbd5e1; flex-shrink: 0; }
+.ruta-card__arrow { 
+    color: #94a3b8; 
+    flex-shrink: 0; 
+    transform: rotate(90deg); 
+    margin-left: 0.5rem;
+    display: flex;
+}
 .ruta-card__dest {
     font-size: 0.95rem;
     font-weight: 800;
