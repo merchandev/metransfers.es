@@ -1570,3 +1570,27 @@ function mt_full_restore_legal_pages_once() {
     set_transient( 'mt_full_restored_legal_pages_v1', true, DAY_IN_SECONDS * 365 );
 }
 
+// =========================================================================
+// RUTA VIRTUAL PARA EL BLOG (evitar 404 si la página no existe en DB)
+// =========================================================================
+add_action( 'template_redirect', function() {
+    $path = trim( parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
+    if ( $path === 'blog' && is_404() ) {
+        global $wp_query;
+        $wp_query->is_404 = false;
+        $wp_query->is_home = true;
+        $wp_query->is_archive = false;
+        
+        $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
+        query_posts( array(
+            'post_type'      => 'post',
+            'post_status'    => 'publish',
+            'paged'          => $paged
+        ) );
+        
+        status_header( 200 );
+        include get_template_directory() . '/index.php';
+        exit;
+    }
+}, 0 );
+

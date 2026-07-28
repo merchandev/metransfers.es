@@ -53,32 +53,6 @@ get_header();
                     </form>
                 </div>
 
-                <div class="error-404-premium__nav">
-                    <p class="error-404-premium__nav-title"><?php esc_html_e( 'Enlaces útiles:', 'me-transfers' ); ?></p>
-                    <ul class="error-404-premium__nav-list">
-                        <li>
-                            <a href="<?php echo esc_url( me_transfers_get_section_url( 'search' ) ); ?>">
-                                <?php esc_html_e( 'Traslados', 'me-transfers' ); ?>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo esc_url( me_transfers_get_section_url( 'tours' ) ); ?>">
-                                <?php esc_html_e( 'Tours Privados', 'me-transfers' ); ?>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo esc_url( home_url( '/blog' ) ); ?>">
-                                <?php esc_html_e( 'Blog', 'me-transfers' ); ?>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo esc_url( home_url( '/contacto' ) ); ?>">
-                                <?php esc_html_e( 'Contacto', 'me-transfers' ); ?>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
             </div>
         </div>
     </section>
