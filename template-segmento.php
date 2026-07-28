@@ -30,7 +30,7 @@ get_header(); ?>
     <section class="contact-section section" style="background-color: #0D1B2A;">
         <div class="container gs-reveal text-center">
             <h2 class="section-title" style="color: #fff;">Atención Especializada 24/7</h2>
-            <p style="color: #cbd5e1; max-width: 600px; margin: 0 auto 2rem;">Contáctanos vía WhatsApp para coordinar la logística corporativa o acuerdos para hoteles.</p>
+            <p style="color: #cbd5e1; max-width: 600px; margin: 0 auto 2rem;">Contáctanos vÍa WhatsApp para coordinar la logÍstica corporativa o acuerdos para hoteles.</p>
             <a href="https://wa.me/34662024136?text=Hola,%20quisiera%20informaci%C3%B3n%20para%20empresas/hoteles" target="_blank" rel="noopener" class="btn btn-whatsapp" style="display: inline-flex; align-items: center; gap: 10px;">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
                 Contactar por WhatsApp

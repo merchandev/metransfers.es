@@ -114,7 +114,7 @@ get_header(); ?>
                 </p>
                 <div class="hero__checks">
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Choferes experimentados</span>
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos clase VIP disponibles</span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> VehÍculos clase VIP disponibles</span>
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Puntualidad y discreción</span>
                 </div>
             </div>
@@ -139,7 +139,7 @@ get_header(); ?>
             
             <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;">Viaja a los pueblos más bonitos de la Costa Brava</h2>
             <p>
-                La Costa Brava ofrece algunos de los paisajes marítimos más espectaculares de Cataluña. Sin embargo, acceder a muchos de sus pintorescos pueblos y calas escondidas mediante transporte público puede ser complicado y consumir mucho tiempo de tus vacaciones. 
+                La Costa Brava ofrece algunos de los paisajes marÍtimos más espectaculares de Cataluña. Sin embargo, acceder a muchos de sus pintorescos pueblos y calas escondidas mediante transporte público puede ser complicado y consumir mucho tiempo de tus vacaciones. 
             </p>
             <p>
                 La solución ideal es reservar un <strong>traslado privado desde Barcelona a la Costa Brava</strong>. Te recogemos en el Aeropuerto de Barcelona (El Prat), la estación de Sants o tu propio hotel en la ciudad, y te llevamos puerta a puerta hasta tu alojamiento costero.
@@ -154,18 +154,18 @@ get_header(); ?>
                 <li><strong>Tossa de Mar:</strong> Famosa por su impresionante castillo medieval junto al mar.</li>
                 <li><strong>Platja d'Aro y Palamós:</strong> Excelentes opciones gastronómicas y de tiendas de lujo.</li>
                 <li><strong>Begur, Pals y L'Escala:</strong> Encanto histórico, ruinas de Empúries y calas espectaculares de aguas cristalinas.</li>
-                <li><strong>Cadaqués y Roses:</strong> El encanto del Cap de Creus y la tierra que inspiró a Salvador Dalí.</li>
+                <li><strong>Cadaqués y Roses:</strong> El encanto del Cap de Creus y la tierra que inspiró a Salvador DalÍ.</li>
             </ul>
 
             <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">La comodidad de un coche privado</h3>
             <p>
-                Todos nuestros vehículos están equipados con aire acondicionado, asientos confortables y amplio espacio para el equipaje, algo esencial si viajas para unas vacaciones largas en la playa o si llevas material deportivo (como palos de golf o equipo de buceo).
+                Todos nuestros vehÍculos están equipados con aire acondicionado, asientos confortables y amplio espacio para el equipaje, algo esencial si viajas para unas vacaciones largas en la playa o si llevas material deportivo (como palos de golf o equipo de buceo).
             </p>
 
             <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
-                <h4 style="margin-top:0; color:#0066CC;">INFORMACIÓN: Chófer por horas o excursiones de un día</h4>
+                <h4 style="margin-top:0; color:#0066CC;">INFORMACIÓN: Chófer por horas o excursiones de un dÍa</h4>
                 <p style="margin-bottom:0;">
-                    Si prefieres no alojarte allí pero deseas explorar la Costa Brava durante un día, puedes contratar nuestro servicio de "Chófer por horas". Tu conductor personal te llevará a los pueblos que elijas, esperará por ti y te traerá de vuelta a Barcelona por la tarde.
+                    Si prefieres no alojarte allÍ pero deseas explorar la Costa Brava durante un dÍa, puedes contratar nuestro servicio de "Chófer por horas". Tu conductor personal te llevará a los pueblos que elijas, esperará por ti y te traerá de vuelta a Barcelona por la tarde.
                 </p>
             </div>
 
@@ -179,7 +179,7 @@ get_header(); ?>
           <div>
             <p class="tag">Reserva tu próximo traslado</p>
             <h2>Tu viaje comienza con una recogida bien organizada</h2>
-            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
+            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehÍculo que mejor se adapta a tu trayecto.</p>
           </div>
           <div class="cta__btns">
             <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>

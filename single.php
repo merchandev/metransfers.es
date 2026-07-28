@@ -24,7 +24,7 @@ while ( have_posts() ) :
 	$modified_iso    = get_the_modified_date( 'c' );
 	$content_source  = preg_replace( '/\[\/?mt_hero_card[^\]]*\]/i', '', (string) get_the_content() );
 	$content_plain   = wp_strip_all_tags( strip_shortcodes( $content_source ) );
-	$summary_source  = has_excerpt() ? get_the_excerpt() : wp_trim_words( $content_plain, 32, '"¦' );
+	$summary_source  = has_excerpt() ? get_the_excerpt() : wp_trim_words( $content_plain, 32, '...' );
 	$summary         = trim( wp_strip_all_tags( $summary_source ) );
 	$article_images  = array();
 	$logo_url        = get_template_directory_uri() . '/assets/img/MT - MeTransfers.png';
@@ -208,7 +208,7 @@ while ( have_posts() ) :
 										<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 									</h3>
 
-									<p class="related-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '"¦' ) ); ?></p>
+									<p class="related-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?></p>
 
 									<div class="related-card-meta">
 										<time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"><?php echo esc_html( get_the_date( 'd M Y' ) ); ?></time>

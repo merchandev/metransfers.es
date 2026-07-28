@@ -23,7 +23,7 @@ get_header(); ?>
                     <ul style="list-style: none; padding: 0; margin-top: 1rem; color: #a0aec0;">
                         <li>✓ Asientos de piel premium</li>
                         <li>✓ Wi-Fi a bordo</li>
-                        <li>✓ Agua embotellada de cortesía</li>
+                        <li>✓ Agua embotellada de cortesÍa</li>
                     </ul>
                 </div>
             </article>

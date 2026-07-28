@@ -90,7 +90,7 @@ body .hero-booking-card {
 </script>
 <?php
 // ── Google Analytics ──────────────────────────────────────────────────────
-// Se carga SOLO si el usuario ha aceptado la categoría analítica.
+// Se carga SOLO si el usuario ha aceptado la categorÍa analÍtica.
 // La cookie mt_analytics_consent='granted' se establece desde el banner de cookies.
 // Sin consentimiento: se inicializa en modo denegado (recomendado por Google).
 $ga_id = 'G-7ZFL53LYFN';
@@ -105,7 +105,7 @@ function gtag(){dataLayer.push(arguments);}
 // Consentimiento aceptado: carga completa de Analytics
 gtag('consent', 'update', { analytics_storage: 'granted' });
 <?php else : ?>
-// Sin consentimiento: modo denegado (no envía datos de usuario)
+// Sin consentimiento: modo denegado (no envÍa datos de usuario)
 gtag('consent', 'default', {
     analytics_storage: 'denied',
     ad_storage: 'denied',

@@ -27,7 +27,7 @@ function me_transfers_get_destination_catalog() {
 
 	$catalog = array();
 
-	// 1. Destinos configurados manualmente con contenido específico y SEO local
+	// 1. Destinos configurados manualmente con contenido especÍfico y SEO local
 	$catalog['salou'] = array(
 		'title'       => 'Salou',
 		'slug'        => 'salou',
@@ -35,10 +35,10 @@ function me_transfers_get_destination_catalog() {
 		'order'       => 1,
 		'related'     => array( 'cambrils', 'tarragona', 'reus', 'portaventura', 'pineda-de-mar' ),
 		'summary'     => 'Reserva tu transfer privado a Salou desde el Aeropuerto de Reus (a 10 km), el Aeropuerto de Barcelona (a 95 km), la estación del AVE Camp de Tarragona o cualquier hotel. Viaja cómodo, sin esperas y a precio cerrado.',
-		'travel_note' => 'Salou es el epicentro de la Costa Dorada, conocido por sus playas, su animada vida turística y su cercanía a PortAventura World. Coordinamos tu llegada directa a tu hotel, apartamento o resort con la máxima puntualidad.',
+		'travel_note' => 'Salou es el epicentro de la Costa Dorada, conocido por sus playas, su animada vida turÍstica y su cercanÍa a PortAventura World. Coordinamos tu llegada directa a tu hotel, apartamento o resort con la máxima puntualidad.',
 		'highlights' => array(
 			'Recogida puntual en el Aeropuerto de Reus, Aeropuerto de Barcelona o estación del AVE.',
-			'Vehículos adecuados para familias con niños, grupos grandes o equipaje especial.',
+			'VehÍculos adecuados para familias con niños, grupos grandes o equipaje especial.',
 			'Ruta directa por autopista (AP-7) para que llegues a Salou de forma rápida y segura.',
 		),
 	);
@@ -58,7 +58,7 @@ function me_transfers_get_destination_catalog() {
 		),
 	);
 
-	// 2. Destinos genéricos que aún no tienen contenido específico
+	// 2. Destinos genéricos que aún no tienen contenido especÍfico
 	$generic_titles = array(
 		'Madrid', 'Palamos', 'Baqueira Beret', 'Tossa de Mar', 'La Escala', 'Cap de Creus',
 		'Calella de Palafrugell', 'Begur', 'Costa Brava', 'Santa Susanna', 'Cadaques', 'Marbella',
@@ -76,7 +76,7 @@ function me_transfers_get_destination_catalog() {
 			'slug'        => $slug,
 			'h1'          => $title, // Fallback genérico para H1
 			'order'       => $index++,
-			'related'     => array(), // Vacío por defecto
+			'related'     => array(), // VacÍo por defecto
 			'summary'     => sprintf(
 				/* translators: %s: destination title. */
 				__( 'Solicita información para tu traslado privado a %s con recogida en Barcelona, aeropuerto, hotel o puerto y un servicio premium adaptado a tu itinerario.', 'me-transfers' ),
@@ -94,7 +94,7 @@ function me_transfers_get_destination_catalog() {
 					__( 'Opciones de ida, ida y vuelta o disposición por horas para viajes hacia %s.', 'me-transfers' ),
 					$title
 				),
-				__( 'Vehículos premium, seguimiento operativo y asistencia para hoteles, aeropuertos, cruceros y reuniones corporativas.', 'me-transfers' ),
+				__( 'VehÍculos premium, seguimiento operativo y asistencia para hoteles, aeropuertos, cruceros y reuniones corporativas.', 'me-transfers' ),
 			),
 		);
 	}
@@ -362,7 +362,7 @@ function me_transfers_get_destination_request_notice( $slug ) {
 
 	return array(
 		'type'    => 'error',
-		'message' => __( 'No pudimos enviar la solicitud. Revisa los campos obligatorios e intÃ©ntalo de nuevo.', 'me-transfers' ),
+		'message' => __( 'No pudimos enviar la solicitud. Revisa los campos obligatorios e inténtalo de nuevo.', 'me-transfers' ),
 	);
 }
 
@@ -402,7 +402,7 @@ function me_transfers_render_destination_request_form( $destination ) {
 					</div>
 
 					<div class="destination-request-field">
-						<label for="mt-phone"><?php esc_html_e( 'TelÃ©fono', 'me-transfers' ); ?></label>
+						<label for="mt-phone"><?php esc_html_e( 'Teléfono', 'me-transfers' ); ?></label>
 						<input id="mt-phone" type="tel" name="phone">
 					</div>
 
@@ -429,7 +429,7 @@ function me_transfers_render_destination_request_form( $destination ) {
 					<div class="destination-request-field">
 						<label for="mt-trip-type"><?php esc_html_e( 'Tipo de servicio', 'me-transfers' ); ?></label>
 						<select id="mt-trip-type" name="trip_type">
-							<option value=""><?php esc_html_e( 'Selecciona una opciÃ³n', 'me-transfers' ); ?></option>
+							<option value=""><?php esc_html_e( 'Selecciona una opción', 'me-transfers' ); ?></option>
 							<option value="solo-ida"><?php esc_html_e( 'Solo ida', 'me-transfers' ); ?></option>
 							<option value="ida-vuelta"><?php esc_html_e( 'Ida y vuelta', 'me-transfers' ); ?></option>
 							<option value="por-horas"><?php esc_html_e( 'Servicio por horas', 'me-transfers' ); ?></option>
@@ -439,7 +439,7 @@ function me_transfers_render_destination_request_form( $destination ) {
 
 				<div class="destination-request-field destination-request-field--full">
 					<label for="mt-message"><?php esc_html_e( 'Detalles del traslado', 'me-transfers' ); ?></label>
-					<textarea id="mt-message" name="message" rows="6" placeholder="<?php esc_attr_e( 'IndÃ­canos horarios, puntos de recogida, equipaje, niÃ±os, necesidades especiales o cualquier dato relevante.', 'me-transfers' ); ?>" required></textarea>
+					<textarea id="mt-message" name="message" rows="6" placeholder="<?php esc_attr_e( 'IndÍcanos horarios, puntos de recogida, equipaje, niños, necesidades especiales o cualquier dato relevante.', 'me-transfers' ); ?>" required></textarea>
 				</div>
 
 				<div class="destination-request-consent">
@@ -448,7 +448,7 @@ function me_transfers_render_destination_request_form( $destination ) {
 						<span>
 							<?php esc_html_e( 'Acepto que mis datos se utilicen para responder a esta solicitud.', 'me-transfers' ); ?>
 							<?php if ( $privacy_url ) : ?>
-								<a href="<?php echo esc_url( $privacy_url ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Política de privacidad', 'me-transfers' ); ?></a>
+								<a href="<?php echo esc_url( $privacy_url ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'PolÍtica de privacidad', 'me-transfers' ); ?></a>
 							<?php endif; ?>
 						</span>
 					</label>
@@ -534,7 +534,7 @@ function me_transfers_handle_destination_request() {
 			'Destino: ' . $destination['title'],
 			'Nombre: ' . $full_name,
 			'Email: ' . $email,
-			'TelÃ©fono: ' . ( $phone ? $phone : __( 'No indicado', 'me-transfers' ) ),
+			'Teléfono: ' . ( $phone ? $phone : __( 'No indicado', 'me-transfers' ) ),
 			'Origen: ' . $origin,
 			'Fecha estimada: ' . ( $date ? $date : __( 'No indicada', 'me-transfers' ) ),
 			'Pasajeros: ' . ( $passenger ? (string) $passenger : __( 'No indicado', 'me-transfers' ) ),

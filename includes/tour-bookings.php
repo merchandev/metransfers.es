@@ -90,7 +90,7 @@ function me_transfers_ajax_tour_booking() {
 	) );
 
 	if ( is_wp_error( $post_id ) ) {
-		wp_send_json_error( array( 'message' => 'Error al guardar la reserva. IntÃ©ntalo de nuevo.' ) );
+		wp_send_json_error( array( 'message' => 'Error al guardar la reserva. Inténtalo de nuevo.' ) );
 	}
 
 	update_post_meta( $post_id, '_customer_name', $name );
@@ -107,8 +107,8 @@ function me_transfers_ajax_tour_booking() {
 	$message    .= "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n";
 	$message    .= "Tour: $tour_name\n";
 	$message    .= "Nombre: $name\n";
-	$message    .= "PaÃ­s: $country\n";
-	$message    .= "TelÃ©fono: $phone\n";
+	$message    .= "PaÍs: $country\n";
+	$message    .= "Teléfono: $phone\n";
 	$message    .= "Email: $email\n";
 	$message    .= "Fecha deseada: $tour_date\n";
 	$message    .= "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n\n";
@@ -129,9 +129,9 @@ function me_transfers_ajax_tour_booking() {
 	$wa_text  .= "ðŸ“ Tour: $tour_name\n";
 	$wa_text  .= "ðŸ‘¤ Nombre: $name\n";
 	if ( $country ) {
-		$wa_text .= "ðŸŒ PaÃ­s: $country\n";
+		$wa_text .= "ðŸŒ PaÍs: $country\n";
 	}
-	$wa_text  .= "ðŸ“ž TelÃ©fono: $phone\n";
+	$wa_text  .= "ðŸ“ž Teléfono: $phone\n";
 	$wa_text  .= "ðŸ“§ Email: $email\n";
 	if ( $tour_date ) {
 		$wa_text .= "ðŸ“… Fecha deseada: $tour_date\n";
@@ -182,11 +182,11 @@ function me_transfers_render_tour_booking_meta_box( $post ) {
 			<td><?php echo esc_html( $name ); ?></td>
 		</tr>
 		<tr>
-			<th><label>ðŸŒ PaÃ­s</label></th>
+			<th><label>ðŸŒ PaÍs</label></th>
 			<td><?php echo esc_html( $country ?: 'â€”' ); ?></td>
 		</tr>
 		<tr>
-			<th><label>ðŸ“ž TelÃ©fono</label></th>
+			<th><label>ðŸ“ž Teléfono</label></th>
 			<td>
 				<?php if ( $phone ) : ?>
 					<a href="tel:<?php echo esc_attr( $phone ); ?>"><?php echo esc_html( $phone ); ?></a>
@@ -211,7 +211,7 @@ function me_transfers_render_tour_booking_meta_box( $post ) {
 	<?php
 	// WhatsApp quick-reply link
 	if ( $phone ) :
-		$wa_text = rawurlencode( "Hola $name, gracias por tu interÃ©s en el $tour. Te confirmamos disponibilidad para la fecha solicitada." );
+		$wa_text = rawurlencode( "Hola $name, gracias por tu interés en el $tour. Te confirmamos disponibilidad para la fecha solicitada." );
 		?>
 		<p style="margin-top:1rem;">
 			<a href="https://wa.me/<?php echo esc_attr( preg_replace('/[^0-9]/', '', $phone ) ); ?>?text=<?php echo esc_attr( $wa_text ); ?>" target="_blank" class="button button-primary" style="background:#25D366;border-color:#25D366;">
@@ -229,7 +229,7 @@ function me_transfers_tour_booking_columns( $columns ) {
 		'cb'        => $columns['cb'],
 		'title'     => 'Reserva',
 		'tour'      => 'Tour',
-		'phone'     => 'TelÃ©fono',
+		'phone'     => 'Teléfono',
 		'email'     => 'Email',
 		'tour_date' => 'Fecha Tour',
 		'date'      => 'Fecha Solicitud',

@@ -1,6 +1,6 @@
 /*
 Theme Name:  Me Transfers Premium
-Description: Tema a medida de alto rendimiento para agencias de transporte VIP y tours de lujo. Desarrollado con arquitectura PHP nativa sin constructores visuales pesados para garantizar máxima velocidad. Destaca por su diseño premium «Mobile First», motor de reservas dinámico e integración fluida de conversiones vía WhatsApp.
+Description: Tema a medida de alto rendimiento para agencias de transporte VIP y tours de lujo. Desarrollado con arquitectura PHP nativa sin constructores visuales pesados para garantizar máxima velocidad. Destaca por su diseño premium «Mobile First», motor de reservas dinámico e integración fluida de conversiones vÍa WhatsApp.
 Version:     3.0.6
 Author:      Merchan.Dev
 Text Domain: me-transfers
@@ -164,7 +164,7 @@ h6 {
     color: #ffffff !important;
 }
 
-/* Hero: subtÃƒÂ­tulo y textos del hero tambiÃƒÂ©n blancos */
+/* Hero: subtí­tulo y textos del hero tambií©n blancos */
 .hero-subtitle,
 .hero-section p,
 .hero-badge,
@@ -296,7 +296,7 @@ h6 {
 }
 
 /* ============================================================
-   6. HEADER Ãƒ- pill flotante glassmorphism
+   6. HEADER · pill flotante glassmorphism
    ============================================================ */
 .site-header {
     position: fixed;
@@ -367,7 +367,7 @@ h6 {
     color: rgba(255, 255, 255, 0.8);
 }
 
-/* Desktop Nav Ãƒ- centro */
+/* Desktop Nav · centro */
 .main-navigation {
     flex: 1;
     display: flex;
@@ -411,7 +411,7 @@ h6 {
     background: rgba(255, 255, 255, 0.1);
 }
 
-/* Ãƒ- Lado derecho del header Ãƒ- */
+/* · Lado derecho del header · */
 @media (min-width: 1025px) {
     .site-header.menu-limit-rest .main-navigation .nav-menu>li:nth-child(n+5) {
         display: none;
@@ -433,14 +433,14 @@ h6 {
     flex-shrink: 0;
 }
 
-/* CTA botÃƒÂ³n compact */
+/* CTA botí³n compact */
 .hdr-cta {
     padding: 0.55rem 1.3rem;
     font-size: 0.82rem;
     border-radius: 100px;
 }
 
-/* Ãƒ- Selector de Idioma Ãƒ- */
+/* · Selector de Idioma · */
 .lang-wrapper {
     position: relative;
     display: flex;
@@ -3215,7 +3215,7 @@ body.admin-bar .single-article-hero {
 }
 
 /* ============================================================
-   18. RESPONSIVE Ãƒ- 1280px: Large screens
+   18. RESPONSIVE · 1280px: Large screens
    ============================================================ */
 @media (max-width: 1280px) {
     .footer-grid {
@@ -3225,7 +3225,7 @@ body.admin-bar .single-article-hero {
 }
 
 /* ============================================================
-   19. RESPONSIVE Ãƒ- 1024px: Tablet landscape
+   19. RESPONSIVE · 1024px: Tablet landscape
    ============================================================ */
 @media (max-width: 1024px) {
     :root {
@@ -3261,7 +3261,7 @@ body.admin-bar .single-article-hero {
 }
 
 /* ============================================================
-   20. RESPONSIVE Ãƒ- 768px: Tablet portrait
+   20. RESPONSIVE · 768px: Tablet portrait
    ============================================================ */
 @media (max-width: 768px) {
     :root {
@@ -3370,7 +3370,7 @@ body.admin-bar .single-article-hero {
 }
 
 /* ============================================================
-   21. RESPONSIVE Ãƒ- 480px: Mobile phones
+   21. RESPONSIVE · 480px: Mobile phones
    ============================================================ */
 @media (max-width: 480px) {
     :root {
@@ -3507,7 +3507,7 @@ body.admin-bar .single-article-hero {
 }
 
 /* ============================================================
-   BLOG SECTION Ãƒ- Front Page Cards
+   BLOG SECTION · Front Page Cards
    ============================================================ */
 .fp-blog-section {
     position: relative;
@@ -3595,7 +3595,7 @@ body.admin-bar .single-article-hero {
     flex: 1;
 }
 
-/* Badge de categorÃƒÂ­a */
+/* Badge de categorí­a */
 .fp-blog-card__cat {
     display: inline-flex;
     align-items: center;
@@ -3612,7 +3612,7 @@ body.admin-bar .single-article-hero {
     color: #5bcdff;
 }
 
-/* TÃƒÂ­tulo */
+/* Tí­tulo */
 .fp-blog-card__title {
     font-size: 1.05rem;
     font-weight: 800;
@@ -3640,7 +3640,7 @@ body.admin-bar .single-article-hero {
     flex: 1;
 }
 
-/* Meta (fecha + leer mÃƒ-s) */
+/* Meta (fecha + leer m·s) */
 .fp-blog-card__meta {
     display: flex;
     align-items: center;
@@ -3764,7 +3764,7 @@ body.admin-bar .single-article-hero {
 
 
 /* ============================================================
-   GOOGLE TRANSLATE WIDGET Ãƒ- Custom pill design
+   GOOGLE TRANSLATE WIDGET · Custom pill design
    ============================================================ */
 
 #google_translate_element {
@@ -3807,7 +3807,7 @@ body.admin-bar .single-article-hero {
     z-index: 2;
 }
 
-/* Select pill con ÃƒÂ­cono de globo a la izq y chevron a la der */
+/* Select pill con í­cono de globo a la izq y chevron a la der */
 .goog-te-combo {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -3879,13 +3879,13 @@ body.translated-rtl {
 /* ============================================================
    ERROR 404
    Sigue las pautas de Google:
-   Ãƒ- HTTP 404 real (status_header en PHP)
-   Ãƒ- noindex (wp_head lo gestiona automÃƒ-ticamente)
-   Ãƒ- NavegaciÃƒÂ³n ÃƒÃƒÂºtil y bÃƒ-squeda
-   Ãƒ- DiseÃƒ-o coherente con el resto del sitio
+   · HTTP 404 real (status_header en PHP)
+   · noindex (wp_head lo gestiona autom·ticamente)
+   · Navegacií³n áíºtil y b·squeda
+   · Dise·o coherente con el resto del sitio
    ============================================================ */
 
-/* --- Wrapper de secciÃƒÂ³n --- */
+/* --- Wrapper de seccií³n --- */
 .section-404 {
     position: relative;
     min-height: 100svh;
@@ -3905,7 +3905,7 @@ body.translated-rtl {
     z-index: 0;
 }
 
-/* Capas de estrellas generadas con mÃƒ-ltiples box-shadows */
+/* Capas de estrellas generadas con m·ltiples box-shadows */
 .stars-layer {
     position: absolute;
     inset: 0;
@@ -3998,7 +3998,7 @@ body.translated-rtl {
     gap: 0;
 }
 
-/* --- NÃƒ-mero 404 --- */
+/* --- N·mero 404 --- */
 .error-404-number {
     display: flex;
     align-items: center;
@@ -4070,7 +4070,7 @@ body.translated-rtl {
     margin-bottom: 1rem;
 }
 
-/* --- TÃƒÂ­tulo --- */
+/* --- Tí­tulo --- */
 .error-404-title {
     font-size: clamp(1.8rem, 4vw, 3rem);
     font-weight: 800;
@@ -4079,7 +4079,7 @@ body.translated-rtl {
     letter-spacing: -0.03em;
 }
 
-/* --- DescripciÃƒÂ³n --- */
+/* --- Descripcií³n --- */
 .error-404-desc {
     color: var(--text-secondary);
     font-size: 1.05rem;
@@ -4102,7 +4102,7 @@ body.translated-rtl {
     padding: 0.9rem 2rem;
 }
 
-/* --- BÃƒ-squeda --- */
+/* --- B·squeda --- */
 .error-404-search {
     margin-bottom: 2rem;
     width: 100%;
@@ -4115,7 +4115,7 @@ body.translated-rtl {
     margin-bottom: 0.6rem;
 }
 
-/* Formulario de bÃƒ-squeda nativo de WordPress estilizado */
+/* Formulario de b·squeda nativo de WordPress estilizado */
 .error-404-search .search-form {
     display: flex;
     gap: 0.5rem;
@@ -4162,7 +4162,7 @@ body.translated-rtl {
     box-shadow: 0 6px 24px rgba(0, 119, 182, 0.35);
 }
 
-/* --- NavegaciÃƒÂ³n sugerida --- */
+/* --- Navegacií³n sugerida --- */
 .error-404-nav {
     width: 100%;
     max-width: 480px;
@@ -5816,7 +5816,7 @@ body {
 /* ============================================================
    44. BOOKING POPUP OVERFLOW FIX
    ============================================================ */
-/* Evita doble scroll (body + modal) cuando el popup estÃƒ- abierto */
+/* Evita doble scroll (body + modal) cuando el popup est· abierto */
 body.home:has( :is(.wptb-modal,
         .wptb-popup,
         .wptb-dialog,
@@ -6137,7 +6137,7 @@ body.page:has(#wptb-plugin-container.wptb-iso) .page-booking-cta {
 }
 
 /* ============================================================
-   BLOG INDEX Ãƒ- Premium card grid
+   BLOG INDEX · Premium card grid
    ============================================================ */
 
 /* Hero banner */
@@ -6426,7 +6426,7 @@ body.page:has(#wptb-plugin-container.wptb-iso) .page-booking-cta {
 
 
 /* ============================================================
-   REDISENO VISUAL v4.0 Ãƒ- PALETA BALANCEADA BLANCO + AZUL
+   REDISENO VISUAL v4.0 · PALETA BALANCEADA BLANCO + AZUL
    Todos los estilos aqui tienen mayor especificidad para
    sobrescribir el esquema oscuro anterior.
    ============================================================ */
@@ -6567,7 +6567,7 @@ p {
 }
 
 .btn-outline:hover {
-    background: rgba(7, 94, 168, 0.05) !important; /* MÃ¡s elegante que accent-light */
+    background: rgba(7, 94, 168, 0.05) !important; /* Más elegante que accent-light */
     border-color: var(--color-primary) !important;
     color: var(--color-primary) !important;
     transform: translateY(-1px);
@@ -7186,7 +7186,7 @@ body.admin-bar .single-article-hero--solid {
 }
 
 @media (max-width: 782px) {
-    /* Cabecera fija: el contenido del hero debe empezar debajo del menÃƒ- */
+    /* Cabecera fija: el contenido del hero debe empezar debajo del men· */
     .single-article-hero--solid {
         padding-top: calc(env(safe-area-inset-top, 0px) + 6.5rem) !important;
     }
@@ -7649,7 +7649,7 @@ body.admin-bar .single-article-hero--solid {
     color: #991b1b !important;
 }
 
-/* -- FOOTER Ãƒ- Azul marino rico -- */
+/* -- FOOTER · Azul marino rico -- */
 .site-footer {
     background: #0D1B2A !important;
     border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
@@ -7834,7 +7834,7 @@ body.admin-bar .single-article-hero--solid {
     background: var(--bg-secondary);
 }
 
-/* -- LANG + burger: cabecera oscura (tablet/mÃƒ-vil Ãƒ-1024px) -- */
+/* -- LANG + burger: cabecera oscura (tablet/m·vil ·1024px) -- */
 @media (max-width: 1024px) {
     .lang-switcher__trigger {
         background: rgba(255, 255, 255, 0.1) !important;
@@ -7926,7 +7926,7 @@ body {
 
 /* 
 /* =========================================
-   CONTACT SECTION Ãƒ- HOME
+   CONTACT SECTION · HOME
    ========================================= */
 
 .contact-section {
@@ -8086,7 +8086,7 @@ body {
 }
 
 /* =========================================
-   TOUR DETAIL PAGE Ãƒ- Form enhancements
+   TOUR DETAIL PAGE · Form enhancements
    ========================================= */
 
 #mt-tour-booking-form .destination-request-field input[type="date"] {
@@ -8095,7 +8095,7 @@ body {
 }
 
 /* =========================================
-   RESPONSIVE Ãƒ- Contact & Tour
+   RESPONSIVE · Contact & Tour
    ========================================= */
 
 @media (max-width: 768px) {
@@ -8761,7 +8761,7 @@ body {
     -webkit-text-fill-color: inherit !important;
 }
 
-/* CorrecciÃƒÂ³n Glitch Icono Idioma Doble */
+/* Correccií³n Glitch Icono Idioma Doble */
 .custom-lang-trigger .goog-te-gadget::before,
 #google_translate_element .goog-te-gadget::before,
 .header-right #google_translate_element .goog-te-gadget::before {
@@ -9432,7 +9432,7 @@ body .page-banner__meta {
 
 /* ============================================================
    SERVICE PAGE STYLES (template-servicio.php)
-   Extraído de inline a style.css para mejor rendimiento y caché
+   ExtraÍdo de inline a style.css para mejor rendimiento y caché
    ============================================================ */
 
 .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
@@ -9503,7 +9503,7 @@ body .page-banner__meta {
 @keyframes spin { 100%{transform:rotate(360deg)} }
 
 /* ===========================================
-   RUTA PAGE � Diseno Premium v2
+   RUTA PAGE � Diseno Premium v2
    =========================================== */
 
 /* ---- Hero compacto ---- */
@@ -9756,7 +9756,7 @@ body .page-banner__meta {
 }
 
 /* ===========================================
-   RUTAS ARCHIVE � Premium v1
+   RUTAS ARCHIVE � Premium v1
    =========================================== */
 
 /* Hero */
@@ -9997,7 +9997,7 @@ body .page-banner__meta {
 }
 
 /* ===========================================
-   OVERRIDE: Ruta hero = mismo tama�o que home
+   OVERRIDE: Ruta hero = mismo tama�o que home
    =========================================== */
 .ruta-page .ruta-hero {
     min-height: 100svh !important;

@@ -6,7 +6,7 @@
  */
 ?>
 <style>
-/* ─── Footer: colores explícitos y diseño compacto ─── */
+/* ─── Footer: colores explÍcitos y diseño compacto ─── */
 .site-footer {
 	background: #0B1F35;
 	color: rgba(255,255,255,0.75);
@@ -337,7 +337,7 @@
 						<?php bloginfo( 'name' ); ?>
 					</a>
 				<?php endif; ?>
-				<p class="footer-brand-desc">Traslados privados, tours y servicios con chófer en Barcelona y larga distancia. Vehículos Mercedes y atención personalizada 24/7.</p>
+				<p class="footer-brand-desc">Traslados privados, tours y servicios con chófer en Barcelona y larga distancia. VehÍculos Mercedes y atención personalizada 24/7.</p>
 			</div>
 
 			<!-- Servicios -->
@@ -423,8 +423,8 @@
 			<p>&copy; <?php echo date("Y"); ?> <strong>MeTransfers Barcelona</strong>.</p>
 			
 			<nav class="footer-legal-links" aria-label="Legal">
-				<a href="<?php echo esc_url( home_url( '/politica-de-privacidad' ) ); ?>">Política de privacidad</a>
-				<a href="<?php echo esc_url( home_url( '/politica-de-cookies' ) ); ?>">Política de cookies</a>
+				<a href="<?php echo esc_url( home_url( '/politica-de-privacidad' ) ); ?>">PolÍtica de privacidad</a>
+				<a href="<?php echo esc_url( home_url( '/politica-de-cookies' ) ); ?>">PolÍtica de cookies</a>
 				<a href="<?php echo esc_url( home_url( '/aviso-legal' ) ); ?>">Aviso legal</a>
 				<a href="<?php echo esc_url( home_url( '/terminos-y-condiciones' ) ); ?>">Términos y condiciones</a>
 			</nav>
@@ -467,7 +467,7 @@
                 <div class="wa-fg" style="margin-bottom:15px; font-size:13px;">
                     <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
                         <input type="checkbox" name="gdpr_aceptado" value="1" required style="width:auto; margin:0;">
-                        <span>He leído y acepto la política de privacidad.</span>
+                        <span>He leÍdo y acepto la polÍtica de privacidad.</span>
                     </label>
                 </div>
                 <button type="submit" class="wa-submit">
@@ -535,7 +535,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			formData.append('origen', 'whatsapp');
 
 			if(!window.mtAjax) {
-				console.error('Error crítico: mtAjax no definido. Abortando envío.');
+				console.error('Error crÍtico: mtAjax no definido. Abortando envÍo.');
 				alert('Ocurrió un error en la configuración. Por favor recargue la página.');
 				btn.innerHTML = originalHtml;
 				btn.disabled = false;

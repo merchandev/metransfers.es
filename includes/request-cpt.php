@@ -79,7 +79,7 @@ function me_transfers_ajax_destination_request() {
 	) );
 
 	if ( is_wp_error( $post_id ) ) {
-		wp_send_json_error( array( 'message' => 'Error al guardar la solicitud. IntÃ©ntalo de nuevo.' ) );
+		wp_send_json_error( array( 'message' => 'Error al guardar la solicitud. Inténtalo de nuevo.' ) );
 	}
 
 	update_post_meta( $post_id, '_customer_name', $name );

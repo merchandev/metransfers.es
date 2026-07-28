@@ -4,7 +4,7 @@
  *
  * Template inteligente para todas las páginas de servicios de MeTransfers.
  * Detecta el slug de la página y carga el contenido, formulario y diseño
- * específico de cada servicio.
+ * especÍfico de cada servicio.
  *
  * @package Me_Transfers
  */
@@ -102,7 +102,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 			<!-- CÓMO FUNCIONA -->
 			<div class="svc-block">
 				<span class="svc-label">El proceso</span>
-				<h2>Así de sencillo es reservar</h2>
+				<h2>AsÍ de sencillo es reservar</h2>
 				<div class="svc-steps-grid">
 					<?php foreach ( $service['steps'] as $step ) : ?>
 					<div class="svc-step">
@@ -134,7 +134,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-form-row">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-nombre">Nombre completo *</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-nombre" name="nombre" placeholder="Ej: Juan García" required>
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-nombre" name="nombre" placeholder="Ej: Juan GarcÍa" required>
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
@@ -150,7 +150,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 
 					<hr class="svc-form-divider">
 
-					<!-- ── Campos específicos por tipo de servicio ── -->
+					<!-- ── Campos especÍficos por tipo de servicio ── -->
 
 					<?php if ( $form_type === 'aeropuerto' ) : ?>
 					<p class="svc-form-section-title">
@@ -261,7 +261,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 								<option value="">Selecciona...</option>
 								<option>3 horas</option><option>4 horas</option><option>5 horas</option>
 								<option>6 horas</option><option>8 horas</option>
-								<option>10 horas (día completo)</option>
+								<option>10 horas (dÍa completo)</option>
 							</select>
 						</div>
 						<div class="sfg">
@@ -299,11 +299,11 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-vehiculos">Vehículos</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-vehiculos">VehÍculos</label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-vehiculos" name="extra_vehiculos">
 								<option value="">Selecciona...</option>
-								<option>1 vehículo</option><option>2 vehículos</option>
-								<option>3-5 vehículos</option><option>Más de 5</option>
+								<option>1 vehÍculo</option><option>2 vehÍculos</option>
+								<option>3-5 vehÍculos</option><option>Más de 5</option>
 							</select>
 						</div>
 						<div class="sfg">
@@ -370,7 +370,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-form-row">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-grupo">Nombre del grupo</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-grupo" name="extra_grupo" placeholder="Ej: Boda García">
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-grupo" name="extra_grupo" placeholder="Ej: Boda GarcÍa">
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
@@ -418,7 +418,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-gdpr">
 						<input type="checkbox" id="<?php echo esc_attr( $form_id ); ?>-gdpr" name="gdpr_aceptado" value="1" required>
 						<label for="<?php echo esc_attr( $form_id ); ?>-gdpr">
-							He leído y acepto la <a href="<?php echo esc_url( home_url( '/politica-de-privacidad' ) ); ?>" target="_blank">Política de Privacidad</a>.
+							He leÍdo y acepto la <a href="<?php echo esc_url( home_url( '/politica-de-privacidad' ) ); ?>" target="_blank">PolÍtica de Privacidad</a>.
 						</label>
 					</div>
 

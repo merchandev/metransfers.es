@@ -521,26 +521,12 @@ add_action( 'wp_footer', function() { ?>
 // 8. SEO: hreflang + canonical
 // =================================================================
 
+// Canonical removida: Se delega completamente en Yoast SEO para evitar dobles canonicals.
+// Hreflang desactivado temporalmente (mediante wp_robots noindex en functions.php) 
+// hasta que se completen las traducciones.
 add_action( 'wp_head', function() {
-    $lang     = mt_lang();
-    $path     = trim( parse_url( $_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH ), '/' );
-    $segments = explode( '/', $path );
-    $is_trans = array_key_exists( $segments[0], MT_LANGS ) && $segments[0] !== 'es';
-    $slug     = $is_trans ? implode( '/', array_slice( $segments, 1 ) ) : $path;
-
-    $canonical = ( $lang === 'es' )
-        ? home_url( '/' . ( $slug ? $slug . '/' : '' ) )
-        : home_url( '/' . $lang . '/' . ( $slug ? $slug . '/' : '' ) );
-
-    echo '<link rel="canonical" href="' . esc_url( $canonical ) . '">' . "\n";
-
-    foreach ( MT_LANGS as $code => $info ) {
-        $url = ( $code === 'es' )
-            ? home_url( '/' . ( $slug ? $slug . '/' : '' ) )
-            : home_url( '/' . $code . '/' . ( $slug ? $slug . '/' : '' ) );
-        echo '<link rel="alternate" hreflang="' . esc_attr( $code ) . '" href="' . esc_url( $url ) . '">' . "\n";
-    }
-    echo '<link rel="alternate" hreflang="x-default" href="' . esc_url( home_url( '/' . ( $slug ? $slug . '/' : '' ) ) ) . '">' . "\n";
+    // Si en el futuro se habilitan idiomas reales, aquÍ se pueden inyectar 
+    // las etiquetas hreflang correspondientes.
 }, 2 );
 
 

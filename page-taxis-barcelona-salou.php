@@ -110,11 +110,11 @@ get_header(); ?>
                 <div class="hero-badge-seo">De puerta a puerta | Confort garantizado</div>
                 <h1 class="hero-title-seo">Taxis y traslados desde Barcelona a Salou</h1>
                 <p class="hero-lead-seo">
-                    Inicia tus vacaciones en la Costa Dorada sin estrés. Reserva tu traslado privado desde el Aeropuerto de Barcelona o la ciudad hasta tu hotel o apartamento en Salou. Viaja en vehículos premium con un chófer profesional a tu disposición.
+                    Inicia tus vacaciones en la Costa Dorada sin estrés. Reserva tu traslado privado desde el Aeropuerto de Barcelona o la ciudad hasta tu hotel o apartamento en Salou. Viaja en vehÍculos premium con un chófer profesional a tu disposición.
                 </p>
                 <div class="hero__checks">
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Precio fijo sin cargos ocultos</span>
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos modernos y limpios</span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> VehÍculos modernos y limpios</span>
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Seguimiento de vuelos en tiempo real</span>
                 </div>
             </div>
@@ -142,7 +142,7 @@ get_header(); ?>
                 Llegar a la Costa Dorada desde Barcelona nunca fue tan sencillo. Evita las largas colas para el autobús y las incómodas combinaciones de trenes con equipaje. Nuestro servicio de <strong>traslados a Salou</strong> está pensado para que tu descanso comience desde el momento en que aterrizas.
             </p>
             <p>
-                Nuestros conductores monitorizan los vuelos de llegada al Aeropuerto de El Prat, por lo que incluso si tu vuelo se retrasa, te estaremos esperando en la terminal de llegadas con un cartel con tu nombre. Desde allí, el trayecto hasta Salou dura poco más de una hora por autopista (AP-7).
+                Nuestros conductores monitorizan los vuelos de llegada al Aeropuerto de El Prat, por lo que incluso si tu vuelo se retrasa, te estaremos esperando en la terminal de llegadas con un cartel con tu nombre. Desde allÍ, el trayecto hasta Salou dura poco más de una hora por autopista (AP-7).
             </p>
             
             <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">La mejor opción para familias y grupos</h3>
@@ -175,7 +175,7 @@ get_header(); ?>
           <div>
             <p class="tag">Reserva tu próximo traslado</p>
             <h2>Tu viaje comienza con una recogida bien organizada</h2>
-            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
+            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehÍculo que mejor se adapta a tu trayecto.</p>
           </div>
           <div class="cta__btns">
             <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>

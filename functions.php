@@ -22,9 +22,9 @@ require_once get_template_directory() . '/includes/services.php';
 require_once get_template_directory() . '/includes/request-cpt.php'; // Updated to trigger sync v6
 require_once get_template_directory() . '/includes/tour-bookings.php';
 
-// DESACTIVADO: mt_update_all_page_titles_once() anteponía "MeTransfers Barcelona -" a TODOS
-// los títulos editoriales de las páginas, mezclando el título interno con el título SEO.
-// Los tres conceptos deben estar separados: título interno, H1 visible y <title> SEO.
+// DESACTIVADO: mt_update_all_page_titles_once() anteponÍa "MeTransfers Barcelona -" a TODOS
+// los tÍtulos editoriales de las páginas, mezclando el tÍtulo interno con el tÍtulo SEO.
+// Los tres conceptos deben estar separados: tÍtulo interno, H1 visible y <title> SEO.
 // Si necesitas renombrar páginas, hazlo manualmente desde el panel de WordPress.
 // add_action( 'admin_init', 'mt_update_all_page_titles_once' );
 function mt_update_all_page_titles_once() {
@@ -359,7 +359,7 @@ function me_transfers_create_checkhoteles_role() {
         $role->remove_cap( 'edit_published_posts' );
         $role->remove_cap( 'publish_posts' );
         
-        // Añadir capacidades especÃ­ficas
+        // Añadir capacidades especÍficas
         $role->add_cap( 'read_transfer_requests' );
         $role->add_cap( 'edit_transfer_requests' );
         $role->add_cap( 'read_tour_bookings' );
@@ -367,20 +367,20 @@ function me_transfers_create_checkhoteles_role() {
     }
 }
 
-// 2. Ocultar menÃºs no deseados en el panel izquierdo
+// 2. Ocultar menús no deseados en el panel izquierdo
 add_action('admin_menu', 'me_transfers_hide_menus_checkhoteles', 999);
 function me_transfers_hide_menus_checkhoteles() {
     $user = wp_get_current_user();
     if ( in_array( 'check_hoteles', (array) $user->roles ) && ! in_array( 'administrator', (array) $user->roles ) ) {
         global $menu;
         
-        // Palabras clave de los menÃºs permitidos
+        // Palabras clave de los menús permitidos
         $allowed_menus = array(
             'index.php', // Escritorio
             'edit.php?post_type=hotel_partner', // Hoteles QR
             'edit.php?post_type=mt_request', // Solicitudes
             'edit.php?post_type=gyg_review', // GYG Reviews (si es CPT)
-            'gyg-reviews', // GYG Reviews (si es plugin/pÃ¡gina)
+            'gyg-reviews', // GYG Reviews (si es plugin/página)
             'agente-ia', // Agente IA
             'wp-agente-ia',
             'sg-cachepress', // Speed Optimizer
@@ -404,7 +404,7 @@ function me_transfers_hide_menus_checkhoteles() {
     }
 }
 
-// 3. Bloquear acceso directo por URL a pÃ¡ginas no permitidas
+// 3. Bloquear acceso directo por URL a páginas no permitidas
 add_action('admin_init', 'me_transfers_restrict_checkhoteles_access');
 function me_transfers_restrict_checkhoteles_access() {
     if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
@@ -426,7 +426,7 @@ function me_transfers_restrict_checkhoteles_access() {
             }
         }
         
-        // Permitir ediciÃ³n de Custom Post Types
+        // Permitir edición de Custom Post Types
         if ( ($pagenow === 'post.php' || $pagenow === 'post-new.php') ) {
             $post_type = '';
             if ( isset($_GET['post']) ) {
@@ -443,7 +443,7 @@ function me_transfers_restrict_checkhoteles_access() {
             }
         }
         
-        // Permitir pÃ¡ginas de plugins
+        // Permitir páginas de plugins
         if ( isset($_GET['page']) ) {
             $requested_page  = sanitize_key( wp_unslash( $_GET['page'] ) );
             $allowed_plugins = array('sg-cachepress', 'sg-security', 'agente-ia', 'wp-agente-ia', 'gyg-reviews');
@@ -455,7 +455,7 @@ function me_transfers_restrict_checkhoteles_access() {
             }
         }
         
-        // Si no estÃ¡ permitido, redirigir al escritorio
+        // Si no está permitido, redirigir al escritorio
         if ( ! $is_allowed ) {
             wp_redirect( admin_url( 'index.php' ) );
             exit;
@@ -463,7 +463,7 @@ function me_transfers_restrict_checkhoteles_access() {
     }
 }
 
-// 4. Limitar visualizaciÃ³n de Hoteles QR a los creados por el usuario
+// 4. Limitar visualización de Hoteles QR a los creados por el usuario
 add_action('pre_get_posts', 'me_transfers_restrict_hotel_partner_view');
 function me_transfers_restrict_hotel_partner_view($query) {
     if ( is_admin() && $query->is_main_query() ) {
@@ -532,7 +532,7 @@ function me_transfers_migrate_content_to_editor() {
         }
         if ( $page && empty( trim( $page->post_content ) ) ) {
             $content = '<p>' . esc_html( $dest['travel_note'] ) . '</p>';
-            $content .= '<p>' . esc_html( sprintf( 'Si estÃ¡s organizando un traslado hacia %s, podemos prepararte una propuesta adaptada al punto de recogida, nÃºmero de pasajeros, fecha estimada y tipo de servicio que necesites.', $dest['title'] ) ) . '</p>';
+            $content .= '<p>' . esc_html( sprintf( 'Si estás organizando un traslado hacia %s, podemos prepararte una propuesta adaptada al punto de recogida, número de pasajeros, fecha estimada y tipo de servicio que necesites.', $dest['title'] ) ) . '</p>';
             $content .= '<ul>';
             foreach ( $dest['highlights'] as $highlight ) {
                 $content .= '<li>' . esc_html( $highlight ) . '</li>';
@@ -623,70 +623,70 @@ function me_transfers_migrate_legal_to_editor() {
     set_transient( 'me_transfers_migrating_legal', true, MINUTE_IN_SECONDS * 5 );
 
     $pages = array(
-        'privacidad' => '<h2>1. IdentificaciÃ³n del Responsable del Tratamiento</h2>
-<p><strong>RazÃ³n Social:</strong> METRANSFERS GESTION SL</p>
+        'privacidad' => '<h2>1. Identificación del Responsable del Tratamiento</h2>
+<p><strong>Razón Social:</strong> METRANSFERS GESTION SL</p>
 <p><strong>NIF:</strong> B22522353</p>
-<p><strong>Domicilio Fiscal:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÃ &ndash; (BARCELONA)</p>
+<p><strong>Domicilio Fiscal:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ &ndash; (BARCELONA)</p>
 <p><strong>Contacto Privacidad:</strong> <a href="mailto:info@metransfers.es">info@metransfers.es</a></p>
-<h2>2. AceptaciÃ³n Vinculante</h2>
-<p>Al utilizar nuestros servicios, navegar por nuestra plataforma o completar el proceso de configuraciÃ³n de una reserva, usted reconoce haber leÃ­do, comprendido y aceptado sin reservas que sus datos personales sean tratados conforme a los tÃ©rminos aquÃ­ expuestos. La formalizaciÃ³n de una reserva constituye un contrato entre las partes, legitimando el tratamiento de los datos necesarios para la ejecuciÃ³n del servicio.</p>
+<h2>2. Aceptación Vinculante</h2>
+<p>Al utilizar nuestros servicios, navegar por nuestra plataforma o completar el proceso de configuración de una reserva, usted reconoce haber leÍdo, comprendido y aceptado sin reservas que sus datos personales sean tratados conforme a los términos aquÍ expuestos. La formalización de una reserva constituye un contrato entre las partes, legitimando el tratamiento de los datos necesarios para la ejecución del servicio.</p>
 <h2>3. Datos Objeto de Tratamiento</h2>
-<p>Recopilamos los datos estrictamente necesarios para la prestaciÃ³n del servicio:</p>
+<p>Recopilamos los datos estrictamente necesarios para la prestación del servicio:</p>
 <ul>
 <li><strong>Datos de Reserva:</strong> Nombre, apellidos, teléfono, correo electrónico y detalles del trayecto/servicio solicitado.</li>
-<li><strong>Datos de FacturaciÃ³n:</strong> DirecciÃ³n postal y NIF/DNI (segÃºn los datos de registro fiscal de la entidad).</li>
-<li><strong>Datos de NavegaciÃ³n:</strong> DirecciÃ³n IP, cookies y metadatos para garantizar la seguridad del sitio.</li>
+<li><strong>Datos de Facturación:</strong> Dirección postal y NIF/DNI (según los datos de registro fiscal de la entidad).</li>
+<li><strong>Datos de Navegación:</strong> Dirección IP, cookies y metadatos para garantizar la seguridad del sitio.</li>
 </ul>
 <h2>4. Finalidad del Tratamiento</h2>
-<p>Sus datos serÃ¡n tratados con el fin de:</p>
+<p>Sus datos serán tratados con el fin de:</p>
 <ul>
-<li><strong>GestiÃ³n de Reservas:</strong> Tramitar, confirmar y ejecutar los servicios de transporte o gestiÃ³n contratados.</li>
-<li><strong>AtenciÃ³n al Cliente:</strong> Resolver dudas y proporcionar soporte a través del punto Ãºnico de contacto <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</li>
+<li><strong>Gestión de Reservas:</strong> Tramitar, confirmar y ejecutar los servicios de transporte o gestión contratados.</li>
+<li><strong>Atención al Cliente:</strong> Resolver dudas y proporcionar soporte a través del punto único de contacto <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</li>
 <li><strong>Cumplimiento Legal:</strong> Emitir facturas y cumplir con las obligaciones tributarias ante la AEAT.</li>
 <li><strong>Seguridad:</strong> Prevenir fraudes y usos no autorizados de la plataforma.</li>
 </ul>
-<h2>5. LegitimaciÃ³n</h2>
+<h2>5. Legitimación</h2>
 <p>La base legal para el tratamiento es:</p>
 <ul>
-<li><strong>EjecuciÃ³n Contractual:</strong> Necesaria para procesar su reserva y prestarle el servicio solicitado.</li>
-<li><strong>ObligaciÃ³n Legal:</strong> Derivada de la normativa fiscal y mercantil vigente en España.</li>
-<li><strong>Consentimiento:</strong> Otorgado explÃ­citamente al marcar la casilla de aceptaciÃ³n en nuestros formularios.</li>
+<li><strong>Ejecución Contractual:</strong> Necesaria para procesar su reserva y prestarle el servicio solicitado.</li>
+<li><strong>Obligación Legal:</strong> Derivada de la normativa fiscal y mercantil vigente en España.</li>
+<li><strong>Consentimiento:</strong> Otorgado explÍcitamente al marcar la casilla de aceptación en nuestros formularios.</li>
 </ul>
-<h2>6. ConservaciÃ³n y Destinatarios</h2>
-<p><strong>Plazos:</strong> Los datos se conservarÃ¡n durante el tiempo que dure la relaciÃ³n comercial y, posteriormente, durante los plazos legales de prescripciÃ³n (generalmente 6 aÃ±os para documentos contables segÃºn el CÃ³digo de Comercio).</p>
-<p><strong>Cesiones:</strong> No se cederÃ¡n datos a terceros ajenos a la operativa del servicio, salvo obligaciÃ³n legal ante autoridades competentes.</p>
+<h2>6. Conservación y Destinatarios</h2>
+<p><strong>Plazos:</strong> Los datos se conservarán durante el tiempo que dure la relación comercial y, posteriormente, durante los plazos legales de prescripción (generalmente 6 años para documentos contables según el Código de Comercio).</p>
+<p><strong>Cesiones:</strong> No se cederán datos a terceros ajenos a la operativa del servicio, salvo obligación legal ante autoridades competentes.</p>
 <h2>7. Derechos del Interesado</h2>
-<p>Usted puede ejercer sus derechos de Acceso, RectificaciÃ³n, SupresiÃ³n, LimitaciÃ³n, Portabilidad y OposiciÃ³n enviando una comunicaciÃ³n escrita acompaÃ±ada de copia de su DNI a: <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</p>
-<p>Asimismo, tiene derecho a retirar su consentimiento en cualquier momento y a presentar una reclamaciÃ³n ante la Agencia EspaÃ±ola de ProtecciÃ³n de Datos (AEPD) si considera que sus derechos han sido vulnerados.</p>',
+<p>Usted puede ejercer sus derechos de Acceso, Rectificación, Supresión, Limitación, Portabilidad y Oposición enviando una comunicación escrita acompañada de copia de su DNI a: <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</p>
+<p>Asimismo, tiene derecho a retirar su consentimiento en cualquier momento y a presentar una reclamación ante la Agencia Española de Protección de Datos (AEPD) si considera que sus derechos han sido vulnerados.</p>',
         'cookie' => '<h2>1. Responsable del sitio web</h2>
-<p><strong>RazÃ³n social:</strong> METRANSFERS GESTION SL</p>
+<p><strong>Razón social:</strong> METRANSFERS GESTION SL</p>
 <p><strong>NIF:</strong> B22522353</p>
-<p><strong>Domicilio:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÃ (BARCELONA)</p>
+<p><strong>Domicilio:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ (BARCELONA)</p>
 <p><strong>Correo electrónico:</strong> <a href="mailto:info@metransfers.es">info@metransfers.es</a></p>
-<h2>2. QuÃ© son las cookies</h2>
-<p>Las cookies son pequeÃ±os archivos que se descargan en su dispositivo al acceder a determinadas pÃ¡ginas web. Permiten, entre otras cosas, reconocer su navegador, mantener la sesiÃ³n, recordar preferencias, reforzar la seguridad o facilitar determinadas funcionalidades tÃ©cnicas del sitio.</p>
+<h2>2. Qué son las cookies</h2>
+<p>Las cookies son pequeños archivos que se descargan en su dispositivo al acceder a determinadas páginas web. Permiten, entre otras cosas, reconocer su navegador, mantener la sesión, recordar preferencias, reforzar la seguridad o facilitar determinadas funcionalidades técnicas del sitio.</p>
 <h2>3. Tipos de cookies</h2>
 <p>Las cookies pueden clasificarse, entre otros criterios, del siguiente modo:</p>
 <ul>
-<li><strong>SegÃºn la entidad que las gestione:</strong> cookies propias y cookies de terceros.</li>
-<li><strong>SegÃºn su finalidad:</strong> cookies tÃ©cnicas o necesarias, de preferencias o personalizaciÃ³n, de anÃ¡lisis, y de publicidad o publicidad comportamental.</li>
-<li><strong>SegÃºn el tiempo que permanecen activas:</strong> cookies de sesiÃ³n y cookies persistentes.</li>
+<li><strong>Según la entidad que las gestione:</strong> cookies propias y cookies de terceros.</li>
+<li><strong>Según su finalidad:</strong> cookies técnicas o necesarias, de preferencias o personalización, de análisis, y de publicidad o publicidad comportamental.</li>
+<li><strong>Según el tiempo que permanecen activas:</strong> cookies de sesión y cookies persistentes.</li>
 </ul>
 <h2>4. Cookies utilizadas en metransfers.es</h2>
-<p>Con carÃ¡cter general, este sitio utiliza o puede utilizar cookies tÃ©cnicas, de sesiÃ³n y de preferencia estrictamente relacionadas con el funcionamiento de la web y la prestaciÃ³n del servicio solicitado por el usuario. Entre ellas se incluyen, cuando proceda:</p>
+<p>Con carácter general, este sitio utiliza o puede utilizar cookies técnicas, de sesión y de preferencia estrictamente relacionadas con el funcionamiento de la web y la prestación del servicio solicitado por el usuario. Entre ellas se incluyen, cuando proceda:</p>
 <ul>
-<li><strong>Cookies tÃ©cnicas de navegaciÃ³n y seguridad:</strong> necesarias para cargar la web, proteger formularios, prevenir usos abusivos y garantizar el funcionamiento bÃ¡sico del sitio.</li>
-<li><strong>Cookies asociadas al proceso de reserva o contacto:</strong> necesarias para gestionar solicitudes enviadas por el usuario, mantener datos temporales de sesiÃ³n y completar procesos esenciales vinculados al servicio contratado.</li>
-<li><strong>Cookies de preferencias:</strong> destinadas a recordar opciones expresamente solicitadas por el usuario, como el idioma o determinadas configuraciones de visualizaciÃ³n, cuando estas funcionalidades estÃ©n habilitadas.</li>
-<li><strong>Cookies tÃ©cnicas de terceros vinculadas al servicio:</strong> determinados proveedores externos integrados en la web, como herramientas de traducciÃ³n, mapas, contenidos embebidos o pasarelas de pago seguras, pueden instalar sus propias cookies cuando el usuario interactÃºa con dichas funcionalidades.</li>
+<li><strong>Cookies técnicas de navegación y seguridad:</strong> necesarias para cargar la web, proteger formularios, prevenir usos abusivos y garantizar el funcionamiento básico del sitio.</li>
+<li><strong>Cookies asociadas al proceso de reserva o contacto:</strong> necesarias para gestionar solicitudes enviadas por el usuario, mantener datos temporales de sesión y completar procesos esenciales vinculados al servicio contratado.</li>
+<li><strong>Cookies de preferencias:</strong> destinadas a recordar opciones expresamente solicitadas por el usuario, como el idioma o determinadas configuraciones de visualización, cuando estas funcionalidades estén habilitadas.</li>
+<li><strong>Cookies técnicas de terceros vinculadas al servicio:</strong> determinados proveedores externos integrados en la web, como herramientas de traducción, mapas, contenidos embebidos o pasarelas de pago seguras, pueden instalar sus propias cookies cuando el usuario interactúa con dichas funcionalidades.</li>
 </ul>
-<p>Este tema no instala por sÃ­ mismo cookies de publicidad comportamental. Si en el futuro se incorporan herramientas analÃ­ticas no exentas, servicios de personalizaciÃ³n avanzada o soluciones publicitarias que requieran consentimiento, se informarÃ¡ al usuario de forma previa y se recabarÃ¡ la autorizaciÃ³n correspondiente antes de su activaciÃ³n.</p>
-<h2>5. Base jurÃ­dica</h2>
-<p>Las cookies tÃ©cnicas o estrictamente necesarias pueden utilizarse sin consentimiento previo cuando resultan imprescindibles para prestar el servicio solicitado por el usuario o para posibilitar la navegaciÃ³n segura por el sitio web. Las cookies no necesarias solo podrÃ¡n utilizarse cuando exista una base jurÃ­dica adecuada y, en los casos exigidos por la normativa, tras obtener el consentimiento informado del usuario.</p>
-<h2>6. Plazo de conservaciÃ³n</h2>
-<p>Las cookies de sesiÃ³n permanecen activas Ãºnicamente mientras el usuario navega por el sitio y se eliminan al cerrar el navegador. Las cookies persistentes, cuando existan, se conservarÃ¡n durante el tiempo estrictamente necesario para cumplir su finalidad o hasta que el usuario las elimine manualmente desde la configuraciÃ³n de su navegador o del servicio correspondiente.</p>
-<h2>7. GestiÃ³n, configuraciÃ³n y desactivaciÃ³n</h2>
-<p>El usuario puede permitir, bloquear o eliminar las cookies instaladas en su dispositivo mediante la configuraciÃ³n de su navegador. Debe tener en cuenta que la desactivaciÃ³n de cookies tÃ©cnicas o necesarias puede afectar al correcto funcionamiento del sitio, del proceso de reserva o de determinadas funcionalidades esenciales.</p>
+<p>Este tema no instala por sÍ mismo cookies de publicidad comportamental. Si en el futuro se incorporan herramientas analÍticas no exentas, servicios de personalización avanzada o soluciones publicitarias que requieran consentimiento, se informará al usuario de forma previa y se recabará la autorización correspondiente antes de su activación.</p>
+<h2>5. Base jurÍdica</h2>
+<p>Las cookies técnicas o estrictamente necesarias pueden utilizarse sin consentimiento previo cuando resultan imprescindibles para prestar el servicio solicitado por el usuario o para posibilitar la navegación segura por el sitio web. Las cookies no necesarias solo podrán utilizarse cuando exista una base jurÍdica adecuada y, en los casos exigidos por la normativa, tras obtener el consentimiento informado del usuario.</p>
+<h2>6. Plazo de conservación</h2>
+<p>Las cookies de sesión permanecen activas únicamente mientras el usuario navega por el sitio y se eliminan al cerrar el navegador. Las cookies persistentes, cuando existan, se conservarán durante el tiempo estrictamente necesario para cumplir su finalidad o hasta que el usuario las elimine manualmente desde la configuración de su navegador o del servicio correspondiente.</p>
+<h2>7. Gestión, configuración y desactivación</h2>
+<p>El usuario puede permitir, bloquear o eliminar las cookies instaladas en su dispositivo mediante la configuración de su navegador. Debe tener en cuenta que la desactivación de cookies técnicas o necesarias puede afectar al correcto funcionamiento del sitio, del proceso de reserva o de determinadas funcionalidades esenciales.</p>
 <ul>
 <li><a href="https://support.google.com/chrome/answer/95647?hl=es" target="_blank" rel="noopener">Configurar cookies en Google Chrome</a></li>
 <li><a href="https://support.mozilla.org/es/kb/proteccion-antirrastreo-mejorada-firefox-escritorio" target="_blank" rel="noopener">Configurar cookies en Mozilla Firefox</a></li>
@@ -694,77 +694,77 @@ function me_transfers_migrate_legal_to_editor() {
 <li><a href="https://support.microsoft.com/es-es/microsoft-edge/administrar-cookies-en-microsoft-edge-ver-permitir-bloquear-eliminar-y-usar-168dab11-0753-043d-7c16-ede5947fc64d" target="_blank" rel="noopener">Configurar cookies en Microsoft Edge</a></li>
 </ul>
 <h2>8. Cookies de terceros</h2>
-<p>La aceptaciÃ³n, configuraciÃ³n y uso de cookies de terceros se rige por las polÃ­ticas propias de dichos proveedores. METRANSFERS GESTION SL no puede controlar en todo momento las actualizaciones que esos terceros realicen en sus polÃ­ticas, por lo que se recomienda al usuario revisar directamente sus condiciones cuando interactÃºe con herramientas externas integradas o enlazadas desde la web.</p>
-<h2>9. InformaciÃ³n adicional y contacto</h2>
-<p>Para obtener más información sobre el tratamiento de datos personales, puede consultar nuestra <a href="' . home_url( '/privacidad' ) . '">Política de Privacidad</a>. Si necesita aclaraciones sobre el uso de cookies en este sitio web, puede escribir a <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</p>
-<p>La presente Política de Cookies podrÃ¡ actualizarse cuando se produzcan cambios normativos, tÃ©cnicos o funcionales en el sitio web. Se recomienda revisarla periÃ³dicamente.</p>',
+<p>La aceptación, configuración y uso de cookies de terceros se rige por las polÍticas propias de dichos proveedores. METRANSFERS GESTION SL no puede controlar en todo momento las actualizaciones que esos terceros realicen en sus polÍticas, por lo que se recomienda al usuario revisar directamente sus condiciones cuando interactúe con herramientas externas integradas o enlazadas desde la web.</p>
+<h2>9. Información adicional y contacto</h2>
+<p>Para obtener más información sobre el tratamiento de datos personales, puede consultar nuestra <a href="' . home_url( '/privacidad' ) . '">PolÍtica de Privacidad</a>. Si necesita aclaraciones sobre el uso de cookies en este sitio web, puede escribir a <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</p>
+<p>La presente PolÍtica de Cookies podrá actualizarse cuando se produzcan cambios normativos, técnicos o funcionales en el sitio web. Se recomienda revisarla periódicamente.</p>',
         'terminos-y-condiciones' => '<h2>1. MARCO LEGAL APLICABLE</h2>
-<p>El presente contrato se rige por lo dispuesto en la legislaciÃ³n espaÃ±ola vigente, especÃ­ficamente:</p>
+<p>El presente contrato se rige por lo dispuesto en la legislación española vigente, especÍficamente:</p>
 <ul>
-<li>Ley 16/1987, de 30 de julio, de OrdenaciÃ³n de los Transportes Terrestres (LOTT) y su Reglamento (ROTT).</li>
+<li>Ley 16/1987, de 30 de julio, de Ordenación de los Transportes Terrestres (LOTT) y su Reglamento (ROTT).</li>
 <li>Ley 34/2002 (LSSI-CE) sobre servicios de la sociedad de la información.</li>
 <li>Real Decreto Legislativo 1/2007, por el que se aprueba el texto refundido de la Ley General para la Defensa de los Consumidores y Usuarios.</li>
-<li>Reglamento (UE) 2016/679 (RGPD) en materia de protecciÃ³n de datos.</li>
+<li>Reglamento (UE) 2016/679 (RGPD) en materia de protección de datos.</li>
 </ul>
-<h2>2. IDENTIFICACIÃ“N DE LAS PARTES</h2>
-<p><strong>El Prestador:</strong> METRANSFERS GESTION SL, con NIF B22522353 y domicilio social en AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÃ (BARCELONA).</p>
-<p><strong>El Cliente:</strong> Persona fÃ­sica o jurÃ­dica que formaliza la reserva y garantiza tener capacidad legal para contratar.</p>
-<h2>3. OBLIGACIÃ“N DE NOTIFICACIÃ“N Y REQUISITOS DEL SERVICIO</h2>
-<p>Para garantizar la seguridad y legalidad del transporte, el Cliente tiene la obligaciÃ³n inexcusable de declarar las siguientes necesidades en el formulario de reserva:</p>
-<h3>3.1. Sistemas de RetenciÃ³n Infantil (SRI)</h3>
-<p>Conforme al ArtÃ­culo 117 del Reglamento General de CirculaciÃ³n, es obligatorio el uso de sillas homologadas para menores de estatura igual o inferior a 135 cm. El Cliente debe seleccionar el nÃºmero y tipo de sillas necesarias en el formulario. La omisiÃ³n de este dato facultarÃ¡ al conductor a denegar el servicio por razones de seguridad, sin derecho a reembolso.</p>
+<h2>2. IDENTIFICACIÓN DE LAS PARTES</h2>
+<p><strong>El Prestador:</strong> METRANSFERS GESTION SL, con NIF B22522353 y domicilio social en AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ (BARCELONA).</p>
+<p><strong>El Cliente:</strong> Persona fÍsica o jurÍdica que formaliza la reserva y garantiza tener capacidad legal para contratar.</p>
+<h2>3. OBLIGACIÓN DE NOTIFICACIÓN Y REQUISITOS DEL SERVICIO</h2>
+<p>Para garantizar la seguridad y legalidad del transporte, el Cliente tiene la obligación inexcusable de declarar las siguientes necesidades en el formulario de reserva:</p>
+<h3>3.1. Sistemas de Retención Infantil (SRI)</h3>
+<p>Conforme al ArtÍculo 117 del Reglamento General de Circulación, es obligatorio el uso de sillas homologadas para menores de estatura igual o inferior a 135 cm. El Cliente debe seleccionar el número y tipo de sillas necesarias en el formulario. La omisión de este dato facultará al conductor a denegar el servicio por razones de seguridad, sin derecho a reembolso.</p>
 <h3>3.2. Equipaje Extraordinario</h3>
-<p>La capacidad del vehÃ­culo estÃ¡ limitada por su ficha tÃ©cnica. El transporte de maletas adicionales, material deportivo (golf, esquÃ­) o bultos voluminosos debe ser notificado. EL PRESTADOR se reserva el derecho de cobrar suplementos o denegar el transporte si el volumen excede la capacidad del maletero del vehÃ­culo contratado.</p>
+<p>La capacidad del vehÍculo está limitada por su ficha técnica. El transporte de maletas adicionales, material deportivo (golf, esquÍ) o bultos voluminosos debe ser notificado. EL PRESTADOR se reserva el derecho de cobrar suplementos o denegar el transporte si el volumen excede la capacidad del maletero del vehÍculo contratado.</p>
 <h3>3.3. Transporte de Mascotas</h3>
-<p>El transporte de animales domÃ©sticos estÃ¡ sujeto a notificaciÃ³n previa y debe realizarse en trasportines homologados proporcionados por el cliente, salvo acuerdo en contrario. Los perros guÃ­a viajarÃ¡n sin coste adicional conforme a la normativa vigente.</p>
+<p>El transporte de animales domésticos está sujeto a notificación previa y debe realizarse en trasportines homologados proporcionados por el cliente, salvo acuerdo en contrario. Los perros guÍa viajarán sin coste adicional conforme a la normativa vigente.</p>
 <h2>4. PASARELA DE PAGO Y SEGURIDAD (REDSYS)</h2>
-<p>El pago de los servicios se efectuarÃ¡ mediante tarjeta de crÃ©dito o dÃ©bito a través de la pasarela de pago segura Redsys.</p>
+<p>El pago de los servicios se efectuará mediante tarjeta de crédito o débito a través de la pasarela de pago segura Redsys.</p>
 <ul>
-<li><strong>Seguridad:</strong> El sistema utiliza protocolos de encriptaciÃ³n SSL y autenticaciÃ³n 3D Secure (Verified by Visa / Mastercard ID Check).</li>
-<li><strong>ConfirmaciÃ³n:</strong> El contrato se perfecciona en el momento en que EL PRESTADOR recibe la confirmaciÃ³n de la autorizaciÃ³n de pago por parte de la entidad bancaria.</li>
-<li><strong>Fraude:</strong> EL PRESTADOR se reserva el derecho de anular cualquier transacciÃ³n ante sospechas de uso fraudulento de tarjetas.</li>
+<li><strong>Seguridad:</strong> El sistema utiliza protocolos de encriptación SSL y autenticación 3D Secure (Verified by Visa / Mastercard ID Check).</li>
+<li><strong>Confirmación:</strong> El contrato se perfecciona en el momento en que EL PRESTADOR recibe la confirmación de la autorización de pago por parte de la entidad bancaria.</li>
+<li><strong>Fraude:</strong> EL PRESTADOR se reserva el derecho de anular cualquier transacción ante sospechas de uso fraudulento de tarjetas.</li>
 </ul>
-<h2>5. DERECHO DE DESISTIMIENTO Y POLÃTICA DE CANCELACIÃ“N</h2>
-<p>En virtud del ArtÃ­culo 103 l) del Real Decreto Legislativo 1/2007, el derecho de desistimiento no serÃ¡ aplicable a los servicios de transporte de pasajeros si el contrato prevÃ© una fecha o un periodo de ejecuciÃ³n especÃ­ficos. No obstante, EL PRESTADOR ofrece las siguientes condiciones comerciales:</p>
+<h2>5. DERECHO DE DESISTIMIENTO Y POLÍTICA DE CANCELACIÓN</h2>
+<p>En virtud del ArtÍculo 103 l) del Real Decreto Legislativo 1/2007, el derecho de desistimiento no será aplicable a los servicios de transporte de pasajeros si el contrato prevé una fecha o un periodo de ejecución especÍficos. No obstante, EL PRESTADOR ofrece las siguientes condiciones comerciales:</p>
 <ul>
-<li><strong>CancelaciÃ³n con &gt;24 horas:</strong> DevoluciÃ³n del 100% del importe mediante el mismo sistema de pago (Redsys).</li>
-<li><strong>CancelaciÃ³n con &lt;24 horas o No-Show:</strong> PenalizaciÃ³n del 100% del valor de la reserva.</li>
-<li><strong>Retrasos de vuelos:</strong> EL PRESTADOR monitoriza los vuelos. No obstante, si el retraso excede los 90 minutos sobre la hora prevista, el servicio quedarÃ¡ sujeto a disponibilidad de flota, pudiendo incurrir en gastos de espera adicionales.</li>
+<li><strong>Cancelación con &gt;24 horas:</strong> Devolución del 100% del importe mediante el mismo sistema de pago (Redsys).</li>
+<li><strong>Cancelación con &lt;24 horas o No-Show:</strong> Penalización del 100% del valor de la reserva.</li>
+<li><strong>Retrasos de vuelos:</strong> EL PRESTADOR monitoriza los vuelos. No obstante, si el retraso excede los 90 minutos sobre la hora prevista, el servicio quedará sujeto a disponibilidad de flota, pudiendo incurrir en gastos de espera adicionales.</li>
 </ul>
 <h2>6. RESPONSABILIDAD LIMITADA</h2>
-<p>EL PRESTADOR no serÃ¡ responsable por incumplimientos derivados de:</p>
+<p>EL PRESTADOR no será responsable por incumplimientos derivados de:</p>
 <ul>
-<li>Fuerza mayor o causas fortuitas (cortes de carretera, condiciones climÃ¡ticas adversas, huelgas generales).</li>
-<li>Errores en los datos facilitados por el cliente en el formulario de reserva (ej. fecha errÃ³nea o nÃºmero de teléfono incorrecto).</li>
-<li>Incumplimiento de las normas de seguridad por parte de los pasajeros (uso de cinturÃ³n, comportamiento disruptivo).</li>
+<li>Fuerza mayor o causas fortuitas (cortes de carretera, condiciones climáticas adversas, huelgas generales).</li>
+<li>Errores en los datos facilitados por el cliente en el formulario de reserva (ej. fecha errónea o número de teléfono incorrecto).</li>
+<li>Incumplimiento de las normas de seguridad por parte de los pasajeros (uso de cinturón, comportamiento disruptivo).</li>
 </ul>
-<h2>7. JURISDICCIÃ“N Y LEY APLICABLE</h2>
-<p>Para la resoluciÃ³n de cualquier litigio derivado de la interpretaciÃ³n o ejecuciÃ³n de este contrato, las partes se someten a la legislaciÃ³n espaÃ±ola. En caso de controversia, se recurrirÃ¡ a los Juzgados y Tribunales de Barcelona, salvo que el cliente ostente la condiciÃ³n de consumidor, en cuyo caso se atenderÃ¡ a la competencia territorial establecida por ley.</p>',
-        'aviso-legal' => '<h2>1. INFORMACIÃ“N IDENTIFICATIVA</h2>
-<p>En cumplimiento con el deber de información recogido en el artÃ­culo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la InformaciÃ³n y del Comercio ElectrÃ³nico (LSSI-CE), a continuación se reflejan los siguientes datos:</p>
+<h2>7. JURISDICCIÓN Y LEY APLICABLE</h2>
+<p>Para la resolución de cualquier litigio derivado de la interpretación o ejecución de este contrato, las partes se someten a la legislación española. En caso de controversia, se recurrirá a los Juzgados y Tribunales de Barcelona, salvo que el cliente ostente la condición de consumidor, en cuyo caso se atenderá a la competencia territorial establecida por ley.</p>',
+        'aviso-legal' => '<h2>1. INFORMACIÓN IDENTIFICATIVA</h2>
+<p>En cumplimiento con el deber de información recogido en el artÍculo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y del Comercio Electrónico (LSSI-CE), a continuación se reflejan los siguientes datos:</p>
 <p><strong>Titular del sitio web:</strong> METRANSFERS GESTION SL</p>
 <p><strong>NIF:</strong> B22522353</p>
-<p><strong>Domicilio Social:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÃ &ndash; (BARCELONA)</p>
+<p><strong>Domicilio Social:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ &ndash; (BARCELONA)</p>
 <p><strong>Correo electrónico de contacto:</strong> <a href="mailto:info@metransfers.es">info@metransfers.es</a></p>
-<p><strong>Actividad:</strong> Transporte de viajeros y gestiÃ³n de servicios turÃ­sticos.</p>
+<p><strong>Actividad:</strong> Transporte de viajeros y gestión de servicios turÍsticos.</p>
 <h2>2. CONDICIONES DE USO</h2>
-<p>El acceso y/o uso de este portal atribuye la condiciÃ³n de USUARIO, que acepta, desde dicho acceso y/o uso, las Condiciones Generales de Uso aquÃ­ reflejadas.</p>
+<p>El acceso y/o uso de este portal atribuye la condición de USUARIO, que acepta, desde dicho acceso y/o uso, las Condiciones Generales de Uso aquÍ reflejadas.</p>
 <p>El sitio web proporciona acceso a informaciones, servicios o datos (en adelante, &ldquo;los contenidos&rdquo;) en Internet pertenecientes a METRANSFERS GESTION SL. El USUARIO asume la responsabilidad del uso del portal. Dicha responsabilidad se extiende al registro que fuese necesario para acceder a determinados servicios o contenidos (como el formulario de reservas).</p>
 <h2>3. PROPIEDAD INTELECTUAL E INDUSTRIAL</h2>
-<p>METRANSFERS GESTION SL es titular de todos los derechos de propiedad intelectual e industrial de su pÃ¡gina web, asÃ­ como de los elementos contenidos en la misma (a tÃ­tulo enunciativo: imÃ¡genes, sonido, audio, vÃ­deo, software o textos; marcas o logotipos, combinaciones de colores, estructura y diseÃ±o, selecciÃ³n de materiales usados, programas de ordenador necesarios para su funcionamiento, acceso y uso, etc.).</p>
-<p>En virtud de lo dispuesto en los artÃ­culos 8 y 32.1, pÃ¡rrafo segundo, de la Ley de Propiedad Intelectual, quedan expresamente prohibidas la reproducciÃ³n, la distribuciÃ³n y la comunicaciÃ³n pÃºblica, incluida su modalidad de puesta a disposiciÃ³n, de la totalidad o parte de los contenidos de esta pÃ¡gina web, con fines comerciales, en cualquier soporte y por cualquier medio tÃ©cnico, sin la autorizaciÃ³n de METRANSFERS GESTION SL.</p>
-<h2>4. EXCLUSIÃ“N DE GARANTÃAS Y RESPONSABILIDAD</h2>
-<p>EL PRESTADOR no se hace responsable, en ningÃºn caso, de los daÃ±os y perjuicios de cualquier naturaleza que pudieran ocasionar, a tÃ­tulo enunciativo: errores u omisiones en los contenidos, falta de disponibilidad del portal o la transmisiÃ³n de virus o programas maliciosos o lesivos en los contenidos, a pesar de haber adoptado todas las medidas tecnolÃ³gicas necesarias para evitarlo.</p>
+<p>METRANSFERS GESTION SL es titular de todos los derechos de propiedad intelectual e industrial de su página web, asÍ como de los elementos contenidos en la misma (a tÍtulo enunciativo: imágenes, sonido, audio, vÍdeo, software o textos; marcas o logotipos, combinaciones de colores, estructura y diseño, selección de materiales usados, programas de ordenador necesarios para su funcionamiento, acceso y uso, etc.).</p>
+<p>En virtud de lo dispuesto en los artÍculos 8 y 32.1, párrafo segundo, de la Ley de Propiedad Intelectual, quedan expresamente prohibidas la reproducción, la distribución y la comunicación pública, incluida su modalidad de puesta a disposición, de la totalidad o parte de los contenidos de esta página web, con fines comerciales, en cualquier soporte y por cualquier medio técnico, sin la autorización de METRANSFERS GESTION SL.</p>
+<h2>4. EXCLUSIÓN DE GARANTÍAS Y RESPONSABILIDAD</h2>
+<p>EL PRESTADOR no se hace responsable, en ningún caso, de los daños y perjuicios de cualquier naturaleza que pudieran ocasionar, a tÍtulo enunciativo: errores u omisiones en los contenidos, falta de disponibilidad del portal o la transmisión de virus o programas maliciosos o lesivos en los contenidos, a pesar de haber adoptado todas las medidas tecnológicas necesarias para evitarlo.</p>
 <h2>5. MODIFICACIONES</h2>
-<p>METRANSFERS GESTION SL se reserva el derecho de efectuar sin previo aviso las modificaciones que considere oportunas en su portal, pudiendo cambiar, suprimir o aÃ±adir tanto los contenidos y servicios que se presten a través de la misma como la forma en la que éstos aparezcan presentados o localizados en su portal.</p>
+<p>METRANSFERS GESTION SL se reserva el derecho de efectuar sin previo aviso las modificaciones que considere oportunas en su portal, pudiendo cambiar, suprimir o añadir tanto los contenidos y servicios que se presten a través de la misma como la forma en la que éstos aparezcan presentados o localizados en su portal.</p>
 <h2>6. ENLACES (LINKS)</h2>
-<p>En el caso de que en el sitio web se dispusiesen enlaces o hipervÃ­nculos hacÃ­a otros sitios de Internet, METRANSFERS GESTION SL no ejercerÃ¡ ningÃºn tipo de control sobre dichos sitios y contenidos. En ningÃºn caso asumirÃ¡ responsabilidad alguna por los contenidos de algÃºn enlace perteneciente a un sitio web ajeno.</p>
-<h2>7. DERECHO DE EXCLUSIÃ“N</h2>
+<p>En el caso de que en el sitio web se dispusiesen enlaces o hipervÍnculos hacÍa otros sitios de Internet, METRANSFERS GESTION SL no ejercerá ningún tipo de control sobre dichos sitios y contenidos. En ningún caso asumirá responsabilidad alguna por los contenidos de algún enlace perteneciente a un sitio web ajeno.</p>
+<h2>7. DERECHO DE EXCLUSIÓN</h2>
 <p>METRANSFERS GESTION SL se reserva el derecho a denegar o retirar el acceso al portal y/o los servicios ofrecidos sin necesidad de preaviso, a instancia propia o de un tercero, a aquellos usuarios que incumplan las presentes Condiciones Generales de Uso.</p>
-<h2>8. PROTECCIÃ“N DE DATOS</h2>
-<p>Todo lo relativo a la polÃ­tica de protecciÃ³n de datos se encuentra recogido en el documento de Política de Privacidad de la entidad, conforme al Reglamento (UE) 2016/679 (RGPD) y la Ley OrgÃ¡nica 3/2018 (LOPDGDD).</p>
-<h2>9. LEGISLACIÃ“N APLICABLE Y JURISDICCIÃ“N</h2>
-<p>La relaciÃ³n entre METRANSFERS GESTION SL y el USUARIO se regirÃ¡ por la normativa espaÃ±ola vigente y cualquier controversia se someterÃ¡ a los Juzgados y Tribunales de la ciudad de Barcelona.</p>'
+<h2>8. PROTECCIÓN DE DATOS</h2>
+<p>Todo lo relativo a la polÍtica de protección de datos se encuentra recogido en el documento de PolÍtica de Privacidad de la entidad, conforme al Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD).</p>
+<h2>9. LEGISLACIÓN APLICABLE Y JURISDICCIÓN</h2>
+<p>La relación entre METRANSFERS GESTION SL y el USUARIO se regirá por la normativa española vigente y cualquier controversia se someterá a los Juzgados y Tribunales de la ciudad de Barcelona.</p>'
     );
 
     foreach ( $pages as $slug => $content ) {
@@ -788,7 +788,7 @@ if ( defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) && ME_TRANSFERS_ENABLE_MIGRATIO
    FASE 2: WPO, METADATOS Y REDIRECCIONES
    ========================================================================== */
 
-// 1. OptimizaciÃ³n WPO: Forzar WebP como formato de salida y forzar lazy load
+// 1. Optimización WPO: Forzar WebP como formato de salida y forzar lazy load
 add_filter( 'image_editor_output_format', function( $formats ) {
     $formats['image/jpeg'] = 'image/webp';
     $formats['image/png']  = 'image/webp';
@@ -802,7 +802,7 @@ add_filter( 'wp_get_attachment_image_attributes', function( $attr, $attachment, 
     return $attr;
 }, 10, 3 );
 
-// 2. Limpieza de Metadatos: Forzar TÃ­tulo y DescripciÃ³n Global para Home
+// 2. Limpieza de Metadatos: Forzar TÍtulo y Descripción Global para Home
 add_filter( 'pre_get_document_title', function( $title ) {
     if ( is_front_page() || is_home() ) {
         return 'MeTransfers | Traslados Privados y Tours privados en Barcelona';
@@ -816,7 +816,7 @@ add_action( 'wp_head', function() {
         echo '<meta name="description" content="Traslados Privados y Tours privados en Barcelona. Reserva tu servicio de chófer privado en MeTransfers para un viaje seguro, cómodo y exclusivo.">' . "\n";
     }
 
-    // Inyectar noindex si no es dominio de producciÃ³n (protecciÃ³n staging)
+    // Inyectar noindex si no es dominio de producción (protección staging)
     if ( ! str_contains( home_url(), 'metransfers.es' ) ) {
         echo '<meta name="robots" content="noindex, nofollow">' . "\n";
     }
@@ -904,11 +904,11 @@ function me_transfers_custom_redirects() {
             return;
         }
 
-        // SMART REDIRECT ELIMINADO: El sistema anterior hacía una WP_Query con búsqueda de texto
-        // libre y redirigía 301 permanentemente al primer resultado. Esto podía enviar a Google
+        // SMART REDIRECT ELIMINADO: El sistema anterior hacÍa una WP_Query con búsqueda de texto
+        // libre y redirigÍa 301 permanentemente al primer resultado. Esto podÍa enviar a Google
         // y a los usuarios a páginas completamente no equivalentes, dañando el SEO.
         //
-        // Si necesitas recuperar una URL específica, añade la redirección manualmente
+        // Si necesitas recuperar una URL especÍfica, añade la redirección manualmente
         // en el array $redirects_301 de arriba con la URL de destino correcta.
     }
 }
@@ -930,7 +930,7 @@ add_action( 'wp_ajax_mt_save_lead', 'mt_ajax_save_lead' );
 add_action( 'wp_ajax_nopriv_mt_save_lead', 'mt_ajax_save_lead' );
 
 // ELIMINADO: El bloque AUTO-CREAR PÁGINAS ESENCIALES re-publicaba /contacto y /reservaciones
-// en cada carga de WordPress, incluso si se habían dejado como borrador o papelera intencionalmente.
+// en cada carga de WordPress, incluso si se habÍan dejado como borrador o papelera intencionalmente.
 // Las páginas esenciales deben gestionarse manualmente desde el panel de WordPress.
 // Si las páginas no existen, créalas una vez desde Páginas > Añadir nueva.
 
@@ -947,7 +947,7 @@ function mt_ajax_save_lead() {
 
     // Fecha del servidor — no confiar en el reloj del navegador
     $gdpr_fecha_servidor = current_time( 'c' );
-    // Versión de la política activa (incrementar manualmente al actualizar la política)
+    // Versión de la polÍtica activa (incrementar manualmente al actualizar la polÍtica)
     $gdpr_version = '2025-01-01';
 
     // Validación: nombre obligatorio
@@ -970,7 +970,7 @@ function mt_ajax_save_lead() {
 
     // Validación: consentimiento GDPR obligatorio
     if ( '1' !== $gdpr ) {
-        wp_send_json_error( array( 'message' => 'Debes aceptar la política de privacidad.' ) );
+        wp_send_json_error( array( 'message' => 'Debes aceptar la polÍtica de privacidad.' ) );
         return;
     }
 
@@ -1006,7 +1006,7 @@ function mt_ajax_save_lead() {
         $body .= "Servicio: {$servicio}\n";
         $body .= "Origen: {$origen}\n\n";
         $body .= "Mensaje:\n{$mensaje}\n\n";
-        $body .= "GDPR: Aceptado (servidor: {$gdpr_fecha_servidor}, política v{$gdpr_version})\n";
+        $body .= "GDPR: Aceptado (servidor: {$gdpr_fecha_servidor}, polÍtica v{$gdpr_version})\n";
         $body .= "Gestionar: " . admin_url( 'edit.php?post_type=mensaje' ) . "\n";
 
         $headers    = array( 'Reply-To: ' . $nombre . ' <' . $email . '>' );
@@ -1077,7 +1077,7 @@ function mt_ensure_service_pages_and_templates() {
 }
 
 // DESACTIVADO: mt_ensure_seo_pages() generaba automáticamente 35 páginas /taxis-* y /traslados-*
-// que competían directamente con el CPT /rutas/* y /destinos/*.
+// que competÍan directamente con el CPT /rutas/* y /destinos/*.
 // Las URLs antiguas se gestionan mediante redirecciones 301 (ver me_transfers_custom_redirects).
 // add_action( 'admin_init', 'mt_ensure_seo_pages' );
 function mt_ensure_seo_pages() {
@@ -1118,7 +1118,7 @@ function mt_ensure_seo_pages() {
         'Besalú',
         'Bagur',
         'Delta del Ebro',
-        'Peñíscola',
+        'PeñÍscola',
         'Morella',
         'Altea',
         'Valderrobres',
@@ -1200,7 +1200,7 @@ add_filter( 'document_title_parts', function( $title ) {
         $title['title'] = str_replace( 'Me Transfers', 'MeTransfers', $title['title'] );
     }
 
-    // Título SEO específico para rutas comerciales
+    // TÍtulo SEO especÍfico para rutas comerciales
     if ( is_singular( 'ruta' ) ) {
         $post_id = get_the_ID();
         $origen  = get_post_meta( $post_id, '_mt_ruta_origen',  true );
@@ -1382,24 +1382,35 @@ add_action( 'wp_head', function() {
 // En wp-config.php producción: define('WP_ENVIRONMENT_TYPE','production');
 // ==========================================
 add_filter( 'wp_robots', static function ( array $robots ): array {
-	if ( function_exists( 'wp_get_environment_type' ) && wp_get_environment_type() !== 'production' ) {
-		return [
-			'noindex'   => true,
-			'nofollow'  => true,
-			'noarchive' => true,
-		];
+	$prod_hosts = [ 'metransfers.es', 'www.metransfers.es' ];
+	$current_host = wp_parse_url( home_url(), PHP_URL_HOST );
+	
+	// 1. Staging / Environment check
+	if ( ! in_array( $current_host, $prod_hosts, true ) || ( function_exists( 'wp_get_environment_type' ) && wp_get_environment_type() !== 'production' ) ) {
+		return array_merge( $robots, [ 'noindex' => true, 'nofollow' => true, 'noarchive' => true ] );
 	}
+	
+	// 2. Archivos contaminantes (tags, search, author, date, attachment)
+	if ( is_tag() || is_search() || is_author() || is_date() || is_attachment() ) {
+		return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
+	}
+	
+	// 3. Internacionalización incompleta (todo lo que no sea 'es')
+	if ( function_exists( 'mt_lang' ) && mt_lang() !== 'es' ) {
+		return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
+	}
+
 	return $robots;
-} );
+}, 99 );
 
 /**
  * Full restoration of legal pages (Title, Slug, Content) to fix 404s and empty content.
  */
-// DESACTIVADO: mt_full_restore_legal_pages_once() sobreescribía el contenido de las páginas
+// DESACTIVADO: mt_full_restore_legal_pages_once() sobreescribÍa el contenido de las páginas
 // legales con texto hardcodeado en functions.php en cada instalación nueva.
 // Las páginas legales deben editarse desde el panel de WordPress. El contenido de esta
 // función se conserva como referencia pero NO debe re-activarse: cualquier actualización del
-// tema sobreescribiría cambios legales aprobados.
+// tema sobreescribirÍa cambios legales aprobados.
 // add_action( 'admin_init', 'mt_full_restore_legal_pages_once' );
 function mt_full_restore_legal_pages_once() {
     if ( get_transient( 'mt_full_restored_legal_pages_v1' ) ) {
@@ -1409,11 +1420,11 @@ function mt_full_restore_legal_pages_once() {
     // The exact content from the original XML for the Spanish pages
     $legal_pages = array(
         'politica-de-privacidad' => array(
-            'title' => 'Política de privacidad',
+            'title' => 'PolÍtica de privacidad',
             'content' => '<h2>1. Identificaci&oacute;n del Responsable del Tratamiento</h2><p><strong>Raz&oacute;n Social:</strong> METRANSFERS GESTION SL</p><p><strong>NIF:</strong> B22522353</p><p><strong>Domicilio Fiscal:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESP&Iacute; &ndash; (BARCELONA)</p><p><strong>Contacto Privacidad:</strong> <a href="mailto:info@metransfers.es">info@metransfers.es</a></p><h2>2. Aceptaci&oacute;n Vinculante</h2><p>Al utilizar nuestros servicios, navegar por nuestra plataforma o completar el proceso de configuraci&oacute;n de una reserva, usted reconoce haber le&iacute;do, comprendido y aceptado sin reservas que sus datos personales sean tratados conforme a los t&eacute;rminos aqu&iacute; expuestos. La formalizaci&oacute;n de una reserva constituye un contrato entre las partes, legitimando el tratamiento de los datos necesarios para la ejecuci&oacute;n del servicio.</p><h2>3. Datos Objeto de Tratamiento</h2><p>Recopilamos los datos estrictamente necesarios para la prestaci&oacute;n del servicio:</p><ul><li><strong>Datos de Reserva:</strong> Nombre, apellidos, tel&eacute;fono, correo electr&oacute;nico y detalles del trayecto/servicio solicitado.</li><li><strong>Datos de Facturaci&oacute;n:</strong> Direcci&oacute;n postal y NIF/DNI (seg&uacute;n los datos de registro fiscal de la entidad).</li><li><strong>Datos de Navegaci&oacute;n:</strong> Direcci&oacute;n IP, cookies y metadatos para garantizar la seguridad del sitio.</li></ul><h2>4. Finalidad del Tratamiento</h2><p>Sus datos ser&aacute;n tratados con el fin de:</p><ul><li><strong>Gesti&oacute;n de Reservas:</strong> Tramitar, confirmar y ejecutar los servicios de transporte o gesti&oacute;n contratados.</li><li><strong>Atenci&oacute;n al Cliente:</strong> Resolver dudas y proporcionar soporte a trav&eacute;s del punto &uacute;nico de contacto <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</li><li><strong>Cumplimiento Legal:</strong> Emitir facturas y cumplir con las obligaciones tributarias ante la AEAT.</li><li><strong>Seguridad:</strong> Prevenir fraudes y usos no autorizados de la plataforma.</li></ul><h2>5. Legitimaci&oacute;n</h2><p>La base legal para el tratamiento es:</p><ul><li><strong>Ejecuci&oacute;n Contractual:</strong> Necesaria para procesar su reserva y prestarle el servicio solicitado.</li><li><strong>Obligaci&oacute;n Legal:</strong> Derivada de la normativa fiscal y mercantil vigente en Espa&ntilde;a.</li><li><strong>Consentimiento:</strong> Otorgado expl&iacute;citamente al marcar la casilla de aceptaci&oacute;n en nuestros formularios.</li></ul><h2>6. Conservaci&oacute;n y Destinatarios</h2><p><strong>Plazos:</strong> Los datos se conservar&aacute;n durante el tiempo que dure la relaci&oacute;n comercial y, posteriormente, durante los plazos legales de prescripci&oacute;n (generalmente 6 a&ntilde;os para documentos contables seg&uacute;n el C&oacute;digo de Comercio).</p><p><strong>Cesiones:</strong> No se ceder&aacute;n datos a terceros ajenos a la operativa del servicio, salvo obligaci&oacute;n legal ante autoridades competentes.</p><h2>7. Derechos del Interesado</h2><p>Usted puede ejercer sus derechos de Acceso, Rectificaci&oacute;n, Supresi&oacute;n, Limitaci&oacute;n, Portabilidad y Oposici&oacute;n enviando una comunicaci&oacute;n escrita acompa&ntilde;ada de copia de su DNI a: <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</p><p>Asimismo, tiene derecho a retirar su consentimiento en cualquier momento y a presentar una reclamaci&oacute;n ante la Agencia Espa&ntilde;ola de Protecci&oacute;n de Datos (AEPD) si considera que sus derechos han sido vulnerados.</p>'
         ),
         'politica-de-cookies' => array(
-            'title' => 'Política de Cookies',
+            'title' => 'PolÍtica de Cookies',
             'content' => '<h2>1. Responsable del sitio web</h2><p><strong>Raz&oacute;n social:</strong> METRANSFERS GESTION SL</p><p><strong>NIF:</strong> B22522353</p><p><strong>Domicilio:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESP&Iacute; (BARCELONA)</p><p><strong>Correo electr&oacute;nico:</strong> <a href="mailto:info@metransfers.es">info@metransfers.es</a></p><h2>2. Qu&eacute; son las cookies</h2><p>Las cookies son peque&ntilde;os archivos que se descargan en su dispositivo al acceder a determinadas p&aacute;ginas web. Permiten, entre otras cosas, reconocer su navegador, mantener la sesi&oacute;n, recordar preferencias, reforzar la seguridad o facilitar determinadas funcionalidades t&eacute;cnicas del sitio.</p><h2>3. Tipos de cookies</h2><p>Las cookies pueden clasificarse, entre otros criterios, del siguiente modo:</p><ul><li><strong>Seg&uacute;n la entidad que las gestione:</strong> cookies propias y cookies de terceros.</li><li><strong>Seg&uacute;n su finalidad:</strong> cookies t&eacute;cnicas o necesarias, de preferencias o personalizaci&oacute;n, de an&aacute;lisis, y de publicidad o publicidad comportamental.</li><li><strong>Seg&uacute;n el tiempo que permanecen activas:</strong> cookies de sesi&oacute;n y cookies persistentes.</li></ul><h2>4. Cookies utilizadas en metransfers.es</h2><p>Con car&aacute;cter general, este sitio utiliza o puede utilizar cookies t&eacute;cnicas, de sesi&oacute;n y de preferencia estrictamente relacionadas con el funcionamiento de la web y la prestaci&oacute;n del servicio solicitado por el usuario. Entre ellas se incluyen, cuando proceda:</p><ul><li><strong>Cookies t&eacute;cnicas de navegaci&oacute;n y seguridad:</strong> necesarias para cargar la web, proteger formularios, prevenir usos abusivos y garantizar el funcionamiento b&aacute;sico del sitio.</li><li><strong>Cookies asociadas al proceso de reserva o contacto:</strong> necesarias para gestionar solicitudes enviadas por el usuario, mantener datos temporales de sesi&oacute;n y completar procesos esenciales vinculados al servicio contratado.</li><li><strong>Cookies de preferencias:</strong> destinadas a recordar opciones expresamente solicitadas por el usuario, como el idioma o determinadas configuraciones de visualizaci&oacute;n, cuando estas funcionalidades est&eacute;n habilitadas.</li><li><strong>Cookies t&eacute;cnicas de terceros vinculadas al servicio:</strong> determinados proveedores externos integrados en la web, como herramientas de traducci&oacute;n, mapas, contenidos embebidos o pasarelas de pago seguras, pueden instalar sus propias cookies cuando el usuario interact&uacute;a con dichas funcionalidades.</li></ul><p>Este tema no instala por s&iacute; mismo cookies de publicidad comportamental. Si en el futuro se incorporan herramientas anal&iacute;ticas no exentas, servicios de personalizaci&oacute;n avanzada o soluciones publicitarias que requieran consentimiento, se informar&aacute; al usuario de forma previa y se recabar&aacute; la autorizaci&oacute;n correspondiente antes de su activaci&oacute;n.</p><h2>5. Base jur&iacute;dica</h2><p>Las cookies t&eacute;cnicas o estrictamente necesarias pueden utilizarse sin consentimiento previo cuando resultan imprescindibles para prestar el servicio solicitado por el usuario o para posibilitar la navegaci&oacute;n segura por el sitio web. Las cookies no necesarias solo podr&aacute;n utilizarse cuando exista una base jur&iacute;dica adecuada y, en los casos exigidos por la normativa, tras obtener el consentimiento informado del usuario.</p><h2>6. Plazo de conservaci&oacute;n</h2><p>Las cookies de sesi&oacute;n permanecen activas &uacute;nicamente mientras el usuario navega por el sitio y se eliminan al cerrar el navegador. Las cookies persistentes, cuando existan, se conservar&aacute;n durante el tiempo estrictamente necesario para cumplir su finalidad o hasta que el usuario las elimine manualmente desde la configuraci&oacute;n de su navegador o del servicio correspondiente.</p><h2>7. Gesti&oacute;n, configuraci&oacute;n y desactivaci&oacute;n</h2><p>El usuario puede permitir, bloquear o eliminar las cookies instaladas en su dispositivo mediante la configuraci&oacute;n de su navegador. Debe tener en cuenta que la desactivaci&oacute;n de cookies t&eacute;cnicas o necesarias puede afectar al correcto funcionamiento del sitio, del proceso de reserva o de determinadas funcionalidades esenciales.</p><ul><li><a href="https://support.google.com/chrome/answer/95647?hl=es" target="_blank" rel="noopener">Configurar cookies en Google Chrome</a></li><li><a href="https://support.mozilla.org/es/kb/proteccion-antirrastreo-mejorada-firefox-escritorio" target="_blank" rel="noopener">Configurar cookies en Mozilla Firefox</a></li><li><a href="https://support.apple.com/es-es/guide/safari/sfri11471/mac" target="_blank" rel="noopener">Configurar cookies en Safari</a></li><li><a href="https://support.microsoft.com/es-es/microsoft-edge/administrar-cookies-en-microsoft-edge-ver-permitir-bloquear-eliminar-y-usar-168dab11-0753-043d-7c16-ede5947fc64d" target="_blank" rel="noopener">Configurar cookies en Microsoft Edge</a></li></ul><h2>8. Cookies de terceros</h2><p>La aceptaci&oacute;n, configuraci&oacute;n y uso de cookies de terceros se rige por las pol&iacute;ticas propias de dichos proveedores. METRANSFERS GESTION SL no puede controlar en todo momento las actualizaciones que esos terceros realicen en sus pol&iacute;ticas, por lo que se recomienda al usuario revisar directamente sus condiciones cuando interact&uacute;e con herramientas externas integradas o enlazadas desde la web.</p><h2>9. Informaci&oacute;n adicional y contacto</h2><p>Para obtener m&aacute;s informaci&oacute;n sobre el tratamiento de datos personales, puede consultar nuestra <a href="https://metransfers.es/privacidad">Pol&iacute;tica de Privacidad</a>. Si necesita aclaraciones sobre el uso de cookies en este sitio web, puede escribir a <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</p><p>La presente Pol&iacute;tica de Cookies podr&aacute; actualizarse cuando se produzcan cambios normativos, t&eacute;cnicos o funcionales en el sitio web. Se recomienda revisarla peri&oacute;dicamente.</p>'
         ),
         'aviso-legal' => array(

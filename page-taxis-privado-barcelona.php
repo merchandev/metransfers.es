@@ -139,24 +139,24 @@ get_header(); ?>
             
             <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;">Traslados privados desde Barcelona al aeropuerto, puerto y más</h2>
             <p>
-                Barcelona es el punto de partida para miles de viajeros cada día. Tanto si necesitas llegar al Aeropuerto Josep Tarradellas Barcelona-El Prat, al Puerto de Cruceros, a otra ciudad de España o a un destino en el extranjero, en MeTransfers nos encargamos de que llegues a tiempo, cómodo y sin estrés.
+                Barcelona es el punto de partida para miles de viajeros cada dÍa. Tanto si necesitas llegar al Aeropuerto Josep Tarradellas Barcelona-El Prat, al Puerto de Cruceros, a otra ciudad de España o a un destino en el extranjero, en MeTransfers nos encargamos de que llegues a tiempo, cómodo y sin estrés.
             </p>
             <p>
-                Nuestro conductor te recogerá en la dirección que indiques — tu hotel, apartamento, oficina o cualquier punto de Barcelona — y te llevará directamente a tu destino. El vehículo estará reservado en exclusiva para ti, tu familia o tu grupo; no compartirás el coche con otras personas ni harás paradas no acordadas.
+                Nuestro conductor te recogerá en la dirección que indiques — tu hotel, apartamento, oficina o cualquier punto de Barcelona — y te llevará directamente a tu destino. El vehÍculo estará reservado en exclusiva para ti, tu familia o tu grupo; no compartirás el coche con otras personas ni harás paradas no acordadas.
             </p>
             <p>
-                También organizamos el trayecto de vuelta: si llegas a Barcelona desde otro destino, tu chófer te esperará con un cartel personalizado en la zona de llegadas y te acompañará hasta el vehículo, ayudándote con el equipaje. Indícanos siempre el número de vuelo o barco para que podamos monitorizar el horario y ajustar la recogida en tiempo real.
+                También organizamos el trayecto de vuelta: si llegas a Barcelona desde otro destino, tu chófer te esperará con un cartel personalizado en la zona de llegadas y te acompañará hasta el vehÍculo, ayudándote con el equipaje. IndÍcanos siempre el número de vuelo o barco para que podamos monitorizar el horario y ajustar la recogida en tiempo real.
             </p>
 
-            <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">Elige el vehículo ideal para tu salida desde Barcelona</h3>
+            <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">Elige el vehÍculo ideal para tu salida desde Barcelona</h3>
             <p>
-                Disponemos de berlinas ejecutivas para 1–3 pasajeros, MINI VAN «V» Class para grupos de hasta 7 personas y vehículos BUSINESS CLASS para servicios VIP y corporativos. Si viajas con mucho equipaje, material deportivo o equipamiento especial, indícanoslo antes de confirmar para asignarte el vehículo más adecuado.
+                Disponemos de berlinas ejecutivas para 1–3 pasajeros, MINI VAN «V» Class para grupos de hasta 7 personas y vehÍculos BUSINESS CLASS para servicios VIP y corporativos. Si viajas con mucho equipaje, material deportivo o equipamiento especial, indÍcanoslo antes de confirmar para asignarte el vehÍculo más adecuado.
             </p>
 
             <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
                 <h4 style="margin-top:0; color:#0066CC;">CONSEJO: Reserva con antelación para garantizar tu plaza</h4>
                 <p style="margin-bottom:0;">
-                    Los servicios de traslado privado desde Barcelona tienen alta demanda, especialmente en temporada alta y fines de semana. Reservando con antelación aseguras disponibilidad, precio cerrado y sin sorpresas el día del viaje.
+                    Los servicios de traslado privado desde Barcelona tienen alta demanda, especialmente en temporada alta y fines de semana. Reservando con antelación aseguras disponibilidad, precio cerrado y sin sorpresas el dÍa del viaje.
                 </p>
             </div>
 
@@ -172,19 +172,19 @@ get_header(); ?>
         <div class="rev__grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
           <div class="rev__card" style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
             <div class="rev__stars" style="color: #FBBF24; font-size: 1.2rem; margin-bottom: 15px;">★★★★★</div>
-            <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"El chófer fue muy puntual y nos ayudó con todo el equipaje. El vehículo estaba impecable y el viaje desde el aeropuerto al hotel fue muy cómodo tras un vuelo largo. Sin duda repetiremos."</p>
+            <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"El chófer fue muy puntual y nos ayudó con todo el equipaje. El vehÍculo estaba impecable y el viaje desde el aeropuerto al hotel fue muy cómodo tras un vuelo largo. Sin duda repetiremos."</p>
             <span class="rev__author" style="display: block; font-weight: bold; color: #1E293B;">James S.</span>
             <span class="rev__meta" style="font-size: 0.9rem; color: #94A3B8;">Reino Unido · Agosto 2024</span>
           </div>
           <div class="rev__card" style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
             <div class="rev__stars" style="color: #FBBF24; font-size: 1.2rem; margin-bottom: 15px;">★★★★★</div>
             <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"Reservamos un traslado al puerto de cruceros para nuestra familia. Espacio de sobra en la MINI VAN «V» Class y una atención al cliente perfecta por WhatsApp para confirmar los detalles."</p>
-            <span class="rev__author" style="display: block; font-weight: bold; color: #1E293B;">María R.</span>
+            <span class="rev__author" style="display: block; font-weight: bold; color: #1E293B;">MarÍa R.</span>
             <span class="rev__meta" style="font-size: 0.9rem; color: #94A3B8;">España · Septiembre 2024</span>
           </div>
           <div class="rev__card" style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
             <div class="rev__stars" style="color: #FBBF24; font-size: 1.2rem; margin-bottom: 15px;">★★★★★</div>
-            <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"Hicimos el tour a Montserrat y fue espectacular. El conductor conocía perfectamente la ruta, nos dio consejos útiles y adaptó los tiempos a nuestro ritmo. Un servicio de 10."</p>
+            <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"Hicimos el tour a Montserrat y fue espectacular. El conductor conocÍa perfectamente la ruta, nos dio consejos útiles y adaptó los tiempos a nuestro ritmo. Un servicio de 10."</p>
             <span class="rev__author" style="display: block; font-weight: bold; color: #1E293B;">Anna J.</span>
             <span class="rev__meta" style="font-size: 0.9rem; color: #94A3B8;">Estados Unidos · Octubre 2024</span>
           </div>
@@ -199,7 +199,7 @@ get_header(); ?>
           <div>
             <p class="tag">Reserva tu próximo traslado</p>
             <h2>Tu viaje comienza con una recogida bien organizada</h2>
-            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
+            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehÍculo que mejor se adapta a tu trayecto.</p>
           </div>
           <div class="cta__btns">
             <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>

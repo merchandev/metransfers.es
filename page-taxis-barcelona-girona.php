@@ -139,10 +139,10 @@ get_header(); ?>
             
             <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;">De Barcelona al Barri Vell de Girona</h2>
             <p>
-                Girona es una ciudad con un encanto histórico inigualable, famosa por su vibrante barrio judío, sus puentes sobre el río Onyar y por haber sido escenario de series famosas como Juego de Tronos. 
+                Girona es una ciudad con un encanto histórico inigualable, famosa por su vibrante barrio judÍo, sus puentes sobre el rÍo Onyar y por haber sido escenario de series famosas como Juego de Tronos. 
             </p>
             <p>
-                Si tienes previsto visitarla o alojarte allí, reserva tu <strong>taxi de Barcelona a Girona</strong> con MeTransfers. El viaje dura poco más de una hora, es totalmente directo y te dejaremos a los pies de tu hotel o alojamiento, algo clave dado que gran parte del centro histórico es peatonal o de difícil acceso si no se conoce la zona.
+                Si tienes previsto visitarla o alojarte allÍ, reserva tu <strong>taxi de Barcelona a Girona</strong> con MeTransfers. El viaje dura poco más de una hora, es totalmente directo y te dejaremos a los pies de tu hotel o alojamiento, algo clave dado que gran parte del centro histórico es peatonal o de difÍcil acceso si no se conoce la zona.
             </p>
             
             <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">Conexiones de aeropuerto a aeropuerto</h3>
@@ -159,9 +159,9 @@ get_header(); ?>
             </p>
 
             <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
-                <h4 style="margin-top:0; color:#0066CC;">CONSEJO: Viajes de un día (Tour privado)</h4>
+                <h4 style="margin-top:0; color:#0066CC;">CONSEJO: Viajes de un dÍa (Tour privado)</h4>
                 <p style="margin-bottom:0;">
-                    Girona se puede ver perfectamente en una excursión de un día. Consúltanos por nuestros tours privados en los que te llevamos a Girona por la mañana y regresamos contigo a Barcelona por la tarde.
+                    Girona se puede ver perfectamente en una excursión de un dÍa. Consúltanos por nuestros tours privados en los que te llevamos a Girona por la mañana y regresamos contigo a Barcelona por la tarde.
                 </p>
             </div>
 
@@ -175,7 +175,7 @@ get_header(); ?>
           <div>
             <p class="tag">Reserva tu próximo traslado</p>
             <h2>Tu viaje comienza con una recogida bien organizada</h2>
-            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
+            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehÍculo que mejor se adapta a tu trayecto.</p>
           </div>
           <div class="cta__btns">
             <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
