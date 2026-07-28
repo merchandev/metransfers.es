@@ -1567,6 +1567,9 @@ function mt_full_restore_legal_pages_once() {
         }
     }
     
+    set_transient( 'mt_full_restored_legal_pages_v1', true, DAY_IN_SECONDS * 365 );
+}
+
 // =========================================================================
 // AUTO-CREAR PÁGINA DE BLOG (UNA SOLA VEZ)
 // =========================================================================
