@@ -1987,3 +1987,90 @@ function mt_auto_create_artist_post() {
     update_option( 'mt_artist_post_created_v1', true );
 }
 
+// =========================================================================
+// AUTO-CREAR ARTÍCULOS SENIORS Y LONJAS DE PESCADO
+// =========================================================================
+add_action( 'init', 'mt_auto_create_seniors_lonjas_posts' );
+function mt_auto_create_seniors_lonjas_posts() {
+    if ( get_option( 'mt_seniors_lonjas_posts_created_v1' ) ) {
+        return;
+    }
+
+    $posts = array(
+        'barcelona-seniors-comodidad-accesibilidad-vehiculos' => array(
+            'title'   => 'Turismo Senior en Barcelona: Comodidad y Accesibilidad en Nuestros Vehículos',
+            'excerpt' => 'Descubre cómo MeTransfers facilita el turismo para personas mayores (seniors) en Barcelona. Vehículos de fácil acceso, asistencia personalizada con el equipaje y una conducción suave para garantizar un viaje sin estrés.',
+            'content' => '
+                <p class="lead-text">Barcelona es una ciudad maravillosa para visitar a cualquier edad, pero para los viajeros senior, moverse por la ciudad y llegar desde el aeropuerto hasta el hotel puede resultar agotador si no se planifica adecuadamente.</p>
+                
+                <h2>Accesibilidad y Confort como Prioridad</h2>
+                <p>En MeTransfers hemos adaptado nuestros servicios para ofrecer la experiencia más cómoda y segura a nuestros clientes de mayor edad. Evitar las largas caminatas en el aeropuerto, las escaleras del metro o las esperas en las paradas de taxis convencionales marca una gran diferencia en el inicio de unas vacaciones.</p>
+                
+                <h3>Vehículos adaptados a tus necesidades</h3>
+                <p>Nuestra flota está compuesta por berlinas y Minivans de la marca Mercedes-Benz, seleccionadas específicamente por su ergonomía:</p>
+                <ul>
+                    <li><strong>Acceso fácil:</strong> Nuestras Mercedes Clase V cuentan con puertas correderas amplias y estribos bajos, lo que facilita enormemente entrar y salir del vehículo sin esfuerzo.</li>
+                    <li><strong>Asientos ergonómicos:</strong> Interiores espaciosos con asientos de cuero regulables, reposabrazos y climatización independiente para garantizar el máximo confort articular y térmico.</li>
+                    <li><strong>Espacio para sillas de ruedas:</strong> Disponemos de espacio de sobra en el maletero para acomodar sillas de ruedas plegables, andadores y cualquier tipo de asistencia técnica para la movilidad.</li>
+                </ul>
+
+                <h2>Asistencia Personalizada Puerta a Puerta</h2>
+                <p>El servicio comienza en la misma terminal de llegadas. Nuestro chófer te estará esperando con un cartel visible justo al salir de la recogida de equipajes. A partir de ese momento, <strong>él se encargará de todas tus maletas</strong>.</p>
+                <p>No tendrás que cargar peso en ningún momento. El conductor te acompañará a un paso tranquilo hasta el vehículo VIP, estacionado a pocos metros de la puerta en zonas reservadas del Aeropuerto de El Prat.</p>
+                
+                <h2>Conducción Suave y Segura</h2>
+                <p>Nuestros conductores profesionales aplican un estilo de conducción defensivo y extremadamente suave, evitando frenazos o aceleraciones bruscas. Además, si deseas hacer una parada técnica durante el trayecto (por ejemplo, en un viaje largo hacia la Costa Brava), solo tienes que pedirlo.</p>
+                <p>Viaja con total tranquilidad y disfruta del paisaje barcelonés. <a href="/contacto">Reserva hoy tu traslado VIP</a> y asegura un inicio de vacaciones relajado para ti o tus familiares mayores.</p>
+            '
+        ),
+        'lonjas-de-pescado-en-la-costa-de-cataluna' => array(
+            'title'   => 'Ruta Gastronómica: Las Mejores Lonjas de Pescado en la Costa de Cataluña',
+            'excerpt' => 'Sumérgete en la cultura marinera de Cataluña visitando sus famosas lonjas de pescado. Desde Palamós hasta Vilanova i la Geltrú, te llevamos en un cómodo traslado privado a presenciar la subasta del pescado y degustar el marisco más fresco.',
+            'content' => '
+                <p class="lead-text">La costa catalana no solo es famosa por sus playas y calas de aguas cristalinas, sino también por su riquísima tradición pesquera. Una de las experiencias más auténticas y fascinantes que puedes vivir cerca de Barcelona es visitar una <strong>lonja de pescado (Llotja de Peix)</strong> al atardecer.</p>
+                
+                <h2>El Espectáculo de la Subasta del Pescado</h2>
+                <p>Cada tarde, de lunes a viernes, los barcos pesqueros regresan a puerto seguidos por bandadas de gaviotas. La descarga de las cajas llenas de gambas, cigalas, rape y calamares da paso a la tradicional subasta. Antiguamente cantada a viva voz, hoy se realiza mediante paneles electrónicos, pero no ha perdido un ápice de su frenética emoción.</p>
+                
+                <h3>Las lonjas imprescindibles de la Costa Brava y Dorada</h3>
+                <ul>
+                    <li><strong>Palamós (Girona):</strong> Mundialmente famosa por su espectacular <em>Gamba Roja de Palamós</em>. Además de presenciar la subasta, puedes visitar el Museo de la Pesca y apuntarte a los talleres gastronómicos del Espai del Peix.</li>
+                    <li><strong>Blanes (Girona):</strong> El puerto pesquero más activo del sur de la Costa Brava. Su subasta es un hervidero de actividad donde restaurantes de lujo compran el género más selecto del día.</li>
+                    <li><strong>Arenys de Mar (Barcelona):</strong> A solo 45 minutos de la ciudad condal, es la lonja más importante del Maresme. Famosa por sus calamares y sonso, ofrece un ambiente marinero inigualable.</li>
+                    <li><strong>Vilanova i la Geltrú (Tarragona):</strong> Una de las flotas pesqueras más grandes de Cataluña, destacando por el marisco y el exquisito "Peix Blau" (pescado azul).</li>
+                </ul>
+
+                <h2>Del Barco al Plato</h2>
+                <p>La visita a la lonja culmina, inevitablemente, en la mesa. Alrededor de estos puertos se concentran las mejores marisquerías y tabernas marineras, donde podrás degustar el mismo pescado que acabas de ver desembarcar, acompañado de un buen vino blanco D.O. Penedès o Empordà.</p>
+                
+                <h2>Tu Ruta Gastronómica en Vehículo Privado</h2>
+                <p>Visitar estos pueblos pesqueros y volver a Barcelona el mismo día puede resultar cansado si dependes del tren o conduces de noche tras una buena cena. Nuestro <strong>servicio de traslado y tour privado</strong> es la opción perfecta para disfrutar de esta experiencia.</p>
+                <p>Te recogemos en tu hotel, te llevamos al puerto de tu elección para que pasees, presencies la subasta y cenes sin prisa. Tu chófer privado te estará esperando a la salida del restaurante para llevarte de vuelta a tu alojamiento con total comodidad en un elegante Mercedes-Benz. <a href="/contacto">Consúltanos para organizar tu ruta gastronómica marinera</a>.</p>
+            '
+        )
+    );
+
+    foreach ( $posts as $slug => $data ) {
+        $post = get_page_by_path( $slug, OBJECT, 'post' );
+        
+        if ( ! $post ) {
+            wp_insert_post( array(
+                'post_title'   => $data['title'],
+                'post_name'    => $slug,
+                'post_content' => trim( $data['content'] ),
+                'post_excerpt' => $data['excerpt'],
+                'post_status'  => 'publish',
+                'post_type'    => 'post'
+            ) );
+        } else {
+            wp_update_post( array(
+                'ID'           => $post->ID,
+                'post_content' => trim( $data['content'] ),
+                'post_excerpt' => $data['excerpt'],
+            ) );
+        }
+    }
+
+    update_option( 'mt_seniors_lonjas_posts_created_v1', true );
+}
+
