@@ -155,18 +155,6 @@ while ( have_posts() ) :
 							<div class="entry-content luxury-prose js-toc-content">
 								<?php the_content(); ?>
 							</div>
-
-							<!-- Author Box -->
-							<div class="article-author-box">
-								<div class="author-avatar">
-									<?php echo get_avatar( get_the_author_meta( 'ID' ), 80 ); ?>
-								</div>
-								<div class="author-info">
-									<h4 class="author-name"><?php echo esc_html( get_the_author() ); ?></h4>
-									<p class="author-bio"><?php echo esc_html( get_the_author_meta( 'description' ) ); ?></p>
-									<a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>" class="author-link">Ver más artÍculos de <?php echo esc_html( get_the_author() ); ?> →</a>
-								</div>
-							</div>
 						</div>
 
 						<footer class="single-article-footer">

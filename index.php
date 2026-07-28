@@ -30,8 +30,29 @@ get_header();
 						the_post();
 						?>
 						<article id="post-<?php the_ID(); ?>" <?php post_class( 'blog-index-card' ); ?>>
+							
+							<?php if ( has_post_thumbnail() ) : ?>
+								<div class="blog-index-card__media">
+									<a href="<?php the_permalink(); ?>">
+										<?php the_post_thumbnail( 'medium_large', array( 'class' => 'blog-index-card__img', 'loading' => 'lazy' ) ); ?>
+									</a>
+									<?php 
+									$categories = get_the_category();
+									if ( ! empty( $categories ) ) : ?>
+										<span class="blog-index-card__cat-pill"><?php echo esc_html( $categories[0]->name ); ?></span>
+									<?php endif; ?>
+								</div>
+							<?php endif; ?>
 
 							<div class="blog-index-card__body">
+								<?php if ( ! has_post_thumbnail() ) : ?>
+									<?php 
+									$categories = get_the_category();
+									if ( ! empty( $categories ) ) : ?>
+										<span class="blog-index-card__cat-text"><?php echo esc_html( $categories[0]->name ); ?></span>
+									<?php endif; ?>
+								<?php endif; ?>
+
 								<h2 class="blog-index-card__title">
 									<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 								</h2>

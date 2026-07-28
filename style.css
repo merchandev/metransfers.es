@@ -10148,3 +10148,64 @@ body .page-banner__meta {
     flex-direction: column;
     justify-content: center;
 }
+
+/* =================================================================
+   REDISENO BLOG INDEX CARDS
+   ================================================================= */
+.blog-index-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.blog-index-card__media {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+    background: #f1f5f9;
+}
+
+.blog-index-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.blog-index-card:hover .blog-index-card__img {
+    transform: scale(1.05);
+}
+
+.blog-index-card__cat-pill {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: #004E9A;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    z-index: 2;
+}
+
+.blog-index-card__cat-text {
+    display: inline-block;
+    color: #004E9A;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+}
+
+.blog-index-card__body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
