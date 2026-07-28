@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $faq_items        = me_transfers_get_faq_items();
 			$privacy_url      = get_privacy_policy_url();
 			$cancellation_url = '';

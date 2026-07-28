@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Template Name: Ruta Comercial
  * Template Post Type: post, page, ruta

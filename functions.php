@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Me Transfers functions and definitions
  *

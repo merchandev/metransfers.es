@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Header - Me Transfers Premium
  * @package Me_Transfers

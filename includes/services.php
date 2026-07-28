@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Services Catalog — MeTransfers
  * Catálogo completo de los 6 servicios, con textos, beneficios y datos del formulario.

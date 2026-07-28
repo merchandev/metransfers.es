@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Archivo de todas las Rutas — MeTransfers
  * URL: /rutas/

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Template Name: SEO - Taxis Barcelona a Salou
  * 

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Template Name: Página Segmento (B2B/Nichos)
  *

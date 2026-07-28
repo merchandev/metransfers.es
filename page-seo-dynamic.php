@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Template Name: SEO - Aterrizaje Dinámico (Taxis / Traslados)
  * 

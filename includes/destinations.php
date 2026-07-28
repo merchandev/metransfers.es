@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Destination hub and destination-request helpers.
  *
