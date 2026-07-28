@@ -521,12 +521,39 @@ add_action( 'wp_footer', function() { ?>
 // 8. SEO: hreflang + canonical
 // =================================================================
 
-// Canonical removida: Se delega completamente en Yoast SEO para evitar dobles canonicals.
-// Hreflang desactivado temporalmente (mediante wp_robots noindex en functions.php) 
-// hasta que se completen las traducciones.
+// 1. Sobrescribir el Canonical de Yoast SEO para las rutas traducidas virtuales
+add_filter( 'wpseo_canonical', function( $canonical ) {
+    if ( mt_is_translated() ) {
+        return home_url( $_SERVER['REQUEST_URI'] );
+    }
+    return $canonical;
+} );
+
+// 2. Inyectar etiquetas Hreflang y Canonical (si no hay Yoast)
 add_action( 'wp_head', function() {
-    // Si en el futuro se habilitan idiomas reales, aquÍ se pueden inyectar 
-    // las etiquetas hreflang correspondientes.
+    $path     = trim( parse_url( $_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH ), '/' );
+    $segments = explode( '/', $path );
+    $is_trans = array_key_exists( $segments[0] ?? '', MT_LANGS ) && $segments[0] !== 'es';
+    $slug     = $is_trans ? implode( '/', array_slice( $segments, 1 ) ) : $path;
+    
+    // Si Yoast no está activo, aseguramos que la página traducida tenga su canonical
+    if ( ! defined( 'WPSEO_VERSION' ) && mt_is_translated() ) {
+        echo '<link rel="canonical" href="' . esc_url( home_url( $_SERVER['REQUEST_URI'] ) ) . '" />' . "\n";
+    }
+
+    // Inyectar hreflang para decirle a Google que son variantes de idioma y no duplicados
+    foreach ( MT_LANGS as $code => $info ) {
+        $url = ( $code === 'es' )
+            ? home_url( '/' . ( $slug ? $slug . '/' : '' ) )
+            : home_url( '/' . $code . '/' . ( $slug ? $slug . '/' : '' ) );
+            
+        // Ajuste para el código de idioma chino (zh)
+        $hreflang = ( $code === 'zh' ) ? 'zh-Hans' : $code; 
+        echo '<link rel="alternate" hreflang="' . esc_attr( $hreflang ) . '" href="' . esc_url( $url ) . '" />' . "\n";
+    }
+    
+    // x-default siempre apunta a la versión en español
+    echo '<link rel="alternate" hreflang="x-default" href="' . esc_url( home_url( '/' . ( $slug ? $slug . '/' : '' ) ) ) . '" />' . "\n";
 }, 2 );
 
 
