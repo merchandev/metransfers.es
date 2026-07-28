@@ -1412,6 +1412,27 @@ add_filter( 'wp_robots', static function ( array $robots ): array {
 }, 99 );
 
 // ==========================================
+// FORZAR INDEXACIÓN DE PÁGINAS ESPECÍFICAS
+// ==========================================
+// Sobrescribir directivas de Yoast SEO
+add_filter( 'wpseo_robots', function( $robotsval ) {
+	if ( is_page( ['preguntas-frecuentes', 'reservas-metransfers'] ) ) {
+		return 'index, follow';
+	}
+	return $robotsval;
+} );
+
+// Sobrescribir directivas nativas de WordPress (por si Yoast está inactivo)
+add_filter( 'wp_robots', function( $robots ) {
+	if ( is_page( ['preguntas-frecuentes', 'reservas-metransfers'] ) ) {
+		if ( isset( $robots['noindex'] ) ) unset( $robots['noindex'] );
+		$robots['index'] = true;
+		$robots['follow'] = true;
+	}
+	return $robots;
+}, 100 ); // Prioridad 100 para ejecutar después del filtro del tema
+
+// ==========================================
 // YOAST SEO: Excluir rutas de baja calidad del sitemap
 // ==========================================
 add_filter( 'wpseo_exclude_from_sitemap_by_post_ids', function( $excluded ) {
