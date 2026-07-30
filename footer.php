@@ -565,9 +565,34 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 		});
 	}
+/* Event Tracking */
+	document.addEventListener('click', function(e) {
+		const target = e.target.closest('button, .btn, a.js-wa-trigger, a[href^="mailto:"], a[href^="tel:"]');
+		if (target) {
+			let buttonText = target.innerText.trim() || target.value || target.title || 'Botón sin texto';
+			// Si el texto es muy largo, cortarlo
+			if (buttonText.length > 50) buttonText = buttonText.substring(0, 50) + '...';
+			
+			const buttonClass = target.className || '';
+			const pageUrl = window.location.href;
+
+			if (window.mtAjax && mtAjax.ajaxurl) {
+				const formData = new FormData();
+				formData.append('action', 'mt_track_button_click');
+				formData.append('security', mtAjax.nonce);
+				formData.append('button_text', buttonText);
+				formData.append('button_class', buttonClass);
+				formData.append('page_url', pageUrl);
+
+				fetch(mtAjax.ajaxurl, {
+					method: 'POST',
+					body: formData
+				}).catch(err => console.log('Error tracking click'));
+			}
+		}
+	});
 });
 </script>
 
 </body>
 </html>
-

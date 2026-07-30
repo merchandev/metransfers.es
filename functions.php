@@ -956,10 +956,17 @@ function mt_ajax_save_lead() {
         return;
     }
 
-    // Validación: email obligatorio y formato correcto
-    if ( empty( $email ) || ! is_email( $email ) ) {
-        wp_send_json_error( array( 'message' => 'Introduce un correo electrónico válido.' ) );
-        return;
+    // Validación: email o teléfono según el origen
+    if ( $origen === 'whatsapp' ) {
+        if ( empty( trim( $telefono ) ) ) {
+            wp_send_json_error( array( 'message' => 'El teléfono es obligatorio.' ) );
+            return;
+        }
+    } else {
+        if ( empty( $email ) || ! is_email( $email ) ) {
+            wp_send_json_error( array( 'message' => 'Introduce un correo electrónico válido.' ) );
+            return;
+        }
     }
 
     // Validación: longitudes máximas para prevenir abuso
@@ -2092,7 +2099,122 @@ function mt_auto_create_seniors_lonjas_posts() {
         }
     }
 
+
+
     update_option( 'mt_seniors_lonjas_posts_created_v1', true );
 }
 
+/**
+ * ==============================================================================
+ * TRACKING DE EVENTOS DE BOTONES
+ * ==============================================================================
+ */
 
+// 1. Crear la tabla de base de datos en la activación o inicio
+function mt_setup_event_tracking_table() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'mt_event_tracking';
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $table_name (
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        button_text varchar(255) NOT NULL,
+        button_class varchar(255) DEFAULT '' NOT NULL,
+        page_url varchar(255) NOT NULL,
+        created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        PRIMARY KEY  (id)
+    ) $charset_collate;";
+
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    dbDelta( $sql );
+}
+add_action( 'after_setup_theme', 'mt_setup_event_tracking_table' );
+
+// 2. Endpoint AJAX para registrar el clic
+function mt_ajax_track_button_click() {
+    check_ajax_referer( 'mt_lead_nonce', 'security' );
+
+    $button_text  = isset( $_POST['button_text'] ) ? sanitize_text_field( $_POST['button_text'] ) : '';
+    $button_class = isset( $_POST['button_class'] ) ? sanitize_text_field( $_POST['button_class'] ) : '';
+    $page_url     = isset( $_POST['page_url'] ) ? esc_url_raw( $_POST['page_url'] ) : '';
+
+    if ( ! empty( $button_text ) && ! empty( $page_url ) ) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'mt_event_tracking';
+        
+        $wpdb->insert(
+            $table_name,
+            array(
+                'button_text'  => $button_text,
+                'button_class' => $button_class,
+                'page_url'     => $page_url,
+                'created_at'   => current_time( 'mysql' )
+            )
+        );
+    }
+    
+    wp_send_json_success();
+}
+add_action( 'wp_ajax_mt_track_button_click', 'mt_ajax_track_button_click' );
+add_action( 'wp_ajax_nopriv_mt_track_button_click', 'mt_ajax_track_button_click' );
+
+// 3. Menú de administración para ver las estadísticas
+function mt_add_event_tracking_menu() {
+    add_menu_page(
+        'Métricas Botones',
+        'Métricas Botones',
+        'manage_options',
+        'mt-button-metrics',
+        'mt_render_event_tracking_page',
+        'dashicons-chart-bar',
+        30
+    );
+}
+add_action( 'admin_menu', 'mt_add_event_tracking_menu' );
+
+function mt_render_event_tracking_page() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'mt_event_tracking';
+    
+    // Obtener los datos agrupados
+    $results = $wpdb->get_results( "
+        SELECT button_text, page_url, COUNT(*) as click_count, MAX(created_at) as last_click
+        FROM $table_name
+        GROUP BY button_text, page_url
+        ORDER BY click_count DESC
+    " );
+    
+    ?>
+    <div class="wrap">
+        <h1>Estadísticas de Clics en Botones</h1>
+        <p>A continuación se muestran los botones que los usuarios han pulsado en la web, agrupados por texto del botón y URL de la página.</p>
+        
+        <table class="wp-list-table widefat fixed striped table-view-list">
+            <thead>
+                <tr>
+                    <th class="manage-column">Texto del Botón</th>
+                    <th class="manage-column">URL de la Página</th>
+                    <th class="manage-column">Total Clics</th>
+                    <th class="manage-column">Último Clic</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if ( empty( $results ) ) : ?>
+                    <tr>
+                        <td colspan="4">No hay datos registrados aún.</td>
+                    </tr>
+                <?php else : ?>
+                    <?php foreach ( $results as $row ) : ?>
+                        <tr>
+                            <td><strong><?php echo esc_html( $row->button_text ); ?></strong></td>
+                            <td><a href="<?php echo esc_url( $row->page_url ); ?>" target="_blank"><?php echo esc_html( $row->page_url ); ?></a></td>
+                            <td><?php echo esc_html( $row->click_count ); ?></td>
+                            <td><?php echo esc_html( $row->last_click ); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
+}
