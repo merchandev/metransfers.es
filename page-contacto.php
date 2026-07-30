@@ -117,7 +117,7 @@ get_header(); ?>
                         <textarea name="mensaje" placeholder="<?php echo mt_translate( 'Indica origen, destino, fecha, hora, pasajeros, equipaje y cualquier petición especial.', 'Indicate origin, destination, date, time, passengers, luggage, and any special requests.' ); ?>" required></textarea>
                     </div>
                     <div class="cform__check">
-                        <input type="checkbox" id="gdpr_contact" name="gdpr" required>
+                        <input type="checkbox" id="gdpr_contact" name="gdpr_aceptado" value="1" required>
                         <label for="gdpr_contact"><?php echo mt_translate( 'He leÍdo y acepto la PolÍtica de Privacidad y el tratamiento de mis datos.', 'I have read and accept the Privacy Policy and data processing.' ); ?></label>
                     </div>
                     <button type="submit" class="btn btn-primary cform__submit"><?php echo mt_translate( 'Enviar solicitud', 'Send request' ); ?></button>

@@ -1072,7 +1072,7 @@ a.contact__val:hover{color:var(--blue);}
         </div>
         <div class="fg"><label>Mensaje</label><textarea name="mensaje" placeholder="Indica origen, destino, fecha, hora, pasajeros, equipaje y cualquier petición especial." required></textarea></div>
         <div class="cform__check">
-          <input type="checkbox" id="gdpr" name="gdpr" required>
+          <input type="checkbox" id="gdpr" name="gdpr_aceptado" value="1" required>
           <label for="gdpr">He leÍdo y acepto la PolÍtica de Privacidad y el tratamiento de mis datos.</label>
         </div>
         <button type="submit" class="btn btn-solid cform__submit">Enviar solicitud</button>
