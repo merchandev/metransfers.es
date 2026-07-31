@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name:       Sistema de Reservas - Metransfers (Renovado)
- * Plugin URI:        https://metransfers.com
- * Description:       Sistema de reservas completo con WooCommerce, Stripe y pasarelas de pago.
- * Version:           4.5.0
- * Author:            Tu Nombre
+ * Plugin URI:        https://merchan.dev/plugin-para-wordpress
+ * Description:       Sistema de reservas avanzado para transfers, con integración nativa de Redsys "GETNET" de Banco Santander y Google Maps. Desarrollado por Merchan.Dev.
+ * Version:           5.0.2
+ * Author:            Merchan.Dev
  * Text Domain:       wptb
  */
 
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'WPTB_VERSION' ) ) {
-    define( 'WPTB_VERSION', '4.5.1' );
+    define( 'WPTB_VERSION', '5.0.2' );
 }
 define( 'CBP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CBP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

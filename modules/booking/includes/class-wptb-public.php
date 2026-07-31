@@ -599,10 +599,6 @@ class WPTB_Public {
                 'distance_km' => floatval( $booking_data['distance_km'] ),
                 'vehicle_id' => intval( $booking_data['vehicle_id'] ),
                 'trip_type' => !empty( $booking_data['trip_type'] ) ? sanitize_text_field( $booking_data['trip_type'] ) : 'one_way',
-                'return_date' => !empty( $booking_data['return_date'] ) ? sanitize_text_field( $booking_data['return_date'] ) : null,
-                'return_time' => !empty( $booking_data['return_time'] ) ? sanitize_text_field( $booking_data['return_time'] ) : null,
-                'return_pickup_address' => !empty( $booking_data['return_origin'] ) ? sanitize_text_field( $booking_data['return_origin'] ) : null,
-                'return_dropoff_address' => !empty( $booking_data['return_destination'] ) ? sanitize_text_field( $booking_data['return_destination'] ) : null,
                 'price' => floatval( $booking_data['price'] ),
                 'customer_name' => !empty($booking_data['customer_name']) ? sanitize_text_field( $booking_data['customer_name'] ) : '',
                 'customer_email' => !empty($booking_data['customer_email']) ? sanitize_email( $booking_data['customer_email'] ) : '',
@@ -612,13 +608,27 @@ class WPTB_Public {
                 'carry_ons' => !empty($booking_data['carry_ons']) ? intval( $booking_data['carry_ons'] ) : 0,
                 'flight_number' => !empty($booking_data['flight_number']) ? sanitize_text_field( $booking_data['flight_number'] ) : '',
                 'notes' => !empty($booking_data['notes']) ? sanitize_textarea_field( $booking_data['notes'] ) : '',
-                'hotel_token' => $hotel_token,
                 'status' => 'pending_payment',
                 'payment_method' => 'redsys',
                 'created_at' => current_time( 'mysql' )
             );
 
-            $format_db = array( '%s', '%s', '%s', '%s', '%f', '%d', '%s', '%s', '%s', '%s', '%s', '%f', '%s', '%s', '%s', '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s' );
+            if ( !empty( $booking_data['return_date'] ) ) $data_db['return_date'] = sanitize_text_field( $booking_data['return_date'] );
+            if ( !empty( $booking_data['return_time'] ) ) $data_db['return_time'] = sanitize_text_field( $booking_data['return_time'] );
+            if ( !empty( $booking_data['return_origin'] ) ) $data_db['return_pickup_address'] = sanitize_text_field( $booking_data['return_origin'] );
+            if ( !empty( $booking_data['return_destination'] ) ) $data_db['return_dropoff_address'] = sanitize_text_field( $booking_data['return_destination'] );
+            if ( !empty( $hotel_token ) ) $data_db['hotel_token'] = $hotel_token;
+
+            $format_db = array();
+            foreach ( $data_db as $key => $val ) {
+                if ( is_int( $val ) ) {
+                    $format_db[] = '%d';
+                } elseif ( is_float( $val ) ) {
+                    $format_db[] = '%f';
+                } else {
+                    $format_db[] = '%s';
+                }
+            }
 
             // Forzar que el AUTO_INCREMENT inicie en 1000 para que coincida con el requerimiento de Redsys Transfer
             $max_id = $wpdb->get_var("SELECT MAX(id) FROM $table_name");

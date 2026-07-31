@@ -45,8 +45,28 @@ jQuery(document).ready(function ($) {
         price: 0
     };
 
-    // ===== EUROPEAN COUNTRIES RESTRICTION =====
-    const ALLOWED_COUNTRIES = ['ES', 'FR', 'DE', 'PT', 'AD', 'CH', 'BE'];
+    // ===== ORIGIN & DESTINATION RESTRICTIONS =====
+    const DESTINATION_COUNTRIES = ['ES', 'PT', 'FR', 'CH', 'BE', 'DE', 'IT', 'NL', 'AT', 'HR', 'SI', 'PL', 'LU', 'AD'];
+
+    // Validates that origin is within Catalunya (province of Barcelona area)
+    function validateOriginArea(place) {
+        if (!place || !place.address_components) return false;
+        let isCatalunya = false;
+        let isBarcelona = false;
+        for (let comp of place.address_components) {
+            if (comp.types.includes('administrative_area_level_1')) {
+                if (comp.short_name === 'CT' || comp.long_name.includes('Catalunya') || comp.long_name.includes('Catalonia')) {
+                    isCatalunya = true;
+                }
+            }
+            if (comp.types.includes('administrative_area_level_2')) {
+                if (comp.long_name.includes('Barcelona')) {
+                    isBarcelona = true;
+                }
+            }
+        }
+        return (isCatalunya || isBarcelona);
+    }
 
     // ===== GLOBAL HELPERS (Defined early to avoid crash issues) =====
     window.selectVehicle = function (id) {
@@ -55,6 +75,7 @@ jQuery(document).ready(function ($) {
             $('.vehicle-card').removeClass('selected');
             $(`[data-vehicle-id="${id}"]`).addClass('selected');
 
+            bookingData.vehicle = vehicle; // Guardar el objeto completo para validaciones
             bookingData.vehicle_id = vehicle.id;
             bookingData.vehicle_name = vehicle.name;
             calculatePrice(vehicle);
@@ -81,17 +102,62 @@ jQuery(document).ready(function ($) {
             if (typeof google !== 'undefined' && google.maps && google.maps.places) {
                 console.log('🗺️ Google Maps detected. Initializing inputs for:', suffix);
 
-                const options = {
+                // ORIGIN: Restricted to Barcelona province bounds
+                const originOptions = {
                     fields: ["formatted_address", "geometry", "name", "address_components"],
-                    strictBounds: false,
-                    componentRestrictions: { country: ALLOWED_COUNTRIES }
+                    bounds: new google.maps.LatLngBounds(
+                        new google.maps.LatLng(41.16, 1.63), // SW Barcelona province
+                        new google.maps.LatLng(42.33, 2.83)  // NE Barcelona province
+                    ),
+                    strictBounds: true,
+                    componentRestrictions: { country: 'ES' }
+                };
+
+                // DESTINATION: All accessible European countries by road
+                const destOptions = {
+                    fields: ["formatted_address", "geometry", "name", "address_components"],
+                    bounds: new google.maps.LatLngBounds(
+                        new google.maps.LatLng(36.0, -10.0), // SW Europe
+                        new google.maps.LatLng(55.0, 25.0)   // NE Europe
+                    ),
+                    strictBounds: true
                 };
 
                 const originInput = document.querySelector(originId);
                 const destInput = document.querySelector(destId);
 
-                if (originInput) new google.maps.places.Autocomplete(originInput, options);
-                if (destInput) new google.maps.places.Autocomplete(destInput, options);
+                if (originInput) {
+                    const originAutocomplete = new google.maps.places.Autocomplete(originInput, originOptions);
+                    originAutocomplete.addListener('place_changed', () => {
+                        const place = originAutocomplete.getPlace();
+                        if (place && place.address_components) {
+                            if (!validateOriginArea(place)) {
+                                alert('Lo sentimos, solo operamos transfers con origen en el área de Barcelona.');
+                                originInput.value = '';
+                            }
+                        }
+                    });
+                }
+
+                if (destInput) {
+                    const destAutocomplete = new google.maps.places.Autocomplete(destInput, destOptions);
+                    destAutocomplete.addListener('place_changed', () => {
+                        const place = destAutocomplete.getPlace();
+                        if (place && place.address_components) {
+                            let isAllowed = false;
+                            for (let comp of place.address_components) {
+                                if (comp.types.includes('country') && DESTINATION_COUNTRIES.includes(comp.short_name.toUpperCase())) {
+                                    isAllowed = true;
+                                    break;
+                                }
+                            }
+                            if (!isAllowed) {
+                                alert('El destino debe estar dentro de los países europeos con cobertura.');
+                                destInput.value = '';
+                            }
+                        }
+                    });
+                }
             } else {
                 // Check if script is even in DOM
                 const scriptExists = document.querySelector('script[src*="maps.googleapis.com"]');
@@ -156,10 +222,15 @@ jQuery(document).ready(function ($) {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
                     const geocoder = new google.maps.Geocoder();
-
                     geocoder.geocode({ location: { lat, lng } }, (results, status) => {
                         $icon.removeClass('dashicons-update spin').addClass('dashicons-location');
                         if (status === "OK" && results[0]) {
+                            if (!validateOriginArea(results[0])) {
+                                alert('Lo sentimos, solo operamos transfers con origen en el área de Barcelona.');
+                                $(originId).val('');
+                                $(originId).focus();
+                                return;
+                            }
                             $(originId).val(results[0].formatted_address);
                             // Trigger input event for validation/maps
                             const event = new Event('input', { bubbles: true });
@@ -167,7 +238,7 @@ jQuery(document).ready(function ($) {
                                 document.querySelector(originId).dispatchEvent(event);
                             }
                         } else {
-                            alert('No se pudo determinar la dirección. Por favor ingrésala manualmente.');
+                            alert('No se pudo determinar la dirección. Por favor ingésala manualmente.');
                             $(originId).focus();
                         }
                     });
@@ -321,6 +392,7 @@ jQuery(document).ready(function ($) {
                 $(this).addClass('selected');
 
                 // Calculate price and redirect
+                bookingData.vehicle = vehicle; // Guardar el objeto entero
                 bookingData.vehicle_id = vehicle.id;
                 bookingData.vehicle_name = vehicle.name;
 
@@ -1069,8 +1141,9 @@ jQuery(document).ready(function ($) {
 
         // ===== DETAILS PAGE (/reservas-metransfers/) =====
         if (isDetailsPage) {
-            if (!bookingData.vehicle_id) {
-                console.warn('⚠️ No vehicle selected. Redirecting back to vehicle selection.');
+            if (!bookingData.vehicle_id || !bookingData.vehicle) {
+                console.warn('⚠️ No vehicle selected or session is outdated. Redirecting back to vehicle selection.');
+                sessionStorage.removeItem('wptb_booking_data');
                 window.location.href = (typeof wptb_vars !== 'undefined' && wptb_vars.vehicles_url)
                     ? wptb_vars.vehicles_url : '/seleccionar-vehiculo/';
                 return;
@@ -1091,29 +1164,31 @@ jQuery(document).ready(function ($) {
 
             // Apply vehicle limits
             if (bookingData.vehicle) {
-                const maxPax = parseInt(bookingData.vehicle.max_passengers) || 50;
+                const maxPax = parseInt(bookingData.vehicle.capacity) || 50;
                 $('#wptb-passengers').attr('max', maxPax);
                 $('#wptb-passengers').on('input', function () {
                     if (parseInt($(this).val()) > maxPax) {
-                        alert('El vehículo seleccionado solo permite ' + maxPax + ' pasajeros.');
                         $(this).val(maxPax);
                     }
                 });
 
-                const maxSuit = parseInt(bookingData.vehicle.max_suitcases) || 10;
+                // Lógica personalizada de equipaje (basada en el límite de pasajeros)
+                let maxSuit = 4; // Sedan (hasta 4 pax)
+                if (maxPax > 4) {
+                    maxSuit = 9; // Van (más de 4 pax)
+                }
+                
                 $('#wptb-suitcases').attr('max', maxSuit);
                 $('#wptb-suitcases').on('input', function () {
                     if (parseInt($(this).val()) > maxSuit) {
-                        alert('El vehículo seleccionado solo permite ' + maxSuit + ' maletas grandes.');
                         $(this).val(maxSuit);
                     }
                 });
 
-                const maxCarry = parseInt(bookingData.vehicle.max_carry_on) || 10;
+                const maxCarry = 1; // Siempre 1 maleta de mano
                 $('#wptb-carryOns').attr('max', maxCarry);
                 $('#wptb-carryOns').on('input', function () {
                     if (parseInt($(this).val()) > maxCarry) {
-                        alert('El vehículo seleccionado solo permite ' + maxCarry + ' maletas de mano.');
                         $(this).val(maxCarry);
                     }
                 });

@@ -2,7 +2,7 @@
 /**
  * Module Name:       Reservas Metransfers
  * Description:       Sistema avanzado de reservas y traslados con gestión de vehículos, precios dinámicos, restricción geográfica europea e integración con Google Maps y WooCommerce.
- * Version:           4.5.3
+ * Version:           5.0.0
  * Author:            Merchan.Dev
  * Text Domain:       wp-transfer-booking
  */
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define Plugin Constants
 if ( ! defined( 'WPTB_VERSION' ) ) {
-    define( 'WPTB_VERSION', '4.5.3' );
+    define( 'WPTB_VERSION', '5.0.2' );
 }
 if ( ! defined( 'WPTB_PLUGIN_DIR' ) ) {
     define( 'WPTB_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );

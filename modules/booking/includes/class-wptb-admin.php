@@ -195,92 +195,298 @@ class WPTB_Admin {
         <html>
         <head>
             <title>Recibo Reserva #<?php echo $id; ?></title>
+            <meta charset="utf-8">
             <style>
-                body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; background: #eee; padding: 20px; }
-                .receipt { max-width: 800px; margin: 0 auto; background: white; padding: 40px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
-                .header { border-bottom: 2px solid #006597; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-                .header h1 { margin: 0; color: #333; }
-                .meta { color: #666; font-size: 14px; }
-                .row { display: flex; margin-bottom: 15px; border-bottom: 1px solid #f9f9f9; padding-bottom: 5px; }
-                .label { width: 40%; font-weight: bold; color: #555; }
-                .value { width: 60%; font-weight: 600; }
-                .total { margin-top: 30px; border-top: 2px solid #333; padding-top: 15px; font-size: 24px; font-weight: bold; text-align: right; color: #28a745; }
-                .actions { margin-top: 40px; text-align: center; }
-                .btn { background: #0077B6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; cursor: pointer; border: none; font-size: 16px; }
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+                body { 
+                    font-family: 'Inter', Helvetica, Arial, sans-serif; 
+                    line-height: 1.6; 
+                    color: #333; 
+                    background: #f4f7f6; 
+                    padding: 40px 20px; 
+                    margin: 0;
+                }
+                .receipt { 
+                    max-width: 750px; 
+                    margin: 0 auto; 
+                    background: white; 
+                    padding: 50px; 
+                    border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+                }
+                .header { 
+                    display: flex; 
+                    justify-content: space-between; 
+                    align-items: flex-start; 
+                    border-bottom: 2px solid #f0f0f0; 
+                    padding-bottom: 30px; 
+                    margin-bottom: 40px; 
+                }
+                .logo-container img {
+                    max-height: 60px;
+                    width: auto;
+                }
+                .logo-container h2 {
+                    margin: 0;
+                    color: #001f3f;
+                    font-size: 28px;
+                    font-weight: 700;
+                    letter-spacing: -0.5px;
+                }
+                .invoice-details {
+                    text-align: right;
+                }
+                .invoice-details h1 { 
+                    margin: 0 0 5px 0; 
+                    color: #001f3f; 
+                    font-size: 24px;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+                .status-badge {
+                    display: inline-block;
+                    padding: 4px 10px;
+                    border-radius: 4px;
+                    font-size: 13px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    margin-bottom: 10px;
+                }
+                .status-confirmed, .status-completed { background: #d4edda; color: #155724; }
+                .status-pending_payment, .status-processing { background: #fff3cd; color: #856404; }
+                .status-cancelled { background: #f8d7da; color: #721c24; }
+                .meta { color: #666; font-size: 15px; margin-bottom: 5px; }
+                .meta strong { color: #333; }
+                
+                .section-title {
+                    font-size: 16px;
+                    text-transform: uppercase;
+                    color: #001f3f;
+                    font-weight: 700;
+                    margin-top: 0;
+                    margin-bottom: 20px;
+                    letter-spacing: 1px;
+                    border-left: 4px solid #006597;
+                    padding-left: 10px;
+                }
+
+                .grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 30px;
+                    margin-bottom: 40px;
+                }
+
+                .info-box {
+                    background: #f8fafc;
+                    padding: 20px;
+                    border-radius: 8px;
+                    border: 1px solid #edf2f7;
+                }
+
+                .row { 
+                    display: flex; 
+                    margin-bottom: 12px; 
+                    font-size: 15px;
+                }
+                .row:last-child {
+                    margin-bottom: 0;
+                }
+                .label { 
+                    width: 45%; 
+                    color: #64748b; 
+                    font-weight: 600; 
+                }
+                .value { 
+                    width: 55%; 
+                    color: #0f172a; 
+                    font-weight: 600; 
+                }
+                
+                .trip-details {
+                    margin-bottom: 40px;
+                }
+
+                .trip-card {
+                    background: #fff;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    margin-bottom: 20px;
+                }
+                .trip-card-header {
+                    background: #f1f5f9;
+                    padding: 12px 20px;
+                    font-weight: 700;
+                    color: #0f172a;
+                    border-bottom: 1px solid #e2e8f0;
+                    display: flex;
+                    justify-content: space-between;
+                }
+                .trip-card-body {
+                    padding: 20px;
+                }
+                
+                .total-section { 
+                    margin-top: 30px; 
+                    border-top: 2px solid #e2e8f0; 
+                    padding-top: 20px; 
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                .total-label {
+                    font-size: 18px;
+                    font-weight: 700;
+                    color: #64748b;
+                }
+                .total-amount {
+                    font-size: 32px; 
+                    font-weight: 700; 
+                    color: #001f3f; 
+                }
+                .actions { 
+                    margin-top: 50px; 
+                    text-align: center; 
+                }
+                .btn { 
+                    background: #001f3f; 
+                    color: white; 
+                    padding: 12px 25px; 
+                    text-decoration: none; 
+                    border-radius: 6px; 
+                    cursor: pointer; 
+                    border: none; 
+                    font-size: 16px;
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                    display: inline-block;
+                }
+                .btn:hover {
+                    background: #003366;
+                    transform: translateY(-2px);
+                }
+                .btn-secondary {
+                    background: #64748b;
+                    margin-left: 15px;
+                }
+                .btn-secondary:hover {
+                    background: #475569;
+                }
+                
                 @media print {
-                    body { background: white; padding: 0; }
-                    .receipt { box-shadow: none; max-width: 100%; padding: 20px; }
+                    @page { margin: 0; size: auto; }
+                    body { background: white; padding: 20px; margin: 0; }
+                    .receipt { box-shadow: none; max-width: 100%; padding: 0; border: none; }
                     .actions { display: none; }
+                    .info-box, .trip-card-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
                 }
             </style>
         </head>
         <body>
             <div class="receipt">
                 <div class="header">
-                    <div>
-                        <h1>Confirmación de Reserva</h1>
-                        <div class="meta">Referencia: #<?php echo $id; ?></div>
+                    <div class="logo-container">
+                        <img src="https://metransfers.es/wp-content/uploads/2026/07/MeTransfers-exp-scaled.webp" alt="Metransfers">
                     </div>
-                    <div>
-                        <!-- Logo Placeholder -->
-                        <h2 style="color: #006597;">Metransfers</h2>
+                    <div class="invoice-details">
+                        <h1>Recibo de Reserva</h1>
+                        <?php 
+                        $status_class = 'status-' . esc_attr($booking->status);
+                        $status_label = strtoupper($booking->status);
+                        $status_map = array(
+                            'confirmed' => 'Confirmado',
+                            'pending_payment' => 'Por Confirmar / Pago Pendiente',
+                            'cancelled' => 'Cancelado',
+                            'completed' => 'Completado',
+                            'processing' => 'En Proceso'
+                        );
+                        if (array_key_exists($booking->status, $status_map)) {
+                            $status_label = $status_map[$booking->status];
+                        }
+                        ?>
+                        <div class="status-badge <?php echo $status_class; ?>"><?php echo esc_html($status_label); ?></div>
+                        <div class="meta"><strong>Nº Ref:</strong> #<?php echo $id; ?></div>
+                        <div class="meta"><strong>Fecha de Registro:</strong> <?php echo date('d/m/Y H:i', strtotime($booking->created_at)); ?></div>
                     </div>
                 </div>
 
-                <div class="row"><div class="label">Cliente</div><div class="value"><?php echo esc_html($booking->customer_name); ?></div></div>
-                <div class="row"><div class="label">Email</div><div class="value"><?php echo esc_html($booking->customer_email); ?></div></div>
-                <div class="row"><div class="label">Teléfono</div><div class="value"><?php echo esc_html($booking->customer_phone); ?></div></div>
-                <?php if ( !empty($booking->hotel_token) ): ?>
-                <div class="row"><div class="label">Hotel Token</div><div class="value" style="color:#004B68; font-weight:bold;">🏨 <?php echo esc_html($booking->hotel_token); ?></div></div>
-                <?php endif; ?>
-                <div class="row"><div class="label">Fecha / Hora</div><div class="value"><?php echo esc_html($booking->booking_date . ' ' . $booking->booking_time); ?></div></div>
-                
-                <div style="background:#f9f9f9; padding:15px; margin:20px 0;">
-                    <div class="row"><div class="label">Tipo de Viaje</div><div class="value"><?php echo $booking->trip_type === 'round_trip' ? 'Ida y Vuelta' : 'Solo Ida'; ?></div></div>
-                    <div class="row"><div class="label">Origen</div><div class="value"><?php echo esc_html($booking->origin); ?></div></div>
-                    <div class="row"><div class="label">Destino</div><div class="value"><?php echo esc_html($booking->destination); ?></div></div>
-                    <div class="row"><div class="label">Distancia</div><div class="value"><?php echo esc_html($booking->distance_km); ?> km</div></div>
+                <div class="grid">
+                    <div class="info-box">
+                        <h3 class="section-title">Datos del Cliente</h3>
+                        <div class="row"><div class="label">Nombre:</div><div class="value"><?php echo esc_html($booking->customer_name); ?></div></div>
+                        <div class="row"><div class="label">Email:</div><div class="value"><?php echo esc_html($booking->customer_email); ?></div></div>
+                        <div class="row"><div class="label">Teléfono:</div><div class="value"><?php echo esc_html($booking->customer_phone); ?></div></div>
+                        <?php if ( !empty($booking->hotel_token) ): ?>
+                        <div class="row"><div class="label">Hotel Token:</div><div class="value" style="color:#004B68;">🏨 <?php echo esc_html($booking->hotel_token); ?></div></div>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <div class="info-box">
+                        <h3 class="section-title">Detalles del Vehículo</h3>
+                        <?php 
+                            if(!class_exists('WPTB_Vehicle_Manager')) require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wptb-vehicle-manager.php';
+                            $vehicle_obj = WPTB_Vehicle_Manager::get_vehicle( $booking->vehicle_id );
+                            $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'ID: ' . $booking->vehicle_id;
+                        ?>
+                        <div class="row"><div class="label">Vehículo:</div><div class="value"><?php echo esc_html($vehicle_name); ?></div></div>
+                        <div class="row"><div class="label">Pasajeros:</div><div class="value"><?php echo esc_html($booking->passengers); ?> pax</div></div>
+                        <div class="row"><div class="label">Equipaje:</div><div class="value"><?php echo esc_html($booking->suitcases); ?> Maletas, <?php echo esc_html($booking->carry_ons); ?> Mochilas</div></div>
+                        <?php if($booking->flight_number): ?>
+                            <div class="row"><div class="label">Nº Vuelo:</div><div class="value"><?php echo esc_html($booking->flight_number); ?></div></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="trip-details">
+                    <h3 class="section-title">Información del Traslado</h3>
+                    
+                    <div class="trip-card">
+                        <div class="trip-card-header">
+                            <span>Traslado Principal <?php echo $booking->trip_type === 'round_trip' ? '(Ida)' : ''; ?></span>
+                            <span><?php echo date('d/m/Y', strtotime($booking->booking_date)); ?> a las <?php echo date('H:i', strtotime($booking->booking_time)); ?></span>
+                        </div>
+                        <div class="trip-card-body">
+                            <div class="row"><div class="label">Recogida:</div><div class="value"><?php echo esc_html($booking->origin); ?></div></div>
+                            <div class="row"><div class="label">Destino:</div><div class="value"><?php echo esc_html($booking->destination); ?></div></div>
+                            <div class="row"><div class="label">Distancia Aprox:</div><div class="value"><?php echo esc_html($booking->distance_km); ?> km</div></div>
+                        </div>
+                    </div>
                     
                     <?php if($booking->trip_type === 'round_trip'): ?>
-                        <div style="margin-top:15px; padding-top:15px; border-top:1px dashed #ccc;">
-                            <div class="row"><div class="label">Fecha Vuelta</div><div class="value"><?php echo esc_html($booking->return_date . ' ' . $booking->return_time); ?></div></div>
-                            <div class="row"><div class="label">Origen Vuelta</div><div class="value"><?php echo esc_html($booking->return_pickup_address); ?></div></div>
-                            <div class="row"><div class="label">Destino Vuelta</div><div class="value"><?php echo esc_html($booking->return_dropoff_address); ?></div></div>
+                    <div class="trip-card">
+                        <div class="trip-card-header">
+                            <span>Traslado de Vuelta</span>
+                            <span><?php echo date('d/m/Y', strtotime($booking->return_date)); ?> a las <?php echo date('H:i', strtotime($booking->return_time)); ?></span>
                         </div>
+                        <div class="trip-card-body">
+                            <div class="row"><div class="label">Recogida:</div><div class="value"><?php echo esc_html($booking->return_pickup_address); ?></div></div>
+                            <div class="row"><div class="label">Destino:</div><div class="value"><?php echo esc_html($booking->return_dropoff_address); ?></div></div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if($booking->notes): ?>
+                    <div class="info-box" style="margin-top:20px;">
+                        <strong style="color:#001f3f;">Notas Adicionales:</strong><br>
+                        <span style="color:#333; font-style:italic;"><?php echo nl2br(esc_html($booking->notes)); ?></span>
+                    </div>
                     <?php endif; ?>
                 </div>
 
-                </div>
-
-                <?php 
-                    // Init Vehicle Manager if needed (it should be loaded)
-                    if(!class_exists('WPTB_Vehicle_Manager')) require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wptb-vehicle-manager.php';
-                    $vehicle_obj = WPTB_Vehicle_Manager::get_vehicle( $booking->vehicle_id );
-                    $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'ID: ' . $booking->vehicle_id;
-                ?>
-                <div class="row"><div class="label">Vehículo</div><div class="value"><?php echo esc_html($vehicle_name); ?></div></div>
-                <div class="row"><div class="label">Pasajeros</div><div class="value"><?php echo esc_html($booking->passengers); ?></div></div>
-                <div class="row"><div class="label">Equipaje</div><div class="value"><?php echo esc_html($booking->suitcases); ?> Maletas, <?php echo esc_html($booking->carry_ons); ?> Mochilas</div></div>
-                <?php if($booking->flight_number): ?>
-                    <div class="row"><div class="label">Vuelo</div><div class="value"><?php echo esc_html($booking->flight_number); ?></div></div>
-                <?php endif; ?>
-                <?php if($booking->notes): ?>
-                    <div class="row"><div class="label">Notas</div><div class="value"><?php echo esc_html($booking->notes); ?></div></div>
-                <?php endif; ?>
-
-                <div class="total">
-                    Total: €<?php echo number_format($booking->price, 2); ?>
+                <div class="total-section">
+                    <div class="total-label">Total a Pagar</div>
+                    <div class="total-amount">€<?php echo number_format($booking->price, 2); ?></div>
                 </div>
 
                 <div class="actions">
-                    <button class="btn" onclick="window.print()">Imprimir / Guardar PDF</button>
-                    <button class="btn" onclick="window.close()" style="background:#666; margin-left:10px;">Cerrar</button>
+                    <button class="btn" onclick="window.print()">
+                        <svg style="width:16px; height:16px; vertical-align:middle; margin-right:8px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        Imprimir / Guardar PDF
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.close()">Cerrar</button>
                 </div>
             </div>
-            <script>
-                // Auto print on load? Optional.
-                // window.print();
-            </script>
         </body>
         </html>
         <?php
