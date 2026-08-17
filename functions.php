@@ -925,7 +925,8 @@ function me_transfers_populate_editor_content_v4(): void {
     update_option( 'me_transfers_editor_populated_v4', true );
     delete_transient( 'me_transfers_populating_content_v4' );
 }
-add_action( 'admin_init', 'me_transfers_populate_editor_content_v4' );
+// [MIGRACIÓN MANUAL — no conectar en producción] Descomentar y ejecutar una sola vez si se necesita repoblar contenido:
+// add_action( 'admin_init', 'me_transfers_populate_editor_content_v4' );
 
 
 
@@ -944,69 +945,63 @@ add_filter( 'wp_get_attachment_image_attributes', function( $attr, $attachment, 
     return $attr;
 }, 10, 3 );
 
-// 2. Limpieza de Metadatos: Forzar TÍtulo y Descripción Global para Home
-add_filter( 'pre_get_document_title', function( $title ) {
-    if ( is_front_page() || is_home() ) {
-        return 'MeTransfers | Traslados Privados y Tours privados en Barcelona';
-    }
-    return $title;
-}, 999 );
+// 2. Metadatos home: propietario único → filtros wpseo_title / wpseo_metadesc del bloque
+// «YOAST SEO: Optimización de CTR» (ver más abajo). El filtro pre_get_document_title y el
+// bloque if(WPSEO_VERSION) se eliminaron para evitar conflictos y títulos duplicados.
 
 add_action( 'wp_head', function() {
-    // Only output meta description if Yoast SEO is NOT active (avoids duplication).
+    // Solo emitir meta description si Yoast SEO NO está activo (evita etiqueta duplicada).
     if ( ( is_front_page() || is_home() ) && ! defined( 'WPSEO_VERSION' ) && ! function_exists( 'the_seo_framework' ) ) {
         echo '<meta name="description" content="Traslados Privados y Tours privados en Barcelona. Reserva tu servicio de chófer privado en MeTransfers para un viaje seguro, cómodo y exclusivo.">' . "\n";
     }
-
-    // Inyectar noindex si no es dominio de producción (protección staging)
-    if ( ! str_contains( home_url(), 'metransfers.es' ) ) {
-        echo '<meta name="robots" content="noindex, nofollow">' . "\n";
-    }
+    // NOTA: La protección noindex de staging se gestiona exclusivamente vía filtro wp_robots.
+    // No emitir <meta robots> aquí para evitar doble directiva conflictiva.
 }, 1 );
 
-// 3.1b: Filtros de integracion con Yoast SEO para titulo y meta description del home.
-// Si Yoast esta activo, usar sus filtros nativos evita duplicar etiquetas SEO.
-if ( defined( 'WPSEO_VERSION' ) ) {
-    add_filter( 'wpseo_title', function( $title ) {
-        if ( is_front_page() || is_home() ) {
-            return 'MeTransfers | Traslados Privados y Tours privados en Barcelona';
-        }
-        return $title;
-    } );
-
-    add_filter( 'wpseo_metadesc', function( $desc ) {
-        if ( is_front_page() || is_home() ) {
-            return 'Traslados Privados y Tours privados en Barcelona. Reserva tu servicio de chofer privado en MeTransfers.';
-        }
-        return $desc;
-    } );
-}
-
-// 3. Motor de Redirecciones 301, 410 y Smart Redirect (SEO 404 Recovery)
+// 3. Motor de Redirecciones 301 y 410 (SEO URL Recovery)
 add_action( 'template_redirect', 'me_transfers_custom_redirects' );
 function me_transfers_custom_redirects() {
     if ( is_404() ) {
         $path = wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), PHP_URL_PATH );
         $path = trailingslashit( '/' . trim( $path, '/' ) );
-        
-        // Array de redirecciones 301 exactas. Formato: '/url-antigua/' => '/url-nueva/'
+
+        // -----------------------------------------------------------------
+        // 301 — URL antigua tiene sustituto semánticamente equivalente.
+        // Formato: '/url-antigua/' => '/url-nueva/'
+        // -----------------------------------------------------------------
         $redirects_301 = array(
+            // Consolidación duplicado Tax Free (-2 tiene mejores métricas actuales)
+            '/recuperar-el-iva-en-el-aeropuerto/'                                        => '/recuperar-el-iva-en-el-aeropuerto-2/',
+
+            // Antiguas landings /taxis-* y /traslados-*
             '/transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v/' => '/tours/',
-            '/taxis-privado-barcelona/'           => '/traslados-privados/',
-            '/taxis-barcelona-port-aventura/'     => '/destinos/portaventura/',
-            '/taxis-barcelona-salou/'             => '/rutas/barcelona-salou/',
-            '/taxis-barcelona-costa-brava/'       => '/destinos/costa-brava/',
-            '/taxis-barcelona-girona/'            => '/destinos/girona/',
-            '/taxis-barcelona-tossa-de-mar/'      => '/destinos/tossa-de-mar/',
-            '/traslados-barcelona-tossa-de-mar/'  => '/destinos/tossa-de-mar/',
+            '/taxis-privado-barcelona/'                                                   => '/traslados-privados/',
+            '/taxis-barcelona-port-aventura/'                                             => '/destinos/portaventura/',
+            '/taxis-barcelona-salou/'                                                     => '/rutas/barcelona-salou/',
+            '/taxis-barcelona-costa-brava/'                                               => '/destinos/costa-brava/',
+            '/taxis-barcelona-girona/'                                                    => '/destinos/girona/',
+            '/taxis-barcelona-tossa-de-mar/'                                              => '/destinos/tossa-de-mar/',
+            '/traslados-barcelona-tossa-de-mar/'                                          => '/destinos/tossa-de-mar/',
+            '/traslados-barcelona-andorra/'                                               => '/rutas/barcelona-andorra/',
+
+            // Antiguas URLs WooCommerce con sustituto equivalente
+            '/tienda-barcelona-tours-transfers/transfers/traslado-a-andorra/'             => '/rutas/barcelona-andorra/',
+            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-portaventura/'  => '/rutas/barcelona-portaventura/',
+            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-salou/'         => '/rutas/barcelona-salou/',
+            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-girona/'        => '/destinos/girona/',
+            '/tienda-barcelona-tours-transfers/transfers/'                                => '/rutas/',
+            '/tienda-barcelona-tours-transfers/'                                          => '/',
         );
 
         if ( isset( $redirects_301[ $path ] ) ) {
             wp_safe_redirect( home_url( $redirects_301[ $path ] ), 301 );
             exit;
         }
-        
-        // Array de URLS 410 (Gone) para eliminar definitivamente de Google
+
+        // -----------------------------------------------------------------
+        // 410 — Contenido eliminado sin sustituto directo.
+        // Google lo procesa más rápido que un 404 para limpiar el índice.
+        // -----------------------------------------------------------------
         $gone_urls = array(
             '/taxis-barcelona-andorra/',
             '/taxis-barcelona-taull/',
@@ -1022,7 +1017,6 @@ function me_transfers_custom_redirects() {
             '/taxis-barcelona-alquezar/',
             '/taxis-barcelona-colliure/',
             '/taxis-barcelona-carcasona/',
-            '/traslados-barcelona-andorra/',
             '/traslados-barcelona-taull/',
             '/traslados-barcelona-vielha/',
             '/traslados-barcelona-cadaques/',
@@ -1037,7 +1031,7 @@ function me_transfers_custom_redirects() {
             '/traslados-barcelona-colliure/',
             '/traslados-barcelona-carcasona/',
         );
-        
+
         if ( in_array( $path, $gone_urls, true ) ) {
             global $wp_query;
             $wp_query->set_404();
@@ -1046,12 +1040,18 @@ function me_transfers_custom_redirects() {
             return;
         }
 
-        // SMART REDIRECT ELIMINADO: El sistema anterior hacÍa una WP_Query con búsqueda de texto
-        // libre y redirigÍa 301 permanentemente al primer resultado. Esto podía enviar a Google
-        // y a los usuarios a páginas completamente no equivalentes, dañando el SEO.
-        //
-        // Si necesitas recuperar una URL especÍfica, añade la redirección manualmente
-        // en el array $redirects_301 de arriba con la URL de destino correcta.
+        // 410 patrón: cualquier URL WooCommerce sin sustituto declarado arriba
+        // (evita que muestren contenido de home → soft 404)
+        if ( str_starts_with( $path, '/tienda-barcelona-tours-transfers/' ) ) {
+            global $wp_query;
+            $wp_query->set_404();
+            status_header( 410 );
+            nocache_headers();
+            return;
+        }
+
+        // NOTA: El smart redirect automático fue eliminado para evitar 301 incorrectos.
+        // Para recuperar una URL específica, añade la redirección manual en $redirects_301.
     }
 }
 
@@ -1509,7 +1509,9 @@ add_action( 'wp_head', function() {
 			);
 		}
 
-		if ( count( $breadcrumbs ) > 1 ) {
+		// BreadcrumbList: solo si Yoast NO está activo (evita JSON-LD duplicado).
+		// Yoast genera su propio BreadcrumbList cuando está habilitado.
+		if ( count( $breadcrumbs ) > 1 && ! defined( 'WPSEO_VERSION' ) ) {
 			$schema[] = array(
 				'@context' => 'https://schema.org',
 				'@type' => 'BreadcrumbList',
@@ -1549,11 +1551,30 @@ add_filter( 'wp_robots', static function ( array $robots ): array {
 		return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
 	}
 
-	// 4. Umbral de calidad para rutas (Phase 2)
+	// 4. Umbral de calidad para rutas
 	if ( is_singular( 'ruta' ) ) {
+		// _mt_seo_ready=1 → indexar siempre, independientemente del precio.
+		// Marcar manualmente desde el metabox de la ruta cuando el contenido esté completo.
+		$seo_ready = get_post_meta( get_the_ID(), '_mt_seo_ready', true );
+		if ( '1' === $seo_ready ) {
+			return $robots;
+		}
 		$precio = get_post_meta( get_the_ID(), '_mt_ruta_precio', true );
 		if ( empty( $precio ) ) {
 			return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
+		}
+	}
+
+	// 5. Destinos genéricos (sin contenido diferenciado) → noindex temporal.
+	// Solo se indexan destinos con contenido curado específico (salou, lloret-de-mar).
+	// Ampliar la lista $specific_destinations cuando un destino tenga contenido real único.
+	if ( is_page() && ! is_front_page() ) {
+		$destination = me_transfers_get_current_destination( get_post() );
+		if ( $destination ) {
+			$specific_destinations = [ 'salou', 'lloret-de-mar' ];
+			if ( ! in_array( $destination['slug'], $specific_destinations, true ) ) {
+				return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
+			}
 		}
 	}
 
@@ -1743,7 +1764,8 @@ function mt_full_restore_legal_pages_once() {
 // =========================================================================
 // AUTO-CREAR PÁGINA DE BLOG (UNA SOLA VEZ)
 // =========================================================================
-add_action( 'init', 'mt_auto_create_blog_page' );
+// [MIGRACIÓN MANUAL] Descomentar y ejecutar una sola vez si necesitas crear la página de blog:
+// add_action( 'init', 'mt_auto_create_blog_page' );
 function mt_auto_create_blog_page() {
     if ( get_option( 'mt_blog_page_created_v2' ) ) {
         return;
@@ -1920,7 +1942,9 @@ function mt_auto_update_routes_content() {
 // =========================================================================
 // AUTO-CREAR ARTÍCULO TAX FREE (UNA SOLA VEZ)
 // =========================================================================
-add_action( 'init', 'mt_auto_create_tax_free_post' );
+// [MIGRACIÓN MANUAL] El artículo Tax Free ya existe en BD. Hook desactivado para evitar
+// sobreescribir contenido editado manualmente y duplicados SEO.
+// add_action( 'init', 'mt_auto_create_tax_free_post' );
 function mt_auto_create_tax_free_post() {
     if ( get_option( 'mt_tax_free_post_created_v1' ) ) {
         return;
@@ -2005,7 +2029,9 @@ function mt_auto_create_tax_free_post() {
 // =========================================================================
 // AUTO-CREAR PÁGINAS GENÉRICAS (FAQ, SOBRE NOSOTROS)
 // =========================================================================
-add_action( 'init', 'mt_auto_create_generic_pages' );
+// [MIGRACIÓN MANUAL] Páginas FAQ y Sobre Nosotros ya existen. Hook desactivado para evitar
+// sobreescribir cambios editoriales hechos desde el panel de WordPress.
+// add_action( 'init', 'mt_auto_create_generic_pages' );
 function mt_auto_create_generic_pages() {
     if ( get_option( 'mt_generic_pages_created_v1' ) ) {
         return;
@@ -2095,7 +2121,9 @@ function mt_auto_create_generic_pages() {
 // =========================================================================
 // AUTO-CREAR ARTÍCULO VIP ARTISTAS Y MÚSICOS
 // =========================================================================
-add_action( 'init', 'mt_auto_create_artist_post' );
+// [MIGRACIÓN MANUAL] Artículo de artistas ya existe en BD. Hook desactivado para evitar
+// sobreescribir contenido editorial con el texto hardcodeado del tema.
+// add_action( 'init', 'mt_auto_create_artist_post' );
 function mt_auto_create_artist_post() {
     if ( get_option( 'mt_artist_post_created_v1' ) ) {
         return;
@@ -2160,7 +2188,9 @@ function mt_auto_create_artist_post() {
 // =========================================================================
 // AUTO-CREAR ARTÍCULOS SENIORS Y LONJAS DE PESCADO
 // =========================================================================
-add_action( 'init', 'mt_auto_create_seniors_lonjas_posts' );
+// [MIGRACIÓN MANUAL] Artículos de seniors y lonjas ya existen en BD. Hook desactivado
+// para evitar sobreescribir contenido editorial con el texto hardcodeado del tema.
+// add_action( 'init', 'mt_auto_create_seniors_lonjas_posts' );
 function mt_auto_create_seniors_lonjas_posts() {
     if ( get_option( 'mt_seniors_lonjas_posts_created_v1' ) ) {
         return;
@@ -2270,7 +2300,9 @@ function mt_setup_event_tracking_table() {
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     dbDelta( $sql );
 }
-add_action( 'after_setup_theme', 'mt_setup_event_tracking_table' );
+// after_switch_theme se ejecuta UNA SOLA VEZ al activar el tema (no en cada carga).
+// Antes era after_setup_theme que corría dbDelta() en CADA petición HTTP.
+add_action( 'after_switch_theme', 'mt_setup_event_tracking_table' );
 
 // 2. Endpoint AJAX para registrar el clic
 function mt_ajax_track_button_click() {

@@ -86,6 +86,8 @@ function mt_ruta_details_callback( $post ) {
     $precio = get_post_meta( $post->ID, '_mt_ruta_precio', true );
     $h1_seo = get_post_meta( $post->ID, '_mt_ruta_h1', true );
 
+    $seo_ready = get_post_meta( $post->ID, '_mt_seo_ready', true );
+
     echo '<table class="form-table">';
     echo '<tr><th><label for="mt_ruta_h1">H1 SEO (Opcional)</label></th>';
     echo '<td><input type="text" id="mt_ruta_h1" name="mt_ruta_h1" value="' . esc_attr( $h1_seo ) . '" size="40" placeholder="Ej. Taxis desde Barcelona a Sitges" /><br><small>Si se deja en blanco, se usará el título del post.</small></td></tr>';
@@ -107,6 +109,16 @@ function mt_ruta_details_callback( $post ) {
 
     echo '<tr><th><label for="mt_ruta_precio">Precio Fijo (Desde)</label></th>';
     echo '<td><input type="text" id="mt_ruta_precio" name="mt_ruta_precio" value="' . esc_attr( $precio ) . '" size="25" placeholder="Ej. 65" /> €</td></tr>';
+
+    // Campo SEO Ready
+    echo '<tr style="border-top: 2px solid #0073aa; background: #f0f6fc;">';
+    echo '<th><label for="mt_ruta_seo_ready"><strong>✅ Lista para SEO</strong></label></th>';
+    echo '<td>';
+    echo '<label><input type="checkbox" id="mt_ruta_seo_ready" name="mt_ruta_seo_ready" value="1"' . checked( $seo_ready, '1', false ) . ' /> ';
+    echo '<strong>Marcar esta ruta como lista para indexación</strong></label>';
+    echo '<br><small style="color:#555;">Cuando está marcada, la ruta se indexa aunque no tenga precio. Úsaóla solo cuando la ruta tenga: origen, destino, precio, contenido único, FAQ específica, H1, title y meta description.</small>';
+    echo '</td></tr>';
+
     echo '</table>';
 }
 
@@ -126,6 +138,13 @@ function mt_ruta_save_meta_box_data( $post_id ) {
         if ( isset( $_POST["mt_ruta_$field"] ) ) {
             update_post_meta( $post_id, "_mt_ruta_$field", sanitize_text_field( $_POST["mt_ruta_$field"] ) );
         }
+    }
+
+    // Campo SEO Ready: checkbox (guardado como '1' o eliminado si no está marcado)
+    if ( isset( $_POST['mt_ruta_seo_ready'] ) && '1' === $_POST['mt_ruta_seo_ready'] ) {
+        update_post_meta( $post_id, '_mt_seo_ready', '1' );
+    } else {
+        delete_post_meta( $post_id, '_mt_seo_ready' );
     }
 }
 add_action( 'save_post', 'mt_ruta_save_meta_box_data' );

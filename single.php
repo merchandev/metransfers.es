@@ -153,7 +153,17 @@ while ( have_posts() ) :
 					<div class="single-article-shell">
 						<div class="single-article-body">
 							<div class="entry-content luxury-prose js-toc-content">
-								<?php the_content(); ?>
+								<?php
+								// Filtro de H1 duplicado: el template ya emite el H1 en el header
+								// del artículo, por lo que cualquier H1 manual en el editor es un
+								// duplicado. Este filtro lo elimina SOLO en single posts.
+								add_filter( 'the_content', static function ( $content ) {
+									// Eliminar el primer bloque <h1> del contenido si existe.
+									return preg_replace( '/<h1[^>]*>.*?<\/h1>/is', '', $content, 1 );
+								}, 20 );
+								the_content();
+								remove_all_filters( 'the_content', 20 );
+								?>
 							</div>
 						</div>
 
