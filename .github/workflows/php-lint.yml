@@ -1,0 +1,38 @@
+name: PHP Linting
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  php-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Lint PHP Files
+        run: |
+          echo "Starting PHP syntax check..."
+          
+          # Run php -l on all files. If it fails, xargs will return a non-zero status
+          find . -type f -name "*.php" -print0 | xargs -0 -n1 php -l > output.log 2>&1
+          
+          # Print the results
+          cat output.log
+          
+          # If grep finds errors, fail the build
+          if grep -qi "parse error\|syntax error" output.log; then
+            echo "::error::Syntax errors found in PHP files!"
+            exit 1
+          fi
+          
+          echo "All PHP files passed syntax check."

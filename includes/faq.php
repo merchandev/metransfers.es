@@ -164,7 +164,8 @@ function me_transfers_sync_faq_page() {
 
 	update_option( 'me_transfers_faq_sync_version', ME_TRANSFERS_FAQ_SYNC_VERSION, false );
 }
-add_action( 'init', 'me_transfers_sync_faq_page', 20 );
+// [MIGRACIÓN MANUAL] Hook desactivado
+// add_action( 'init', 'me_transfers_sync_faq_page', 20 );
 
 /**
  * Syncs FAQ page in admin if required.
@@ -190,5 +191,6 @@ function me_transfers_force_faq_page_sync() {
 	delete_option( 'me_transfers_faq_sync_version' );
 	me_transfers_sync_faq_page();
 }
-add_action( 'after_switch_theme', 'me_transfers_force_faq_page_sync' );
+// [MIGRACIÓN MANUAL] Hook desactivado
+// add_action( 'after_switch_theme', 'me_transfers_force_faq_page_sync' );
 

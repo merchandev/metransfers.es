@@ -985,6 +985,7 @@ function me_transfers_custom_redirects() {
             '/taxis-barcelona-tossa-de-mar/'                                              => '/rutas/barcelona-tossa-de-mar/',
             '/traslados-barcelona-tossa-de-mar/'                                          => '/rutas/barcelona-tossa-de-mar/',
             '/traslados-barcelona-andorra/'                                               => '/rutas/barcelona-andorra/',
+            '/taxis-barcelona-andorra/'                                                   => '/rutas/barcelona-andorra/',
 
             // Antiguas URLs WooCommerce con sustituto equivalente
             '/tienda-barcelona-tours-transfers/transfers/traslado-a-andorra/'             => '/rutas/barcelona-andorra/',
@@ -1018,7 +1019,6 @@ function me_transfers_custom_redirects() {
         // Se ejecuta ANTES de comprobar is_404()
         // -----------------------------------------------------------------
         $gone_urls = array(
-            '/taxis-barcelona-andorra/',
             '/taxis-barcelona-taull/',
             '/taxis-barcelona-vielha/',
             '/taxis-barcelona-cadaques/',

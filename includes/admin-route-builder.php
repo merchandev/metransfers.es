@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// 0. Auto-ejecución transparente para garantizar que las rutas existan
-add_action( 'init', 'mt_auto_build_routes_once' );
+// [MIGRACIÓN MANUAL] Auto-ejecución transparente desactivada para evitar publicación accidental.
+// add_action( 'init', 'mt_auto_build_routes_once' );
 function mt_auto_build_routes_once() {
     // Clave versionada: incrementar cuando se añadan rutas nuevas
     if ( ! get_transient( 'mt_auto_built_routes_v4_expanded' ) ) {
@@ -319,9 +319,15 @@ function mt_execute_route_builder() {
         $post_id = 0;
 
         if ( $query->have_posts() ) {
-            // Actualizar existente
+            // Actualizar existente: proteger contenido editorial y status
             $page = $query->posts[0];
             $post_data['ID'] = $page->ID;
+            
+            // Nunca forzar publicación si ya existía (podría estar en borrador o papelera intencionadamente)
+            unset( $post_data['post_status'] );
+            // Nunca sobrescribir el contenido editorial
+            unset( $post_data['post_content'] );
+            
             $post_id = wp_update_post( $post_data );
         } else {
             // Crear nueva

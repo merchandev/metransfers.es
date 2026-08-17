@@ -31,6 +31,12 @@ $all_rutas = get_posts( array(
     'posts_per_page' => -1,
     'orderby'        => 'title',
     'order'          => 'ASC',
+    'meta_query'     => array(
+        array(
+            'key'   => '_mt_seo_ready',
+            'value' => '1',
+        ),
+    ),
 ) );
 
 // Indexar por slug para acceso rápido

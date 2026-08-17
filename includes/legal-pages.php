@@ -94,7 +94,8 @@ function me_transfers_force_legal_pages_sync() {
 	delete_option( 'me_transfers_legal_pages_sync_version' );
 	me_transfers_sync_legal_pages();
 }
-add_action( 'after_switch_theme', 'me_transfers_force_legal_pages_sync' );
+// [MIGRACIÓN MANUAL] Hook desactivado
+// add_action( 'after_switch_theme', 'me_transfers_force_legal_pages_sync' );
 
 /**
  * Redirects the legacy cookies slug to the active route.
@@ -147,4 +148,5 @@ function me_transfers_repair_legal_titles_utf8() {
 
 	update_option( 'me_transfers_legal_titles_utf8_v2', 1, false );
 }
-add_action( 'init', 'me_transfers_repair_legal_titles_utf8' );
+// [MIGRACIÓN MANUAL] Hook desactivado
+// add_action( 'init', 'me_transfers_repair_legal_titles_utf8' );

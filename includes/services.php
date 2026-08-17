@@ -269,5 +269,6 @@ function me_transfers_sync_service_pages() {
 		}
 	}
 }
-add_action( 'after_switch_theme', 'me_transfers_sync_service_pages' );
+// [MIGRACIÓN MANUAL] Hook desactivado
+// add_action( 'after_switch_theme', 'me_transfers_sync_service_pages' );
 
