@@ -972,8 +972,8 @@ function me_transfers_custom_redirects() {
         // Se ejecuta ANTES de comprobar is_404() para interceptar URLs que aún devuelven 200
         // -----------------------------------------------------------------
         $redirects_301 = array(
-            // Consolidación duplicado Tax Free (-2 tiene mejores métricas actuales)
-            '/recuperar-el-iva-en-el-aeropuerto/'                                         => '/recuperar-el-iva-en-el-aeropuerto-2/',
+            // El redirect de Tax Free se ha retirado temporalmente
+            // porque en producción entraba en conflicto semántico.
 
             // Antiguas landings /taxis-* y /traslados-*
             '/transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v/' => '/tours/',

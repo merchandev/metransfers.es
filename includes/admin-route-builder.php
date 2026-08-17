@@ -335,11 +335,21 @@ function mt_execute_route_builder() {
         }
 
         if ( $post_id && ! is_wp_error( $post_id ) ) {
-            update_post_meta( $post_id, '_mt_ruta_origen', $origen );
-            update_post_meta( $post_id, '_mt_ruta_destino', $destino );
-            update_post_meta( $post_id, '_mt_ruta_duracion', '60 min' );
-            update_post_meta( $post_id, '_mt_ruta_pax', '1-8' );
-            update_post_meta( $post_id, '_mt_ruta_maletas', '8' );
+            if ( '' === get_post_meta( $post_id, '_mt_ruta_origen', true ) ) {
+                update_post_meta( $post_id, '_mt_ruta_origen', $origen );
+            }
+            if ( '' === get_post_meta( $post_id, '_mt_ruta_destino', true ) ) {
+                update_post_meta( $post_id, '_mt_ruta_destino', $destino );
+            }
+            if ( '' === get_post_meta( $post_id, '_mt_ruta_duracion', true ) ) {
+                update_post_meta( $post_id, '_mt_ruta_duracion', '60 min' );
+            }
+            if ( '' === get_post_meta( $post_id, '_mt_ruta_pax', true ) ) {
+                update_post_meta( $post_id, '_mt_ruta_pax', '1-8' );
+            }
+            if ( '' === get_post_meta( $post_id, '_mt_ruta_maletas', true ) ) {
+                update_post_meta( $post_id, '_mt_ruta_maletas', '8' );
+            }
         }
     }
 

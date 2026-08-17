@@ -20,19 +20,8 @@ jobs:
           coverage: none
 
       - name: Lint PHP Files
+        shell: bash
         run: |
+          set -o pipefail
           echo "Starting PHP syntax check..."
-          
-          # Run php -l on all files. If it fails, xargs will return a non-zero status
-          find . -type f -name "*.php" -print0 | xargs -0 -n1 php -l > output.log 2>&1
-          
-          # Print the results
-          cat output.log
-          
-          # If grep finds errors, fail the build
-          if grep -qi "parse error\|syntax error" output.log; then
-            echo "::error::Syntax errors found in PHP files!"
-            exit 1
-          fi
-          
-          echo "All PHP files passed syntax check."
+          find . -type f -name "*.php" -print0 | xargs -0 -n1 php -l | tee output.log
