@@ -1012,52 +1012,51 @@ function me_transfers_custom_redirects() {
             return;
         }
 
-        if ( is_404() ) {
-            // -----------------------------------------------------------------
-            // 410 — Contenido eliminado sin sustituto directo.
-            // Google lo procesa más rápido que un 404 para limpiar el índice.
-            // -----------------------------------------------------------------
-            $gone_urls = array(
-                '/taxis-barcelona-andorra/',
-                '/taxis-barcelona-taull/',
-                '/taxis-barcelona-vielha/',
-                '/taxis-barcelona-cadaques/',
-                '/taxis-barcelona-besalu/',
-                '/taxis-barcelona-bagur/',
-                '/taxis-barcelona-delta-del-ebro/',
-                '/taxis-barcelona-peniscola/',
-                '/taxis-barcelona-morella/',
-                '/taxis-barcelona-altea/',
-                '/taxis-barcelona-valderrobres/',
-                '/taxis-barcelona-alquezar/',
-                '/taxis-barcelona-colliure/',
-                '/taxis-barcelona-carcasona/',
-                '/traslados-barcelona-taull/',
-                '/traslados-barcelona-vielha/',
-                '/traslados-barcelona-cadaques/',
-                '/traslados-barcelona-besalu/',
-                '/traslados-barcelona-bagur/',
-                '/traslados-barcelona-delta-del-ebro/',
-                '/traslados-barcelona-peniscola/',
-                '/traslados-barcelona-morella/',
-                '/traslados-barcelona-altea/',
-                '/traslados-barcelona-valderrobres/',
-                '/traslados-barcelona-alquezar/',
-                '/traslados-barcelona-colliure/',
-                '/traslados-barcelona-carcasona/',
-            );
+        // -----------------------------------------------------------------
+        // 410 — Contenido eliminado sin sustituto directo.
+        // Google lo procesa más rápido que un 404 para limpiar el índice.
+        // Se ejecuta ANTES de comprobar is_404()
+        // -----------------------------------------------------------------
+        $gone_urls = array(
+            '/taxis-barcelona-andorra/',
+            '/taxis-barcelona-taull/',
+            '/taxis-barcelona-vielha/',
+            '/taxis-barcelona-cadaques/',
+            '/taxis-barcelona-besalu/',
+            '/taxis-barcelona-bagur/',
+            '/taxis-barcelona-delta-del-ebro/',
+            '/taxis-barcelona-peniscola/',
+            '/taxis-barcelona-morella/',
+            '/taxis-barcelona-altea/',
+            '/taxis-barcelona-valderrobres/',
+            '/taxis-barcelona-alquezar/',
+            '/taxis-barcelona-colliure/',
+            '/taxis-barcelona-carcasona/',
+            '/traslados-barcelona-taull/',
+            '/traslados-barcelona-vielha/',
+            '/traslados-barcelona-cadaques/',
+            '/traslados-barcelona-besalu/',
+            '/traslados-barcelona-bagur/',
+            '/traslados-barcelona-delta-del-ebro/',
+            '/traslados-barcelona-peniscola/',
+            '/traslados-barcelona-morella/',
+            '/traslados-barcelona-altea/',
+            '/traslados-barcelona-valderrobres/',
+            '/traslados-barcelona-alquezar/',
+            '/traslados-barcelona-colliure/',
+            '/traslados-barcelona-carcasona/',
+        );
 
-            if ( in_array( $path, $gone_urls, true ) ) {
-                global $wp_query;
-                $wp_query->set_404();
-                status_header( 410 );
-                nocache_headers();
-                return;
-            }
-
-            // NOTA: El smart redirect automático fue eliminado para evitar 301 incorrectos.
-            // Para recuperar una URL específica, añade la redirección manual en $redirects_301.
+        if ( in_array( $path, $gone_urls, true ) ) {
+            global $wp_query;
+            $wp_query->set_404();
+            status_header( 410 );
+            nocache_headers();
+            return;
         }
+
+        // NOTA: El smart redirect automático fue eliminado para evitar 301 incorrectos.
+        // Para recuperar una URL específica, añade la redirección manual en $redirects_301.
     }
 }
 
@@ -1342,28 +1341,58 @@ function mt_ensure_seo_pages() {
 }
 
 /**
- * SEO Title: Separado del H1 visible.
- * - Para el CPT "ruta": "Transfer privado [Origen]–[Destino] | MeTransfers"
- * - Para el resto: normaliza el nombre de la marca.
+ * SEO Title fallback cuando Yoast NO está activo.
  */
-        $title['title'] = str_replace( 'Me Transfers', 'MeTransfers', $title['title'] );
-    }
+if ( ! defined( 'WPSEO_VERSION' ) ) {
+    add_filter( 'document_title_parts', function( $title ) {
 
-    // TÍtulo SEO especÍfico para rutas comerciales
+        if ( isset( $title['site'] ) ) {
+            $title['site'] = str_replace(
+                'Me Transfers',
+                'MeTransfers',
+                $title['site']
+            );
+        }
+
+        if ( isset( $title['title'] ) ) {
+            $title['title'] = str_replace(
+                'Me Transfers',
+                'MeTransfers',
+                $title['title']
+            );
+        }
+
+        if ( is_singular( 'ruta' ) ) {
+            $post_id = get_the_ID();
+            $origen  = get_post_meta( $post_id, '_mt_ruta_origen', true );
+            $destino = get_post_meta( $post_id, '_mt_ruta_destino', true );
+
+            if ( $origen && $destino ) {
+                $title['title'] = sprintf(
+                    'Transfer privado %s–%s',
+                    $origen,
+                    $destino
+                );
+            }
+
+            $title['site'] = 'MeTransfers';
+        }
+
+        return $title;
+    }, 99 );
+}
+
+add_filter( 'wpseo_title', function( $title ) {
     if ( is_singular( 'ruta' ) ) {
-        $post_id = get_the_ID();
-        $origen  = get_post_meta( $post_id, '_mt_ruta_origen',  true );
-        $destino = get_post_meta( $post_id, '_mt_ruta_destino', true );
+        $origen  = get_post_meta( get_the_ID(), '_mt_ruta_origen', true );
+        $destino = get_post_meta( get_the_ID(), '_mt_ruta_destino', true );
 
         if ( $origen && $destino ) {
-            $title['title'] = sprintf( 'Transfer privado %s–%s', $origen, $destino );
+            return sprintf( 'Transfer privado %s–%s | MeTransfers', $origen, $destino );
         }
-        // La marca siempre al final, nunca al principio
-        $title['site'] = 'MeTransfers';
     }
-
     return $title;
-}, 99 );
+} );
 
 add_filter( 'option_blogname', function( $name ) {
 	return str_replace( 'Me Transfers', 'MeTransfers', $name );
@@ -1588,6 +1617,11 @@ add_filter( 'wpseo_exclude_from_sitemap_by_post_ids', function( $excluded ) {
 		'posts_per_page' => -1,
 		'fields'         => 'ids',
 		'meta_query'     => array(
+			'relation' => 'OR',
+			array(
+				'key'     => '_mt_seo_ready',
+				'compare' => 'NOT EXISTS',
+			),
 			array(
 				'key'     => '_mt_seo_ready',
 				'value'   => '1',

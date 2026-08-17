@@ -178,7 +178,8 @@ function me_transfers_maybe_sync_faq_page() {
 
 	me_transfers_sync_faq_page();
 }
-add_action( 'admin_init', 'me_transfers_maybe_sync_faq_page' );
+// [MIGRACIÓN MANUAL] Hook desactivado
+// add_action( 'admin_init', 'me_transfers_maybe_sync_faq_page' );
 
 /**
  * Forces FAQ page sync on theme activation.

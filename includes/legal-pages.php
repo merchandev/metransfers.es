@@ -82,7 +82,8 @@ function me_transfers_maybe_sync_legal_pages() {
 
 	me_transfers_sync_legal_pages();
 }
-add_action( 'admin_init', 'me_transfers_maybe_sync_legal_pages' );
+// [MIGRACIÓN MANUAL] Hook desactivado
+// add_action( 'admin_init', 'me_transfers_maybe_sync_legal_pages' );
 
 /**
  * Forces legal pages sync on theme activation.
