@@ -39,11 +39,9 @@ require_once get_template_directory() . '/includes/leads-cpt.php';
 
 // Herramienta de administración: repoblar post_content desde los catálogos PHP.
 // Disponible en: Herramientas → Repoblar Contenido
-if ( is_admin() ) {
+if ( is_admin() && defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) && ME_TRANSFERS_ENABLE_MIGRATIONS ) {
     require_once get_template_directory() . '/includes/admin-content-repopulate.php';
-    if ( defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) && ME_TRANSFERS_ENABLE_MIGRATIONS ) {
-        require_once get_template_directory() . '/includes/auto-migration-v5.php';
-    }
+    require_once get_template_directory() . '/includes/auto-migration-v5.php';
 }
 
 add_action( 'template_redirect', function() {
@@ -961,7 +959,7 @@ add_action( 'wp_head', function() {
 }, 1 );
 
 // 3. Motor de Redirecciones 301 y 410 (SEO URL Recovery)
-add_action( 'template_redirect', 'me_transfers_custom_redirects' );
+add_action( 'template_redirect', 'me_transfers_custom_redirects', 1 );
 function me_transfers_custom_redirects() {
     if ( ! is_admin() ) {
         $path = wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), PHP_URL_PATH );
@@ -976,7 +974,7 @@ function me_transfers_custom_redirects() {
             // porque en producción entraba en conflicto semántico.
 
             // Antiguas landings /taxis-* y /traslados-*
-            '/transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v/' => '/tours/',
+            '/transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v/' => '/grupos/',
             '/taxis-privado-barcelona/'                                                   => '/traslados-privados/',
             '/taxis-barcelona-port-aventura/'                                             => '/rutas/barcelona-portaventura/',
             '/taxis-barcelona-salou/'                                                     => '/rutas/barcelona-salou/',
@@ -986,10 +984,13 @@ function me_transfers_custom_redirects() {
             '/traslados-barcelona-tossa-de-mar/'                                          => '/rutas/barcelona-tossa-de-mar/',
             '/traslados-barcelona-andorra/'                                               => '/rutas/barcelona-andorra/',
             '/taxis-barcelona-andorra/'                                                   => '/rutas/barcelona-andorra/',
+            '/taxis-barcelona-cadaques/'                                                  => '/rutas/barcelona-cadaques/',
+            '/traslados-barcelona-cadaques/'                                              => '/rutas/barcelona-cadaques/',
 
             // Antiguas URLs WooCommerce con sustituto equivalente
             '/tienda-barcelona-tours-transfers/transfers/traslado-a-andorra/'             => '/rutas/barcelona-andorra/',
             '/tienda-barcelona-tours-transfers/transfers/transfer-privado-portaventura/'  => '/rutas/barcelona-portaventura/',
+            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-a-portaventura/'=> '/rutas/barcelona-portaventura/',
             '/tienda-barcelona-tours-transfers/transfers/transfer-privado-salou/'         => '/rutas/barcelona-salou/',
             '/tienda-barcelona-tours-transfers/transfers/transfer-privado-girona/'        => '/rutas/barcelona-girona/',
             '/tienda-barcelona-tours-transfers/transfers/'                                => '/rutas/',
@@ -1021,7 +1022,6 @@ function me_transfers_custom_redirects() {
         $gone_urls = array(
             '/taxis-barcelona-taull/',
             '/taxis-barcelona-vielha/',
-            '/taxis-barcelona-cadaques/',
             '/taxis-barcelona-besalu/',
             '/taxis-barcelona-bagur/',
             '/taxis-barcelona-delta-del-ebro/',
@@ -1034,7 +1034,6 @@ function me_transfers_custom_redirects() {
             '/taxis-barcelona-carcasona/',
             '/traslados-barcelona-taull/',
             '/traslados-barcelona-vielha/',
-            '/traslados-barcelona-cadaques/',
             '/traslados-barcelona-besalu/',
             '/traslados-barcelona-bagur/',
             '/traslados-barcelona-delta-del-ebro/',

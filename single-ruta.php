@@ -236,7 +236,16 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                 <?php
                 while ( have_posts() ) :
                     the_post();
+                    // Filtro de H1 duplicado: el template ya emite el H1 en el header de la ruta.
+                    // Para proteger el SEO, degradamos cualquier H1 añadido manualmente en el editor a un H2.
+                    $mt_demote_h1_to_h2 = static function ( $content ) {
+                        $content = str_ireplace( '<h1', '<h2', $content );
+                        $content = str_ireplace( '</h1', '</h2', $content );
+                        return $content;
+                    };
+                    add_filter( 'the_content', $mt_demote_h1_to_h2, 20 );
                     the_content();
+                    remove_filter( 'the_content', $mt_demote_h1_to_h2, 20 );
                 endwhile;
                 ?>
             </div>
