@@ -289,38 +289,67 @@ function mt_get_phase1_routes() {
         'barcelona-la-molina'                  => 'Barcelona centro–La Molina',
         'aeropuerto-barcelona-baqueira-beret'  => 'Aeropuerto de Barcelona–Baqueira Beret',
         'barcelona-baqueira-beret'             => 'Barcelona centro–Baqueira Beret',
+function mt_get_route_duration( $slug ) {
+    $durations = array(
+        'aeropuerto-barcelona-lloret-de-mar' => '1h 10 min',
+        'aeropuerto-girona-lloret-de-mar' => '30 min',
+        'barcelona-lloret-de-mar' => '1h 10 min',
+        'puerto-barcelona-lloret-de-mar' => '1h 10 min',
+        'estacion-sants-lloret-de-mar' => '1h 10 min',
+        'aeropuerto-barcelona-salou' => '1h 15 min',
+        'aeropuerto-reus-salou' => '20 min',
+        'barcelona-salou' => '1h 15 min',
+        'puerto-barcelona-salou' => '1h 15 min',
+        'estacion-sants-salou' => '1h 15 min',
+        'aeropuerto-barcelona-portaventura' => '1h 15 min',
+        'aeropuerto-reus-portaventura' => '15 min',
+        'salou-portaventura' => '10 min',
+        'aeropuerto-barcelona-sitges' => '40 min',
+        'barcelona-sitges' => '40 min',
+        'puerto-barcelona-sitges' => '40 min',
+        'estacion-sants-sitges' => '40 min',
+        'aeropuerto-barcelona-tarragona' => '1h 15 min',
+        'barcelona-tarragona' => '1h 15 min',
+        'puerto-barcelona-tarragona' => '1h 15 min',
+        'estacion-sants-tarragona' => '1h 15 min',
+        'aeropuerto-barcelona-cambrils' => '1h 15 min',
+        'barcelona-cambrils' => '1h 15 min',
+        'puerto-barcelona-cambrils' => '1h 15 min',
+        'aeropuerto-barcelona-girona' => '1h 15 min',
+        'barcelona-girona' => '1h 15 min',
+        'estacion-sants-girona' => '1h 15 min',
+        'aeropuerto-barcelona-tossa-de-mar' => '1h 15 min',
+        'barcelona-tossa-de-mar' => '1h 15 min',
+        'aeropuerto-barcelona-blanes' => '1h 10 min',
+        'barcelona-blanes' => '1h 10 min',
+        'aeropuerto-barcelona-calella' => '1h',
+        'barcelona-calella' => '1h',
+        'aeropuerto-barcelona-roses' => '2h 15 min',
+        'barcelona-roses' => '2h 15 min',
+        'aeropuerto-barcelona-cadaques' => '2h 15 min',
+        'barcelona-cadaques' => '2h 15 min',
+        'aeropuerto-barcelona-platja-daro' => '1h 20 min',
+        'barcelona-platja-daro' => '1h 20 min',
+        'aeropuerto-barcelona-andorra' => '3h 15 min',
+        'barcelona-andorra' => '3h 15 min',
+        'estacion-sants-andorra' => '3h 15 min',
+        'aeropuerto-barcelona-montserrat' => '1h',
+        'barcelona-montserrat' => '1h',
+        'aeropuerto-barcelona-reus' => '1h 15 min',
+        'barcelona-reus' => '1h 15 min',
+        'aeropuerto-barcelona-vilanova' => '50 min',
+        'barcelona-vilanova' => '50 min',
+        'aeropuerto-barcelona-calafell' => '1h',
+        'barcelona-calafell' => '1h',
+        'aeropuerto-barcelona-la-pineda' => '1h 15 min',
+        'barcelona-la-pineda' => '1h 15 min',
+        'aeropuerto-barcelona-la-molina' => '2h 30 min',
+        'barcelona-la-molina' => '2h 30 min',
+        'aeropuerto-barcelona-baqueira-beret' => '4h',
+        'barcelona-baqueira-beret' => '4h',
     );
-}
 
-function mt_get_route_duration( $title ) {
-    $titulo_lower = strtolower( $title );
-    if ( strpos( $titulo_lower, 'andorra' ) !== false ) {
-        return '3h 15 min';
-    } elseif ( strpos( $titulo_lower, 'cadaques' ) !== false || strpos( $titulo_lower, 'cadaqués' ) !== false || strpos( $titulo_lower, 'roses' ) !== false || strpos( $titulo_lower, 'cap de creus' ) !== false ) {
-        return '2h 15 min';
-    } elseif ( strpos( $titulo_lower, 'salou' ) !== false || strpos( $titulo_lower, 'portaventura' ) !== false || strpos( $titulo_lower, 'tarragona' ) !== false || strpos( $titulo_lower, 'cambrils' ) !== false || strpos( $titulo_lower, 'reus' ) !== false || strpos( $titulo_lower, 'la pineda' ) !== false || strpos( $titulo_lower, 'vilanova' ) !== false || strpos( $titulo_lower, 'calafell' ) !== false ) {
-        return '1h 15 min';
-    } elseif ( strpos( $titulo_lower, 'lloret' ) !== false || strpos( $titulo_lower, 'tossa' ) !== false || strpos( $titulo_lower, 'girona' ) !== false || strpos( $titulo_lower, 'blanes' ) !== false ) {
-        return '1h 10 min';
-    } elseif ( strpos( $titulo_lower, 'sitges' ) !== false ) {
-        return '40 min';
-    } elseif ( strpos( $titulo_lower, 'madrid' ) !== false ) {
-        return '6h 30 min';
-    } elseif ( strpos( $titulo_lower, 'valencia' ) !== false ) {
-        return '3h 45 min';
-    } elseif ( strpos( $titulo_lower, 'zaragoza' ) !== false ) {
-        return '3h 10 min';
-    } elseif ( strpos( $titulo_lower, 'la molina' ) !== false ) {
-        return '2h 30 min';
-    } elseif ( strpos( $titulo_lower, 'baqueira' ) !== false ) {
-        return '4h';
-    } elseif ( strpos( $titulo_lower, 'montserrat' ) !== false ) {
-        return '1h';
-    } elseif ( strpos( $titulo_lower, 'calella' ) !== false || strpos( $titulo_lower, 'platja d\'aro' ) !== false ) {
-        return '1h 20 min';
-    } else {
-        return '1h 30 min';
-    }
+    return isset( $durations[ $slug ] ) ? $durations[ $slug ] : '';
 }
 
 function mt_execute_route_builder() {
@@ -358,6 +387,8 @@ function mt_execute_route_builder() {
             unset( $post_data['post_status'] );
             // Nunca sobrescribir el contenido editorial
             unset( $post_data['post_content'] );
+            // Nunca sobrescribir el título existente
+            unset( $post_data['post_title'] );
             
             $post_id = wp_update_post( $post_data );
         } else {
@@ -375,8 +406,8 @@ function mt_execute_route_builder() {
             
             // Asignar duración calculada real en lugar del default de 60 min
             $current_duration = get_post_meta( $post_id, '_mt_ruta_duracion', true );
-            if ( empty( $current_duration ) || '60 min' === trim( $current_duration ) || '60 minutos' === strtolower( trim( $current_duration ) ) ) {
-                update_post_meta( $post_id, '_mt_ruta_duracion', mt_get_route_duration( $title ) );
+            if ( empty( $current_duration ) || '60 min' === trim( $current_duration ) || '60 minutos' === strtolower( trim( $current_duration ) ) || '1h 30 min' === trim( $current_duration ) ) {
+                update_post_meta( $post_id, '_mt_ruta_duracion', mt_get_route_duration( $slug ) );
             }
             
             // Forzar 1-7 pasajeros si existía 1-8
@@ -397,13 +428,41 @@ function mt_execute_route_builder() {
     flush_rewrite_rules();
 }
 
-// Hook de migración automática para actualizar todas las rutas en BD
-add_action( 'admin_init', 'mt_migrate_all_routes_durations_pax' );
-function mt_migrate_all_routes_durations_pax() {
-    if ( ! get_transient( 'mt_routes_migrated_durations_v1' ) ) {
-        if ( function_exists( 'mt_execute_route_builder' ) ) {
-            mt_execute_route_builder();
-            set_transient( 'mt_routes_migrated_durations_v1', true, YEAR_IN_SECONDS );
+// Hook de migración automática segura (solo actualiza metas sin crear ni publicar)
+add_action( 'admin_init', 'mt_migrate_all_routes_durations_pax_safe' );
+function mt_migrate_all_routes_durations_pax_safe() {
+    if ( defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) && ME_TRANSFERS_ENABLE_MIGRATIONS ) {
+        if ( ! get_transient( 'mt_routes_migrated_durations_safe_v2' ) ) {
+            $rutas = mt_get_phase1_routes();
+            foreach ( $rutas as $slug => $title ) {
+                $query = new WP_Query( array(
+                    'name'           => $slug,
+                    'post_type'      => 'ruta',
+                    'post_status'    => 'any',
+                    'posts_per_page' => 1,
+                    'fields'         => 'ids'
+                ) );
+                
+                if ( $query->have_posts() ) {
+                    $post_id = $query->posts[0];
+                    
+                    $current_duration = get_post_meta( $post_id, '_mt_ruta_duracion', true );
+                    if ( empty( $current_duration ) || '60 min' === trim( $current_duration ) || '60 minutos' === strtolower( trim( $current_duration ) ) || '1h 30 min' === trim( $current_duration ) ) {
+                        update_post_meta( $post_id, '_mt_ruta_duracion', mt_get_route_duration( $slug ) );
+                    }
+                    
+                    $current_pax = get_post_meta( $post_id, '_mt_ruta_pax', true );
+                    if ( empty( $current_pax ) || '1-8' === trim( $current_pax ) || '8' === trim( $current_pax ) ) {
+                        update_post_meta( $post_id, '_mt_ruta_pax', '1-7' );
+                    }
+                    
+                    $current_maletas = get_post_meta( $post_id, '_mt_ruta_maletas', true );
+                    if ( empty( $current_maletas ) || '8' === trim( $current_maletas ) ) {
+                        update_post_meta( $post_id, '_mt_ruta_maletas', '7' );
+                    }
+                }
+            }
+            set_transient( 'mt_routes_migrated_durations_safe_v2', true, YEAR_IN_SECONDS );
         }
     }
 }

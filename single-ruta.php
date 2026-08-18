@@ -106,6 +106,16 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                         <div class="ruta-statsbar__value"><?php echo esc_html( $duracion ); ?> <span style="font-size: 0.85em; opacity: 0.7;" title="Tiempo estimado. Puede variar según tráfico.">*</span></div>
                     </div>
                 </div>
+                <?php else : ?>
+                <div class="ruta-statsbar__item gs-reveal">
+                    <div class="ruta-statsbar__icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div>
+                        <div class="ruta-statsbar__label">Duración</div>
+                        <div class="ruta-statsbar__value" style="font-size: 0.85em; opacity: 0.8;">Pendiente de confirmar</div>
+                    </div>
+                </div>
                 <?php endif; ?>
 
                 <?php if ( $pax ) : ?>
@@ -153,11 +163,9 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                 </div>
             </div>
             
-            <?php if ( $duracion ) : ?>
             <p style="text-align: center; font-size: 0.85rem; color: var(--text-secondary); margin-top: 1.5rem; margin-bottom: 0; padding: 0 1rem; opacity: 0.8;">
                 * El tiempo de trayecto es una estimación. La duración real puede tener variaciones según el estado del tráfico, condiciones del clima, paradas extras solicitadas o eventualidades en carretera que escapan del control de la empresa de traslados.
             </p>
-            <?php endif; ?>
         </div>
     </div>
 
