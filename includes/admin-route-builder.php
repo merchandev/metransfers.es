@@ -292,6 +292,37 @@ function mt_get_phase1_routes() {
     );
 }
 
+function mt_get_route_duration( $title ) {
+    $titulo_lower = strtolower( $title );
+    if ( strpos( $titulo_lower, 'andorra' ) !== false ) {
+        return '3h 15 min';
+    } elseif ( strpos( $titulo_lower, 'cadaques' ) !== false || strpos( $titulo_lower, 'cadaqués' ) !== false || strpos( $titulo_lower, 'roses' ) !== false || strpos( $titulo_lower, 'cap de creus' ) !== false ) {
+        return '2h 15 min';
+    } elseif ( strpos( $titulo_lower, 'salou' ) !== false || strpos( $titulo_lower, 'portaventura' ) !== false || strpos( $titulo_lower, 'tarragona' ) !== false || strpos( $titulo_lower, 'cambrils' ) !== false || strpos( $titulo_lower, 'reus' ) !== false || strpos( $titulo_lower, 'la pineda' ) !== false || strpos( $titulo_lower, 'vilanova' ) !== false || strpos( $titulo_lower, 'calafell' ) !== false ) {
+        return '1h 15 min';
+    } elseif ( strpos( $titulo_lower, 'lloret' ) !== false || strpos( $titulo_lower, 'tossa' ) !== false || strpos( $titulo_lower, 'girona' ) !== false || strpos( $titulo_lower, 'blanes' ) !== false ) {
+        return '1h 10 min';
+    } elseif ( strpos( $titulo_lower, 'sitges' ) !== false ) {
+        return '40 min';
+    } elseif ( strpos( $titulo_lower, 'madrid' ) !== false ) {
+        return '6h 30 min';
+    } elseif ( strpos( $titulo_lower, 'valencia' ) !== false ) {
+        return '3h 45 min';
+    } elseif ( strpos( $titulo_lower, 'zaragoza' ) !== false ) {
+        return '3h 10 min';
+    } elseif ( strpos( $titulo_lower, 'la molina' ) !== false ) {
+        return '2h 30 min';
+    } elseif ( strpos( $titulo_lower, 'baqueira' ) !== false ) {
+        return '4h';
+    } elseif ( strpos( $titulo_lower, 'montserrat' ) !== false ) {
+        return '1h';
+    } elseif ( strpos( $titulo_lower, 'calella' ) !== false || strpos( $titulo_lower, 'platja d\'aro' ) !== false ) {
+        return '1h 20 min';
+    } else {
+        return '1h 30 min';
+    }
+}
+
 function mt_execute_route_builder() {
     $rutas = mt_get_phase1_routes();
 
@@ -341,13 +372,22 @@ function mt_execute_route_builder() {
             if ( '' === get_post_meta( $post_id, '_mt_ruta_destino', true ) ) {
                 update_post_meta( $post_id, '_mt_ruta_destino', $destino );
             }
-            if ( '' === get_post_meta( $post_id, '_mt_ruta_duracion', true ) ) {
-                update_post_meta( $post_id, '_mt_ruta_duracion', '60 min' );
+            
+            // Asignar duración calculada real en lugar del default de 60 min
+            $current_duration = get_post_meta( $post_id, '_mt_ruta_duracion', true );
+            if ( empty( $current_duration ) || '60 min' === trim( $current_duration ) || '60 minutos' === strtolower( trim( $current_duration ) ) ) {
+                update_post_meta( $post_id, '_mt_ruta_duracion', mt_get_route_duration( $title ) );
             }
-            if ( '' === get_post_meta( $post_id, '_mt_ruta_pax', true ) ) {
+            
+            // Forzar 1-7 pasajeros si existía 1-8
+            $current_pax = get_post_meta( $post_id, '_mt_ruta_pax', true );
+            if ( empty( $current_pax ) || '1-8' === trim( $current_pax ) || '8' === trim( $current_pax ) ) {
                 update_post_meta( $post_id, '_mt_ruta_pax', '1-7' );
             }
-            if ( '' === get_post_meta( $post_id, '_mt_ruta_maletas', true ) ) {
+            
+            // Forzar 7 maletas si existía 8
+            $current_maletas = get_post_meta( $post_id, '_mt_ruta_maletas', true );
+            if ( empty( $current_maletas ) || '8' === trim( $current_maletas ) ) {
                 update_post_meta( $post_id, '_mt_ruta_maletas', '7' );
             }
         }
@@ -355,4 +395,15 @@ function mt_execute_route_builder() {
 
     // Flush rewrite rules para asentar el CPT y los slugs
     flush_rewrite_rules();
+}
+
+// Hook de migración automática para actualizar todas las rutas en BD
+add_action( 'admin_init', 'mt_migrate_all_routes_durations_pax' );
+function mt_migrate_all_routes_durations_pax() {
+    if ( ! get_transient( 'mt_routes_migrated_durations_v1' ) ) {
+        if ( function_exists( 'mt_execute_route_builder' ) ) {
+            mt_execute_route_builder();
+            set_transient( 'mt_routes_migrated_durations_v1', true, YEAR_IN_SECONDS );
+        }
+    }
 }
