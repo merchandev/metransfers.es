@@ -102,7 +102,7 @@ function me_transfers_ajax_tour_booking() {
 
 	// Send email notification
 	$admin_email = get_option( 'admin_email' );
-	$subject     = 'ðŸ· Nueva Reserva de Tour: ' . $tour_name;
+	$subject     = '· Nueva Reserva de Tour: ' . $tour_name;
 	$message     = "Has recibido una nueva reserva de tour.\n\n";
 	$message    .= "━━━━━━━━━━━━━━━━━\n";
 	$message    .= "Tour: $tour_name\n";
@@ -124,17 +124,17 @@ function me_transfers_ajax_tour_booking() {
 
 	// Build WhatsApp URL
 	$wa_number = '34662024136';
-	$wa_text   = "ðŸ· *Reserva de Tour*\n";
+	$wa_text   = "· *Reserva de Tour*\n";
 	$wa_text  .= "━━━━━━━━━━━━━━━━━\n";
-	$wa_text  .= "ðŸ“ Tour: $tour_name\n";
-	$wa_text  .= "ðŸ‘¤ Nombre: $name\n";
+	$wa_text  .= "“ Tour: $tour_name\n";
+	$wa_text  .= "👤 Nombre: $name\n";
 	if ( $country ) {
-		$wa_text .= "ðŸŒ País: $country\n";
+		$wa_text .= "Œ País: $country\n";
 	}
-	$wa_text  .= "ðŸ“ž Teléfono: $phone\n";
-	$wa_text  .= "ðŸ“§ Email: $email\n";
+	$wa_text  .= "📞 Teléfono: $phone\n";
+	$wa_text  .= "📧 Email: $email\n";
 	if ( $tour_date ) {
-		$wa_text .= "ðŸ“… Fecha deseada: $tour_date\n";
+		$wa_text .= "📅 Fecha deseada: $tour_date\n";
 	}
 	$wa_text  .= "━━━━━━━━━━━━━━━━━\n";
 	$wa_text  .= "Quiero reservar este tour. ¿Tienen disponibilidad?";
@@ -174,19 +174,19 @@ function me_transfers_render_tour_booking_meta_box( $post ) {
 	?>
 	<table class="form-table" style="margin-top:0;">
 		<tr>
-			<th style="width:140px;"><label>ðŸ· Tour</label></th>
+			<th style="width:140px;"><label>· Tour</label></th>
 			<td><strong style="font-size:1.1em;"><?php echo esc_html( $tour ); ?></strong></td>
 		</tr>
 		<tr>
-			<th><label>ðŸ‘¤ Nombre</label></th>
+			<th><label>👤 Nombre</label></th>
 			<td><?php echo esc_html( $name ); ?></td>
 		</tr>
 		<tr>
-			<th><label>ðŸŒ País</label></th>
+			<th><label>Œ País</label></th>
 			<td><?php echo esc_html( $country ?: '—' ); ?></td>
 		</tr>
 		<tr>
-			<th><label>ðŸ“ž Teléfono</label></th>
+			<th><label>📞 Teléfono</label></th>
 			<td>
 				<?php if ( $phone ) : ?>
 					<a href="tel:<?php echo esc_attr( $phone ); ?>"><?php echo esc_html( $phone ); ?></a>
@@ -196,15 +196,15 @@ function me_transfers_render_tour_booking_meta_box( $post ) {
 			</td>
 		</tr>
 		<tr>
-			<th><label>ðŸ“§ Email</label></th>
+			<th><label>📧 Email</label></th>
 			<td><a href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a></td>
 		</tr>
 		<tr>
-			<th><label>ðŸ“… Fecha deseada</label></th>
+			<th><label>📅 Fecha deseada</label></th>
 			<td><?php echo esc_html( $date ?: '—' ); ?></td>
 		</tr>
 		<tr>
-			<th><label>ðŸ“‹ Recibido</label></th>
+			<th><label>📋 Recibido</label></th>
 			<td><?php echo esc_html( get_the_date( 'd/m/Y H:i', $post ) ); ?></td>
 		</tr>
 	</table>
@@ -215,7 +215,7 @@ function me_transfers_render_tour_booking_meta_box( $post ) {
 		?>
 		<p style="margin-top:1rem;">
 			<a href="https://wa.me/<?php echo esc_attr( preg_replace('/[^0-9]/', '', $phone ) ); ?>?text=<?php echo esc_attr( $wa_text ); ?>" target="_blank" class="button button-primary" style="background:#25D366;border-color:#25D366;">
-				ðŸ’¬ Responder por WhatsApp
+				💬 Responder por WhatsApp
 			</a>
 		</p>
 	<?php endif;
