@@ -1,6 +1,7 @@
 <?php
 $destinations = me_transfers_get_destination_catalog();
-			?>
+$hub_content_plain = trim( wp_strip_all_tags( strip_shortcodes( get_the_content() ) ) );
+?>
 			<section class="destinations-hub-hero">
 				<div class="container destinations-hub-hero__inner gs-reveal-up">
 					<span class="destinations-hub-eyebrow"><?php esc_html_e( 'Destinos más solicitados', 'me-transfers' ); ?></span>
