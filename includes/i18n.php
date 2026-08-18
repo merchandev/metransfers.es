@@ -22,14 +22,15 @@ if ( ! defined('MT_LANGS') ) {
         'ru' => [ 'label' => 'RU', 'name' => 'Русский',   'google_code' => 'ru' ],
         'zh' => [ 'label' => 'ZH', 'name' => '中文',       'google_code' => 'zh-CN' ],
         'ja' => [ 'label' => 'JA', 'name' => '日本語',     'google_code' => 'ja' ],
+        'ar' => [ 'label' => 'AR', 'name' => 'العربية',   'google_code' => 'ar' ],
     ] );
 }
 
 if ( ! defined('MT_ACTIVE_LANGS') ) {
     // All languages active. Translation via Google Cloud Translate (mt_google_api_key option).
     // Without an API key, content is shown in Spanish (safe fallback, no errors).
-    // Reactivamos Inglés para que el sistema de reservas y navegación lo puedan usar
-    define( 'MT_ACTIVE_LANGS', [ 'es', 'en' ] );
+    // Reactivamos todos los idiomas como solicitó el usuario.
+    define( 'MT_ACTIVE_LANGS', [ 'es', 'en', 'fr', 'de', 'it', 'pt', 'ca', 'ru', 'zh', 'ja', 'ar' ] );
 }
 
 if ( ! defined( 'MT_SEO_LANGS' ) ) {
@@ -78,6 +79,7 @@ add_filter( 'locale', function( $locale ) {
             'ru' => 'ru_RU',
             'zh' => 'zh_CN',
             'ja' => 'ja',
+            'ar' => 'ar',
         ];
         return isset($map[$lang]) ? $map[$lang] : $locale;
     }
@@ -127,7 +129,7 @@ add_action( 'after_switch_theme', function() { flush_rewrite_rules(); } );
 
 add_action( 'init', function() {
     // Bump this string whenever you add/remove languages to force a rules flush
-    $i18n_version = 'v3-active-languages';
+    $i18n_version = 'v4-all-languages';
     if ( get_option('mt_i18n_rules_flushed') !== $i18n_version ) {
         flush_rewrite_rules();
         update_option( 'mt_i18n_rules_flushed', $i18n_version );
@@ -427,6 +429,12 @@ add_action( 'wp_head', function() { ?>
 .mt-lang-menu.open {
     transform: translateX(0) !important;
     visibility: visible !important;
+}
+
+.mt-lang-menu ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 .mt-lang-menu li {
