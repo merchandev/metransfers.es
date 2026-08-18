@@ -1136,8 +1136,8 @@ a.contact__val:hover{color:var(--blue);}
         <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
       </div>
       <div class="cta__btns">
-        <a href="#panel" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
-        <a href="https://wa.me/34662024136?text=Hola,%20necesito%20informaci%C3%B3n%20para%20organizar%20un%20traslado%20privado%20con%20MeTransfers." class="btn btn-ghost-inv" target="_blank" rel="noopener">Consultar por WhatsApp</a>
+        <a href="#panel" class="btn btn-solid" style="background:#fff;color:var(--deep);"><?php echo mt_translate("Presupuestar y reservar"); ?></a>
+        <a href="https://wa.me/34662024136?text=Hola,%20necesito%20informaci%C3%B3n%20para%20organizar%20un%20traslado%20privado%20con%20MeTransfers." class="btn btn-ghost-inv" target="_blank" rel="noopener"><?php echo mt_translate("Consultar por WhatsApp"); ?></a>
       </div>
     </div>
   </div>
