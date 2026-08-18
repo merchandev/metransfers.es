@@ -379,11 +379,7 @@
 				<ul id="footer-info-links" class="footer-links-list">
 					<li><a href="<?php echo esc_url( mt_localized_url( 'sobre-nosotros' ) ); ?>">Sobre nosotros</a></li>
 					<li><a href="<?php echo esc_url( mt_localized_url( 'blog' ) ); ?>">Blog</a></li>
-					<li>
-    <a href="<?php echo esc_url( me_transfers_get_faq_page_url() ); ?>">
-        Preguntas frecuentes
-    </a>
-</li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'preguntas-frecuentes' ) ); ?>">Preguntas frecuentes</a></li>
 					<li><a href="<?php echo esc_url( mt_localized_url( 'contacto' ) ); ?>">Contacto</a></li>
 				</ul>
 			</div>

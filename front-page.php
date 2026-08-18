@@ -963,7 +963,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="tour__content">
           <h3>Tour privado por Barcelona</h3>
           <p>Sagrada Familia, Passeig de Gràcia, Barrio Gótico y Montjuïc. Itinerario flexible de 4, 6 u 8 horas con vehículo premium.</p>
-          <a href="/tour-en-barcelona/#tour-booking" class="tour__cta-btn">Más información</a>
+          <a href="<?php echo esc_url( mt_localized_url( 'tour-en-barcelona' ) . '#tour-booking' ); ?>" class="tour__cta-btn">Más información</a>
         </div>
       </div>
 
@@ -973,7 +973,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="tour__content">
           <h3>Montserrat</h3>
           <p>Monasterio y montaña mágica desde Barcelona con recogida puerta a puerta.</p>
-          <a href="/tour-a-montserrat/#tour-booking" class="tour__cta-btn">Más información</a>
+          <a href="<?php echo esc_url( mt_localized_url( 'tour-a-montserrat' ) . '#tour-booking' ); ?>" class="tour__cta-btn">Más información</a>
         </div>
       </div>
 
@@ -991,7 +991,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="tour__content">
           <h3>Costa Brava</h3>
           <p>Pueblos costeros, calas y paisajes mediterráneos exclusivos con itinerario personalizado.</p>
-          <a href="/tour-costa-brava/#tour-booking" class="tour__cta-btn">Más información</a>
+          <a href="<?php echo esc_url( mt_localized_url( 'tour-costa-brava' ) . '#tour-booking' ); ?>" class="tour__cta-btn">Más información</a>
         </div>
       </div>
 

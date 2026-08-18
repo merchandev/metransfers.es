@@ -136,7 +136,7 @@ body .hero-booking-card {
 			<?php if ( has_custom_logo() ) :
 				the_custom_logo();
 			else : ?>
-				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="site-logo-link" rel="home" aria-label="<?php bloginfo( 'name' ); ?>">
+				<a href="<?php echo esc_url( function_exists( 'mt_localized_url' ) ? mt_localized_url() : home_url( '/' ) ); ?>" class="site-logo-link" rel="home" aria-label="<?php bloginfo( 'name' ); ?>">
 					<img
 						src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/MT - MeTransfers.png' ); ?>"
 						alt="<?php bloginfo( 'name' ); ?>"

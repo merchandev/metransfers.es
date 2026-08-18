@@ -414,7 +414,11 @@ add_action( 'wp_head', function() { ?>
 .mt-lang-menu li a:focus {
     background: rgba(255, 255, 255, 0.12) !important;
     color: #ffffff !important;
-    outline: none !important;
+}
+
+.mt-lang-menu li a:focus-visible {
+    outline: 3px solid #fff !important;
+    outline-offset: 3px !important;
 }
 
 .mt-lang-menu li.active a {
@@ -505,12 +509,13 @@ add_action( 'wp_footer', function() { ?>
     
     var closeBtn=menu.querySelector('.mt-lang-close');
     
-    function close(){
+    function close( returnFocus ){
         sw.classList.remove('open');
         menu.classList.remove('open');
         backdrop.classList.remove('open');
         btn.setAttribute('aria-expanded','false');
         document.body.style.overflow = '';
+        if ( returnFocus !== false ) { btn.focus(); }
     }
     btn.addEventListener('click',function(e){
         e.stopPropagation();
