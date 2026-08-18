@@ -88,36 +88,6 @@ body .hero-booking-card {
     }
 }());
 </script>
-<?php
-// ── Google Analytics ──────────────────────────────────────────────────────
-// Se carga SOLO si el usuario ha aceptado la categoría analÍtica.
-// La cookie mt_analytics_consent='granted' se establece desde el banner de cookies.
-// Sin consentimiento: se inicializa en modo denegado (recomendado por Google).
-$ga_id = 'G-7ZFL53LYFN';
-$consent_granted = isset( $_COOKIE['mt_analytics_consent'] ) && 'granted' === $_COOKIE['mt_analytics_consent'];
-?>
-<!-- Google Analytics con gestión de consentimiento -->
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-
-<?php if ( $consent_granted ) : ?>
-// Consentimiento aceptado: carga completa de Analytics
-gtag('consent', 'update', { analytics_storage: 'granted' });
-<?php else : ?>
-// Sin consentimiento: modo denegado (no envÍa datos de usuario)
-gtag('consent', 'default', {
-    analytics_storage: 'denied',
-    ad_storage: 'denied',
-    wait_for_update: 500
-});
-<?php endif; ?>
-gtag('js', new Date());
-gtag('config', '<?php echo esc_js( $ga_id ); ?>', { anonymize_ip: true });
-</script>
-<?php if ( $consent_granted ) : ?>
-<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo esc_attr( $ga_id ); ?>"></script>
-<?php endif; ?>
 
 </head>
 
