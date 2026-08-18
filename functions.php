@@ -37,6 +37,13 @@ function mt_update_all_page_titles_once() {
 require_once get_template_directory() . '/includes/rutas-cpt.php';
 require_once get_template_directory() . '/includes/leads-cpt.php';
 
+// Herramienta de administración: repoblar post_content desde los catálogos PHP.
+// Disponible en: Herramientas → Repoblar Contenido
+if ( is_admin() ) {
+    require_once get_template_directory() . '/includes/admin-content-repopulate.php';
+    require_once get_template_directory() . '/includes/auto-migration-v5.php';
+}
+
 add_action( 'template_redirect', function() {
     if ( is_404() && trim( wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ), '/' ) === 'destinos' ) {
         wp_redirect( home_url( '/#rutas' ), 301 );
@@ -50,7 +57,7 @@ if ( ! defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) ) {
 
 // Centralized Versioning
 if ( ! defined( 'ME_TRANSFERS_VERSION' ) ) {
-	define( 'ME_TRANSFERS_VERSION', '3.1.0' );
+	define( 'ME_TRANSFERS_VERSION', '4.1.5' );
 }
 
 // Forzar UTF-8 en cabeceras HTTP para evitar caracteres corruptos (tildes, ñ)
@@ -784,9 +791,144 @@ if ( defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) && ME_TRANSFERS_ENABLE_MIGRATIO
 }
 
 
-/* ==========================================================================
-   FASE 2: WPO, METADATOS Y REDIRECCIONES
-   ========================================================================== */
+/**
+ * Migration v4 — Populate post_content from PHP catalog so pages are editable
+ * in the WordPress block editor.
+ *
+ * This runs automatically once when any admin page loads.
+ * It only updates pages whose post_content is still empty.
+ * Protected with: option flag + transient lock (anti-race-condition).
+ *
+ * Version key: me_transfers_editor_populated_v4
+ * To force a re-run: delete that option from the DB.
+ */
+function me_transfers_populate_editor_content_v4(): void {
+    if ( get_option( 'me_transfers_editor_populated_v4' ) ) {
+        return;
+    }
+    if ( get_transient( 'me_transfers_populating_content_v4' ) ) {
+        return;
+    }
+    set_transient( 'me_transfers_populating_content_v4', true, MINUTE_IN_SECONDS * 5 );
+
+    // ── 1. DESTINOS ──────────────────────────────────────────────────────────
+    $destinations = me_transfers_get_destination_catalog();
+    foreach ( $destinations as $dest ) {
+        // Search by child slug (/destinos/slug/) first, then direct slug.
+        $page = get_page_by_path( 'destinos/' . $dest['slug'], OBJECT, 'page' );
+        if ( ! $page ) {
+            $page = get_page_by_path( $dest['slug'], OBJECT, 'page' );
+        }
+        if ( ! $page || ! empty( trim( $page->post_content ) ) ) {
+            continue; // Skip: not found or already has content.
+        }
+
+        $content  = '<p>' . esc_html( $dest['travel_note'] ) . '</p>' . "\n\n";
+        $content .= '<p>' . esc_html(
+            sprintf(
+                'Si estás organizando un traslado hacia %s, podemos prepararte una propuesta adaptada al punto de recogida, número de pasajeros, fecha estimada y tipo de servicio que necesites.',
+                $dest['title']
+            )
+        ) . '</p>' . "\n\n";
+        $content .= '<ul>' . "\n";
+        foreach ( $dest['highlights'] as $highlight ) {
+            $content .= '<li>' . esc_html( $highlight ) . '</li>' . "\n";
+        }
+        $content .= '</ul>';
+
+        wp_update_post( array(
+            'ID'           => $page->ID,
+            'post_content' => $content,
+        ) );
+    }
+
+    // ── 2. TOURS ─────────────────────────────────────────────────────────────
+    $tours = me_transfers_get_tour_catalog();
+    foreach ( $tours as $slug => $tour ) {
+        $page = get_page_by_path( $slug, OBJECT, 'page' );
+        if ( ! $page || ! empty( trim( $page->post_content ) ) ) {
+            continue;
+        }
+
+        $paragraphs = ! empty( $tour['full_desc'] )
+            ? explode( "\n\n", $tour['full_desc'] )
+            : array( $tour['desc'] );
+
+        $content = '';
+        foreach ( $paragraphs as $p ) {
+            $p = trim( $p );
+            if ( $p ) {
+                $content .= '<p>' . esc_html( $p ) . '</p>' . "\n\n";
+            }
+        }
+
+        // Itinerary list.
+        if ( ! empty( $tour['itinerary'] ) ) {
+            $content .= '<h3>Itinerario del tour</h3>' . "\n<ul>\n";
+            foreach ( $tour['itinerary'] as $step ) {
+                $content .= '<li>' . esc_html( $step ) . '</li>' . "\n";
+            }
+            $content .= '</ul>' . "\n\n";
+        }
+
+        // Inclusions list.
+        if ( ! empty( $tour['includes'] ) ) {
+            $content .= '<h3>El tour incluye</h3>' . "\n<ul>\n";
+            foreach ( $tour['includes'] as $item ) {
+                $content .= '<li>' . esc_html( $item ) . '</li>' . "\n";
+            }
+            $content .= '</ul>';
+        }
+
+        wp_update_post( array(
+            'ID'           => $page->ID,
+            'post_content' => $content,
+        ) );
+    }
+
+    // ── 3. SERVICIOS PRINCIPALES ─────────────────────────────────────────────
+    $services = me_transfers_get_service_catalog();
+    foreach ( $services as $slug => $service ) {
+        $page = get_page_by_path( $slug, OBJECT, 'page' );
+        if ( ! $page || ! empty( trim( $page->post_content ) ) ) {
+            continue;
+        }
+
+        $content  = '<p>' . esc_html( $service['hero_desc'] ) . '</p>' . "\n\n";
+        if ( ! empty( $service['desc_long'] ) ) {
+            $paragraphs = explode( "\n\n", $service['desc_long'] );
+            foreach ( $paragraphs as $p ) {
+                $p = trim( $p );
+                if ( $p ) {
+                    $content .= '<p>' . esc_html( $p ) . '</p>' . "\n\n";
+                }
+            }
+        }
+        // Features list.
+        if ( ! empty( $service['features'] ) ) {
+            $content .= '<h3>Características del servicio</h3>' . "\n<ul>\n";
+            foreach ( $service['features'] as $feature ) {
+                $label = is_array( $feature ) ? ( $feature['label'] ?? '' ) : $feature;
+                if ( $label ) {
+                    $content .= '<li>' . esc_html( $label ) . '</li>' . "\n";
+                }
+            }
+            $content .= '</ul>';
+        }
+
+        wp_update_post( array(
+            'ID'           => $page->ID,
+            'post_content' => $content,
+        ) );
+    }
+
+    update_option( 'me_transfers_editor_populated_v4', true );
+    delete_transient( 'me_transfers_populating_content_v4' );
+}
+add_action( 'admin_init', 'me_transfers_populate_editor_content_v4' );
+
+
+
 
 // 1. Optimización WPO: Forzar WebP como formato de salida y forzar lazy load
 add_filter( 'image_editor_output_format', function( $formats ) {

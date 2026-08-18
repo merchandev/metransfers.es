@@ -26,8 +26,9 @@ if ( ! defined('MT_LANGS') ) {
 }
 
 if ( ! defined('MT_ACTIVE_LANGS') ) {
-    // Only 'es' is active to prevent incomplete indexing. 'en' can be added when translated.
-    define( 'MT_ACTIVE_LANGS', [ 'es' ] );
+    // All languages active. Translation via Google Cloud Translate (mt_google_api_key option).
+    // Without an API key, content is shown in Spanish (safe fallback, no errors).
+    define( 'MT_ACTIVE_LANGS', [ 'es', 'en', 'fr', 'de', 'it', 'pt', 'ca', 'ru', 'zh', 'ja' ] );
 }
 
 // =================================================================

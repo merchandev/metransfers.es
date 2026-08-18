@@ -177,28 +177,35 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
     <section class="section container gs-reveal" style="padding: 80px 16px;">
         <div class="entry-content" style="max-width: 900px; margin: 0 auto; line-height: 1.8; font-size: 1.1rem; background: #fff; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
             
-            <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;"><?php echo esc_html( $tipo_servicio ); ?> a <?php echo esc_html( $destino ); ?> sin esperas</h2>
-            <p>
-                Llegar a <?php echo esc_html( $destino ); ?> desde Barcelona nunca fue tan sencillo. Evita las largas colas para el autobús y las incómodas combinaciones de trenes con equipaje. Nuestro servicio de <strong><?php echo esc_html( strtolower($tipo_servicio) ); ?> a <?php echo esc_html( $destino ); ?></strong> está pensado para que tu descanso comience desde el momento en que aterrizas.
-            </p>
-            <p>
-                Nuestros conductores monitorizan los vuelos de llegada al Aeropuerto de El Prat, por lo que incluso si tu vuelo se retrasa, te estaremos esperando en la terminal de llegadas con un cartel con tu nombre. Desde allÍ, el trayecto hasta <?php echo esc_html( $destino ); ?> será directo y confortable.
-            </p>
-            
-            <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">La mejor opción para familias y grupos</h3>
-            <p>
-                Si viajas con amigos, familia o grupos grandes, disponemos de espaciosas furgonetas y minivans Mercedes-Benz con capacidad para hasta 8 pasajeros y todo su equipaje. 
-            </p>
-            <p>
-                Además, proporcionamos bajo solicitud las sillas de retención infantil adecuadas para que los más pequeños viajen de forma segura y cumpliendo todas las normativas de tráfico.
-            </p>
-
-            <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
-                <h4 style="margin-top:0; color:#0066CC;">CONSEJO: Reserva tu trayecto de ida y vuelta</h4>
-                <p style="margin-bottom:0;">
-                    Para disfrutar de un viaje sin sobresaltos, te aconsejamos reservar conjuntamente el trayecto de ida y el de vuelta al aeropuerto. Nuestro conductor te recogerá en la puerta de tu hotel en <?php echo esc_html( $destino ); ?> a la hora óptima para que llegues a tiempo a tu vuelo en Barcelona.
+            <?php 
+            $page_content = trim( wp_strip_all_tags( strip_shortcodes( get_the_content() ) ) );
+            if ( $page_content ) :
+                the_content();
+            else : 
+            ?>
+                <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;"><?php echo esc_html( $tipo_servicio ); ?> a <?php echo esc_html( $destino ); ?> sin esperas</h2>
+                <p>
+                    Llegar a <?php echo esc_html( $destino ); ?> desde Barcelona nunca fue tan sencillo. Evita las largas colas para el autobús y las incómodas combinaciones de trenes con equipaje. Nuestro servicio de <strong><?php echo esc_html( strtolower($tipo_servicio) ); ?> a <?php echo esc_html( $destino ); ?></strong> está pensado para que tu descanso comience desde el momento en que aterrizas.
                 </p>
-            </div>
+                <p>
+                    Nuestros conductores monitorizan los vuelos de llegada al Aeropuerto de El Prat, por lo que incluso si tu vuelo se retrasa, te estaremos esperando en la terminal de llegadas con un cartel con tu nombre. Desde allí, el trayecto hasta <?php echo esc_html( $destino ); ?> será directo y confortable.
+                </p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">La mejor opción para familias y grupos</h3>
+                <p>
+                    Si viajas con amigos, familia o grupos grandes, disponemos de espaciosas furgonetas y minivans Mercedes-Benz con capacidad para hasta 8 pasajeros y todo su equipaje. 
+                </p>
+                <p>
+                    Además, proporcionamos bajo solicitud las sillas de retención infantil adecuadas para que los más pequeños viajen de forma segura y cumpliendo todas las normativas de tráfico.
+                </p>
+
+                <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
+                    <h4 style="margin-top:0; color:#0066CC;">CONSEJO: Reserva tu trayecto de ida y vuelta</h4>
+                    <p style="margin-bottom:0;">
+                        Para disfrutar de un viaje sin sobresaltos, te aconsejamos reservar conjuntamente el trayecto de ida y el de vuelta al aeropuerto. Nuestro conductor te recogerá en la puerta de tu hotel en <?php echo esc_html( $destino ); ?> a la hora óptima para que llegues a tiempo a tu vuelo en Barcelona.
+                    </p>
+                </div>
+            <?php endif; ?>
 
         </div>
     </section>

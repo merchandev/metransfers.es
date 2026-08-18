@@ -1,7 +1,7 @@
 /*
 Theme Name:  Me Transfers Premium
 Description: Tema a medida de alto rendimiento para agencias de transporte VIP y tours de lujo. Desarrollado con arquitectura PHP nativa sin constructores visuales pesados para garantizar máxima velocidad. Destaca por su diseño premium «Mobile First», motor de reservas dinámico e integración fluida de conversiones vÍa WhatsApp.
-Version:     3.0.6
+Version:     4.1.5
 Author:      Merchan.Dev
 Text Domain: me-transfers
 */
@@ -10263,3 +10263,32 @@ body .page-banner__meta {
     flex-direction: column;
     flex: 1;
 }
+
+/* ============================================================
+   GOOGLE PLACES AUTOCOMPLETE FIX (FORZADO GLOBAL)
+   ============================================================ */
+.pac-container {
+    background-color: #0f1c2a !important;
+    border: 1px solid #004B68 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
+}
+.pac-item {
+    background-color: #0f1c2a !important;
+    border-top: 1px solid #1a2a3a !important;
+    padding: 10px !important;
+}
+.pac-item, 
+.pac-item span, 
+.pac-item div {
+    color: #ffffff !important;
+}
+.pac-item .pac-item-query, 
+.pac-item .pac-item-query span.pac-matched {
+    color: #4da6ff !important;
+}
+.pac-item:hover, 
+.pac-item:hover span {
+    background-color: #1a2a3a !important;
+}
+
