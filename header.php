@@ -170,10 +170,10 @@ body .hero-booking-card {
 		<div class="header-right">
 
 			<!-- CTA botón -->
-			<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary hdr-cta">Reservar Ya</a>
+			<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary hdr-cta"><?php echo mt_translate("Reservar Ya"); ?></a>
 
 			<!-- Hamburger -->
-			<button type="button" class="burger" id="burger-btn" aria-label="Abrir menú" aria-controls="mob-menu" aria-expanded="false">
+			<button type="button" class="burger" id="burger-btn" aria-label="<?php echo esc_attr(mt_translate("Abrir menú")); ?>" aria-controls="mob-menu" aria-expanded="false">
 				<span></span><span></span><span></span>
 			</button>
 
@@ -203,7 +203,7 @@ body .hero-booking-card {
                 loading="lazy"
             >
         </div>
-        <a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary mob-menu-cta">Reservar Ya</a>
+        <a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary mob-menu-cta"><?php echo mt_translate("Reservar Ya"); ?></a>
     </div>
 </div>
 <div id="mob-overlay" class="mob-overlay" aria-hidden="true"></div>

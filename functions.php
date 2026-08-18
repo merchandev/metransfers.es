@@ -2593,3 +2593,14 @@ add_filter( 'parse_request', function( $wp ) {
 
     return $wp;
 } );
+
+// =============================================================================
+// FILTRO: traducir títulos del wp_nav_menu al idioma activo
+// =============================================================================
+
+add_filter( 'nav_menu_item_title', function( $title, $item, $args, $depth ) {
+    if ( function_exists( 'mt_translate' ) ) {
+        return mt_translate( $title );
+    }
+    return $title;
+}, 10, 4 );

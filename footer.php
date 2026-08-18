@@ -345,41 +345,41 @@
 						<?php bloginfo( 'name' ); ?>
 					</a>
 				<?php endif; ?>
-				<p class="footer-brand-desc">Traslados privados, tours y servicios con chófer en Barcelona y larga distancia. Vehículos premium y atención personalizada 24/7.</p>
+				<p class="footer-brand-desc"><?php echo mt_translate("Traslados privados, tours y servicios con chófer en Barcelona y larga distancia. Vehículos premium y atención personalizada 24/7."); ?></p>
 			</div>
 
 			<!-- Servicios -->
 			<div class="footer-col js-footer-accordion">
-				<button type="button" class="footer-col-title" aria-expanded="false" aria-controls="footer-services-links">Servicios</button>
+				<button type="button" class="footer-col-title" aria-expanded="false" aria-controls="footer-services-links"><?php echo mt_translate("Servicios"); ?></button>
 				<ul id="footer-services-links" class="footer-links-list">
-					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-aeropuerto' ) ); ?>">Aeropuerto</a></li>
-					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-puerto' ) ); ?>">Puerto</a></li>
-					<li><a href="<?php echo esc_url( mt_localized_url( 'chofer-por-horas' ) ); ?>">Por horas</a></li>
-					<li><a href="<?php echo esc_url( mt_localized_url( 'corporativo-y-eventos' ) ); ?>">Empresas</a></li>
-					<li><a href="<?php echo esc_url( mt_localized_url( 'grupos' ) ); ?>">Grupos</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-aeropuerto' ) ); ?>"><?php echo mt_translate("Aeropuerto"); ?></a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-puerto' ) ); ?>"><?php echo mt_translate("Puerto"); ?></a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'chofer-por-horas' ) ); ?>"><?php echo mt_translate("Por horas"); ?></a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'corporativo-y-eventos' ) ); ?>"><?php echo mt_translate("Empresas"); ?></a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'grupos' ) ); ?>"><?php echo mt_translate("Grupos"); ?></a></li>
 				</ul>
 			</div>
 
 			<!-- Destinos y Tours -->
 			<div class="footer-col js-footer-accordion">
-				<button type="button" class="footer-col-title" aria-expanded="false" aria-controls="footer-destinations-links">Destinos y rutas</button>
+				<button type="button" class="footer-col-title" aria-expanded="false" aria-controls="footer-destinations-links"><?php echo mt_translate("Destinos y rutas"); ?></button>
 				<ul id="footer-destinations-links" class="footer-links-list">
-					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-privados' ) ); ?>">Traslados privados Barcelona</a></li>
-					<li><a href="<?php echo esc_url( mt_localized_url( 'destinos/costa-brava' ) ); ?>">Costa Brava</a></li>
-					<li><a href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-salou' ) ); ?>">Salou</a></li>
-					<li><a href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-portaventura' ) ); ?>">PortAventura</a></li>
-					<li><a href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-girona' ) ); ?>">Girona</a></li>
-					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'ruta' ) ); ?>">Todas las rutas</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-privados' ) ); ?>"><?php echo mt_translate("Traslados privados Barcelona"); ?></a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'destinos/costa-brava' ) ); ?>"><?php echo mt_translate("Costa Brava"); ?></a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-salou' ) ); ?>"><?php echo mt_translate("Salou"); ?></a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-portaventura' ) ); ?>"><?php echo mt_translate("PortAventura"); ?></a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-girona' ) ); ?>"><?php echo mt_translate("Girona"); ?></a></li>
+					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'ruta' ) ); ?>"><?php echo mt_translate("Todas las rutas"); ?></a></li>
 				</ul>
 			</div>
 
 			<!-- Información -->
 			<div class="footer-col js-footer-accordion">
-				<button type="button" class="footer-col-title" aria-expanded="false" aria-controls="footer-info-links">Información</button>
+				<button type="button" class="footer-col-title" aria-expanded="false" aria-controls="footer-info-links"><?php echo mt_translate("Información"); ?></button>
 				<ul id="footer-info-links" class="footer-links-list">
-					<li><a href="<?php echo esc_url( mt_localized_url( 'sobre-nosotros' ) ); ?>">Sobre nosotros</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'sobre-nosotros' ) ); ?>"><?php echo mt_translate("Sobre nosotros"); ?></a></li>
 					<li><a href="<?php echo esc_url( mt_localized_url( 'blog' ) ); ?>"><?php echo mt_translate("Blog"); ?></a></li>
-					<li><a href="<?php echo esc_url( mt_localized_url( 'preguntas-frecuentes' ) ); ?>">Preguntas frecuentes</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'preguntas-frecuentes' ) ); ?>"><?php echo mt_translate("Preguntas frecuentes"); ?></a></li>
 					<li><a href="<?php echo esc_url( mt_localized_url( 'contacto' ) ); ?>"><?php echo mt_translate("Contacto"); ?></a></li>
 				</ul>
 			</div>
