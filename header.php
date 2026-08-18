@@ -19,11 +19,43 @@
 	<link rel="icon"       type="image/png" sizes="16x16" href="<?php echo esc_url( get_template_directory_uri() . '/assets/img/favicon.png' ); ?>">
 	<link rel="shortcut icon"                              href="<?php echo esc_url( get_template_directory_uri() . '/assets/img/favicon.png' ); ?>">
 	<link rel="apple-touch-icon"                           href="<?php echo esc_url( get_template_directory_uri() . '/assets/img/favicon.png' ); ?>">
+	<!-- Consent Mode v2 Default Settings -->
+	<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+
+	// Comprobar cookie de consentimiento
+	var cookieName = 'mt_cookie_consent_v2';
+	var hasConsent = document.cookie.split('; ').find(row => row.startsWith(cookieName + '='));
+	var analyticsGranted = false;
+	var marketingGranted = false;
+
+	if (hasConsent) {
+		try {
+			var consentData = JSON.parse(decodeURIComponent(hasConsent.split('=')[1]));
+			analyticsGranted = consentData.analytics;
+			marketingGranted = consentData.marketing;
+		} catch(e) {}
+	}
+
+	gtag('consent', 'default', {
+		'ad_storage': marketingGranted ? 'granted' : 'denied',
+		'ad_user_data': marketingGranted ? 'granted' : 'denied',
+		'ad_personalization': marketingGranted ? 'granted' : 'denied',
+		'analytics_storage': analyticsGranted ? 'granted' : 'denied',
+		'wait_for_update': 500
+	});
+	
+	// Para Site Kit u otras implementaciones que usan dataLayer
+	dataLayer.push({
+		'event': 'default_consent'
+	});
+	</script>
 
 	<?php wp_head(); ?>
 <style>.site-header .btn{min-width:0!important;width:auto!important;padding-inline:clamp(1rem,2vw,1.5rem)!important;flex-shrink:1!important} @media (max-width: 991px) { .site-header .hdr-cta { display: none !important; } .hero-container { padding-top: 0 !important; padding-inline: 0 !important; } .site-header { width: calc(100% - 32px) !important; left: 16px !important; transform: none !important; border-radius: 12px !important; padding: 0 !important; } .site-header .container.header-inner { position: relative !important; display: flex !important; flex-wrap: nowrap !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; margin: 0 !important; padding: 0 16px !important; } .site-branding { position: absolute !important; left: 50% !important; transform: translateX(-50%) !important; margin: 0 !important; } #mob-menu:not(.open) { visibility: hidden !important; transition: visibility 0s 0.3s; } #mob-menu.open { visibility: visible !important; transition: visibility 0s 0s; } } @media (min-width: 992px) { .header-right { align-items: center !important; } .header-right .gtranslate_wrapper, .header-right .gtranslate_wrapper select, .header-right .gtranslate_wrapper a.glink, .header-right .hdr-cta { height: 44px !important; min-height: 44px !important; max-height: 44px !important; display: inline-flex !important; align-items: center !important; box-sizing: border-box !important; margin: 0 !important; } .header-right .hdr-cta { justify-content: center !important; } }</style>
 <style>
-  /* NUEVO DISEÍ‘O PREMIUM PARA EL FORMULARIO (FONDO VERDE) */
+  /* NUEVO DISEÑO PREMIUM PARA EL FORMULARIO (FONDO VERDE) */
   .hero-booking-card {
       background: linear-gradient(145deg, rgba(5, 33, 20, 0.85) 0%, rgba(3, 22, 12, 0.65) 100%) !important;
       backdrop-filter: blur(12px) !important;
@@ -48,7 +80,6 @@ body .hero-booking-card {
         align-self: center !important;
     }
 }
-/* GTranslate antiguo eliminado — usar plugin GCT Translator */
 </style>
 <style id="btt-loader-style">
 /* Loader BTT: activo solo cuando llega desde la app con ?source=BTT */
@@ -100,7 +131,7 @@ body .hero-booking-card {
 <header id="masthead" class="site-header" role="banner">
 	<div class="container header-inner">
 
-		<!-- â‘  Logo -->
+		<!-- ① Logo -->
 		<div class="site-branding">
 			<?php if ( has_custom_logo() ) :
 				the_custom_logo();
@@ -119,7 +150,7 @@ body .hero-booking-card {
 			<?php endif; ?>
 		</div>
 
-		<!-- â‘¡ Nav Desktop -->
+		<!-- ② Nav Desktop -->
 		<nav class="main-navigation" id="main-nav" aria-label="Menú principal">
 			<?php
 			wp_nav_menu( array(
@@ -176,81 +207,3 @@ body .hero-booking-card {
     </div>
 </div>
 <div id="mob-overlay" class="mob-overlay" aria-hidden="true"></div>
-
-
-
-
-
-
-
-<style>
-.custom-lang-wrapper { position: relative; font-family: 'Inter', sans-serif; display: inline-flex; }
-.custom-lang-trigger { display: inline-flex; align-items: center; gap: 0.4rem; height: 44px; padding: 0 1rem; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-.custom-lang-trigger:hover { background: rgba(255, 255, 255, 0.15); }
-.custom-lang-dropdown { position: absolute; top: calc(100% + 5px); right: 0; min-width: 180px; background: #030d1e; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 0.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.2s ease; list-style: none; margin: 0; z-index: 99999; }
-.custom-lang-wrapper.open .custom-lang-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
-.custom-lang-dropdown li { padding: 0.6rem 1rem; color: #e4f2ff; font-size: 0.9rem; border-radius: 6px; cursor: pointer; transition: all 0.2s; text-transform: capitalize; }
-.custom-lang-dropdown li:hover { background: #0077b6; color: #fff; }
-</style>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    function initCustomLang() {
-        const nativeSelect = document.querySelector('.goog-te-combo');
-        if (!nativeSelect || nativeSelect.options.length < 2) {
-            setTimeout(initCustomLang, 300);
-            return;
-        }
-        if (document.querySelector('.custom-lang-wrapper')) return;
-        const nativeContainer = nativeSelect.closest('.gtranslate_wrapper') || nativeSelect.closest('.lang-wrapper') || nativeSelect.parentNode;
-        nativeContainer.style.opacity = '0';
-        nativeContainer.style.position = 'absolute';
-        nativeContainer.style.pointerEvents = 'none';
-        const wrapper = document.createElement('div');
-        wrapper.className = 'custom-lang-wrapper';
-        wrapper.innerHTML = `<div class="custom-lang-trigger"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg><span class="lang-text">Idioma</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;"><polyline points="6 9 12 15 18 9"></polyline></svg></div><ul class="custom-lang-dropdown"></ul>`;
-        const dropdown = wrapper.querySelector('ul');
-        const triggerText = wrapper.querySelector('.lang-text');
-        Array.from(nativeSelect.options).forEach(opt => {
-            if (!opt.value) return;
-            const li = document.createElement('li');
-            li.textContent = opt.textContent;
-            li.addEventListener('click', () => {
-                nativeSelect.value = opt.value;
-                nativeSelect.dispatchEvent(new Event('change'));
-                triggerText.textContent = opt.textContent.split(' ')[0];
-                wrapper.classList.remove('open');
-            });
-            dropdown.appendChild(li);
-        });
-        nativeContainer.parentNode.insertBefore(wrapper, nativeContainer.nextSibling);
-        wrapper.querySelector('.custom-lang-trigger').addEventListener('click', (e) => {
-            e.stopPropagation();
-            wrapper.classList.toggle('open');
-        });
-        document.addEventListener('click', () => wrapper.classList.remove('open'));
-    }
-    initCustomLang();
-});
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

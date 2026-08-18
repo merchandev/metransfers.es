@@ -180,7 +180,7 @@
         </div>
         <div class="mt-cookie-option">
             <label>
-                <input type="checkbox" id="mt-cookie-analytics" checked>
+                <input type="checkbox" id="mt-cookie-analytics">
                 Analíticas y Rendimiento
             </label>
         </div>
@@ -192,7 +192,8 @@
         </div>
     </div>
 
-    <div class="mt-cookie-actions">
+    <div class="mt-cookie-actions" style="flex-wrap: wrap;">
+        <button id="mt-btn-cookie-reject" class="mt-cookie-btn mt-cookie-btn-settings" style="flex-basis: 100%; margin-bottom: 4px;">Rechazar todas</button>
         <button id="mt-btn-cookie-settings" class="mt-cookie-btn mt-cookie-btn-settings">Configurar</button>
         <button id="mt-btn-cookie-accept" class="mt-cookie-btn mt-cookie-btn-accept">Aceptar todas</button>
     </div>
@@ -203,6 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const banner = document.getElementById('mt-cookie-banner');
     const btnSettings = document.getElementById('mt-btn-cookie-settings');
     const btnAccept = document.getElementById('mt-btn-cookie-accept');
+    const btnReject = document.getElementById('mt-btn-cookie-reject');
     const optionsPanel = document.getElementById('mt-cookie-options');
     
     const cookieName = 'mt_cookie_consent_v2';
@@ -212,49 +214,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Comprobar si ya existe la cookie
     const hasConsent = document.cookie.split('; ').find(row => row.startsWith(cookieName + '='));
 
-    let implicitConsentGiven = false;
-
-    function handleImplicitConsent(e) {
-        if (implicitConsentGiven || hasConsent || !banner.classList.contains('show')) return;
-        
-        // Consentimiento por click fuera del banner
-        if (e.type === 'click') {
-            if (banner.contains(e.target)) return;
-            
-            const clickable = e.target.closest('a, button, input[type="submit"], input[type="button"]');
-            if (clickable) {
-                giveImplicitConsent();
-            }
-        } 
-        // Consentimiento por scroll (30%)
-        else if (e.type === 'scroll') {
-            const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-            if (scrollPercent >= 30) {
-                giveImplicitConsent();
-            }
-        }
-    }
-
-    function giveImplicitConsent() {
-        implicitConsentGiven = true;
-        document.getElementById('mt-cookie-analytics').checked = true;
-        document.getElementById('mt-cookie-marketing').checked = true;
-        saveConsent();
-        
-        window.removeEventListener('scroll', handleImplicitConsent);
-        document.removeEventListener('click', handleImplicitConsent);
-    }
-
     if (!hasConsent) {
-        // Mostrar el banner a los 5 segundos de cargar
+        // Mostrar el banner
         setTimeout(() => {
             if (banner) {
                 banner.classList.add('show');
-                // Activar listeners de consentimiento tácito
-                window.addEventListener('scroll', handleImplicitConsent, { passive: true });
-                document.addEventListener('click', handleImplicitConsent);
             }
-        }, 5000);
+        }, 500); // Mostramos antes en vez de a los 5s, porque ya no hay tácito
     }
 
     // Interacción: Configurar / Guardar
@@ -280,6 +246,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Interacción: Rechazar todas
+    if (btnReject) {
+        btnReject.addEventListener('click', function() {
+            document.getElementById('mt-cookie-analytics').checked = false;
+            document.getElementById('mt-cookie-marketing').checked = false;
+            saveConsent();
+        });
+    }
+
     function saveConsent() {
         const analytics = document.getElementById('mt-cookie-analytics').checked;
         const marketing = document.getElementById('mt-cookie-marketing').checked;
@@ -292,10 +267,19 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         // Guardar cookie por 14 días
-        // samesite=lax previene envío en request cross-site inseguros
         document.cookie = `${cookieName}=${encodeURIComponent(JSON.stringify(consentData))}; max-age=${maxAge}; path=/; samesite=lax`;
 
-        // Si se necesitan disparar eventos para inicializar scripts:
+        // Actualizar Consent Mode v2 de Google
+        if (typeof gtag === 'function') {
+            gtag('consent', 'update', {
+                'ad_storage': marketing ? 'granted' : 'denied',
+                'ad_user_data': marketing ? 'granted' : 'denied',
+                'ad_personalization': marketing ? 'granted' : 'denied',
+                'analytics_storage': analytics ? 'granted' : 'denied'
+            });
+        }
+
+        // Si se necesitan disparar eventos adicionales:
         if (analytics) {
             document.dispatchEvent(new CustomEvent('mt_analytics_granted'));
         }
@@ -310,10 +294,6 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             banner.remove();
         }, 600);
-        
-        // Limpiar event listeners tácitos
-        window.removeEventListener('scroll', handleImplicitConsent);
-        document.removeEventListener('click', handleImplicitConsent);
     }
 });
 </script>
