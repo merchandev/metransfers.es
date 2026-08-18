@@ -1,10 +1,10 @@
-﻿<?php
+<?php
 /**
- * Template Name: PÃ¡gina de Servicio
+ * Template Name: Página de Servicio
  *
- * Template inteligente para todas las pÃ¡ginas de servicios de MeTransfers.
- * Detecta el slug de la pÃ¡gina y carga el contenido, formulario y diseÃ±o
- * especÃ­fico de cada servicio.
+ * Template inteligente para todas las páginas de servicios de MeTransfers.
+ * Detecta el slug de la página y carga el contenido, formulario y diseño
+ * específico de cada servicio.
  *
  * @package Me_Transfers
  */
@@ -19,7 +19,7 @@ get_header();
 global $post;
 $service = me_transfers_get_current_service( $post );
 
-// Si no se detecta un servicio, mostrar el contenido normal de la pÃ¡gina.
+// Si no se detecta un servicio, mostrar el contenido normal de la página.
 if ( ! $service ) {
 	?>
 	<main id="primary" class="site-main">
@@ -36,11 +36,11 @@ $form_type = $service['form_type'];
 $form_id   = 'svc-form-' . esc_attr( $form_type );
 ?>
 
-<?php /* Estilos en style.css â†’ secciÃ³n SERVICE PAGE STYLES */ ?>
+<?php /* Estilos en style.css → sección SERVICE PAGE STYLES */ ?>
 
 <main id="primary" class="site-main">
 
-	<!-- â•â•â• HERO â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+	<!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
 	<section class="svc-hero">
 		<div class="container">
 			<div class="svc-hero-badge"><?php echo esc_html( $service['badge'] ); ?></div>
@@ -67,10 +67,10 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 
 	<div class="svc-layout container">
 
-		<!-- â•â•â• COLUMNA PRINCIPAL: CONTENIDO â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+		<!-- ═══ COLUMNA PRINCIPAL: CONTENIDO ════════════════════════════════════ -->
 		<div class="svc-main">
 			
-			<!-- DESCRIPCIÃ“N COMPLETA -->
+			<!-- DESCRIPCIÓN COMPLETA -->
 			<div class="svc-block">
 				<span class="svc-label">Sobre este servicio</span>
 				<h2><?php echo esc_html( $service['subtitle'] ); ?></h2>
@@ -86,7 +86,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 
 			<!-- BENEFICIOS -->
 			<div class="svc-block">
-				<span class="svc-label">Â¿Por quÃ© elegir MeTransfers?</span>
+				<span class="svc-label">¿Por qué elegir MeTransfers?</span>
 				<h2>Todo lo que necesitas, incluido</h2>
 				<div class="svc-features-grid">
 					<?php foreach ( $service['features'] as $feat ) : ?>
@@ -99,10 +99,10 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 				</div>
 			</div>
 
-			<!-- CÃ“MO FUNCIONA -->
+			<!-- CÓMO FUNCIONA -->
 			<div class="svc-block">
 				<span class="svc-label">El proceso</span>
-				<h2>AsÃ­ de sencillo es reservar</h2>
+				<h2>Así de sencillo es reservar</h2>
 				<div class="svc-steps-grid">
 					<?php foreach ( $service['steps'] as $step ) : ?>
 					<div class="svc-step">
@@ -118,15 +118,15 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 
 		</div><!-- .svc-main -->
 
-		<!-- â•â•â• BARRA LATERAL: FORMULARIO â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+		<!-- ═══ BARRA LATERAL: FORMULARIO ═══════════════════════════════════════ -->
 		<div class="svc-sidebar" id="solicitar">
 			<div class="svc-form-box">
 				<h2>Solicita presupuesto</h2>
-				<p class="svc-form-sub">Rellena el formulario y te respondemos en menos de 2 horas â€” o al instante por WhatsApp.</p>
+				<p class="svc-form-sub">Rellena el formulario y te respondemos en menos de 2 horas — o al instante por WhatsApp.</p>
 
 				<form id="<?php echo esc_attr( $form_id ); ?>" class="svc-form" data-service="<?php echo esc_attr( $form_type ); ?>">
 
-					<!-- Campos comunes: Nombre, Email, TelÃ©fono -->
+					<!-- Campos comunes: Nombre, Email, Teléfono -->
 					<p class="svc-form-section-title">
 						<span class="material-symbols-outlined" aria-hidden="true" style="font-size:18px;">person</span>
 						Tus datos
@@ -134,12 +134,12 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-form-row">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-nombre">Nombre completo *</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-nombre" name="nombre" placeholder="Ej: Juan GarcÃ­a" required>
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-nombre" name="nombre" placeholder="Ej: Juan García" required>
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-telefono">TelÃ©fono *</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-telefono">Teléfono *</label>
 							<input type="tel" id="<?php echo esc_attr( $form_id ); ?>-telefono" name="telefono" placeholder="+34 600 000 000" required>
 						</div>
 						<div class="sfg">
@@ -150,7 +150,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 
 					<hr class="svc-form-divider">
 
-					<!-- â”€â”€ Campos especÃ­ficos por tipo de servicio â”€â”€ -->
+					<!-- ── Campos específicos por tipo de servicio ── -->
 
 					<?php if ( $form_type === 'aeropuerto' ) : ?>
 					<p class="svc-form-section-title">
@@ -159,7 +159,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					</p>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-vuelo">NÂº de vuelo</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-vuelo">Nº de vuelo</label>
 							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-vuelo" name="extra_vuelo" placeholder="Ej: VY1234">
 						</div>
 						<div class="sfg">
@@ -174,7 +174,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 						</div>
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-direccion">Origen / Destino</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-direccion" name="extra_direccion" placeholder="Hotel o direcciÃ³n">
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-direccion" name="extra_direccion" placeholder="Hotel o dirección">
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
@@ -216,7 +216,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-terminal">Terminal</label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-terminal" name="extra_terminal">
-								<option value="">No lo sÃ© aÃºn</option>
+								<option value="">No lo sé aún</option>
 								<option>Adossat A</option><option>Adossat B</option>
 								<option>Adossat C</option><option>Adossat D</option>
 								<option>Drassanes</option><option>Otra</option>
@@ -261,17 +261,17 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 								<option value="">Selecciona...</option>
 								<option>3 horas</option><option>4 horas</option><option>5 horas</option>
 								<option>6 horas</option><option>8 horas</option>
-								<option>10 horas (dÃ­a completo)</option>
+								<option>10 horas (día completo)</option>
 							</select>
 						</div>
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-partida">Punto de partida</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-partida" name="extra_partida" placeholder="Hotel o direcciÃ³n">
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-partida" name="extra_partida" placeholder="Hotel o dirección">
 						</div>
 					</div>
 					<div class="svc-form-row">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-plan">DescripciÃ³n del plan</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-plan">Descripción del plan</label>
 							<textarea id="<?php echo esc_attr( $form_id ); ?>-plan" name="extra_plan" placeholder="Describe las paradas..."></textarea>
 						</div>
 					</div>
@@ -291,7 +291,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 							<select id="<?php echo esc_attr( $form_id ); ?>-tipo-evento" name="extra_tipo_evento">
 								<option value="">Selecciona...</option>
 								<option>Congreso / Feria</option>
-								<option>ReuniÃ³n ejecutiva</option>
+								<option>Reunión ejecutiva</option>
 								<option>Incentivo</option>
 								<option>Otro</option>
 							</select>
@@ -299,11 +299,11 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-vehiculos">VehÃ­culos</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-vehiculos">Vehículos</label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-vehiculos" name="extra_vehiculos">
 								<option value="">Selecciona...</option>
-								<option>1 vehÃ­culo</option><option>2 vehÃ­culos</option>
-								<option>3-5 vehÃ­culos</option><option>MÃ¡s de 5</option>
+								<option>1 vehículo</option><option>2 vehículos</option>
+								<option>3-5 vehículos</option><option>Más de 5</option>
 							</select>
 						</div>
 						<div class="sfg">
@@ -313,7 +313,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					</div>
 					<div class="svc-form-row">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-descripcion">DescripciÃ³n</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-descripcion">Descripción</label>
 							<textarea id="<?php echo esc_attr( $form_id ); ?>-descripcion" name="extra_descripcion" placeholder="Horarios, rutas..."></textarea>
 						</div>
 					</div>
@@ -325,14 +325,14 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					</p>
 					<div class="svc-form-row">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-destino">Tour de interÃ©s</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-destino">Tour de interés</label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-destino" name="extra_destino">
 								<option value="">Selecciona...</option>
 								<option>Montserrat</option>
 								<option>Costa Brava</option>
 								<option>Girona + Costa Brava</option>
 								<option>Tarragona Romana</option>
-								<option>Sitges y PenedÃ¨s</option>
+								<option>Sitges y Penedès</option>
 								<option>Barcelona City Tour</option>
 								<option>Ruta personalizada</option>
 							</select>
@@ -357,7 +357,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-idioma">Idioma preferido</label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-idioma" name="extra_idioma">
-								<option>EspaÃ±ol</option><option>InglÃ©s</option><option>FrancÃ©s</option><option>Otro</option>
+								<option>Español</option><option>Inglés</option><option>Francés</option><option>Otro</option>
 							</select>
 						</div>
 					</div>
@@ -370,7 +370,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-form-row">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-grupo">Nombre del grupo</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-grupo" name="extra_grupo" placeholder="Ej: Boda GarcÃ­a">
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-grupo" name="extra_grupo" placeholder="Ej: Boda García">
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
@@ -378,8 +378,8 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 							<label for="<?php echo esc_attr( $form_id ); ?>-tipo-evento">Tipo de evento</label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-tipo-evento" name="extra_tipo_evento">
 								<option value="">Selecciona...</option>
-								<option>Boda</option><option>CumpleaÃ±os</option>
-								<option>Incentivo de empresa</option><option>ExcursiÃ³n</option><option>Otro</option>
+								<option>Boda</option><option>Cumpleaños</option>
+								<option>Incentivo de empresa</option><option>Excursión</option><option>Otro</option>
 							</select>
 						</div>
 						<div class="sfg">
@@ -387,7 +387,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 							<select id="<?php echo esc_attr( $form_id ); ?>-personas" name="extra_personas">
 								<option value="">Selecciona...</option>
 								<option>8-15 personas</option><option>15-30 personas</option>
-								<option>30-50 personas</option><option>MÃ¡s de 50</option>
+								<option>30-50 personas</option><option>Más de 50</option>
 							</select>
 						</div>
 					</div>
@@ -418,7 +418,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-gdpr">
 						<input type="checkbox" id="<?php echo esc_attr( $form_id ); ?>-gdpr" name="gdpr_aceptado" value="1" required>
 						<label for="<?php echo esc_attr( $form_id ); ?>-gdpr">
-							He leÃ­do y acepto la <a href="<?php echo esc_url( home_url( '/politica-de-privacidad' ) ); ?>" target="_blank">PolÃ­tica de Privacidad</a>.
+							He leído y acepto la <a href="<?php echo esc_url( home_url( '/politica-de-privacidad' ) ); ?>" target="_blank">Política de Privacidad</a>.
 						</label>
 					</div>
 
@@ -429,7 +429,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 
 					<div class="svc-form-ok" id="<?php echo esc_attr( $form_id ); ?>-ok">
 						<span class="material-symbols-outlined" aria-hidden="true" style="vertical-align: middle; margin-right: 5px;">check_circle</span>
-						Â¡Solicitud enviada! Te responderemos muy pronto.
+						¡Solicitud enviada! Te responderemos muy pronto.
 					</div>
 
 				</form>
@@ -476,7 +476,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 		var fullMensaje = (extras.length ? extras.join('\n') + '\n\n' : '') + baseMensaje;
 		data.set('mensaje', fullMensaje);
 
-		// AÃ±adir fecha y hora de aceptaciÃ³n GDPR
+		// Añadir fecha y hora de aceptación GDPR
 		data.set('gdpr_fecha', new Date().toISOString());
 
 		var url = (window.mtAjax && mtAjax.ajaxurl) ? mtAjax.ajaxurl : '/wp-admin/admin-ajax.php';
@@ -488,7 +488,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					throw new Error(res.data && res.data.message ? res.data.message : 'No se pudo enviar la solicitud.');
 				}
 				if (ok) {
-					ok.textContent = res.data && res.data.message ? res.data.message : 'Â¡Solicitud recibida correctamente! Te responderemos muy pronto.';
+					ok.textContent = res.data && res.data.message ? res.data.message : '¡Solicitud recibida correctamente! Te responderemos muy pronto.';
 					ok.classList.remove('error');
 					ok.classList.add('active');
 				}
@@ -496,7 +496,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 			})
 			.catch(function(err) {
 				if (ok) {
-					ok.textContent = err && err.message ? err.message : 'No se pudo enviar la solicitud. Por favor, intÃ©ntalo de nuevo.';
+					ok.textContent = err && err.message ? err.message : 'No se pudo enviar la solicitud. Por favor, inténtalo de nuevo.';
 					ok.classList.add('active', 'error');
 				}
 			})

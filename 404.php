@@ -1,6 +1,6 @@
-﻿<?php
+<?php
 /**
- * 404 - PÃ¡gina no encontrada
+ * 404 - Página no encontrada
  *
  * @package Me_Transfers
  */
@@ -13,7 +13,7 @@ if ( ! headers_sent() ) {
 get_header();
 ?>
 
-<main id="primary" class="site-main" role="main" aria-label="<?php esc_attr_e( 'PÃ¡gina no encontrada', 'me-transfers' ); ?>">
+<main id="primary" class="site-main" role="main" aria-label="<?php esc_attr_e( 'Página no encontrada', 'me-transfers' ); ?>">
 
     <section class="error-404-premium">
         <div class="container error-404-premium__inner">
@@ -29,7 +29,7 @@ get_header();
                 </h2>
                 
                 <p class="error-404-premium__desc">
-                    <?php esc_html_e( 'La pÃ¡gina que buscas no existe o ha sido movida. No te preocupes, puedes volver al inicio o buscar lo que necesitas a continuaciÃ³n.', 'me-transfers' ); ?>
+                    <?php esc_html_e( 'La página que buscas no existe o ha sido movida. No te preocupes, puedes volver al inicio o buscar lo que necesitas a continuación.', 'me-transfers' ); ?>
                 </p>
 
                 <div class="error-404-premium__actions">
