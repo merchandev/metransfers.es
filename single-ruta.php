@@ -13,8 +13,40 @@ $ruta_id  = get_the_ID();
 $origen   = get_post_meta( $ruta_id, '_mt_ruta_origen',   true );
 $destino  = get_post_meta( $ruta_id, '_mt_ruta_destino',  true );
 $duracion = get_post_meta( $ruta_id, '_mt_ruta_duracion', true );
+
+// Dinamizar tiempo genérico "60 min" por tiempos reales estimados
+if ( '60 min' === trim( $duracion ) || '60 minutos' === strtolower( trim( $duracion ) ) ) {
+    $titulo_lower = strtolower( get_the_title() );
+    if ( strpos( $titulo_lower, 'andorra' ) !== false ) {
+        $duracion = '3h 15 min';
+    } elseif ( strpos( $titulo_lower, 'cadaques' ) !== false || strpos( $titulo_lower, 'cadaqués' ) !== false || strpos( $titulo_lower, 'roses' ) !== false || strpos( $titulo_lower, 'cap de creus' ) !== false ) {
+        $duracion = '2h 15 min';
+    } elseif ( strpos( $titulo_lower, 'salou' ) !== false || strpos( $titulo_lower, 'portaventura' ) !== false || strpos( $titulo_lower, 'tarragona' ) !== false || strpos( $titulo_lower, 'cambrils' ) !== false || strpos( $titulo_lower, 'reus' ) !== false ) {
+        $duracion = '1h 15 min';
+    } elseif ( strpos( $titulo_lower, 'lloret' ) !== false || strpos( $titulo_lower, 'tossa' ) !== false || strpos( $titulo_lower, 'girona' ) !== false || strpos( $titulo_lower, 'blanes' ) !== false ) {
+        $duracion = '1h 10 min';
+    } elseif ( strpos( $titulo_lower, 'sitges' ) !== false ) {
+        $duracion = '40 min';
+    } elseif ( strpos( $titulo_lower, 'madrid' ) !== false ) {
+        $duracion = '6h 30 min';
+    } elseif ( strpos( $titulo_lower, 'valencia' ) !== false ) {
+        $duracion = '3h 45 min';
+    } elseif ( strpos( $titulo_lower, 'zaragoza' ) !== false ) {
+        $duracion = '3h 10 min';
+    } else {
+        $duracion = '1h 30 min';
+    }
+}
+
 $pax      = get_post_meta( $ruta_id, '_mt_ruta_pax',      true );
+if ( '1-8' === trim( $pax ) || '8' === trim( $pax ) ) {
+    $pax = str_replace( '8', '7', $pax );
+}
+
 $maletas  = get_post_meta( $ruta_id, '_mt_ruta_maletas',  true );
+if ( '8' === trim( $maletas ) ) {
+    $maletas = '7';
+}
 $precio   = get_post_meta( $ruta_id, '_mt_ruta_precio',   true );
 
 // H1 SEO: construido desde los metadatos de la ruta, no desde el título interno
@@ -107,7 +139,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                     </div>
                     <div>
                         <div class="ruta-statsbar__label">Duración</div>
-                        <div class="ruta-statsbar__value"><?php echo esc_html( $duracion ); ?></div>
+                        <div class="ruta-statsbar__value"><?php echo esc_html( $duracion ); ?> <span style="font-size: 0.85em; opacity: 0.7;" title="Tiempo estimado. Puede variar según tráfico.">*</span></div>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -156,6 +188,12 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                     </div>
                 </div>
             </div>
+            
+            <?php if ( $duracion ) : ?>
+            <p style="text-align: center; font-size: 0.85rem; color: var(--text-secondary); margin-top: 1.5rem; margin-bottom: 0; padding: 0 1rem; opacity: 0.8;">
+                * El tiempo de trayecto es una estimación. La duración real puede tener variaciones según el estado del tráfico, condiciones del clima, paradas extras solicitadas o eventualidades en carretera que escapan del control de la empresa de traslados.
+            </p>
+            <?php endif; ?>
         </div>
     </div>
 

@@ -193,7 +193,7 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
                 
                 <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">La mejor opción para familias y grupos</h3>
                 <p>
-                    Si viajas con amigos, familia o grupos grandes, disponemos de espaciosas furgonetas y minivans Mercedes-Benz con capacidad para hasta 8 pasajeros y todo su equipaje. 
+                    Si viajas con amigos, familia o grupos grandes, disponemos de espaciosas furgonetas y minivans Mercedes-Benz con capacidad para hasta 7 pasajeros y todo su equipaje. 
                 </p>
                 <p>
                     Además, proporcionamos bajo solicitud las sillas de retención infantil adecuadas para que los más pequeños viajen de forma segura y cumpliendo todas las normativas de tráfico.

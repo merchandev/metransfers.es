@@ -113,7 +113,7 @@ get_header(); ?>
                     Reserva tu traslado privado desde Barcelona hasta el parque de atracciones Port Aventura. Viaje directo, cómodo y sin complicaciones para disfrutar de tu día al máximo con toda la familia.
                 </p>
                 <div class="hero__checks">
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos espaciosos (hasta 8 pax)</span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos espaciosos (hasta 7 pax)</span>
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Sillas infantiles bajo petición</span>
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Recogida en hotel o aeropuerto</span>
                 </div>

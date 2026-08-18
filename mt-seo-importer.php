@@ -88,8 +88,8 @@ function mt_run_seo_importer_phase_1() {
                     '_mt_ruta_origen'   => $origen,
                     '_mt_ruta_destino'  => $destino,
                     '_mt_ruta_duracion' => '60 min',
-                    '_mt_ruta_pax'      => '1-8',
-                    '_mt_ruta_maletas'  => '8',
+                    '_mt_ruta_pax'      => '1-7',
+                    '_mt_ruta_maletas'  => '7',
                 ),
             ) );
         }

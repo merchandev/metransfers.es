@@ -345,10 +345,10 @@ function mt_execute_route_builder() {
                 update_post_meta( $post_id, '_mt_ruta_duracion', '60 min' );
             }
             if ( '' === get_post_meta( $post_id, '_mt_ruta_pax', true ) ) {
-                update_post_meta( $post_id, '_mt_ruta_pax', '1-8' );
+                update_post_meta( $post_id, '_mt_ruta_pax', '1-7' );
             }
             if ( '' === get_post_meta( $post_id, '_mt_ruta_maletas', true ) ) {
-                update_post_meta( $post_id, '_mt_ruta_maletas', '8' );
+                update_post_meta( $post_id, '_mt_ruta_maletas', '7' );
             }
         }
     }
