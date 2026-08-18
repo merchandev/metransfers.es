@@ -20,10 +20,10 @@ if ( ! defined( 'ME_TRANSFERS_LEGAL_PAGES_SYNC_VERSION' ) ) {
  */
 function me_transfers_get_legal_pages_catalog() {
 	return array(
-		'privacidad'             => 'MeTransfers Barcelona - PolÍticas de privacidad',
+		'politica-de-privacidad' => 'MeTransfers Barcelona - PolÍticas de privacidad',
 		'terminos-y-condiciones' => 'MeTransfers Barcelona - Términos y Condiciones regulan la contratación',
 		'aviso-legal'            => 'MeTransfers Barcelona - Aviso Legal',
-		'cookie'                 => 'MeTransfers Barcelona - PolÍtica de Cookies',
+		'politica-de-cookies'    => 'MeTransfers Barcelona - PolÍtica de Cookies',
 	);
 }
 

@@ -1788,6 +1788,49 @@ function mt_full_restore_legal_pages_once() {
     set_transient( 'mt_full_restored_legal_pages_v1', true, DAY_IN_SECONDS * 365 );
 }
 
+add_action( 'admin_init', 'mt_fix_legal_pages_slugs_and_content_v1' );
+function mt_fix_legal_pages_slugs_and_content_v1() {
+    if ( get_option( 'mt_legal_pages_fixed_v1' ) ) {
+        return;
+    }
+
+    // 1. Renombrar privacidad -> politica-de-privacidad
+    $privacidad = get_page_by_path( 'privacidad', OBJECT, 'page' );
+    if ( $privacidad instanceof WP_Post ) {
+        wp_update_post( array(
+            'ID' => $privacidad->ID,
+            'post_name' => 'politica-de-privacidad',
+            'post_title' => 'Política de privacidad'
+        ) );
+    }
+
+    // 2. Renombrar cookie -> politica-de-cookies
+    $cookie = get_page_by_path( 'cookie', OBJECT, 'page' );
+    if ( $cookie instanceof WP_Post ) {
+        wp_update_post( array(
+            'ID' => $cookie->ID,
+            'post_name' => 'politica-de-cookies',
+            'post_title' => 'Política de Cookies'
+        ) );
+    }
+
+    // 3. Actualizar contenido de aviso-legal
+    $aviso = get_page_by_path( 'aviso-legal', OBJECT, 'page' );
+    if ( $aviso instanceof WP_Post ) {
+        $aviso_content = '<h2>1. Información Identificativa del Aviso Legal</h2><p>En primer lugar, detallamos los datos del responsable del sitio web.<br><strong>Titular:</strong> METRANSFERS GESTION SL<br><strong>NIF:</strong> B22522353<br><strong>Domicilio:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ – (BARCELONA)<br><strong>Correo:</strong> info@metransfers.es<br><strong>Actividad:</strong> Transporte de viajeros y gestión turística.<br><strong>Datos Registrales:</strong> Inscrita en el Registro Mercantil de Barcelona, Tomo [Completar], Folio [Completar], Sección [Completar], Hoja [Completar].<br><strong>Autorización:</strong> Licencia de transporte [Completar], regulada por el <a href="https://www.transportes.gob.es/">Ministerio de Transportes y Movilidad Sostenible</a>.</p><h2>2. Condiciones de Uso de este Aviso Legal</h2><p>El acceso a este portal te da la condición de USUARIO. Por consiguiente, aceptas las Condiciones Generales de Uso de este Aviso Legal. El sitio web ofrece varios servicios de METRANSFERS GESTION SL. Como resultado, el USUARIO asume la responsabilidad del uso del portal. Además, esto incluye el registro necesario para ciertos servicios. Un ejemplo claro es nuestro sistema de reservas.</p><p>Por otro lado, los precios mostrados incluyen el IVA. También incluyen otros impuestos vigentes en España. Esto aplica siempre, salvo que se indique otra cosa en la reserva.</p><h2>3. Propiedad Intelectual e Industrial</h2><p>METRANSFERS GESTION SL es dueña de todos los derechos de la web. En consecuencia, posee los derechos legales de todos los elementos del sitio. Esto incluye imágenes, sonido, vídeo, software y textos. También abarca marcas, colores, diseño y programas de ordenador.</p><p>Por lo tanto, la ley prohíbe copiar o compartir estos contenidos. En especial, no se permite su uso comercial de ninguna forma. Para hacerlo, necesitas un permiso previo de METRANSFERS GESTION SL.</p><h2>4. Exclusión de Garantías y Responsabilidad</h2><p>El creador no se hace responsable de posibles daños. Por ejemplo, no responde por errores en los textos o caídas de la web. De igual forma, no asume la culpa por virus en el sistema. Sin embargo, hemos tomado todas las medidas tecnológicas para evitar estos problemas.</p><h2>5. Modificaciones al Aviso Legal</h2><p>METRANSFERS GESTION SL puede cambiar este Aviso Legal sin aviso previo. Además, puede modificar todo su portal web. En resumen, puede cambiar o borrar servicios y contenidos de la página libremente.</p><h2>6. Enlaces de Terceros y Resolución de Conflictos</h2><p>A veces, el sitio web tiene enlaces a otras páginas. En estos casos, METRANSFERS GESTION SL no controla esos sitios. Por lo tanto, no asume ninguna responsabilidad por ellos.</p><p>Además, informamos sobre la <a href="https://ec.europa.eu/consumers/odr/">plataforma de resolución de litigios en línea</a>. La Comisión Europea facilita esta útil web. Su principal fin es resolver problemas de comercio por internet.</p><h2>7. Derecho de Exclusión</h2><p>METRANSFERS GESTION SL puede quitar el acceso al portal. También puede retirar los servicios ofrecidos sin avisar. En efecto, esto aplica a quienes no cumplan las normas de este Aviso Legal.</p><h2>8. Protección de Datos</h2><p>En primer lugar, cuidamos los datos personales de nuestros clientes. Todo el proceso se explica en nuestro documento sobre privacidad. Además, cumplimos con el RGPD y la LOPDGDD. Para saber más, visita <a href="https://metransfers.es/politica-de-privacidad/">https://metransfers.es/politica-de-privacidad/</a>.</p><h2>9. Legislación Aplicable y Jurisdicción</h2><p>Por último, la relación con el USUARIO sigue la ley española. Por lo tanto, cualquier problema sobre este Aviso Legal irá a los tribunales. En concreto, se tratará en los Juzgados de la ciudad de Barcelona.</p>';
+        
+        wp_update_post( array(
+            'ID' => $aviso->ID,
+            'post_content' => $aviso_content
+        ) );
+    }
+
+    // Actualizar opción de legal sync también para crear de 0 si alguna fue borrada manualmente
+    update_option( 'me_transfers_legal_pages_sync_version', '2026-08-18' );
+
+    update_option( 'mt_legal_pages_fixed_v1', true );
+}
+
 // =========================================================================
 // AUTO-CREAR PÁGINA DE BLOG (UNA SOLA VEZ)
 // =========================================================================
