@@ -48,7 +48,7 @@ if ( ! defined( 'MT_SEO_LANGS' ) ) {
 function mt_get_current_lang(): string {
     $path = trim( parse_url( $_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH ), '/' );
     $first_segment = explode( '/', $path )[0] ?? '';
-    if ( array_key_exists( $first_segment, MT_LANGS ) && $first_segment !== 'es' ) {
+    if ( 'es' !== $first_segment && in_array( $first_segment, MT_ACTIVE_LANGS, true ) ) {
         return $first_segment;
     }
     return 'es';
@@ -70,7 +70,12 @@ function mt_is_translated(): bool {
 // =================================================================
 
 add_action( 'init', function() {
-    $lang_keys = array_filter( array_keys( MT_LANGS ), fn($l) => $l !== 'es' );
+    $lang_keys = array_values( array_filter( MT_ACTIVE_LANGS, fn( $lang ) => 'es' !== $lang ) );
+    
+    if ( empty( $lang_keys ) ) {
+        return;
+    }
+
     $lang_pattern = implode( '|', $lang_keys );
 
     add_rewrite_rule(
@@ -95,7 +100,7 @@ add_action( 'after_switch_theme', function() { flush_rewrite_rules(); } );
 
 add_action( 'init', function() {
     // Bump this string whenever you add/remove languages to force a rules flush
-    $i18n_version = 'v2-ca-ru-zh-ja-nested';
+    $i18n_version = 'v3-active-languages';
     if ( get_option('mt_i18n_rules_flushed') !== $i18n_version ) {
         flush_rewrite_rules();
         update_option( 'mt_i18n_rules_flushed', $i18n_version );
@@ -109,7 +114,7 @@ add_action( 'init', function() {
 
 add_action( 'template_redirect', function() {
     $lang = get_query_var( 'mt_lang' );
-    if ( ! $lang || ! array_key_exists( $lang, MT_LANGS ) ) return;
+    if ( ! $lang || ! in_array( $lang, MT_ACTIVE_LANGS, true ) ) return;
 
     $GLOBALS['mt_current_lang'] = $lang;
     $page = get_query_var( 'mt_page', 'home' );
@@ -315,6 +320,9 @@ function mt_translate_batch( array $texts, string $lang = '' ): array {
 // =================================================================
 
 function gct_render_language_switcher(): void {
+    if ( ! defined( 'MT_ACTIVE_LANGS' ) || count( MT_ACTIVE_LANGS ) <= 1 ) {
+        return;
+    }
     $current_lang = mt_lang();
     $info         = MT_LANGS[ $current_lang ];
     $path         = trim( parse_url( $_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH ), '/' );

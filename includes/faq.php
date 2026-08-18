@@ -41,7 +41,7 @@ function me_transfers_get_faq_items() {
         array(
             'question' => '¿Puedo cancelar mi reserva?',
             'answer'   => array(
-                'Las reservas estándar pueden cancelarse gratuitamente hasta 24 horas antes del servicio, salvo que durante la contratación se indiquen condiciones particulares diferentes.',
+                'Las condiciones de cancelación dependen del servicio contratado y se muestran antes de confirmar la reserva.',
             ),
         ),
 
@@ -80,7 +80,7 @@ function me_transfers_get_faq_items() {
             'question' => '¿Cómo puedo contactar con atención al cliente?',
             'answer'   => array(
                 'Puedes contactar con MeTransfers por teléfono, correo electrónico o WhatsApp.',
-                'El servicio de atención está disponible 24 horas para consultas relacionadas con los servicios contratados.',
+                'El servicio de atención 24/7 está disponible bajo reserva para asistirte en tus traslados.',
             ),
         ),
 

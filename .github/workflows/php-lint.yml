@@ -43,7 +43,7 @@ jobs:
 
           echo "Checking mojibake..."
           if grep -rInE \
-            'Ã|Â|â€|â†|â•|â”|ï¿|�|ðŸ' \
+            'Ã|Â|â€|â†|â•|â”|ï¿||ðŸ|·|“|Œ|━' \
             --include="*.php" \
             --include="*.css" \
             --include="*.js" \
