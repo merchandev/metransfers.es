@@ -289,6 +289,9 @@ function mt_get_phase1_routes() {
         'barcelona-la-molina'                  => 'Barcelona centro–La Molina',
         'aeropuerto-barcelona-baqueira-beret'  => 'Aeropuerto de Barcelona–Baqueira Beret',
         'barcelona-baqueira-beret'             => 'Barcelona centro–Baqueira Beret',
+    );
+}
+
 function mt_get_route_duration( $slug ) {
     $durations = array(
         'aeropuerto-barcelona-lloret-de-mar' => '1h 10 min',
