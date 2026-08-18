@@ -173,7 +173,7 @@ body .hero-booking-card {
 			<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary hdr-cta">Reservar Ya</a>
 
 			<!-- Hamburger -->
-			<button class="burger" id="burger-btn" aria-label="Abrir menú" aria-controls="mob-menu" aria-expanded="false">
+			<button type="button" class="burger" id="burger-btn" aria-label="Abrir menú" aria-controls="mob-menu" aria-expanded="false">
 				<span></span><span></span><span></span>
 			</button>
 

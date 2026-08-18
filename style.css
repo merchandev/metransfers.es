@@ -10292,3 +10292,14 @@ body .page-banner__meta {
     background-color: #1a2a3a !important;
 }
 
+/* Accessibility Focus Visible */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
+}
+

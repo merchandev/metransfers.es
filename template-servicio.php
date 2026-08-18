@@ -57,7 +57,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 				<a href="<?php echo esc_url( $cta_href ); ?>" class="btn btn-solid" style="background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;border:none;padding:14px 32px;font-size:15px;border-radius:10px;">
 					<?php echo esc_html( $service['cta_text'] ); ?>
 				</a>
-				<button class="btn js-wa-trigger" style="background:#25d366;color:#fff;border:none;padding:14px 28px;font-size:15px;border-radius:10px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+				<button type="button" class="btn js-wa-trigger" style="background:#25d366;color:#fff;border:none;padding:14px 28px;font-size:15px;border-radius:10px;display:flex;align-items:center;gap:8px;cursor:pointer;">
 					<span class="material-symbols-outlined" aria-hidden="true">chat</span>
 					WhatsApp
 				</button>
@@ -134,17 +134,17 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-form-row">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-nombre">Nombre completo *</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-nombre" name="nombre" placeholder="Ej: Juan García" required>
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-nombre" name="nombre" autocomplete="name" placeholder="Ej: Juan García" required>
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-telefono">Teléfono *</label>
-							<input type="tel" id="<?php echo esc_attr( $form_id ); ?>-telefono" name="telefono" placeholder="+34 600 000 000" required>
+							<input type="tel" id="<?php echo esc_attr( $form_id ); ?>-telefono" name="telefono" autocomplete="tel" placeholder="+34 600 000 000" required>
 						</div>
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-email">Email</label>
-							<input type="email" id="<?php echo esc_attr( $form_id ); ?>-email" name="email" placeholder="tu@email.com">
+							<input type="email" id="<?php echo esc_attr( $form_id ); ?>-email" name="email" autocomplete="email" placeholder="tu@email.com">
 						</div>
 					</div>
 
