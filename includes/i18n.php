@@ -31,6 +31,15 @@ if ( ! defined('MT_ACTIVE_LANGS') ) {
     define( 'MT_ACTIVE_LANGS', [ 'es', 'en', 'fr', 'de', 'it', 'pt', 'ca', 'ru', 'zh', 'ja' ] );
 }
 
+if ( ! defined( 'MT_SEO_LANGS' ) ) {
+    define(
+        'MT_SEO_LANGS',
+        array(
+            'es',
+        )
+    );
+}
+
 // =================================================================
 // 2. DETECTAR IDIOMA ACTUAL DESDE LA URL
 // =================================================================
@@ -549,9 +558,10 @@ add_action( 'wp_head', function() {
     }
 
     // Inyectar hreflang para decirle a Google que son variantes de idioma y no duplicados
-    foreach ( MT_LANGS as $code => $info ) {
-        // Solo emitir hreflang para idiomas activos (Phase 1 SEO constraint)
-        if ( ! in_array( $code, MT_ACTIVE_LANGS, true ) ) {
+    $seo_langs = defined( 'MT_SEO_LANGS' ) ? MT_SEO_LANGS : array( 'es' );
+    
+    foreach ( $seo_langs as $code ) {
+        if ( ! isset( MT_LANGS[ $code ] ) ) {
             continue;
         }
 

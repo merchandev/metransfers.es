@@ -333,7 +333,7 @@
 				<?php if ( has_custom_logo() ) :
 					the_custom_logo();
 				else : ?>
-					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" style="font-family:'Archivo',sans-serif;font-size:24px;font-weight:700;color:#fff;text-decoration:none;">
+					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" style="font-family:'Outfit',system-ui,sans-serif;font-size:24px;font-weight:700;color:#fff;text-decoration:none;">
 						<?php bloginfo( 'name' ); ?>
 					</a>
 				<?php endif; ?>
