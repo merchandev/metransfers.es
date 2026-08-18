@@ -410,16 +410,14 @@
 		<div class="footer-trust-row">
 			<span class="trust-badge-item">
 				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-				Pago seguro
+				<?php echo mt_translate('Pago seguro'); ?>
 			</span>
 			<a href="https://www.getyourguide.com/es-es/metransfers-s12737/" target="_blank" rel="noopener noreferrer" class="trust-badge-item">
 				<svg width="18" height="18" viewBox="0 0 24 24" fill="#FFB547" stroke="none" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
-				Opiniones verificadas en GetYourGuide
+				<?php echo mt_translate('Opiniones verificadas en GetYourGuide'); ?>
 			</a>
 			<span class="trust-badge-item">
-				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-				Cancelación sujeta a condiciones
-			</span>
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><?php echo mt_translate("Cancelación sujeta a condiciones"); ?></span>
 		</div>
 
 	</div><!-- .footer-inner -->
@@ -430,10 +428,10 @@
 			<p>&copy; <?php echo date("Y"); ?> <strong>MeTransfers Barcelona</strong>.</p>
 			
 			<nav class="footer-legal-links" aria-label="Legal">
-				<a href="<?php echo esc_url( mt_localized_url( 'politica-de-privacidad' ) ); ?>">Política de privacidad</a>
-				<a href="<?php echo esc_url( mt_localized_url( 'politica-de-cookies' ) ); ?>">Política de cookies</a>
-				<a href="<?php echo esc_url( mt_localized_url( 'aviso-legal' ) ); ?>">Aviso legal</a>
-				<a href="<?php echo esc_url( mt_localized_url( 'terminos-y-condiciones' ) ); ?>">Términos y condiciones</a>
+				<a href="<?php echo esc_url( mt_localized_url( 'politica-de-privacidad' ) ); ?>"><?php echo mt_translate("Política de privacidad"); ?></a>
+				<a href="<?php echo esc_url( mt_localized_url( 'politica-de-cookies' ) ); ?>"><?php echo mt_translate("Política de cookies"); ?></a>
+				<a href="<?php echo esc_url( mt_localized_url( 'aviso-legal' ) ); ?>"><?php echo mt_translate("Aviso legal"); ?></a>
+				<a href="<?php echo esc_url( mt_localized_url( 'terminos-y-condiciones' ) ); ?>"><?php echo mt_translate("Términos y condiciones"); ?></a>
 			</nav>
 
 			<div class="footer-lang">
