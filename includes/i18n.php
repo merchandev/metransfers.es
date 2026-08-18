@@ -327,18 +327,19 @@ function gct_render_language_switcher(): void {
             <span><?php echo esc_html( $info['label'] ); ?></span>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <nav class="mt-lang-menu" id="mt-lang-menu" aria-label="Selector de idioma"><ul>
+        <nav class="mt-lang-menu" id="mt-lang-menu" aria-label="Selector de idioma">
             <!-- Close button for mobile -->
             <button type="button" class="mt-lang-close" aria-label="Cerrar selector de idioma">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
+            <ul>
         <?php foreach ( MT_LANGS as $code => $lang_info ) :
             if ( ! in_array( $code, MT_ACTIVE_LANGS, true ) ) continue;
             $url = ( $code === 'es' )
                 ? home_url( '/' . ( $slug ? $slug . '/' : '' ) )
                 : home_url( '/' . $code . '/' . ( $slug ? $slug . '/' : '' ) );
         ?>
-            <li role="option" <?php echo ( $code === $current_lang ) ? 'class="active"' : ''; ?>>
+            <li <?php echo ( $code === $current_lang ) ? 'class="active"' : ''; ?>>
                 <a href="<?php echo esc_url( $url ); ?>">
                     <span class="mt-lang-code"><?php echo esc_html( $lang_info['label'] ); ?></span>
                     <span class="mt-lang-name"><?php echo esc_html( $lang_info['name'] ); ?></span>
@@ -346,7 +347,8 @@ function gct_render_language_switcher(): void {
                 </a>
             </li>
         <?php endforeach; ?>
-        </ul></nav>
+            </ul>
+        </nav>
     </div>
     <?php
 }

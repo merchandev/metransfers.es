@@ -623,7 +623,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="srv__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
         <h3>Transfer Aeropuerto de Barcelona: llegadas y salidas</h3>
         <p>Te recogemos en El Prat para llevarte al centro de Barcelona, tu hotel, el puerto o cualquier otro destino. También coordinamos traslados desde Barcelona hacia el aeropuerto, adaptando la recogida al horario de tu vuelo.</p>
-        <a href="/traslados-aeropuerto/" class="btn-link">Ver traslados al aeropuerto <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="<?php echo esc_url( mt_localized_url( 'traslados-aeropuerto' ) ); ?>" class="btn-link">Ver traslados al aeropuerto <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
       <div class="srv__item">
@@ -631,7 +631,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="srv__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
         <h3>Traslados al Puerto desde Barcelona</h3>
         <p>Conectamos tu hotel o dirección en Barcelona con todas las terminales de cruceros. Tu chófer te recoge puntual y ayuda con el equipaje.</p>
-        <a href="/traslados-puerto/" class="btn-link">Ver traslados al puerto <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="<?php echo esc_url( mt_localized_url( 'traslados-puerto' ) ); ?>" class="btn-link">Ver traslados al puerto <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
       <div class="srv__item">
@@ -639,7 +639,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="srv__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
         <h3>Chófer privado por horas</h3>
         <p>Dispón de un vehículo con conductor durante el tiempo contratado. Ideal para reuniones, compras, cenas o agendas con varias paradas.</p>
-        <a href="/chofer-por-horas/" class="btn-link">Ver servicio por horas <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="<?php echo esc_url( mt_localized_url( 'chofer-por-horas' ) ); ?>" class="btn-link">Ver servicio por horas <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
       <div class="srv__item">
@@ -647,7 +647,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="srv__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
         <h3>Empresas y Grupos</h3>
         <p>Coordinamos la movilidad de directivos, invitados y familias numerosas. Vehículos MINI VAN «V» Class disponibles para hasta 7 pasajeros con equipaje.</p>
-        <a href="/grupos/" class="btn-link">Consultar para empresas y grupos <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="<?php echo esc_url( mt_localized_url( 'grupos' ) ); ?>" class="btn-link">Consultar para empresas y grupos <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
     </div>
@@ -830,7 +830,7 @@ a.contact__val:hover{color:var(--blue);}
     <div class="routes__grid">
 
       <a
-        href="<?php echo esc_url( home_url( '/traslados-privados/' ) ); ?>"
+        href="<?php echo esc_url( mt_localized_url( 'traslados-privados' ) ); ?>"
         class="route__item"
         style="text-decoration:none;color:inherit;"
       >
@@ -850,7 +850,7 @@ a.contact__val:hover{color:var(--blue);}
       </div>
 
       <a
-        href="<?php echo esc_url( home_url( '/rutas/barcelona-sitges/' ) ); ?>"
+        href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-sitges' ) ); ?>"
         class="route__item"
         style="text-decoration:none;color:inherit;"
       >
@@ -864,7 +864,7 @@ a.contact__val:hover{color:var(--blue);}
       </a>
 
       <a
-        href="<?php echo esc_url( home_url( '/destinos/costa-brava/' ) ); ?>"
+        href="<?php echo esc_url( mt_localized_url( 'destinos/costa-brava' ) ); ?>"
         class="route__item"
         style="text-decoration:none;color:inherit;"
       >
@@ -876,7 +876,7 @@ a.contact__val:hover{color:var(--blue);}
       </a>
 
       <a
-        href="<?php echo esc_url( home_url( '/rutas/barcelona-portaventura/' ) ); ?>"
+        href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-portaventura' ) ); ?>"
         class="route__item"
         style="text-decoration:none;color:inherit;"
       >
@@ -890,7 +890,7 @@ a.contact__val:hover{color:var(--blue);}
       </a>
 
       <a
-        href="<?php echo esc_url( home_url( '/rutas/barcelona-salou/' ) ); ?>"
+        href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-salou' ) ); ?>"
         class="route__item"
         style="text-decoration:none;color:inherit;"
       >
@@ -904,7 +904,7 @@ a.contact__val:hover{color:var(--blue);}
       </a>
 
       <a
-        href="<?php echo esc_url( home_url( '/rutas/barcelona-girona/' ) ); ?>"
+        href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-girona' ) ); ?>"
         class="route__item"
         style="text-decoration:none;color:inherit;"
       >
@@ -918,7 +918,7 @@ a.contact__val:hover{color:var(--blue);}
       </a>
 
       <a
-        href="<?php echo esc_url( home_url( '/rutas/barcelona-andorra/' ) ); ?>"
+        href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-andorra' ) ); ?>"
         class="route__item"
         style="text-decoration:none;color:inherit;"
       >
@@ -982,7 +982,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="tour__content">
           <h3>Ruta por el Penedès</h3>
           <p>Visita las bodegas con un chófer privado y disfruta sin preocuparte por conducir.</p>
-          <a href="/tours-privados/#tour-booking" class="tour__cta-btn">Más información</a>
+          <a href="<?php echo esc_url( mt_localized_url( 'tours-privados' ) . '#tour-booking' ); ?>" class="tour__cta-btn">Más información</a>
         </div>
       </div>
 
@@ -998,7 +998,7 @@ a.contact__val:hover{color:var(--blue);}
     </div>
 
     <div class="tc" style="margin-top:40px;">
-      <a href="/tours-privados/" class="btn btn-ghost-inv">Ver todos los tours</a>
+      <a href="<?php echo esc_url( mt_localized_url( 'tours-privados' ) ); ?>" class="btn btn-ghost-inv">Ver todos los tours</a>
     </div>
   </div>
 </section>

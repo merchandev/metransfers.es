@@ -320,14 +320,15 @@ function me_transfers_get_section_url( $section = 'panel' ) {
 	$section = sanitize_title_with_dashes( ltrim( (string) $section, "# \t\n\r\0\x0B/" ) );
 
 	if ( '' === $section ) {
-		return home_url( '/' );
+		return function_exists( 'mt_localized_url' ) ? mt_localized_url() : home_url( '/' );
 	}
 
 	if ( is_front_page() ) {
 		return '#' . $section;
 	}
 
-	return home_url( '/#' . $section );
+	$home = function_exists( 'mt_localized_url' ) ? mt_localized_url() : home_url( '/' );
+	return trailingslashit( $home ) . '#' . $section;
 }
 
 
