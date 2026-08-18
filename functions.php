@@ -243,7 +243,7 @@ function me_transfers_scripts() {
 	}
 
 	// Theme custom scripts
-	wp_enqueue_script( 'me-transfers-main-js', get_template_directory_uri() . '/assets/js/main.js', $main_deps, ME_TRANSFERS_VERSION, true );
+	wp_enqueue_script( 'me-transfers-main-js', get_template_directory_uri() . '/assets/js/main.js', $main_deps, (string) filemtime( get_template_directory() . '/assets/js/main.js' ), true );
 	
 	// Localize script for AJAX requests
 	wp_localize_script( 'me-transfers-main-js', 'mtAjax', array(
