@@ -45,11 +45,27 @@ if ( is_admin() && defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) && ME_TRANSFERS_E
 }
 
 add_action( 'template_redirect', function() {
-    if ( is_404() && trim( wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ), '/' ) === 'destinos' ) {
-        wp_redirect( home_url( '/#destinos' ), 301 );
+
+    if (
+        is_404()
+        && 'destinos' === trim(
+            wp_parse_url(
+                $_SERVER['REQUEST_URI'] ?? '',
+                PHP_URL_PATH
+            ),
+            '/'
+        )
+    ) {
+        wp_safe_redirect(
+            home_url( '/#destinos' ),
+            301
+        );
+
         exit;
     }
-});
+
+} );
+
 // Migration safety switch — set to false once initial migration is done.
 if ( ! defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) ) {
 	define( 'ME_TRANSFERS_ENABLE_MIGRATIONS', false );
@@ -60,12 +76,7 @@ if ( ! defined( 'ME_TRANSFERS_VERSION' ) ) {
 	define( 'ME_TRANSFERS_VERSION', '4.1.5' );
 }
 
-// Forzar UTF-8 en cabeceras HTTP para evitar caracteres corruptos (tildes, ñ)
-add_action( 'send_headers', function() {
-    if ( ! headers_sent() ) {
-        header( 'Content-Type: text/html; charset=UTF-8' );
-    }
-} );
+
 
 /**
  * Sets up theme defaults and registers support for various WordPress features.
@@ -214,7 +225,7 @@ add_filter( 'get_the_excerpt', 'me_transfers_strip_deprecated_shortcodes', 1 );
  */
 function me_transfers_scripts() {
 	// Enqueue Google Fonts (Outfit and Inter)
-	wp_enqueue_style( 'me-transfers-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap', array(), null );
+	wp_enqueue_style( 'me-transfers-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap&display=swap', array(), null );
 
 	// Main stylesheet
 	$style_path    = get_stylesheet_directory() . '/style.css';
@@ -1369,15 +1380,13 @@ if ( ! defined( 'WPSEO_VERSION' ) ) {
 }
 
 add_filter( 'wpseo_title', function( $title ) {
-    if ( is_singular( 'ruta' ) ) {
-        $origen  = get_post_meta( get_the_ID(), '_mt_ruta_origen', true );
-        $destino = get_post_meta( get_the_ID(), '_mt_ruta_destino', true );
 
-        if ( $origen && $destino ) {
-            return sprintf( 'Transfer privado %s–%s | MeTransfers', $origen, $destino );
-        }
+    if ( is_front_page() || is_home() ) {
+        return 'Transfer Aeropuerto Barcelona y Traslados Privados | MeTransfers';
     }
+
     return $title;
+
 } );
 
 add_filter( 'option_blogname', function( $name ) {
@@ -1458,7 +1467,7 @@ add_action( 'wp_head', function() {
 				'@type' => 'ListItem',
 				'position' => 2,
 				'name' => 'Rutas',
-				'item' => home_url( '/#rutas' ), // Enlace genérico o al hub si existe
+				'item' => get_post_type_archive_link( 'ruta' ) ?: home_url( '/rutas/' ),
 			);
 			$breadcrumbs[] = array(
 				'@type' => 'ListItem',
@@ -1855,7 +1864,7 @@ function mt_fix_legal_pages_privacy_and_cookies_v3() {
 
     $cookie = get_page_by_path( 'politica-de-cookies', OBJECT, 'page' );
     if ( $cookie instanceof WP_Post ) {
-        $cookie_content = '<h2>POLÍTICA DE COOKIES</h2><p><strong>Última actualización: 18 de agosto de 2026</strong></p><p>Esta Política de Cookies explica qué son las cookies, cómo las utilizamos en el sitio web <strong>metransfers.es</strong>, gestionado por <strong>METRANSFERS GESTION SL</strong>, y cómo puedes controlarlas, en cumplimiento con la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE) y las normativas europeas sobre privacidad.</p><h2>1. ¿QUÉ SON LAS COOKIES?</h2><p>Las cookies son pequeños archivos de texto que se descargan y almacenan en el dispositivo del usuario (ordenador, smartphone, tablet, etc.) al acceder a determinadas páginas web. Permiten a la página web, entre otras cosas, almacenar y recuperar información sobre los hábitos de navegación de un usuario o de su equipo y, dependiendo de la información que contengan y de la forma en que utilice su equipo, pueden utilizarse para reconocer al usuario y mejorar su experiencia.</p><h2>2. TIPOS DE COOKIES QUE UTILIZAMOS</h2><p>En metransfers.es utilizamos las siguientes categorías de cookies:</p><h3>2.1. Cookies Técnicas o Estrictamente Necesarias</h3><p>Son aquellas esenciales para el correcto funcionamiento del sitio web y no pueden ser desactivadas en nuestros sistemas. Permiten funciones básicas como la navegación por la página, el acceso a áreas seguras, la realización del proceso de reserva y el funcionamiento del carrito o formulario de pago. También incluyen las cookies que recuerdan tus preferencias de privacidad (tu decisión sobre qué cookies aceptas).</p><h3>2.2. Cookies de Rendimiento y Análisis</h3><p>Son aquellas que nos permiten cuantificar el número de usuarios y realizar la medición y análisis estadístico de la utilización que hacen del servicio ofertado. Analizamos tu navegación en nuestra página web con el fin de mejorar la oferta de servicios que te ofrecemos y optimizar el diseño de la web. Toda la información que recogen estas cookies es agregada y, por lo tanto, anónima.</p><h3>2.3. Cookies de Personalización</h3><p>Son aquellas que permiten recordar información para que el usuario acceda al servicio con determinadas características que pueden diferenciar su experiencia de la de otros usuarios, como, por ejemplo, el idioma, el aspecto o contenido del servicio en función del tipo de navegador o la región desde la que se accede.</p><h2>3. COOKIES DE TERCEROS</h2><p>Nuestro sitio web puede utilizar servicios de terceros que, por cuenta de METRANSFERS GESTION SL, recopilarán información con fines estadísticos y de uso del sitio. En particular, este sitio web podría utilizar herramientas como Google Analytics para ayudar al website a analizar el uso que hacen los usuarios del sitio. Estas cookies son gestionadas por las respectivas entidades proveedoras, y sus políticas de privacidad y uso de cookies son externas a nosotros.</p><p><em>(Nota: Actualmente nuestra web está configurada para respetar tus preferencias mediante un aviso de cookies, y las etiquetas de seguimiento no esenciales no se cargan sin tu consentimiento).</em></p><h2>4. CONSENTIMIENTO Y CONTROL DE LAS COOKIES</h2><p>Al entrar por primera vez en nuestro sitio web, se te muestra un banner informativo que te permite:</p><ul><li>Aceptar todas las cookies.</li><li>Rechazar las cookies no esenciales.</li><li>En algunos casos, si realizas una acción explícita como desplazarte (scroll) más de un 30% de la página o hacer clic en los elementos de navegación, se entenderá como una aceptación tácita, tal y como se informa en el aviso temporal visible en tu pantalla.</li></ul><p>Tu elección se guardará en tu navegador durante un periodo de 14 días (para evitar preguntarte continuamente), tras lo cual se te volverá a mostrar el banner para renovar el consentimiento.</p><h2>5. CÓMO DESACTIVAR O ELIMINAR LAS COOKIES DESDE TU NAVEGADOR</h2><p>En cualquier momento, puedes permitir, bloquear o eliminar las cookies instaladas en tu equipo mediante la configuración de las opciones del navegador que utilices. Ten en cuenta que si desactivas las cookies técnicas o necesarias, es posible que no puedas acceder a ciertas secciones de la web o completar el proceso de reserva.</p><p>A continuación, te ofrecemos enlaces donde puedes encontrar información sobre cómo configurar las cookies en los principales navegadores:</p><ul><li><strong>Google Chrome:</strong> <a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">Configurar cookies en Chrome</a></li><li><strong>Mozilla Firefox:</strong> <a href="https://support.mozilla.org/es/kb/habilitar-y-deshabilitar-cookies-sitios-web-rastrear-preferencias" target="_blank" rel="noopener">Configurar cookies en Firefox</a></li><li><strong>Apple Safari:</strong> <a href="https://support.apple.com/es-es/guide/safari/sfri11471/mac" target="_blank" rel="noopener">Configurar cookies en Safari</a></li><li><strong>Microsoft Edge:</strong> <a href="https://support.microsoft.com/es-es/microsoft-edge/eliminar-las-cookies-en-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank" rel="noopener">Configurar cookies en Edge</a></li></ul><h2>6. ACTUALIZACIONES DE LA POLÍTICA DE COOKIES</h2><p>Es posible que actualicemos la Política de Cookies de nuestro sitio web, por lo que te recomendamos revisar esta política cada vez que accedas a <strong>metransfers.es</strong> con el objetivo de estar adecuadamente informado sobre cómo y para qué usamos las cookies.</p>';
+        $cookie_content = '<h2>POLÍTICA DE COOKIES</h2><p><strong>Última actualización: 18 de agosto de 2026</strong></p><p>Esta Política de Cookies explica qué son las cookies, cómo las utilizamos en el sitio web <strong>metransfers.es</strong>, gestionado por <strong>METRANSFERS GESTION SL</strong>, y cómo puedes controlarlas, en cumplimiento con la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE) y las normativas europeas sobre privacidad.</p><h2>1. ¿QUÉ SON LAS COOKIES?</h2><p>Las cookies son pequeños archivos de texto que se descargan y almacenan en el dispositivo del usuario (ordenador, smartphone, tablet, etc.) al acceder a determinadas páginas web. Permiten a la página web, entre otras cosas, almacenar y recuperar información sobre los hábitos de navegación de un usuario o de su equipo y, dependiendo de la información que contengan y de la forma en que utilice su equipo, pueden utilizarse para reconocer al usuario y mejorar su experiencia.</p><h2>2. TIPOS DE COOKIES QUE UTILIZAMOS</h2><p>En metransfers.es utilizamos las siguientes categorías de cookies:</p><h3>2.1. Cookies Técnicas o Estrictamente Necesarias</h3><p>Son aquellas esenciales para el correcto funcionamiento del sitio web y no pueden ser desactivadas en nuestros sistemas. Permiten funciones básicas como la navegación por la página, el acceso a áreas seguras, la realización del proceso de reserva y el funcionamiento del carrito o formulario de pago. También incluyen las cookies que recuerdan tus preferencias de privacidad (tu decisión sobre qué cookies aceptas).</p><h3>2.2. Cookies de Rendimiento y Análisis</h3><p>Son aquellas que nos permiten cuantificar el número de usuarios y realizar la medición y análisis estadístico de la utilización que hacen del servicio ofertado. Analizamos tu navegación en nuestra página web con el fin de mejorar la oferta de servicios que te ofrecemos y optimizar el diseño de la web. Toda la información que recogen estas cookies es agregada y, por lo tanto, anónima.</p><h3>2.3. Cookies de Personalización</h3><p>Son aquellas que permiten recordar información para que el usuario acceda al servicio con determinadas características que pueden diferenciar su experiencia de la de otros usuarios, como, por ejemplo, el idioma, el aspecto o contenido del servicio en función del tipo de navegador o la región desde la que se accede.</p><h2>3. COOKIES DE TERCEROS</h2><p>Nuestro sitio web puede utilizar servicios de terceros que, por cuenta de METRANSFERS GESTION SL, recopilarán información con fines estadísticos y de uso del sitio. En particular, este sitio web podría utilizar herramientas como Google Analytics para ayudar al website a analizar el uso que hacen los usuarios del sitio. Estas cookies son gestionadas por las respectivas entidades proveedoras, y sus políticas de privacidad y uso de cookies son externas a nosotros.</p><p><em>(Nota: Actualmente nuestra web está configurada para respetar tus preferencias mediante un aviso de cookies, y las etiquetas de seguimiento no esenciales no se cargan sin tu consentimiento).</em></p><h2>4. CONSENTIMIENTO Y CONTROL DE LAS COOKIES</h2><p>Al acceder por primera vez a metransfers.es, se muestra un panel de gestión de cookies que permite aceptar todas las cookies, rechazar las cookies no esenciales o configurar individualmente las categorías disponibles.</p><p>Las cookies de analítica y marketing permanecen desactivadas hasta que el usuario presta su consentimiento mediante una acción expresa en el panel. La navegación por la web, el desplazamiento vertical (scroll) o los clics fuera del panel no se consideran consentimiento.</p><p>La elección del usuario se almacena durante 14 días. Transcurrido ese plazo, el panel podrá mostrarse nuevamente para solicitar la renovación de las preferencias.</p><h2>5. CÓMO DESACTIVAR O ELIMINAR LAS COOKIES DESDE TU NAVEGADOR</h2><p>En cualquier momento, puedes permitir, bloquear o eliminar las cookies instaladas en tu equipo mediante la configuración de las opciones del navegador que utilices. Ten en cuenta que si desactivas las cookies técnicas o necesarias, es posible que no puedas acceder a ciertas secciones de la web o completar el proceso de reserva.</p><p>A continuación, te ofrecemos enlaces donde puedes encontrar información sobre cómo configurar las cookies en los principales navegadores:</p><ul><li><strong>Google Chrome:</strong> <a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">Configurar cookies en Chrome</a></li><li><strong>Mozilla Firefox:</strong> <a href="https://support.mozilla.org/es/kb/habilitar-y-deshabilitar-cookies-sitios-web-rastrear-preferencias" target="_blank" rel="noopener">Configurar cookies en Firefox</a></li><li><strong>Apple Safari:</strong> <a href="https://support.apple.com/es-es/guide/safari/sfri11471/mac" target="_blank" rel="noopener">Configurar cookies en Safari</a></li><li><strong>Microsoft Edge:</strong> <a href="https://support.microsoft.com/es-es/microsoft-edge/eliminar-las-cookies-en-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank" rel="noopener">Configurar cookies en Edge</a></li></ul><h2>6. ACTUALIZACIONES DE LA POLÍTICA DE COOKIES</h2><p>Es posible que actualicemos la Política de Cookies de nuestro sitio web, por lo que te recomendamos revisar esta política cada vez que accedas a <strong>metransfers.es</strong> con el objetivo de estar adecuadamente informado sobre cómo y para qué usamos las cookies.</p>';
         
         wp_update_post( array(
             'ID' => $cookie->ID,

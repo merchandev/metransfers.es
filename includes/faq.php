@@ -19,83 +19,96 @@ if ( ! defined( 'ME_TRANSFERS_FAQ_SYNC_VERSION' ) ) {
  * @return array<int, array<string, mixed>>
  */
 function me_transfers_get_faq_items() {
-	return array(
-		array(
-			'question' => '¿Cómo puedo reservar un traslado privado?',
-			'answer'   => array(
-				'Puedes reservar tu traslado directamente en nuestra web en menos de 2 minutos.',
-				'Solo elige el origen, destino y vehículo. Recibirás confirmación inmediata y podrás pagar de forma 100% segura.',
-			),
-		),
-		array(
-			'question' => '¿Qué tipos de vehículos ofrecen?',
-			'answer'   => array(
-				'Contamos con una flota moderna y diversa: sedanes estándar, minivans familiares, sedanes ejecutivos y minivans V-Class de lujo.',
-				'Todos nuestros vehículos disponen de aire acondicionado, limpieza impecable y conductores profesionales.',
-			),
-		),
-		array(
-			'question' => '¿Puedo cancelar mi reserva?',
-			'answer'   => array(
-				'Sí. Puedes cancelar tu traslado sin coste hasta 24 horas antes.',
-				'Es una opción ideal si cambian tus planes de viaje.',
-			),
-		),
-		array(
-			'question' => '¿Dónde me encuentro con el conductor en el aeropuerto?',
-			'answer'   => array(
-				'Tu conductor te esperará en la sala de llegadas con un cartel con tu nombre.',
-				'Si lo prefieres, también puedes indicar otro punto de encuentro personalizado.',
-			),
-		),
-		array(
-			'question' => '¿Ofrecen traslados a otras ciudades fuera de Barcelona?',
-			'answer'   => array(
-				'Sí. Realizamos transfers privados desde Barcelona a ciudades como Madrid, Valencia, Andorra, Sitges y Costa Brava, entre otras.',
-			),
-		),
-		array(
-			'question' => '¿Qué pasa si mi vuelo se retrasa?',
-			'answer'   => array(
-				'No te preocupes. Monitorizamos los vuelos en tiempo real.',
-				'Si tu vuelo se retrasa, ajustamos la recogida automáticamente sin recargos.',
-			),
-		),
-		array(
-			'question' => '¿Puedo solicitar una silla para niños?',
-			'answer'   => array(
-				'Sí. Ofrecemos sillas de bebé y elevadores para niños sin coste adicional.',
-				'Solo tienes que indicarlo durante la reserva.',
-			),
-		),
-		array(
-			'question' => '¿Cómo puedo contactar con atención al cliente?',
-			'answer'   => array(
-				'Estamos disponibles 24/7 por teléfono, email y WhatsApp.',
-				'Recibirás una atención rápida y personalizada.',
-			),
-		),
-		array(
-			'question' => '¿Qué métodos de pago aceptan?',
-			'answer'   => array(
-				'Puedes pagar de forma segura con tarjetas de crédito o débito, Apple Pay, Google Pay y transferencias electrónicas seguras.',
-			),
-		),
-		array(
-			'question' => '¿Ofrecen servicio de chófer por horas?',
-			'answer'   => array(
-				'Sí. Ofrecemos alquiler de coche con conductor por horas para eventos, reuniones o visitas privadas.',
-				'Tú decides el horario y el itinerario.',
-			),
-		),
-		array(
-			'question' => '¿Cómo gestionan mis datos personales?',
-			'answer'   => array(
-				'En Metransfers Barcelona nos tomamos muy en serio la privacidad de tus datos.',
-				'Puedes consultar nuestra política de privacidad completa desde el enlace correspondiente del sitio.',
-			),
-		),
-	);
+
+    return array(
+
+        array(
+            'question' => '¿Cómo puedo reservar un traslado privado?',
+            'answer'   => array(
+                'Puedes iniciar la reserva directamente desde nuestra web indicando origen, destino, fecha, hora y número de pasajeros.',
+                'Antes de finalizar podrás revisar las opciones disponibles, el precio y las condiciones aplicables. La reserva se considera confirmada cuando recibes la confirmación correspondiente.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Qué tipos de vehículos ofrecen?',
+            'answer'   => array(
+                'Disponemos de berlinas y minivans para traslados privados, servicios corporativos, familias y grupos.',
+                'El vehículo se asigna según el número de pasajeros, el equipaje y las características del servicio.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Puedo cancelar mi reserva?',
+            'answer'   => array(
+                'Las reservas estándar pueden cancelarse gratuitamente hasta 24 horas antes del servicio, salvo que durante la contratación se indiquen condiciones particulares diferentes.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Dónde me encuentro con el conductor en el aeropuerto?',
+            'answer'   => array(
+                'En las recogidas de aeropuerto, el chófer te espera en el punto de encuentro indicado en la confirmación del servicio.',
+                'Cuando corresponda, podrá esperarte en la zona de llegadas con un cartel identificativo.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Realizan traslados fuera de Barcelona?',
+            'answer'   => array(
+                'Sí. Organizamos traslados privados de corta y larga distancia desde y hacia Barcelona, incluyendo destinos de Cataluña, Andorra y otras ciudades.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Qué ocurre si mi vuelo se retrasa?',
+            'answer'   => array(
+                'Cuando facilitas correctamente el número de vuelo podemos revisar su estado y adaptar la coordinación de la recogida a la hora real de llegada.',
+                'Los retrasos prolongados, tiempos de espera adicionales o cambios que afecten a la disponibilidad se gestionan según las condiciones aplicables al servicio.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Puedo solicitar una silla infantil?',
+            'answer'   => array(
+                'Sí. Puedes solicitar silla infantil o elevador durante la reserva.',
+                'Indica la edad y el peso aproximado del menor para poder confirmar la opción adecuada y su disponibilidad.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Cómo puedo contactar con atención al cliente?',
+            'answer'   => array(
+                'Puedes contactar con MeTransfers por teléfono, correo electrónico o WhatsApp.',
+                'El servicio de atención está disponible 24 horas para consultas relacionadas con los servicios contratados.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Qué métodos de pago aceptan?',
+            'answer'   => array(
+                'Los métodos de pago disponibles se muestran durante el proceso de contratación antes de confirmar la reserva.',
+                'Los pagos online se procesan mediante una pasarela segura.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Ofrecen servicio de chófer por horas?',
+            'answer'   => array(
+                'Sí. Puedes contratar un vehículo con chófer por horas para reuniones, eventos, compras, cenas, visitas privadas o itinerarios con varias paradas.',
+                'Indícanos el horario y el recorrido aproximado para preparar el servicio.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Cómo gestionan mis datos personales?',
+            'answer'   => array(
+                'Tratamos los datos necesarios para gestionar tus solicitudes y prestar los servicios contratados.',
+                'Puedes consultar toda la información en nuestra Política de Privacidad.',
+            ),
+        ),
+
+    );
 }
 
 /**

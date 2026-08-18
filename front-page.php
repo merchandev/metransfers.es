@@ -37,9 +37,9 @@ a{text-decoration:none;}
   --border: #DDE3E8;
   --gold:   #FFB547;
 
-  --ff-head: 'Archivo', sans-serif;
-  --ff-body: 'Source Sans 3', sans-serif;
-  --ff-cita: 'Source Serif 4', serif;
+  --ff-head: 'Outfit', system-ui, sans-serif;
+  --ff-body: 'Inter', system-ui, sans-serif;
+  --ff-cita: 'Inter', system-ui, sans-serif;
 
   --r-sm:  8px;
   --r-md: 14px;
@@ -541,7 +541,7 @@ a.contact__val:hover{color:var(--blue);}
 .bg-deep {background:var(--deep);}
 </style>
 
-<div class="fp">
+<main id="primary" class="fp">
 
 <!-- ══════════════════════════ 1. HERO ══════════════════════════ -->
 <section class="hero" id="reservar">
@@ -552,9 +552,13 @@ a.contact__val:hover{color:var(--blue);}
 
       <!-- TEXTO -->
       <div>
-        <p class="tag" style="color: #FFB547;"><?php echo mt_translate('Traslados privados desde Barcelona · Tours · Eventos'); ?></p>
-        <h1 class="hero__h1"><?php echo mt_translate('Tu chófer privado para salir desde Barcelona'); ?></h1>
-        <p class="hero__lead"><?php echo mt_translate('Te recogemos en tu hotel, aeropuerto, puerto o cualquier dirección de Barcelona y te llevamos a donde necesites. Presupuesto a medida, precio fijo y atención personalizada las 24 horas.'); ?></p>
+        <p class="tag" style="color: #FFB547;"><?php echo mt_translate('Transfer aeropuerto Barcelona · Traslados privados · Tours'); ?></p>
+        <h1 class="hero__h1">
+    <?php echo mt_translate(
+        'Traslados privados desde y hacia Barcelona'
+    ); ?>
+</h1>
+        <p class="hero__lead"><?php echo mt_translate('Te recogemos en el Aeropuerto de Barcelona, hotel, puerto, estación o cualquier dirección y te llevamos directamente a tu destino. Servicio privado con chófer, precio cerrado y atención personalizada 24/7.'); ?></p>
         <div class="hero__checks">
           <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Presupuesto a medida'); ?></span>
           <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Cancelación gratuita hasta 24 h antes'); ?></span>
@@ -600,17 +604,25 @@ a.contact__val:hover{color:var(--blue);}
 <!-- ══════════════════════════ 2. SERVICIOS ══════════════════════════ -->
 <section class="sp bg-white" id="servicios">
   <div class="wrap">
-    <p class="tag tc" style="justify-content:center;">Servicios de transporte privado desde Barcelona</p>
-    <h2 class="tc">Un vehículo con chófer para cada trayecto desde Barcelona</h2>
-    <p class="lead tc" style="margin:20px auto 0;">Desde una recogida en el aeropuerto hasta una jornada corporativa o un tour privado, organizamos cada salida desde Barcelona según tu ruta, horario y número de pasajeros.</p>
+    <p class="tag tc" style="justify-content:center;">
+        Servicios de transporte privado en Barcelona
+    </p>
+    <h2 class="tc">
+        Transfers de aeropuerto, puerto y traslados privados
+    </h2>
+    <p class="lead tc" style="margin:20px auto 0;">
+        Organizamos recogidas y llegadas desde o hacia el Aeropuerto de Barcelona,
+        hoteles, puerto, estaciones y otras ciudades, con vehículo privado y chófer
+        profesional.
+    </p>
 
     <div class="srv__grid">
 
       <div class="srv__item">
         <span class="srv__num">01</span>
         <div class="srv__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-        <h3>Traslados al Aeropuerto desde Barcelona</h3>
-        <p>Recogida privada en tu hotel u oficina en Barcelona con destino a El Prat. Seguimiento del vuelo, bienvenida en la terminal y hasta 60 min de espera de cortesía en llegadas.</p>
+        <h3>Transfer Aeropuerto de Barcelona: llegadas y salidas</h3>
+        <p>Te recogemos en El Prat para llevarte al centro de Barcelona, tu hotel, el puerto o cualquier otro destino. También coordinamos traslados desde Barcelona hacia el aeropuerto, adaptando la recogida al horario de tu vuelo.</p>
         <a href="/traslados-aeropuerto/" class="btn-link">Ver traslados al aeropuerto <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
@@ -776,11 +788,11 @@ a.contact__val:hover{color:var(--blue);}
 
       <div class="fleet__card">
         <div class="fleet__img-wrap">
-          <img src="<?php echo $bdi; ?>/family-v-class.webp" alt="MINI VAN ECONOMIC - Minibús" class="fleet__img" loading="lazy" decoding="async">
+          <img src="<?php echo $bdi; ?>/family-v-class.webp" alt="MINI VAN ECONOMIC - Minivan" loading="lazy" decoding="async" class="fleet__img" loading="lazy" decoding="async">
           <span class="fleet__badge">Hasta 7 pasajeros</span>
         </div>
         <div class="fleet__body">
-          <span class="fleet__cat">Minibús</span>
+          <span class="fleet__cat">Minivan</span>
           <h3>MINI VAN ECONOMIC</h3>
           <p>Opción económica y espaciosa para familias o grupos de hasta 7 pasajeros que buscan comodidad al mejor precio.</p>
           <div class="fleet__specs">
@@ -800,48 +812,127 @@ a.contact__val:hover{color:var(--blue);}
 <!-- ══════════════════════════ 6. RUTAS ══════════════════════════ -->
 <section class="sp bg-white" id="destinos">
   <div class="wrap">
-    <p class="tag tc" style="justify-content:center;">Rutas más solicitadas desde Barcelona</p>
-    <h2 class="tc">Traslados privados desde Barcelona — Destinos más populares</h2>
-    <p class="lead tc" style="margin:20px auto 0;">Salidas desde el Aeropuerto El Prat, cualquier hotel, estación o domicilio en Barcelona hacia tu destino. También organizamos trayectos de larga distancia.</p>
+
+    <p class="tag tc" style="justify-content:center;">
+        Rutas y destinos más solicitados
+    </p>
+
+    <h2 class="tc">
+        Traslados privados desde y hacia Barcelona
+    </h2>
+
+    <p class="lead tc" style="margin:20px auto 0;">
+        Organizamos traslados desde el Aeropuerto de Barcelona, hoteles,
+        estaciones, puerto y domicilios, además de trayectos hacia Barcelona
+        y destinos de larga distancia.
+    </p>
 
     <div class="routes__grid">
-      <a href="/traslados-privados/" class="route__item" style="text-decoration:none;color:inherit;">
-        <div class="route__info"><h3>Aeropuerto de Barcelona ↔ centro</h3><p>Recogida con seguimiento de vuelo y bienvenida en llegadas.</p></div>
+
+      <a
+        href="<?php echo esc_url( home_url( '/traslados-privados/' ) ); ?>"
+        class="route__item"
+        style="text-decoration:none;color:inherit;"
+      >
+        <div class="route__info">
+          <h3>Aeropuerto de Barcelona ↔ centro</h3>
+          <p>Recogida privada con seguimiento del vuelo y traslado puerta a puerta.</p>
+        </div>
         <span class="route__time">25–40 min</span>
       </a>
+
       <div class="route__item">
-        <div class="route__info"><h3>Aeropuerto de Barcelona ↔ Puerto</h3><p>Conexión directa a las terminales de cruceros.</p></div>
-        <span class="route__time">Flexible</span>
+        <div class="route__info">
+          <h3>Aeropuerto de Barcelona ↔ Puerto</h3>
+          <p>Conexión privada con las terminales de cruceros.</p>
+        </div>
+        <span class="route__time">Según tráfico</span>
       </div>
+
+      <a
+        href="<?php echo esc_url( home_url( '/rutas/barcelona-sitges/' ) ); ?>"
+        class="route__item"
+        style="text-decoration:none;color:inherit;"
+      >
+        <div class="route__info">
+          <h3>Barcelona ↔ Sitges</h3>
+          <p>Traslado puerta a puerta para hoteles, viviendas y eventos.</p>
+        </div>
+        <span class="route__time">
+            <?php echo esc_html( mt_get_route_duration( 'barcelona-sitges' ) ?: 'Según tráfico' ); ?>
+        </span>
+      </a>
+
+      <a
+        href="<?php echo esc_url( home_url( '/rutas/barcelona-costa-brava/' ) ); ?>"
+        class="route__item"
+        style="text-decoration:none;color:inherit;"
+      >
+        <div class="route__info">
+          <h3>Barcelona ↔ Costa Brava</h3>
+          <p>Traslados privados a localidades de la Costa Brava.</p>
+        </div>
+        <span class="route__time">Según destino</span>
+      </a>
+
+      <a
+        href="<?php echo esc_url( home_url( '/rutas/barcelona-portaventura/' ) ); ?>"
+        class="route__item"
+        style="text-decoration:none;color:inherit;"
+      >
+        <div class="route__info">
+          <h3>Barcelona ↔ PortAventura</h3>
+          <p>Traslado privado para familias y grupos.</p>
+        </div>
+        <span class="route__time">
+            <?php echo esc_html( mt_get_route_duration( 'aeropuerto-barcelona-portaventura' ) ?: 'Según tráfico' ); ?>
+        </span>
+      </a>
+
+      <a
+        href="<?php echo esc_url( home_url( '/rutas/barcelona-salou/' ) ); ?>"
+        class="route__item"
+        style="text-decoration:none;color:inherit;"
+      >
+        <div class="route__info">
+          <h3>Barcelona ↔ Salou</h3>
+          <p>Traslado directo a hoteles y apartamentos turísticos.</p>
+        </div>
+        <span class="route__time">
+            <?php echo esc_html( mt_get_route_duration( 'aeropuerto-barcelona-salou' ) ?: 'Según tráfico' ); ?>
+        </span>
+      </a>
+
+      <a
+        href="<?php echo esc_url( home_url( '/rutas/barcelona-girona/' ) ); ?>"
+        class="route__item"
+        style="text-decoration:none;color:inherit;"
+      >
+        <div class="route__info">
+          <h3>Barcelona ↔ Girona</h3>
+          <p>Traslado directo a la ciudad o al aeropuerto de Girona.</p>
+        </div>
+        <span class="route__time">
+            <?php echo esc_html( mt_get_route_duration( 'aeropuerto-barcelona-girona' ) ?: 'Según tráfico' ); ?>
+        </span>
+      </a>
+
       <div class="route__item">
-        <div class="route__info"><h3>Barcelona ↔ Sitges</h3><p>Traslado puerta a puerta para hoteles, viviendas y eventos.</p></div>
-        <span class="route__time">35–50 min</span>
-      </div>
-      <a href="/rutas/barcelona-costa-brava/" class="route__item" style="text-decoration:none;color:inherit;">
-        <div class="route__info"><h3>Barcelona ↔ Costa Brava</h3><p>Viajes a localidades costeras con espacio de equipaje.</p></div>
-        <span class="route__time">Variable</span>
-      </a>
-      <a href="/rutas/barcelona-portaventura/" class="route__item" style="text-decoration:none;color:inherit;">
-        <div class="route__info"><h3>Barcelona ↔ PortAventura</h3><p>Cómodo para familias y grupos.</p></div>
-        <span class="route__time">1 h 15 min</span>
-      </a>
-      <a href="/rutas/barcelona-salou/" class="route__item" style="text-decoration:none;color:inherit;">
-        <div class="route__info"><h3>Barcelona ↔ Salou</h3><p>Traslado directo a hoteles y apartamentos turísticos.</p></div>
-        <span class="route__time">1 h 15 min</span>
-      </a>
-      <a href="/rutas/barcelona-girona/" class="route__item" style="text-decoration:none;color:inherit;">
-        <div class="route__info"><h3>Barcelona ↔ Girona</h3><p>Traslado directo a la ciudad o al aeropuerto de Girona.</p></div>
-        <span class="route__time">1 h 20 min</span>
-      </a>
-      <div class="route__item">
-        <div class="route__info"><h3>Barcelona ↔ Andorra</h3><p>Larga distancia con paradas programadas bajo petición.</p></div>
+        <div class="route__info">
+          <h3>Barcelona ↔ Andorra</h3>
+          <p>Larga distancia con paradas programadas bajo petición.</p>
+        </div>
         <span class="route__time">2 h 45–3 h 15</span>
       </div>
+
     </div>
 
     <div class="tc" style="margin-top:40px;">
-      <a href="/destinos/" class="btn btn-ghost">Ver todos los destinos</a>
+      <a href="<?php echo esc_url( get_post_type_archive_link( 'ruta' ) ); ?>" class="btn btn-ghost">
+        Ver todas las rutas
+      </a>
     </div>
+
   </div>
 </section>
 
@@ -912,7 +1003,7 @@ a.contact__val:hover{color:var(--blue);}
     <div class="tc">
       <a href="https://www.getyourguide.com/es-es/metransfers-s12737/" target="_blank" rel="noopener noreferrer" class="gyg-badge" style="text-decoration:none;display:inline-flex;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFB547"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        4,8/5 · 340 opiniones verificadas &rarr; Ver en GetYourGuide
+        Opiniones verificadas en GetYourGuide &rarr; Ver opiniones
       </a>
     </div>
 
@@ -1082,7 +1173,7 @@ a.contact__val:hover{color:var(--blue);}
   </div>
 </section>
 
-</div><!-- .fp -->
+</main><!-- #primary.fp -->
 
 <script>
 /* FAQ */

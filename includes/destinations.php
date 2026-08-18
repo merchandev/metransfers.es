@@ -53,7 +53,7 @@ function me_transfers_get_destination_catalog() {
 		'travel_note' => 'Lloret de Mar es uno de los destinos más populares de la Costa Brava, ideal para vacaciones de sol y playa. Ofrecemos traslados puerta a puerta para que no dependas de autobuses o trenes con transbordos.',
 		'highlights' => array(
 			'Conexión directa y privada desde el Aeropuerto de Girona o El Prat hasta tu hotel en Lloret.',
-			'Flota de sedanes, minivans y minibuses para adaptarnos a parejas, familias o grupos de amigos.',
+			'Flota de sedanes y minivans para adaptarnos a parejas, familias o grupos de amigos.',
 			'Tarifa plana sin sorpresas ni recargos por tráfico o retrasos en el vuelo.',
 		),
 	);

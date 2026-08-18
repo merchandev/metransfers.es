@@ -11,7 +11,7 @@
 	background: #0B1F35;
 	color: rgba(255,255,255,0.75);
 	padding: 48px 0 0;
-	font-family: 'Source Sans 3', sans-serif;
+	font-family: 'Inter', system-ui, sans-serif;
 }
 .footer-inner {
 	max-width: 1200px;
@@ -35,7 +35,7 @@
 	color: rgba(255,255,255,0.65);
 }
 .footer-col-title {
-	font-family: 'Archivo', sans-serif;
+	font-family: 'Outfit', system-ui, sans-serif;
 	font-size: 13px;
 	font-weight: 700;
 	letter-spacing: 1.5px;
@@ -190,7 +190,7 @@
 	transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
 	border: none;
 	cursor: pointer;
-	font-family: 'Source Sans 3', sans-serif;
+	font-family: 'Inter', system-ui, sans-serif;
 	font-weight: 600;
 	font-size: 15px;
 	animation: wa-pulse 2.5s infinite;
@@ -354,14 +354,14 @@
 
 			<!-- Destinos y Tours -->
 			<div class="footer-col js-footer-accordion">
-				<p class="footer-col-title">Destinos y Hubs</p>
+				<p class="footer-col-title">Destinos y rutas</p>
 				<ul class="footer-links-list">
-					<li><a href="/traslados-privados/">Taxi Privado Barcelona</a></li>
-					<li><a href="/rutas/barcelona-costa-brava/">Traslados a Costa Brava</a></li>
-					<li><a href="/rutas/barcelona-salou/">Traslados a Salou</a></li>
-					<li><a href="/rutas/barcelona-portaventura/">Taxi a Port Aventura</a></li>
-					<li><a href="/rutas/barcelona-girona/">Traslados a Girona</a></li>
-					<li><a href="/rutas/">Todas las rutas</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/traslados-privados/' ) ); ?>">Traslados privados Barcelona</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/rutas/barcelona-costa-brava/' ) ); ?>">Costa Brava</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/rutas/barcelona-salou/' ) ); ?>">Salou</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/rutas/barcelona-portaventura/' ) ); ?>">PortAventura</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/rutas/barcelona-girona/' ) ); ?>">Girona</a></li>
+					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'ruta' ) ); ?>">Todas las rutas</a></li>
 				</ul>
 			</div>
 
@@ -371,7 +371,11 @@
 				<ul class="footer-links-list">
 					<li><a href="/sobre-nosotros/">Sobre nosotros</a></li>
 					<li><a href="/blog/">Blog</a></li>
-					<li><a href="/faq/">FAQ</a></li>
+					<li>
+    <a href="<?php echo esc_url( me_transfers_get_faq_page_url() ); ?>">
+        Preguntas frecuentes
+    </a>
+</li>
 					<li><a href="/contacto/">Contacto</a></li>
 				</ul>
 			</div>
@@ -406,7 +410,7 @@
 			</span>
 			<a href="https://www.getyourguide.com/es-es/metransfers-s12737/" target="_blank" rel="noopener noreferrer" class="trust-badge-item">
 				<svg width="18" height="18" viewBox="0 0 24 24" fill="#FFB547" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
-				4,8/5 · 340 opiniones verificadas
+				Opiniones verificadas en GetYourGuide
 			</a>
 			<span class="trust-badge-item">
 				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -429,7 +433,19 @@
 			</nav>
 
 			<div class="footer-lang">
-				Español · <a href="#" style="color:rgba(255,255,255,0.65);text-decoration:none;">English</a>
+				<a
+					href="<?php echo esc_url( home_url( '/' ) ); ?>"
+					style="color:rgba(255,255,255,0.65);text-decoration:none;"
+				>
+					Español
+				</a>
+				·
+				<a
+					href="<?php echo esc_url( home_url( '/en/' ) ); ?>"
+					style="color:rgba(255,255,255,0.65);text-decoration:none;"
+				>
+					English
+				</a>
 			</div>
 		</div>
 	</div>

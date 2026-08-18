@@ -98,26 +98,48 @@ function me_transfers_force_legal_pages_sync() {
 // add_action( 'after_switch_theme', 'me_transfers_force_legal_pages_sync' );
 
 /**
- * Redirects the legacy cookies slug to the active route.
+ * Redirige slugs legales históricos hacia las URLs legales actuales.
  *
- * @return void
+ * Funciona incluso cuando la URL antigua ya devuelve 404.
  */
 function me_transfers_redirect_legacy_legal_pages() {
-	if ( is_admin() ) {
-		return;
-	}
 
-	if ( is_page( array( 'cookie', 'cookies' ) ) ) {
-		wp_safe_redirect( home_url( '/politica-de-cookies/' ), 301 );
-		exit;
-	}
+    if ( is_admin() ) {
+        return;
+    }
 
-	if ( is_page( 'privacidad' ) ) {
-		wp_safe_redirect( home_url( '/politica-de-privacidad/' ), 301 );
-		exit;
-	}
+    $request_path = wp_parse_url(
+        wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ),
+        PHP_URL_PATH
+    );
+
+    $path = trailingslashit(
+        '/' . trim( (string) $request_path, '/' )
+    );
+
+    $redirects = array(
+        '/cookie/'     => '/politica-de-cookies/',
+        '/cookies/'    => '/politica-de-cookies/',
+        '/privacidad/' => '/politica-de-privacidad/',
+    );
+
+    if ( ! isset( $redirects[ $path ] ) ) {
+        return;
+    }
+
+    wp_safe_redirect(
+        home_url( $redirects[ $path ] ),
+        301
+    );
+
+    exit;
 }
-add_action( 'template_redirect', 'me_transfers_redirect_legacy_legal_pages' );
+
+add_action(
+    'template_redirect',
+    'me_transfers_redirect_legacy_legal_pages',
+    1
+);
 
 /**
  * Repairs mojibake UTF-8 errors in legal page titles.
