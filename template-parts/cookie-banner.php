@@ -212,10 +212,48 @@ document.addEventListener('DOMContentLoaded', function() {
     // Comprobar si ya existe la cookie
     const hasConsent = document.cookie.split('; ').find(row => row.startsWith(cookieName + '='));
 
+    let implicitConsentGiven = false;
+
+    function handleImplicitConsent(e) {
+        if (implicitConsentGiven || hasConsent || !banner.classList.contains('show')) return;
+        
+        // Consentimiento por click fuera del banner
+        if (e.type === 'click') {
+            if (banner.contains(e.target)) return;
+            
+            const clickable = e.target.closest('a, button, input[type="submit"], input[type="button"]');
+            if (clickable) {
+                giveImplicitConsent();
+            }
+        } 
+        // Consentimiento por scroll (30%)
+        else if (e.type === 'scroll') {
+            const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+            if (scrollPercent >= 30) {
+                giveImplicitConsent();
+            }
+        }
+    }
+
+    function giveImplicitConsent() {
+        implicitConsentGiven = true;
+        document.getElementById('mt-cookie-analytics').checked = true;
+        document.getElementById('mt-cookie-marketing').checked = true;
+        saveConsent();
+        
+        window.removeEventListener('scroll', handleImplicitConsent);
+        document.removeEventListener('click', handleImplicitConsent);
+    }
+
     if (!hasConsent) {
         // Mostrar el banner a los 5 segundos de cargar
         setTimeout(() => {
-            if (banner) banner.classList.add('show');
+            if (banner) {
+                banner.classList.add('show');
+                // Activar listeners de consentimiento tácito
+                window.addEventListener('scroll', handleImplicitConsent, { passive: true });
+                document.addEventListener('click', handleImplicitConsent);
+            }
         }, 5000);
     }
 
@@ -272,6 +310,10 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             banner.remove();
         }, 600);
+        
+        // Limpiar event listeners tácitos
+        window.removeEventListener('scroll', handleImplicitConsent);
+        document.removeEventListener('click', handleImplicitConsent);
     }
 });
 </script>
