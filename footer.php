@@ -356,11 +356,11 @@
 			<div class="footer-col js-footer-accordion">
 				<p class="footer-col-title">Destinos y Hubs</p>
 				<ul class="footer-links-list">
-					<li><a href="/taxis-privado-barcelona/">Taxi Privado Barcelona</a></li>
-					<li><a href="/taxis-barcelona-costa-brava/">Traslados a Costa Brava</a></li>
-					<li><a href="/taxis-barcelona-salou/">Traslados a Salou</a></li>
-					<li><a href="/taxis-barcelona-port-aventura/">Taxi a Port Aventura</a></li>
-					<li><a href="/taxis-barcelona-girona/">Traslados a Girona</a></li>
+					<li><a href="/traslados-privados/">Taxi Privado Barcelona</a></li>
+					<li><a href="/rutas/barcelona-costa-brava/">Traslados a Costa Brava</a></li>
+					<li><a href="/rutas/barcelona-salou/">Traslados a Salou</a></li>
+					<li><a href="/rutas/barcelona-portaventura/">Taxi a Port Aventura</a></li>
+					<li><a href="/rutas/barcelona-girona/">Traslados a Girona</a></li>
 					<li><a href="/rutas/">Todas las rutas</a></li>
 				</ul>
 			</div>

@@ -46,7 +46,7 @@ if ( is_admin() && defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) && ME_TRANSFERS_E
 
 add_action( 'template_redirect', function() {
     if ( is_404() && trim( wp_parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH ), '/' ) === 'destinos' ) {
-        wp_redirect( home_url( '/#rutas' ), 301 );
+        wp_redirect( home_url( '/#destinos' ), 301 );
         exit;
     }
 });
@@ -319,20 +319,7 @@ function me_transfers_get_section_url( $section = 'search' ) {
 	return home_url( '/#' . $section );
 }
 
-/**
- * Force Tours page in navigation menu
- */
-add_filter( 'wp_nav_menu_items', 'me_transfers_add_tours_menu_item', 10, 2 );
-function me_transfers_add_tours_menu_item( $items, $args ) {
-    if ( $args->theme_location === 'menu-1' || $args->menu_id === 'primary-menu' ) {
-        $tours_url = home_url( '/tours/' );
-        // Only inject if this URL is not already in the menu HTML.
-        if ( strpos( $items, $tours_url ) === false && strpos( $items, '/tours"' ) === false ) {
-            $items .= '<li class="menu-item"><a href="' . esc_url( $tours_url ) . '">Tours</a></li>';
-        }
-    }
-    return $items;
-}
+
 
 
 /* ==========================================================================

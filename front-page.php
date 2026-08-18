@@ -805,7 +805,7 @@ a.contact__val:hover{color:var(--blue);}
     <p class="lead tc" style="margin:20px auto 0;">Salidas desde el Aeropuerto El Prat, cualquier hotel, estación o domicilio en Barcelona hacia tu destino. También organizamos trayectos de larga distancia.</p>
 
     <div class="routes__grid">
-      <a href="/taxis-privado-barcelona/" class="route__item" style="text-decoration:none;color:inherit;">
+      <a href="/traslados-privados/" class="route__item" style="text-decoration:none;color:inherit;">
         <div class="route__info"><h3>Aeropuerto de Barcelona ↔ centro</h3><p>Recogida con seguimiento de vuelo y bienvenida en llegadas.</p></div>
         <span class="route__time">25–40 min</span>
       </a>
@@ -817,19 +817,19 @@ a.contact__val:hover{color:var(--blue);}
         <div class="route__info"><h3>Barcelona ↔ Sitges</h3><p>Traslado puerta a puerta para hoteles, viviendas y eventos.</p></div>
         <span class="route__time">35–50 min</span>
       </div>
-      <a href="/taxis-barcelona-costa-brava/" class="route__item" style="text-decoration:none;color:inherit;">
+      <a href="/rutas/barcelona-costa-brava/" class="route__item" style="text-decoration:none;color:inherit;">
         <div class="route__info"><h3>Barcelona ↔ Costa Brava</h3><p>Viajes a localidades costeras con espacio de equipaje.</p></div>
         <span class="route__time">Variable</span>
       </a>
-      <a href="/taxis-barcelona-port-aventura/" class="route__item" style="text-decoration:none;color:inherit;">
+      <a href="/rutas/barcelona-portaventura/" class="route__item" style="text-decoration:none;color:inherit;">
         <div class="route__info"><h3>Barcelona ↔ PortAventura</h3><p>Cómodo para familias y grupos.</p></div>
         <span class="route__time">1 h 15 min</span>
       </a>
-      <a href="/taxis-barcelona-salou/" class="route__item" style="text-decoration:none;color:inherit;">
+      <a href="/rutas/barcelona-salou/" class="route__item" style="text-decoration:none;color:inherit;">
         <div class="route__info"><h3>Barcelona ↔ Salou</h3><p>Traslado directo a hoteles y apartamentos turísticos.</p></div>
         <span class="route__time">1 h 15 min</span>
       </a>
-      <a href="/taxis-barcelona-girona/" class="route__item" style="text-decoration:none;color:inherit;">
+      <a href="/rutas/barcelona-girona/" class="route__item" style="text-decoration:none;color:inherit;">
         <div class="route__info"><h3>Barcelona ↔ Girona</h3><p>Traslado directo a la ciudad o al aeropuerto de Girona.</p></div>
         <span class="route__time">1 h 20 min</span>
       </a>

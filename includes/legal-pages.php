@@ -102,15 +102,22 @@ function me_transfers_force_legal_pages_sync() {
  *
  * @return void
  */
-function me_transfers_redirect_legacy_cookies_page() {
-	if ( is_admin() || ! is_page( 'cookies' ) ) {
+function me_transfers_redirect_legacy_legal_pages() {
+	if ( is_admin() ) {
 		return;
 	}
 
-	wp_safe_redirect( home_url( '/politica-de-cookies/' ), 301 );
-	exit;
+	if ( is_page( array( 'cookie', 'cookies' ) ) ) {
+		wp_safe_redirect( home_url( '/politica-de-cookies/' ), 301 );
+		exit;
+	}
+
+	if ( is_page( 'privacidad' ) ) {
+		wp_safe_redirect( home_url( '/politica-de-privacidad/' ), 301 );
+		exit;
+	}
 }
-add_action( 'template_redirect', 'me_transfers_redirect_legacy_cookies_page' );
+add_action( 'template_redirect', 'me_transfers_redirect_legacy_legal_pages' );
 
 /**
  * Repairs mojibake UTF-8 errors in legal page titles.
