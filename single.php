@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Template for displaying single blog posts.
  *
@@ -156,8 +156,8 @@ while ( have_posts() ) :
 						<div class="single-article-body">
 							<div class="entry-content luxury-prose js-toc-content">
 								<?php
-								// Filtro de H1 duplicado: el template ya emite el H1 en el header del artículo.
-								// Para proteger el diseño y el SEO, degradamos cualquier H1 añadido 
+								// Filtro de H1 duplicado: el template ya emite el H1 en el header del artÃ­culo.
+								// Para proteger el diseÃ±o y el SEO, degradamos cualquier H1 aÃ±adido 
 								// manualmente en el editor a un H2.
 								$mt_demote_h1_to_h2 = static function ( $content ) {
 									$content = str_ireplace( '<h1', '<h2', $content );
@@ -182,10 +182,10 @@ while ( have_posts() ) :
 							<div class="single-cta-box">
 								<div class="single-cta-copy">
 									<span class="single-cta-eyebrow"><?php esc_html_e( 'Reserva privada', 'me-transfers' ); ?></span>
-									<h2 class="single-cta-title"><?php esc_html_e( '¿Listo para tu próximo traslado?', 'me-transfers' ); ?></h2>
+									<h2 class="single-cta-title"><?php esc_html_e( 'Â¿Listo para tu prÃ³ximo traslado?', 'me-transfers' ); ?></h2>
 									<p><?php esc_html_e( 'Reserva tu traslado privado o tour personalizado en Barcelona con una experiencia premium, puntual y adaptada a tu agenda.', 'me-transfers' ); ?></p>
 								</div>
-								<a href="<?php echo esc_url( me_transfers_get_section_url( 'search' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Reservar ahora', 'me-transfers' ); ?></a>
+								<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Reservar ahora', 'me-transfers' ); ?></a>
 							</div>
 						</footer>
 					</div>
@@ -194,14 +194,14 @@ while ( have_posts() ) :
 					<aside class="single-article-sidebar">
 						<div class="sidebar-sticky">
 							<div class="widget toc-widget">
-								<h3 class="widget-title">Índice de contenidos</h3>
+								<h3 class="widget-title">Ãndice de contenidos</h3>
 								<nav id="toc-container" class="toc-nav"></nav>
 							</div>
 							
 							<div class="widget cta-widget">
 								<h3 class="widget-title">Reserva tu traslado</h3>
-								<p>Vehículos premium, conductores profesionales y cancelación gratuita.</p>
-								<a href="<?php echo esc_url( me_transfers_get_section_url( 'search' ) ); ?>" class="btn btn-solid" style="width:100%; justify-content:center; margin-bottom:12px;">Presupuesto online</a>
+								<p>VehÃ­culos premium, conductores profesionales y cancelaciÃ³n gratuita.</p>
+								<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-solid" style="width:100%; justify-content:center; margin-bottom:12px;">Presupuesto online</a>
 								<a href="https://wa.me/34662024136?text=Hola,%20me%20gustar%C3%ADa%20informaci%C3%B3n%20sobre%20un%20traslado%20privado." target="_blank" rel="noopener" class="btn btn-ghost-inv" style="width:100%; justify-content:center; border:2px solid #25D366; color:#25D366;">
 									Consultar por WhatsApp
 								</a>
@@ -248,7 +248,7 @@ while ( have_posts() ) :
 					<div class="single-related-header">
 						<div>
 							<span class="single-related-eyebrow"><?php esc_html_e( 'Sigue leyendo', 'me-transfers' ); ?></span>
-							<h2 id="related-posts-title" class="single-related-title"><?php esc_html_e( 'También te puede interesar', 'me-transfers' ); ?></h2>
+							<h2 id="related-posts-title" class="single-related-title"><?php esc_html_e( 'TambiÃ©n te puede interesar', 'me-transfers' ); ?></h2>
 						</div>
 						<a href="<?php echo esc_url( $blog_url ); ?>" class="single-related-link"><?php esc_html_e( 'Ver todo el blog', 'me-transfers' ); ?></a>
 					</div>

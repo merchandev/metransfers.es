@@ -54,7 +54,7 @@ function me_transfers_get_destination_catalog() {
 		'highlights' => array(
 			'Conexión directa y privada desde el Aeropuerto de Girona o El Prat hasta tu hotel en Lloret.',
 			'Flota de sedanes y minivans para adaptarnos a parejas, familias o grupos de amigos.',
-			'Tarifa plana sin sorpresas ni recargos por tráfico o retrasos en el vuelo.',
+			'Precio confirmado antes del servicio y coordinación de la recogida según los datos facilitados en la reserva.',
 		),
 	);
 

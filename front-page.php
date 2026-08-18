@@ -574,8 +574,8 @@ a.contact__val:hover{color:var(--blue);}
             <div class="hero__stat-l"><?php echo mt_translate('traslados realizados'); ?></div>
           </div>
           <div>
-            <div class="hero__stat-n">4,8/5</div>
-            <div class="hero__stat-l"><a href="https://www.getyourguide.com/es-es/metransfers-s12737/" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;"><?php echo mt_translate('valoración GetYourGuide'); ?></a></div>
+            <div class="hero__stat-n">GYG</div>
+            <div class="hero__stat-l"><a href="https://www.getyourguide.com/es-es/metransfers-s12737/" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;"><?php echo mt_translate('opiniones verificadas'); ?></a></div>
           </div>
           <div>
             <div class="hero__stat-n">24/7</div>

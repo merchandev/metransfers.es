@@ -117,8 +117,8 @@ $total = count( $all_rutas );
             </div>
             <div class="rutas-statsbar__sep"></div>
             <div class="rutas-statsbar__item">
-                <span class="rutas-statsbar__num">4.9★</span>
-                <span class="rutas-statsbar__lbl">GetYourGuide</span>
+                <span class="rutas-statsbar__num">GYG</span>
+                <span class="rutas-statsbar__lbl">Opiniones verificadas</span>
             </div>
         </div>
     </div>

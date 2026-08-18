@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $faq_items        = me_transfers_get_faq_items();
 			$privacy_url      = get_privacy_policy_url();
 			$cancellation_url = '';
@@ -38,7 +38,7 @@ $faq_items        = me_transfers_get_faq_items();
 					<span class="faq-page-kicker"><?php esc_html_e( 'Centro de ayuda', 'me-transfers' ); ?></span>
 					<h1 class="faq-page-title">Preguntas Frecuentes</h1>
 					<p class="faq-page-summary">
-						Encuentra respuestas claras y rápidas a las dudas más comunes sobre nuestros servicios de transporte privado. Desde reservas y tarifas hasta detalles sobre nuestras rutas y vehículos, aquí encontrarás toda la información que necesitas para planificar tu traslado con metransfers.es. ¿Tienes más preguntas frecuentes? Contáctanos y estaremos encantados de ayudarte.
+						Encuentra respuestas claras y rÃ¡pidas a las dudas mÃ¡s comunes sobre nuestros servicios de transporte privado. Desde reservas y tarifas hasta detalles sobre nuestras rutas y vehÃ­culos, aquÃ­ encontrarÃ¡s toda la informaciÃ³n que necesitas para planificar tu traslado con metransfers.es. Â¿Tienes mÃ¡s preguntas frecuentes? ContÃ¡ctanos y estaremos encantados de ayudarte.
 					</p>
 				</div>
 			</section>
@@ -47,7 +47,7 @@ $faq_items        = me_transfers_get_faq_items();
 				<div class="container faq-page-shell">
 					<div class="faq-page-intro">
 						<h2>Todo lo que necesitas saber antes de reservar</h2>
-						<p>Hemos reunido las consultas más habituales sobre reservas, vehículos, aeropuertos, pagos, cancelaciones y atención al cliente para que encuentres la información de forma rápida y ordenada.</p>
+						<p>Hemos reunido las consultas mÃ¡s habituales sobre reservas, vehÃ­culos, aeropuertos, pagos, cancelaciones y atenciÃ³n al cliente para que encuentres la informaciÃ³n de forma rÃ¡pida y ordenada.</p>
 					</div>
 
 					<div class="faq-accordion">
@@ -66,15 +66,15 @@ $faq_items        = me_transfers_get_faq_items();
 									<?php if ( 2 === $index ) : ?>
 										<p>
 											<?php if ( $cancellation_url ) : ?>
-												Puedes acceder a nuestra política de cancelación completa <a href="<?php echo esc_url( $cancellation_url ); ?>">haciendo clic aquí</a>.
+												Puedes acceder a nuestra polÃ­tica de cancelaciÃ³n completa <a href="<?php echo esc_url( $cancellation_url ); ?>">haciendo clic aquÃ­</a>.
 											<?php else : ?>
-												Puedes consultar nuestra política de cancelación completa contactando con nuestro equipo.
+												Puedes consultar nuestra polÃ­tica de cancelaciÃ³n completa contactando con nuestro equipo.
 											<?php endif; ?>
 										</p>
 									<?php endif; ?>
 
 									<?php if ( 10 === $index && $privacy_url ) : ?>
-										<p>Puedes acceder a nuestra política de privacidad completa <a href="<?php echo esc_url( $privacy_url ); ?>">haciendo clic aquí</a>.</p>
+										<p>Puedes acceder a nuestra polÃ­tica de privacidad completa <a href="<?php echo esc_url( $privacy_url ); ?>">haciendo clic aquÃ­</a>.</p>
 									<?php endif; ?>
 								</div>
 							</details>
@@ -83,9 +83,9 @@ $faq_items        = me_transfers_get_faq_items();
 
 					<div class="faq-page-cta">
 						<span class="faq-page-cta__kicker">Reserva Ahora</span>
-						<h2>Reserva online, rápido y con pago seguro</h2>
-						<p>metransfers.es es una de las principales agencias de transporte privado en Barcelona. Reserva online, rápido y con pago seguro. Ofrecemos alquiler de coches con conductor, visitas guiadas y servicio de chofer 24/7.</p>
-						<a href="<?php echo esc_url( me_transfers_get_section_url( 'search' ) ); ?>" class="btn btn-primary">Reservar ahora</a>
+						<h2>Reserva online, rÃ¡pido y con pago seguro</h2>
+						<p>metransfers.es es una de las principales agencias de transporte privado en Barcelona. Reserva online, rÃ¡pido y con pago seguro. Ofrecemos alquiler de coches con conductor, visitas guiadas y servicio de chofer 24/7.</p>
+						<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary">Reservar ahora</a>
 					</div>
 				</div>
 			</section>

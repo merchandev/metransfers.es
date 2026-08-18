@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Template part for displaying service content
  */
@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 		</div>
 		
 		<div class="service-content__action gs-reveal text-center mt-5">
-			<a href="<?php echo esc_url( me_transfers_get_section_url( 'search' ) ); ?>" class="btn btn-primary">Reservar Este Servicio</a>
+			<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary">Reservar Este Servicio</a>
 		</div>
 	</div>
 </article>

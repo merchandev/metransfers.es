@@ -539,10 +539,14 @@ add_action( 'wp_footer', function() { ?>
 
 // 1. Sobrescribir el Canonical de Yoast SEO para las rutas traducidas virtuales
 add_filter( 'wpseo_canonical', function( $canonical ) {
-    if ( mt_is_translated() ) {
-        return home_url( $_SERVER['REQUEST_URI'] );
+    if ( ! mt_is_translated() ) {
+        return $canonical;
     }
-    return $canonical;
+    $path = wp_parse_url(
+        wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ),
+        PHP_URL_PATH
+    );
+    return home_url( $path );
 } );
 
 // 2. Inyectar etiquetas Hreflang y Canonical (si no hay Yoast)
@@ -554,7 +558,8 @@ add_action( 'wp_head', function() {
     
     // Si Yoast no está activo, aseguramos que la página traducida tenga su canonical
     if ( ! defined( 'WPSEO_VERSION' ) && mt_is_translated() ) {
-        echo '<link rel="canonical" href="' . esc_url( home_url( $_SERVER['REQUEST_URI'] ) ) . '" />' . "\n";
+        $path = wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), PHP_URL_PATH );
+        echo '<link rel="canonical" href="' . esc_url( home_url( $path ) ) . '" />' . "\n";
     }
 
     // Inyectar hreflang para decirle a Google que son variantes de idioma y no duplicados

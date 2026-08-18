@@ -225,7 +225,7 @@ add_filter( 'get_the_excerpt', 'me_transfers_strip_deprecated_shortcodes', 1 );
  */
 function me_transfers_scripts() {
 	// Enqueue Google Fonts (Outfit and Inter)
-	wp_enqueue_style( 'me-transfers-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap&display=swap', array(), null );
+	wp_enqueue_style( 'me-transfers-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap', array(), null );
 
 	// Main stylesheet
 	$style_path    = get_stylesheet_directory() . '/style.css';

@@ -192,7 +192,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                     </div>
                     <div class="ruta-feature__body">
                         <h3>Seguimiento de Vuelo</h3>
-                        <p>Monitorizamos tu vuelo en tiempo real. Si hay retrasos, el conductor te espera sin cargos adicionales.</p>
+                        <p>Monitorizamos tu vuelo cuando facilitas correctamente el número de vuelo y adaptamos la coordinación de la recogida a la hora real de llegada. Los tiempos de espera incluidos dependen de las condiciones de tu reserva.</p>
                     </div>
                 </div>
                 <div class="ruta-feature">
@@ -228,7 +228,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                     </div>
                     <div class="ruta-feature__body">
                         <h3>Cancelación Flexible</h3>
-                        <p>Cancela sin coste hasta 24h antes de tu traslado. Gestionamos cualquier cambio de horario.</p>
+                        <p>Consulta las condiciones de cancelación aplicables antes de confirmar tu reserva.</p>
                     </div>
                 </div>
             </div>
@@ -286,7 +286,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
     <section class="gyg-section section">
         <div class="container gs-reveal text-center">
             <h2 class="section-title">Confianza de <span class="text-gradient">Viajeros Globales</span></h2>
-            <span class="gyg-badge" style="margin-bottom: 2rem; display: inline-block;">★ 4.9 / 5 en GetYourGuide</span>
+            <span class="gyg-badge" style="margin-bottom: 2rem; display: inline-block;">Opiniones verificadas en GetYourGuide</span>
             <?php if ( shortcode_exists( 'gyg_reviews' ) ) : ?>
                 <?php echo do_shortcode( '[gyg_reviews count="4"]' ); ?>
             <?php endif; ?>
