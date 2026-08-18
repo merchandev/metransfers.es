@@ -81,13 +81,13 @@ Si llegas de un crucero, tu chófer te espera en el punto de salida de la termin
 			'title'       => 'MeTransfers Barcelona - Chófer Privado por Horas en Barcelona',
 			'subtitle'    => 'Tu conductor exclusivo por Barcelona y alrededores',
 			'slug'        => 'chofer-por-horas',
-			'badge'       => 'Disposición por horas · MÍnimo 3h',
+			'badge'       => 'Disposición por horas · Mínimo 3h',
 			'hero_desc'   => 'Dispón de un vehículo Mercedes con conductor durante el tiempo que necesites en Barcelona. Ideal para reuniones, compras, visitas o días completos con múltiples paradas por la ciudad.',
 			'desc_long'   => 'A veces no necesitas ir de A a B — necesitas un conductor que te espere en Barcelona, te lleve a varios sitios y esté disponible durante horas para todo lo que surja. Para eso está nuestro servicio de chófer privado por horas.
 
 Imagina una mañana de reuniones en el 22@ de Barcelona, una parada a comer en el Eixample y después al aeropuerto. O una tarde de compras en Passeig de Gràcia con el coche esperando. O una noche de evento con cenas y traslados entre locales de la ciudad. Con el servicio por disposición, tú marcas el ritmo.
 
-El conductor permanece a tu disposición exclusiva durante el tiempo contratado en Barcelona. Tú decides las paradas, los cambios de plan y los tiempos. MÍnimo 3 horas, sin límite máximo. Disponible en toda el área metropolitana de Barcelona y rutas de larga distancia.',
+El conductor permanece a tu disposición exclusiva durante el tiempo contratado en Barcelona. Tú decides las paradas, los cambios de plan y los tiempos. Mínimo 3 horas, sin límite máximo. Disponible en toda el área metropolitana de Barcelona y rutas de larga distancia.',
 			'features'    => array(
 				array( 'icon' => 'schedule', 'title' => 'Flexibilidad total', 'desc' => 'Cambios de plan en tiempo real. El conductor se adapta a tu agenda, no al revés.' ),
 				array( 'icon' => 'location_on', 'title' => 'Múltiples paradas', 'desc' => 'Reuniones, compras, restaurantes, eventos — todas las paradas que necesites por Barcelona.' ),
@@ -97,7 +97,7 @@ El conductor permanece a tu disposición exclusiva durante el tiempo contratado 
 				array( 'icon' => 'dark_mode', 'title' => 'Disponible 24/7', 'desc' => 'Madrugadas, días festivos, eventos nocturnos. Siempre disponible cuando lo necesites.' ),
 			),
 			'steps'       => array(
-				array( 'n' => '01', 'title' => 'DÍnos cuántas horas necesitas', 'desc' => 'Indica fecha, hora de inicio, dirección de recogida en Barcelona y descripción general del plan.' ),
+				array( 'n' => '01', 'title' => 'Dinos cuántas horas necesitas', 'desc' => 'Indica fecha, hora de inicio, dirección de recogida en Barcelona y descripción general del plan.' ),
 				array( 'n' => '02', 'title' => 'Te enviamos presupuesto', 'desc' => 'Precio cerrado por el número de horas. Sin sorpresas al finalizar el servicio.' ),
 				array( 'n' => '03', 'title' => 'El conductor llega puntual', 'desc' => 'Tu chófer aparece en el lugar acordado en Barcelona, vehículo preparado y listo para comenzar.' ),
 				array( 'n' => '04', 'title' => 'Tú mandas, él conduce', 'desc' => 'Indica destinos, paradas y cambios sobre la marcha. Tú llevas el ritmo del día.' ),
@@ -123,11 +123,11 @@ Tanto si necesitas coordinar 3 traslados ejecutivos como 50 delegados en rotaci�
 				array( 'icon' => 'directions_car', 'title' => 'Flota uniforme', 'desc' => 'Todos los vehículos del mismo modelo y acabado. Imagen de marca coherente y premium.' ),
 				array( 'icon' => 'language', 'title' => 'Conductores bilingües', 'desc' => 'Español, inglés y más idiomas. Perfectos para delegaciones internacionales.' ),
 				array( 'icon' => 'receipt_long', 'title' => 'Facturación centralizada', 'desc' => 'Una sola factura al final del evento. Compatible con contabilidad de empresa.' ),
-				array( 'icon' => 'phone_iphone', 'title' => 'Coordinación en tiempo real', 'desc' => 'Cambios de última hora gestionados al instante vÍa WhatsApp o coordinador dedicado.' ),
+				array( 'icon' => 'phone_iphone', 'title' => 'Coordinación en tiempo real', 'desc' => 'Cambios de última hora gestionados al instante vía WhatsApp o coordinador dedicado.' ),
 				array( 'icon' => 'lock', 'title' => 'Máxima confidencialidad', 'desc' => 'Discreción absoluta con directivos, VIPs y delegaciones de alto nivel.' ),
 			),
 			'steps'       => array(
-				array( 'n' => '01', 'title' => 'Cuéntanos el evento', 'desc' => 'Envíanos el tipo de evento, número de personas, fechas y necesidades especÍficas.' ),
+				array( 'n' => '01', 'title' => 'Cuéntanos el evento', 'desc' => 'Envíanos el tipo de evento, número de personas, fechas y necesidades específicas.' ),
 				array( 'n' => '02', 'title' => 'Propuesta personalizada', 'desc' => 'Preparamos un plan logístico y presupuesto adaptado a tu evento en Barcelona en menos de 24h.' ),
 				array( 'n' => '03', 'title' => 'Conductores en Barcelona listos', 'desc' => 'Ajustamos horarios, rutas y asignaciones de vehículos en los puntos de recogida de la ciudad. Todo confirmado con antelación.' ),
 				array( 'n' => '04', 'title' => 'Ejecución impecable', 'desc' => 'El día del evento, todo funciona. Factura única y resumen del servicio al finalizar.' ),
@@ -142,7 +142,7 @@ Tanto si necesitas coordinar 3 traslados ejecutivos como 50 delegados en rotaci�
 			'subtitle'    => 'Salimos desde tu hotel en Barcelona hacia los mejores destinos',
 			'slug'        => 'tours-privados',
 			'badge'       => 'Montserrat · Costa Brava · Girona · Andorra',
-			'hero_desc'   => 'Explora Cataluña en exclusiva con un chófer guÍa local. Salimos desde tu hotel o apartamento en Barcelona. Desde medio día hasta rutas completas. Sin horarios de grupo, sin esperas, sin límites.',
+			'hero_desc'   => 'Explora Cataluña en exclusiva con un chófer guía local. Salimos desde tu hotel o apartamento en Barcelona. Desde medio día hasta rutas completas. Sin horarios de grupo, sin esperas, sin límites.',
 			'desc_long'   => 'Un tour privado con MeTransfers es una experiencia completamente diferente al turismo convencional. Sin autobuses llenos, sin horarios de grupo y sin paradas que no quieres hacer. Diseñamos cada excursión a medida de tus intereses, tiempo y ritmo, con recogida directa en tu hotel de Barcelona.
 
 Nuestros conductores son embajadores locales que conocen los rincones que los tours masivos nunca muestran. En Montserrat, el momento para bajar a las grutas tranquilas cuando los grupos ya se han ido. En la Costa Brava, la cala escondida que no sale en los folletos. En Girona, el callejón de la época medieval que te transporta siglos atrás.
@@ -150,7 +150,7 @@ Nuestros conductores son embajadores locales que conocen los rincones que los to
 Desde Barcelona, operamos excursiones de medio día (4 horas), día completo (8 horas) y rutas de varios días. Los destinos más populares incluyen Montserrat, Costa Brava, Girona, Figueres (Dalí), Tarragona, Sitges y Andorra. También diseñamos rutas temáticas: gastronomía, vinos, arquitectura modernista o paisajes naturales.',
 			'features'    => array(
 				array( 'icon' => 'map', 'title' => 'Rutas 100% personalizadas', 'desc' => 'Tú decides los destinos, paradas, tiempos y ritmo. Nosotros lo coordinamos todo.' ),
-				array( 'icon' => 'explore', 'title' => 'Chófer-guÍa local', 'desc' => 'Conocimiento local profundo: historia, gastronomía, secretos que no están en las guÍas.' ),
+				array( 'icon' => 'explore', 'title' => 'Chófer-guía local', 'desc' => 'Conocimiento local profundo: historia, gastronomía, secretos que no están en las guías.' ),
 				array( 'icon' => 'directions_car', 'title' => 'Sin grupos', 'desc' => 'Solo tú, tu familia o tus invitados. Privacidad y exclusividad absoluta en cada parada.' ),
 				array( 'icon' => 'schedule', 'title' => 'Desde 4 hasta 12 horas', 'desc' => 'Medio día, día completo o rutas extendidas. El tiempo que necesites, sin restricciones.' ),
 				array( 'icon' => 'wine_bar', 'title' => 'Tours temáticos', 'desc' => 'Gastronomía, vinos, arquitectura, naturaleza, historia. Diseñamos la ruta perfecta.' ),

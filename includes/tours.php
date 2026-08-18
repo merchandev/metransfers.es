@@ -30,7 +30,7 @@ Comenzamos el recorrido con la recogida puerta a puerta en tu hotel, apartamento
 
 La primera parada es la majestuosa Sagrada Familia, la obra maestra inacabada de Antoni Gaudí que atrae a millones de visitantes cada año. Desde el exterior podrás apreciar la grandeza de sus fachadas, mientras tu chófer te explica la historia de su construcción que comenzó en 1882.
 
-Continuamos hacia el Parque Güell, otro de los tesoros de Gaudí, donde los mosaicos de colores y las formas orgánicas crean un paisaje de fantasía con vistas panorámicas espectaculares de toda la ciudad y el Mediterráneo. Es un lugar perfecto para fotografÍas inolvidables.
+Continuamos hacia el Parque Güell, otro de los tesoros de Gaudí, donde los mosaicos de colores y las formas orgánicas crean un paisaje de fantasía con vistas panorámicas espectaculares de toda la ciudad y el Mediterráneo. Es un lugar perfecto para fotografías inolvidables.
 
 El recorrido sigue por el corazón histórico de Barcelona: el Barrio Gótico, con sus calles estrechas medievales, la Catedral de Barcelona y las plazas escondidas que guardan siglos de historia. Pasearemos por Las Ramblas, el bulevar más famoso de España, y el Mercado de la Boquería con sus colores y aromas.
 
@@ -106,11 +106,11 @@ El regreso a Barcelona se realiza a tu ritmo, con la posibilidad de hacer parada
 			'group_size' => 'Hasta 7 personas',
 			'img'        => get_template_directory_uri() . '/assets/img/V1.png',
 			'desc'       => 'Sumérgete en las aguas cristalinas y paisajes únicos de la Costa Brava. Recorre encantadores pueblos pesqueros, calas escondidas y disfruta de la mejor gastronomía mediterránea en un entorno paradisíaco.',
-			'full_desc'  => 'La Costa Brava es sin duda uno de los destinos más espectaculares del Mediterráneo occidental. Con nuestro tour privado, recorrerás los pueblos más bonitos de esta costa salvaje y escarpada, lejos de las rutas turÍsticas masificadas, con la libertad de parar donde y cuando quieras.
+			'full_desc'  => 'La Costa Brava es sin duda uno de los destinos más espectaculares del Mediterráneo occidental. Con nuestro tour privado, recorrerás los pueblos más bonitos de esta costa salvaje y escarpada, lejos de las rutas turísticas masificadas, con la libertad de parar donde y cuando quieras.
 
-Salimos de Barcelona por la mañana y en aproximadamente una hora y media llegamos a Tossa de Mar, nuestro primer destino. Este pueblo medieval amurallado, que cautivó al mismÍsimo Marc Chagall, tiene una de las playas urbanas más bonitas de la Costa Brava, coronada por las ruinas de la Vila Vella, la única ciudad medieval fortificada que se conserva en el litoral catalán.
+Salimos de Barcelona por la mañana y en aproximadamente una hora y media llegamos a Tossa de Mar, nuestro primer destino. Este pueblo medieval amurallado, que cautivó al mismísimo Marc Chagall, tiene una de las playas urbanas más bonitas de la Costa Brava, coronada por las ruinas de la Vila Vella, la única ciudad medieval fortificada que se conserva en el litoral catalán.
 
-Continuamos por la sinuosa carretera de la costa, con vistas que quitan el aliento en cada curva, hasta llegar a Calella de Palafrugell, un antiguo pueblo de pescadores que conserva toda su autenticidad. Sus casitas blancas con puertas azules, las barcas varadas en la playa y los arcos del paseo marÍtimo crean una postal mediterránea perfecta. AquÍ podemos hacer una parada para un almuerzo de mariscos frescos en uno de los restaurantes locales con terraza frente al mar.
+Continuamos por la sinuosa carretera de la costa, con vistas que quitan el aliento en cada curva, hasta llegar a Calella de Palafrugell, un antiguo pueblo de pescadores que conserva toda su autenticidad. Sus casitas blancas con puertas azules, las barcas varadas en la playa y los arcos del paseo marítimo crean una postal mediterránea perfecta. Aquí podemos hacer una parada para un almuerzo de mariscos frescos en uno de los restaurantes locales con terraza frente al mar.
 
 El recorrido incluye una caminata por un tramo de los Caminos de Ronda, los antiguos senderos costeros que recorrían los vigilantes del contrabando. Hoy son rutas de senderismo espectaculares que conectan calas escondidas, acantilados y miradores naturales con aguas turquesas dignas del Caribe.
 
@@ -152,13 +152,13 @@ El tour comienza con la recogida en tu alojamiento de Barcelona. El trayecto has
 
 Al llegar, comenzamos por la imponente Catedral de Girona, que posee la nave gótica más ancha del mundo con sus 23 metros. La escalinata barroca que conduce hasta su entrada principal es uno de los escenarios más reconocidos de "Juego de Tronos", donde se rodaron escenas de Desembarco del Rey en las temporadas 5 y 6.
 
-Descendemos hacia el Call, el barrio judío medieval mejor conservado de toda Europa. Sus callejuelas laberÍnticas, algunas de apenas un metro de ancho, te transportan directamente al siglo XV. AquÍ se encuentra el Museo de Historia de los Judíos, donde podrás conocer la importante comunidad sefardÍ que habitó Girona durante siglos.
+Descendemos hacia el Call, el barrio judío medieval mejor conservado de toda Europa. Sus callejuelas laberínticas, algunas de apenas un metro de ancho, te transportan directamente al siglo XV. Aquí se encuentra el Museo de Historia de los Judíos, donde podrás conocer la importante comunidad sefardí que habitó Girona durante siglos.
 
-Uno de los momentos más fotogénicos del tour es el paseo por las Cases de l\'Onyar, las coloridas casas colgadas sobre el río que se han convertido en la imagen icónica de la ciudad. Los puentes que cruzan el río, incluido el Pont de les Peixateries Velles diseñado por Gustave Eiffel, ofrecen las mejores perspectivas para fotografÍas.
+Uno de los momentos más fotogénicos del tour es el paseo por las Cases de l\'Onyar, las coloridas casas colgadas sobre el río que se han convertido en la imagen icónica de la ciudad. Los puentes que cruzan el río, incluido el Pont de les Peixateries Velles diseñado por Gustave Eiffel, ofrecen las mejores perspectivas para fotografías.
 
 Completamos el recorrido con un paseo por la Muralla medieval, un camino elevado que rodea el casco antiguo y ofrece vistas panorámicas extraordinarias de los tejados, las torres y las montañas que rodean la ciudad. Es el lugar perfecto para entender la dimensión y belleza de Girona desde las alturas.
 
-Para el almuerzo, podemos hacer una parada en alguno de los restaurantes del casco antiguo donde podrás probar la cocina gerundense, influenciada por la cercanÍa de los Pirineos y el Mediterráneo. Girona es una ciudad con una escena gastronómica de primer nivel, sede de varios restaurantes con estrellas Michelin.',
+Para el almuerzo, podemos hacer una parada en alguno de los restaurantes del casco antiguo donde podrás probar la cocina gerundense, influenciada por la cercanía de los Pirineos y el Mediterráneo. Girona es una ciudad con una escena gastronómica de primer nivel, sede de varios restaurantes con estrellas Michelin.',
 			'itinerary'  => array(
 				'Recogida en su hotel en Barcelona',
 				'Trayecto hasta Girona (~1 hora por autopista)',

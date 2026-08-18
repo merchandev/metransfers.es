@@ -35,7 +35,7 @@ function me_transfers_get_destination_catalog() {
 		'order'       => 1,
 		'related'     => array( 'cambrils', 'tarragona', 'reus', 'portaventura', 'pineda-de-mar' ),
 		'summary'     => 'Reserva tu transfer privado a Salou desde el Aeropuerto de Reus (a 10 km), el Aeropuerto de Barcelona (a 95 km), la estación del AVE Camp de Tarragona o cualquier hotel. Viaja cómodo, sin esperas y a precio cerrado.',
-		'travel_note' => 'Salou es el epicentro de la Costa Dorada, conocido por sus playas, su animada vida turÍstica y su cercanÍa a PortAventura World. Coordinamos tu llegada directa a tu hotel, apartamento o resort con la máxima puntualidad.',
+		'travel_note' => 'Salou es el epicentro de la Costa Dorada, conocido por sus playas, su animada vida turística y su cercanía a PortAventura World. Coordinamos tu llegada directa a tu hotel, apartamento o resort con la máxima puntualidad.',
 		'highlights' => array(
 			'Recogida puntual en el Aeropuerto de Reus, Aeropuerto de Barcelona o estación del AVE.',
 			'Vehículos adecuados para familias con niños, grupos grandes o equipaje especial.',
@@ -76,7 +76,7 @@ function me_transfers_get_destination_catalog() {
 			'slug'        => $slug,
 			'h1'          => $title, // Fallback genérico para H1
 			'order'       => $index++,
-			'related'     => array(), // VacÍo por defecto
+			'related'     => array(), // Vacío por defecto
 			'summary'     => sprintf(
 				/* translators: %s: destination title. */
 				__( 'Solicita información para tu traslado privado a %s con recogida en Barcelona, aeropuerto, hotel o puerto y un servicio premium adaptado a tu itinerario.', 'me-transfers' ),

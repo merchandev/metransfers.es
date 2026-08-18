@@ -139,7 +139,7 @@ get_header(); ?>
             
             <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;">Viaja a los pueblos más bonitos de la Costa Brava</h2>
             <p>
-                La Costa Brava ofrece algunos de los paisajes marÍtimos más espectaculares de Cataluña. Sin embargo, acceder a muchos de sus pintorescos pueblos y calas escondidas mediante transporte público puede ser complicado y consumir mucho tiempo de tus vacaciones. 
+                La Costa Brava ofrece algunos de los paisajes marítimos más espectaculares de Cataluña. Sin embargo, acceder a muchos de sus pintorescos pueblos y calas escondidas mediante transporte público puede ser complicado y consumir mucho tiempo de tus vacaciones. 
             </p>
             <p>
                 La solución ideal es reservar un <strong>traslado privado desde Barcelona a la Costa Brava</strong>. Te recogemos en el Aeropuerto de Barcelona (El Prat), la estación de Sants o tu propio hotel en la ciudad, y te llevamos puerta a puerta hasta tu alojamiento costero.

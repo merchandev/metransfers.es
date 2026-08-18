@@ -366,7 +366,7 @@ function me_transfers_create_checkhoteles_role() {
         $role->remove_cap( 'edit_published_posts' );
         $role->remove_cap( 'publish_posts' );
         
-        // Añadir capacidades especÍficas
+        // Añadir capacidades específicas
         $role->add_cap( 'read_transfer_requests' );
         $role->add_cap( 'edit_transfer_requests' );
         $role->add_cap( 'read_tour_bookings' );
@@ -723,7 +723,7 @@ function me_transfers_migrate_legal_to_editor() {
 <h3>3.2. Equipaje Extraordinario</h3>
 <p>La capacidad del vehículo está limitada por su ficha técnica. El transporte de maletas adicionales, material deportivo (golf, esquÍ) o bultos voluminosos debe ser notificado. EL PRESTADOR se reserva el derecho de cobrar suplementos o denegar el transporte si el volumen excede la capacidad del maletero del vehículo contratado.</p>
 <h3>3.3. Transporte de Mascotas</h3>
-<p>El transporte de animales domésticos está sujeto a notificación previa y debe realizarse en trasportines homologados proporcionados por el cliente, salvo acuerdo en contrario. Los perros guÍa viajarán sin coste adicional conforme a la normativa vigente.</p>
+<p>El transporte de animales domésticos está sujeto a notificación previa y debe realizarse en trasportines homologados proporcionados por el cliente, salvo acuerdo en contrario. Los perros guía viajarán sin coste adicional conforme a la normativa vigente.</p>
 <h2>4. PASARELA DE PAGO Y SEGURIDAD (REDSYS)</h2>
 <p>El pago de los servicios se efectuará mediante tarjeta de crédito o débito a través de la pasarela de pago segura Redsys.</p>
 <ul>

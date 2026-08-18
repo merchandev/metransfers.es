@@ -59,7 +59,7 @@ foreach ( $all_rutas as $r ) {
 }
 ksort( $grupos );
 
-// Punto de partida de cada ruta (extraÍdo del meta)
+// Punto de partida de cada ruta (extraído del meta)
 function mt_get_origen( $post ) {
     $origen = get_post_meta( $post->ID, '_mt_ruta_origen', true );
     if ( ! $origen ) {
