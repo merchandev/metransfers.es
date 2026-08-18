@@ -6,7 +6,11 @@
  */
 
 get_header();
+?>
 
+<main id="primary" class="site-main">
+
+<?php
 while ( have_posts() ) :
 	the_post();
 
@@ -293,5 +297,6 @@ while ( have_posts() ) :
 
 <?php endwhile; ?>
 
-<?php get_footer(); ?>
+</main>
 
+<?php get_footer(); ?>

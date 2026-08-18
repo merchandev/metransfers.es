@@ -7,7 +7,7 @@
 
 get_header(); ?>
 
-<main class="site-main" style="padding-top: 100px; background-color: var(--bg-secondary);">
+<main id="primary" class="site-main" style="padding-top: 100px; background-color: var(--bg-secondary);">
     <!-- Hero / Título de la página -->
     <header class="page-header" style="background-color: var(--bg-dark); color: white; padding: 60px 0; text-align: center;">
         <div class="wrap">
@@ -85,22 +85,22 @@ get_header(); ?>
                 <form class="cform" id="contactPageForm">
                     <div class="cform__row">
                         <div class="fg">
-                            <label><?php echo mt_translate( 'Nombre y apellidos', 'Full Name' ); ?></label>
-                            <input type="text" name="nombre" required>
+                            <label for="contact-page-nombre"><?php echo mt_translate( 'Nombre y apellidos', 'Full Name' ); ?></label>
+                            <input id="contact-page-nombre" type="text" name="nombre" autocomplete="name" required>
                         </div>
                         <div class="fg">
-                            <label><?php echo mt_translate( 'Correo electrónico', 'Email address' ); ?></label>
-                            <input type="email" name="email" required>
+                            <label for="contact-page-email"><?php echo mt_translate( 'Correo electrónico', 'Email address' ); ?></label>
+                            <input id="contact-page-email" type="email" name="email" autocomplete="email" required>
                         </div>
                     </div>
                     <div class="cform__row">
                         <div class="fg">
-                            <label><?php echo mt_translate( 'Teléfono', 'Phone' ); ?></label>
-                            <input type="tel" name="telefono">
+                            <label for="contact-page-telefono"><?php echo mt_translate( 'Teléfono', 'Phone' ); ?></label>
+                            <input id="contact-page-telefono" type="tel" name="telefono" autocomplete="tel">
                         </div>
                         <div class="fg">
-                            <label><?php echo mt_translate( 'Servicio que necesitas', 'Service required' ); ?></label>
-                            <select name="servicio" required>
+                            <label for="contact-page-servicio"><?php echo mt_translate( 'Servicio que necesitas', 'Service required' ); ?></label>
+                            <select id="contact-page-servicio" name="servicio" required>
                                 <option value=""><?php echo mt_translate( 'Selecciona una opción', 'Select an option' ); ?></option>
                                 <option value="aeropuerto"><?php echo mt_translate( 'Traslado al aeropuerto', 'Airport transfer' ); ?></option>
                                 <option value="puerto"><?php echo mt_translate( 'Traslado al puerto', 'Port transfer' ); ?></option>
@@ -113,15 +113,15 @@ get_header(); ?>
                         </div>
                     </div>
                     <div class="fg">
-                        <label><?php echo mt_translate( 'Mensaje', 'Message' ); ?></label>
-                        <textarea name="mensaje" placeholder="<?php echo mt_translate( 'Indica origen, destino, fecha, hora, pasajeros, equipaje y cualquier petición especial.', 'Indicate origin, destination, date, time, passengers, luggage, and any special requests.' ); ?>" required></textarea>
+                        <label for="contact-page-mensaje"><?php echo mt_translate( 'Mensaje', 'Message' ); ?></label>
+                        <textarea id="contact-page-mensaje" name="mensaje" placeholder="<?php echo mt_translate( 'Indica origen, destino, fecha, hora, pasajeros, equipaje y cualquier petición especial.', 'Indicate origin, destination, date, time, passengers, luggage, and any special requests.' ); ?>" rows="5" required></textarea>
                     </div>
                     <div class="cform__check">
                         <input type="checkbox" id="gdpr_contact" name="gdpr_aceptado" value="1" required>
                         <label for="gdpr_contact"><?php echo mt_translate( 'He leído y acepto la Política de Privacidad y el tratamiento de mis datos.', 'I have read and accept the Privacy Policy and data processing.' ); ?></label>
                     </div>
                     <button type="submit" class="btn btn-primary cform__submit"><?php echo mt_translate( 'Enviar solicitud', 'Send request' ); ?></button>
-                    <div class="cform__ok"><?php echo mt_translate( 'Gracias. Hemos recibido tu solicitud y te responderemos lo antes posible.', 'Thank you. We have received your request and will reply as soon as possible.' ); ?></div>
+                    <div class="cform__ok" role="status" aria-live="polite"><?php echo mt_translate( 'Gracias. Hemos recibido tu solicitud y te responderemos lo antes posible.', 'Thank you. We have received your request and will reply as soon as possible.' ); ?></div>
                 </form>
             </div>
         </div>

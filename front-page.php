@@ -1178,7 +1178,7 @@ a.contact__val:hover{color:var(--blue);}
           <label for="gdpr">He leído y acepto la Política de Privacidad y el tratamiento de mis datos.</label>
         </div>
         <button type="submit" class="btn btn-solid cform__submit">Enviar solicitud</button>
-        <div class="cform__ok">Gracias. Hemos recibido tu solicitud y te responderemos lo antes posible.</div>
+        <div class="cform__ok" role="status" aria-live="polite">Gracias. Hemos recibido tu solicitud y te responderemos lo antes posible.</div>
       </form>
     </div>
   </div>

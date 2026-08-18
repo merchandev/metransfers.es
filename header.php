@@ -203,7 +203,7 @@ body .hero-booking-card {
                 loading="lazy"
             >
         </div>
-        <a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary mob-menu-cta" tabindex="-1">Reservar Ya</a>
+        <a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary mob-menu-cta">Reservar Ya</a>
     </div>
 </div>
 <div id="mob-overlay" class="mob-overlay" aria-hidden="true"></div>
