@@ -28,7 +28,8 @@ if ( ! defined('MT_LANGS') ) {
 if ( ! defined('MT_ACTIVE_LANGS') ) {
     // All languages active. Translation via Google Cloud Translate (mt_google_api_key option).
     // Without an API key, content is shown in Spanish (safe fallback, no errors).
-    define( 'MT_ACTIVE_LANGS', [ 'es', 'en', 'fr', 'de', 'it', 'pt', 'ca', 'ru', 'zh', 'ja' ] );
+    // Limitamos temporalmente a 'es' hasta tener las traducciones reales
+    define( 'MT_ACTIVE_LANGS', [ 'es' ] );
 }
 
 if ( ! defined( 'MT_SEO_LANGS' ) ) {
