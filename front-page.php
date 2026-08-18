@@ -545,7 +545,7 @@ a.contact__val:hover{color:var(--blue);}
 
 <!-- ══════════════════════════ 1. HERO ══════════════════════════ -->
 <section class="hero" id="reservar">
-  <img src="<?php echo $img; ?>/V2.webp" alt="Traslados privados en Barcelona" class="hero__bg" fetchpriority="high" decoding="sync">
+  <img src="https://metransfers.es/wp-content/uploads/2026/07/airport-transfer-me-tranfers-me-tranfers-barcelona-espana.webp" alt="Traslados privados en Barcelona" class="hero__bg" fetchpriority="high" decoding="sync">
   <div class="hero__grad"></div>
   <div class="wrap">
     <div class="hero__grid">

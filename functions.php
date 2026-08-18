@@ -1430,7 +1430,7 @@ add_action( 'wp_head', function() {
 		}
 
 		// Preload LCP image for front page
-		echo '<link rel="preload" as="image" href="' . esc_url( get_template_directory_uri() . '/assets/img/V2.webp' ) . '" fetchpriority="high">' . "\n";
+		echo '<link rel="preload" as="image" href="https://metransfers.es/wp-content/uploads/2026/07/airport-transfer-me-tranfers-me-tranfers-barcelona-espana.webp" fetchpriority="high">' . "\n";
 	}
 
 	// 2. Breadcrumbs & Service (Páginas de servicio, tours, destinos, rutas)
