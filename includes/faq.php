@@ -92,7 +92,7 @@ function me_transfers_get_faq_items() {
 			'question' => '¿Cómo gestionan mis datos personales?',
 			'answer'   => array(
 				'En Metransfers Barcelona nos tomamos muy en serio la privacidad de tus datos.',
-				'Puedes consultar nuestra polÍtica de privacidad completa desde el enlace correspondiente del sitio.',
+				'Puedes consultar nuestra política de privacidad completa desde el enlace correspondiente del sitio.',
 			),
 		),
 	);

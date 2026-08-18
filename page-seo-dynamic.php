@@ -18,7 +18,7 @@ $tipo_servicio = 'Taxis';
 $tipo_verbo = 'Taxis';
 $keyword = 'Traslado privado';
 
-// Determinar el destino usando la lógica del tÍtulo
+// Determinar el destino usando la lógica del título
 // Patrón 1: "MeTransfers Barcelona - Taxis Barcelona a [Destino]"
 // Patrón 2: "MeTransfers Barcelona - Traslado privado a [Destino] desde Barcelona"
 if ( strpos($page_title, 'Taxis Barcelona a') !== false ) {

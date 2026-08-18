@@ -139,7 +139,7 @@ get_header(); ?>
             
             <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;">Tu traslado directo a Port Aventura</h2>
             <p>
-                OlvÍdate de trenes con horarios inflexibles o autobuses llenos de gente. Te recogemos en la puerta de tu hotel en Barcelona, o directamente en el Aeropuerto de El Prat, y te llevamos directamente a la entrada de Port Aventura o a tu hotel dentro del parque.
+                Olvídate de trenes con horarios inflexibles o autobuses llenos de gente. Te recogemos en la puerta de tu hotel en Barcelona, o directamente en el Aeropuerto de El Prat, y te llevamos directamente a la entrada de Port Aventura o a tu hotel dentro del parque.
             </p>
             <p>
                 Con nuestro servicio de <strong>traslado privado a Port Aventura</strong>, el viaje dura aproximadamente 1 hora y 15 minutos, dependiendo del tráfico. Llegarás relajado y listo para subir a las atracciones más emocionantes de Europa.
@@ -177,13 +177,13 @@ get_header(); ?>
         <div class="rev__grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
           <div class="rev__card" style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
             <div class="rev__stars" style="color: #FBBF24; font-size: 1.2rem; margin-bottom: 15px;">★★★★★</div>
-            <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"Contratamos el servicio desde nuestro hotel en Barcelona hasta el Hotel Colorado Creek en Port Aventura. La furgoneta era nuevÍsima, muy amplia y el chófer muy amable con los niños."</p>
+            <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"Contratamos el servicio desde nuestro hotel en Barcelona hasta el Hotel Colorado Creek en Port Aventura. La furgoneta era nuevísima, muy amplia y el chófer muy amable con los niños."</p>
             <span class="rev__author" style="display: block; font-weight: bold; color: #1E293B;">Laura G.</span>
             <span class="rev__meta" style="font-size: 0.9rem; color: #94A3B8;">España · Julio 2024</span>
           </div>
           <div class="rev__card" style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
             <div class="rev__stars" style="color: #FBBF24; font-size: 1.2rem; margin-bottom: 15px;">★★★★★</div>
-            <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"Nos recogieron en el aeropuerto y fuimos directos al parque. Pedimos dos sillas para niños y las tenÍan preparadas. Fue súper cómodo evitar el tren cargados con maletas y carritos."</p>
+            <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"Nos recogieron en el aeropuerto y fuimos directos al parque. Pedimos dos sillas para niños y las tenían preparadas. Fue súper cómodo evitar el tren cargados con maletas y carritos."</p>
             <span class="rev__author" style="display: block; font-weight: bold; color: #1E293B;">Carlos M.</span>
             <span class="rev__meta" style="font-size: 0.9rem; color: #94A3B8;">México · Agosto 2024</span>
           </div>

@@ -13,7 +13,7 @@ get_header();
 	<!-- Blog Hero Banner -->
 	<section class="blog-index-hero">
 		<div class="container blog-index-hero__inner">
-			<span class="blog-index-eyebrow"><?php esc_html_e( 'GuÍas, consejos y noticias', 'me-transfers' ); ?></span>
+			<span class="blog-index-eyebrow"><?php esc_html_e( 'Guías, consejos y noticias', 'me-transfers' ); ?></span>
 			<h1 class="blog-index-title"><?php esc_html_e( 'Blog de MeTransfers', 'me-transfers' ); ?></h1>
 			<p class="blog-index-intro"><?php esc_html_e( 'Descubre los mejores destinos, rutas y consejos de viaje para disfrutar de Barcelona y toda España en traslado privado de lujo.', 'me-transfers' ); ?></p>
 		</div>
@@ -66,7 +66,7 @@ get_header();
 										<?php echo esc_html( get_the_date( 'd M Y' ) ); ?>
 									</time>
 									<a href="<?php the_permalink(); ?>" class="blog-index-card__link">
-										<?php esc_html_e( 'Leer artÍculo', 'me-transfers' ); ?>
+										<?php esc_html_e( 'Leer artículo', 'me-transfers' ); ?>
 										<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
 									</a>
 								</div>
@@ -86,7 +86,7 @@ get_header();
 
 			<?php else : ?>
 				<div class="blog-index-empty">
-					<p><?php esc_html_e( 'No hay entradas publicadas todavÍa.', 'me-transfers' ); ?></p>
+					<p><?php esc_html_e( 'No hay entradas publicadas todavía.', 'me-transfers' ); ?></p>
 				</div>
 			<?php endif; ?>
 		</div>

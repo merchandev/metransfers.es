@@ -150,7 +150,7 @@ get_header(); ?>
 
             <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">Elige el vehículo ideal para tu salida desde Barcelona</h3>
             <p>
-                Disponemos de berlinas ejecutivas para 1–3 pasajeros, MINI VAN «V» Class para grupos de hasta 7 personas y vehículos BUSINESS CLASS para servicios VIP y corporativos. Si viajas con mucho equipaje, material deportivo o equipamiento especial, indÍcanoslo antes de confirmar para asignarte el vehículo más adecuado.
+                Disponemos de berlinas ejecutivas para 1–3 pasajeros, MINI VAN «V» Class para grupos de hasta 7 personas y vehículos BUSINESS CLASS para servicios VIP y corporativos. Si viajas con mucho equipaje, material deportivo o equipamiento especial, indícanoslo antes de confirmar para asignarte el vehículo más adecuado.
             </p>
 
             <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
@@ -179,12 +179,12 @@ get_header(); ?>
           <div class="rev__card" style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
             <div class="rev__stars" style="color: #FBBF24; font-size: 1.2rem; margin-bottom: 15px;">★★★★★</div>
             <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"Reservamos un traslado al puerto de cruceros para nuestra familia. Espacio de sobra en la MINI VAN «V» Class y una atención al cliente perfecta por WhatsApp para confirmar los detalles."</p>
-            <span class="rev__author" style="display: block; font-weight: bold; color: #1E293B;">MarÍa R.</span>
+            <span class="rev__author" style="display: block; font-weight: bold; color: #1E293B;">María R.</span>
             <span class="rev__meta" style="font-size: 0.9rem; color: #94A3B8;">España · Septiembre 2024</span>
           </div>
           <div class="rev__card" style="background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
             <div class="rev__stars" style="color: #FBBF24; font-size: 1.2rem; margin-bottom: 15px;">★★★★★</div>
-            <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"Hicimos el tour a Montserrat y fue espectacular. El conductor conocÍa perfectamente la ruta, nos dio consejos útiles y adaptó los tiempos a nuestro ritmo. Un servicio de 10."</p>
+            <p class="rev__quote" style="font-style: italic; color: #475569; margin-bottom: 20px;">"Hicimos el tour a Montserrat y fue espectacular. El conductor conocía perfectamente la ruta, nos dio consejos útiles y adaptó los tiempos a nuestro ritmo. Un servicio de 10."</p>
             <span class="rev__author" style="display: block; font-weight: bold; color: #1E293B;">Anna J.</span>
             <span class="rev__meta" style="font-size: 0.9rem; color: #94A3B8;">Estados Unidos · Octubre 2024</span>
           </div>

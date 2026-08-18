@@ -83,7 +83,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                 </div>
                 <h1 class="ruta-hero__title"><?php echo wp_kses_post( $h1_text ); ?></h1>
                 <p class="ruta-hero__subtitle">
-                    Vehículo Mercedes-Benz, conductor profesional y precio cerrado. Sin taxÍmetros ni sorpresas.
+                    Vehículo Mercedes-Benz, conductor profesional y precio cerrado. Sin taxímetros ni sorpresas.
                 </p>
 
                 <!-- BREADCRUMB ORIGEN → DESTINO -->
@@ -225,7 +225,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                     </div>
                     <div class="ruta-feature__body">
                         <h3>Precio Cerrado</h3>
-                        <p>El precio que aceptas en tu reserva es el que pagas. Sin taxÍmetros, sin tarifas dinámicas.</p>
+                        <p>El precio que aceptas en tu reserva es el que pagas. Sin taxímetros, sin tarifas dinámicas.</p>
                     </div>
                 </div>
                 <div class="ruta-feature">

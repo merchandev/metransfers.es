@@ -8,7 +8,7 @@
 get_header(); ?>
 
 <main class="site-main" style="padding-top: 100px; background-color: var(--bg-secondary);">
-    <!-- Hero / TÍtulo de la página -->
+    <!-- Hero / Título de la página -->
     <header class="page-header" style="background-color: var(--bg-dark); color: white; padding: 60px 0; text-align: center;">
         <div class="wrap">
             <h1 class="page-title" style="margin: 0; font-size: clamp(2rem, 5vw, 3rem);"><?php echo mt_translate( 'Contacto', 'Contact' ); ?></h1>
@@ -118,7 +118,7 @@ get_header(); ?>
                     </div>
                     <div class="cform__check">
                         <input type="checkbox" id="gdpr_contact" name="gdpr_aceptado" value="1" required>
-                        <label for="gdpr_contact"><?php echo mt_translate( 'He leÍdo y acepto la PolÍtica de Privacidad y el tratamiento de mis datos.', 'I have read and accept the Privacy Policy and data processing.' ); ?></label>
+                        <label for="gdpr_contact"><?php echo mt_translate( 'He leído y acepto la Política de Privacidad y el tratamiento de mis datos.', 'I have read and accept the Privacy Policy and data processing.' ); ?></label>
                     </div>
                     <button type="submit" class="btn btn-primary cform__submit"><?php echo mt_translate( 'Enviar solicitud', 'Send request' ); ?></button>
                     <div class="cform__ok"><?php echo mt_translate( 'Gracias. Hemos recibido tu solicitud y te responderemos lo antes posible.', 'Thank you. We have received your request and will reply as soon as possible.' ); ?></div>

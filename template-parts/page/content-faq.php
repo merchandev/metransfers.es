@@ -38,7 +38,7 @@ $faq_items        = me_transfers_get_faq_items();
 					<span class="faq-page-kicker"><?php esc_html_e( 'Centro de ayuda', 'me-transfers' ); ?></span>
 					<h1 class="faq-page-title">Preguntas Frecuentes</h1>
 					<p class="faq-page-summary">
-						Encuentra respuestas claras y rápidas a las dudas más comunes sobre nuestros servicios de transporte privado. Desde reservas y tarifas hasta detalles sobre nuestras rutas y vehículos, aquÍ encontrarás toda la información que necesitas para planificar tu traslado con metransfers.es. ¿Tienes más preguntas frecuentes? Contáctanos y estaremos encantados de ayudarte.
+						Encuentra respuestas claras y rápidas a las dudas más comunes sobre nuestros servicios de transporte privado. Desde reservas y tarifas hasta detalles sobre nuestras rutas y vehículos, aquí encontrarás toda la información que necesitas para planificar tu traslado con metransfers.es. ¿Tienes más preguntas frecuentes? Contáctanos y estaremos encantados de ayudarte.
 					</p>
 				</div>
 			</section>
@@ -66,15 +66,15 @@ $faq_items        = me_transfers_get_faq_items();
 									<?php if ( 2 === $index ) : ?>
 										<p>
 											<?php if ( $cancellation_url ) : ?>
-												Puedes acceder a nuestra polÍtica de cancelación completa <a href="<?php echo esc_url( $cancellation_url ); ?>">haciendo clic aquÍ</a>.
+												Puedes acceder a nuestra política de cancelación completa <a href="<?php echo esc_url( $cancellation_url ); ?>">haciendo clic aquí</a>.
 											<?php else : ?>
-												Puedes consultar nuestra polÍtica de cancelación completa contactando con nuestro equipo.
+												Puedes consultar nuestra política de cancelación completa contactando con nuestro equipo.
 											<?php endif; ?>
 										</p>
 									<?php endif; ?>
 
 									<?php if ( 10 === $index && $privacy_url ) : ?>
-										<p>Puedes acceder a nuestra polÍtica de privacidad completa <a href="<?php echo esc_url( $privacy_url ); ?>">haciendo clic aquÍ</a>.</p>
+										<p>Puedes acceder a nuestra política de privacidad completa <a href="<?php echo esc_url( $privacy_url ); ?>">haciendo clic aquí</a>.</p>
 									<?php endif; ?>
 								</div>
 							</details>

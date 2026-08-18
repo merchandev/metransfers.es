@@ -27,7 +27,7 @@ function me_transfers_get_destination_catalog() {
 
 	$catalog = array();
 
-	// 1. Destinos configurados manualmente con contenido especÍfico y SEO local
+	// 1. Destinos configurados manualmente con contenido específico y SEO local
 	$catalog['salou'] = array(
 		'title'       => 'Salou',
 		'slug'        => 'salou',
@@ -58,7 +58,7 @@ function me_transfers_get_destination_catalog() {
 		),
 	);
 
-	// 2. Destinos genéricos que aún no tienen contenido especÍfico
+	// 2. Destinos genéricos que aún no tienen contenido específico
 	$generic_titles = array(
 		'Madrid', 'Palamos', 'Baqueira Beret', 'Tossa de Mar', 'La Escala', 'Cap de Creus',
 		'Calella de Palafrugell', 'Begur', 'Costa Brava', 'Santa Susanna', 'Cadaques', 'Marbella',
@@ -448,7 +448,7 @@ function me_transfers_render_destination_request_form( $destination ) {
 						<span>
 							<?php esc_html_e( 'Acepto que mis datos se utilicen para responder a esta solicitud.', 'me-transfers' ); ?>
 							<?php if ( $privacy_url ) : ?>
-								<a href="<?php echo esc_url( $privacy_url ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'PolÍtica de privacidad', 'me-transfers' ); ?></a>
+								<a href="<?php echo esc_url( $privacy_url ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Política de privacidad', 'me-transfers' ); ?></a>
 							<?php endif; ?>
 						</span>
 					</label>

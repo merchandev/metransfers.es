@@ -422,8 +422,8 @@
 			<p>&copy; <?php echo date("Y"); ?> <strong>MeTransfers Barcelona</strong>.</p>
 			
 			<nav class="footer-legal-links" aria-label="Legal">
-				<a href="<?php echo esc_url( home_url( '/politica-de-privacidad' ) ); ?>">PolÍtica de privacidad</a>
-				<a href="<?php echo esc_url( home_url( '/politica-de-cookies' ) ); ?>">PolÍtica de cookies</a>
+				<a href="<?php echo esc_url( home_url( '/politica-de-privacidad' ) ); ?>">Política de privacidad</a>
+				<a href="<?php echo esc_url( home_url( '/politica-de-cookies' ) ); ?>">Política de cookies</a>
 				<a href="<?php echo esc_url( home_url( '/aviso-legal' ) ); ?>">Aviso legal</a>
 				<a href="<?php echo esc_url( home_url( '/terminos-y-condiciones' ) ); ?>">Términos y condiciones</a>
 			</nav>
@@ -468,7 +468,7 @@
                 <div class="wa-fg" style="margin-bottom:15px; font-size:13px;">
                     <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
                         <input type="checkbox" name="gdpr_aceptado" value="1" required style="width:auto; margin:0;">
-                        <span>He leÍdo y acepto la polÍtica de privacidad.</span>
+                        <span>He leído y acepto la política de privacidad.</span>
                     </label>
                 </div>
                 <button type="submit" class="wa-submit">

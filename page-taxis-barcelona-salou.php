@@ -142,7 +142,7 @@ get_header(); ?>
                 Llegar a la Costa Dorada desde Barcelona nunca fue tan sencillo. Evita las largas colas para el autobús y las incómodas combinaciones de trenes con equipaje. Nuestro servicio de <strong>traslados a Salou</strong> está pensado para que tu descanso comience desde el momento en que aterrizas.
             </p>
             <p>
-                Nuestros conductores monitorizan los vuelos de llegada al Aeropuerto de El Prat, por lo que incluso si tu vuelo se retrasa, te estaremos esperando en la terminal de llegadas con un cartel con tu nombre. Desde allÍ, el trayecto hasta Salou dura poco más de una hora por autopista (AP-7).
+                Nuestros conductores monitorizan los vuelos de llegada al Aeropuerto de El Prat, por lo que incluso si tu vuelo se retrasa, te estaremos esperando en la terminal de llegadas con un cartel con tu nombre. Desde allí, el trayecto hasta Salou dura poco más de una hora por autopista (AP-7).
             </p>
             
             <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">La mejor opción para familias y grupos</h3>

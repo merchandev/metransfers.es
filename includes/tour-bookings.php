@@ -85,7 +85,7 @@ function me_transfers_ajax_tour_booking() {
 	// Create CPT entry
 	$post_id = wp_insert_post( array(
 		'post_type'   => 'mt_tour_booking',
-		'post_title'  => sprintf( '%s â€” %s', $name, $tour_name ),
+		'post_title'  => sprintf( '%s — %s', $name, $tour_name ),
 		'post_status' => 'private',
 	) );
 
@@ -104,14 +104,14 @@ function me_transfers_ajax_tour_booking() {
 	$admin_email = get_option( 'admin_email' );
 	$subject     = 'ðŸ· Nueva Reserva de Tour: ' . $tour_name;
 	$message     = "Has recibido una nueva reserva de tour.\n\n";
-	$message    .= "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n";
+	$message    .= "━━━━━━━━━━━━━━━━━\n";
 	$message    .= "Tour: $tour_name\n";
 	$message    .= "Nombre: $name\n";
-	$message    .= "PaÍs: $country\n";
+	$message    .= "País: $country\n";
 	$message    .= "Teléfono: $phone\n";
 	$message    .= "Email: $email\n";
 	$message    .= "Fecha deseada: $tour_date\n";
-	$message    .= "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n\n";
+	$message    .= "━━━━━━━━━━━━━━━━━\n\n";
 	$message    .= 'Ver en admin: ' . admin_url( 'post.php?post=' . $post_id . '&action=edit' );
 
 	$headers = array( 'Reply-To: ' . $name . ' <' . $email . '>' );
@@ -125,18 +125,18 @@ function me_transfers_ajax_tour_booking() {
 	// Build WhatsApp URL
 	$wa_number = '34662024136';
 	$wa_text   = "ðŸ· *Reserva de Tour*\n";
-	$wa_text  .= "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n";
+	$wa_text  .= "━━━━━━━━━━━━━━━━━\n";
 	$wa_text  .= "ðŸ“ Tour: $tour_name\n";
 	$wa_text  .= "ðŸ‘¤ Nombre: $name\n";
 	if ( $country ) {
-		$wa_text .= "ðŸŒ PaÍs: $country\n";
+		$wa_text .= "ðŸŒ País: $country\n";
 	}
 	$wa_text  .= "ðŸ“ž Teléfono: $phone\n";
 	$wa_text  .= "ðŸ“§ Email: $email\n";
 	if ( $tour_date ) {
 		$wa_text .= "ðŸ“… Fecha deseada: $tour_date\n";
 	}
-	$wa_text  .= "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n";
+	$wa_text  .= "━━━━━━━━━━━━━━━━━\n";
 	$wa_text  .= "Quiero reservar este tour. ¿Tienen disponibilidad?";
 
 	$wa_url = 'https://wa.me/' . $wa_number . '?text=' . rawurlencode( $wa_text );
@@ -182,8 +182,8 @@ function me_transfers_render_tour_booking_meta_box( $post ) {
 			<td><?php echo esc_html( $name ); ?></td>
 		</tr>
 		<tr>
-			<th><label>ðŸŒ PaÍs</label></th>
-			<td><?php echo esc_html( $country ?: 'â€”' ); ?></td>
+			<th><label>ðŸŒ País</label></th>
+			<td><?php echo esc_html( $country ?: '—' ); ?></td>
 		</tr>
 		<tr>
 			<th><label>ðŸ“ž Teléfono</label></th>
@@ -191,7 +191,7 @@ function me_transfers_render_tour_booking_meta_box( $post ) {
 				<?php if ( $phone ) : ?>
 					<a href="tel:<?php echo esc_attr( $phone ); ?>"><?php echo esc_html( $phone ); ?></a>
 				<?php else : ?>
-					â€”
+					—
 				<?php endif; ?>
 			</td>
 		</tr>
@@ -201,7 +201,7 @@ function me_transfers_render_tour_booking_meta_box( $post ) {
 		</tr>
 		<tr>
 			<th><label>ðŸ“… Fecha deseada</label></th>
-			<td><?php echo esc_html( $date ?: 'â€”' ); ?></td>
+			<td><?php echo esc_html( $date ?: '—' ); ?></td>
 		</tr>
 		<tr>
 			<th><label>ðŸ“‹ Recibido</label></th>
@@ -245,14 +245,14 @@ function me_transfers_tour_booking_column_data( $column, $post_id ) {
 			break;
 		case 'phone':
 			$phone = get_post_meta( $post_id, '_customer_phone', true );
-			echo $phone ? '<a href="tel:' . esc_attr( $phone ) . '">' . esc_html( $phone ) . '</a>' : 'â€”';
+			echo $phone ? '<a href="tel:' . esc_attr( $phone ) . '">' . esc_html( $phone ) . '</a>' : '—';
 			break;
 		case 'email':
 			$email = get_post_meta( $post_id, '_customer_email', true );
 			echo '<a href="mailto:' . esc_attr( $email ) . '">' . esc_html( $email ) . '</a>';
 			break;
 		case 'tour_date':
-			echo esc_html( get_post_meta( $post_id, '_tour_date', true ) ?: 'â€”' );
+			echo esc_html( get_post_meta( $post_id, '_tour_date', true ) ?: '—' );
 			break;
 	}
 }

@@ -154,7 +154,7 @@ get_header(); ?>
                 <li><strong>Tossa de Mar:</strong> Famosa por su impresionante castillo medieval junto al mar.</li>
                 <li><strong>Platja d'Aro y Palamós:</strong> Excelentes opciones gastronómicas y de tiendas de lujo.</li>
                 <li><strong>Begur, Pals y L'Escala:</strong> Encanto histórico, ruinas de Empúries y calas espectaculares de aguas cristalinas.</li>
-                <li><strong>Cadaqués y Roses:</strong> El encanto del Cap de Creus y la tierra que inspiró a Salvador DalÍ.</li>
+                <li><strong>Cadaqués y Roses:</strong> El encanto del Cap de Creus y la tierra que inspiró a Salvador Dalí.</li>
             </ul>
 
             <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">La comodidad de un coche privado</h3>
@@ -165,7 +165,7 @@ get_header(); ?>
             <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
                 <h4 style="margin-top:0; color:#0066CC;">INFORMACIÓN: Chófer por horas o excursiones de un día</h4>
                 <p style="margin-bottom:0;">
-                    Si prefieres no alojarte allÍ pero deseas explorar la Costa Brava durante un día, puedes contratar nuestro servicio de "Chófer por horas". Tu conductor personal te llevará a los pueblos que elijas, esperará por ti y te traerá de vuelta a Barcelona por la tarde.
+                    Si prefieres no alojarte allí pero deseas explorar la Costa Brava durante un día, puedes contratar nuestro servicio de "Chófer por horas". Tu conductor personal te llevará a los pueblos que elijas, esperará por ti y te traerá de vuelta a Barcelona por la tarde.
                 </p>
             </div>
 

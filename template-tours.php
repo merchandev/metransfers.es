@@ -30,7 +30,7 @@ get_header(); ?>
 						</div>
 					</div>
 					<div class="tour-content" style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column;">
-						<p style="color: #475569; line-height: 1.6; font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1;">Descubre Barcelona con un recorrido por sus monumentos icónicos, como la Sagrada Familia, el Barrio Gótico y el Paseo de Gracia. Disfruta de la arquitectura de GaudÍ y la vibrante cultura catalana en un tour inolvidable.</p>
+						<p style="color: #475569; line-height: 1.6; font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1;">Descubre Barcelona con un recorrido por sus monumentos icónicos, como la Sagrada Familia, el Barrio Gótico y el Paseo de Gracia. Disfruta de la arquitectura de Gaudí y la vibrante cultura catalana en un tour inolvidable.</p>
 						<a href="#contacto" class="tour-btn" style="color: #004E9A; font-weight: 700; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid transparent; transition: border-color 0.3s ease; align-self: flex-start; padding-bottom: 2px;">DETALLES</a>
 					</div>
 				</div>
@@ -56,7 +56,7 @@ get_header(); ?>
 						</div>
 					</div>
 					<div class="tour-content" style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column;">
-						<p style="color: #475569; line-height: 1.6; font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1;">Sumérgete en las aguas cristalinas y paisajes únicos de la Costa Brava. Recorre encantadores pueblos pesqueros, calas escondidas y disfruta de la mejor gastronomía mediterránea en un entorno paradisÍaco.</p>
+						<p style="color: #475569; line-height: 1.6; font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1;">Sumérgete en las aguas cristalinas y paisajes únicos de la Costa Brava. Recorre encantadores pueblos pesqueros, calas escondidas y disfruta de la mejor gastronomía mediterránea en un entorno paradisíaco.</p>
 						<a href="#contacto" class="tour-btn" style="color: #004E9A; font-weight: 700; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid transparent; transition: border-color 0.3s ease; align-self: flex-start; padding-bottom: 2px;">DETALLES</a>
 					</div>
 				</div>
@@ -69,7 +69,7 @@ get_header(); ?>
 						</div>
 					</div>
 					<div class="tour-content" style="padding: 25px; flex-grow: 1; display: flex; flex-direction: column;">
-						<p style="color: #475569; line-height: 1.6; font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1;">Pasea por la histórica ciudad de Girona, con su impresionante casco antiguo, el barrio judÍo y los coloridos puentes sobre el rÍo Onyar. Un destino lleno de historia, cultura y escenarios de pelÍcula.</p>
+						<p style="color: #475569; line-height: 1.6; font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1;">Pasea por la histórica ciudad de Girona, con su impresionante casco antiguo, el barrio judío y los coloridos puentes sobre el río Onyar. Un destino lleno de historia, cultura y escenarios de película.</p>
 						<a href="#contacto" class="tour-btn" style="color: #004E9A; font-weight: 700; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid transparent; transition: border-color 0.3s ease; align-self: flex-start; padding-bottom: 2px;">DETALLES</a>
 					</div>
 				</div>

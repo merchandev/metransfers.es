@@ -610,7 +610,7 @@ a.contact__val:hover{color:var(--blue);}
         <span class="srv__num">01</span>
         <div class="srv__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
         <h3>Traslados al Aeropuerto desde Barcelona</h3>
-        <p>Recogida privada en tu hotel u oficina en Barcelona con destino a El Prat. Seguimiento del vuelo, bienvenida en la terminal y hasta 60 min de espera de cortesÍa en llegadas.</p>
+        <p>Recogida privada en tu hotel u oficina en Barcelona con destino a El Prat. Seguimiento del vuelo, bienvenida en la terminal y hasta 60 min de espera de cortesía en llegadas.</p>
         <a href="/traslados-aeropuerto/" class="btn-link">Ver traslados al aeropuerto <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
@@ -926,12 +926,12 @@ a.contact__val:hover{color:var(--blue);}
       <div class="rev__card">
         <div class="rev__stars">★★★★★</div>
         <p class="rev__quote">"Reservamos un traslado al puerto de cruceros para nuestra familia. Espacio de sobra en la MINI VAN «V» Class y una atención al cliente perfecta por WhatsApp para confirmar los detalles."</p>
-        <span class="rev__author">MarÍa R.</span>
+        <span class="rev__author">María R.</span>
         <span class="rev__meta">España · Septiembre 2024 · Traslado puerto cruceros</span>
       </div>
       <div class="rev__card">
         <div class="rev__stars">★★★★★</div>
-        <p class="rev__quote">"Hicimos el tour a Montserrat y fue espectacular. El conductor conocÍa perfectamente la ruta, nos dio consejos útiles y adaptó los tiempos a nuestro ritmo. Un servicio de 10."</p>
+        <p class="rev__quote">"Hicimos el tour a Montserrat y fue espectacular. El conductor conocía perfectamente la ruta, nos dio consejos útiles y adaptó los tiempos a nuestro ritmo. Un servicio de 10."</p>
         <span class="rev__author">Anna J.</span>
         <span class="rev__meta">Estados Unidos · Octubre 2024 · Tour Montserrat</span>
       </div>
@@ -950,7 +950,7 @@ a.contact__val:hover{color:var(--blue);}
     <div class="faq__wrap">
       <div class="faq__item">
         <button class="faq__q">¿Desde dónde podéis recogerme en Barcelona? <span class="faq__icon"></span></button>
-        <div class="faq__a">Te recogemos en cualquier punto de Barcelona: hotel, apartamento, oficina, Aeropuerto El Prat, Puerto de Cruceros o estación de tren. Solo indÍcanos la dirección exacta y la hora al hacer la reserva.</div>
+        <div class="faq__a">Te recogemos en cualquier punto de Barcelona: hotel, apartamento, oficina, Aeropuerto El Prat, Puerto de Cruceros o estación de tren. Solo indícanos la dirección exacta y la hora al hacer la reserva.</div>
       </div>
       <div class="faq__item">
         <button class="faq__q">¿Podéis llevarme desde Barcelona al Aeropuerto de El Prat? <span class="faq__icon"></span></button>
@@ -982,7 +982,7 @@ a.contact__val:hover{color:var(--blue);}
       </div>
       <div class="faq__item">
         <button class="faq__q">¿Puedo contratar un coche con chófer por horas? <span class="faq__icon"></span></button>
-        <div class="faq__a">Sí. El servicio por horas es ideal para reuniones, cenas, compras, eventos o agendas con varias paradas. EnvÍanos el horario aproximado y el recorrido para preparar una propuesta.</div>
+        <div class="faq__a">Sí. El servicio por horas es ideal para reuniones, cenas, compras, eventos o agendas con varias paradas. Envíanos el horario aproximado y el recorrido para preparar una propuesta.</div>
       </div>
       <div class="faq__item">
         <button class="faq__q">¿Qué formas de pago están disponibles? <span class="faq__icon"></span></button>
@@ -1073,7 +1073,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="fg"><label>Mensaje</label><textarea name="mensaje" placeholder="Indica origen, destino, fecha, hora, pasajeros, equipaje y cualquier petición especial." required></textarea></div>
         <div class="cform__check">
           <input type="checkbox" id="gdpr" name="gdpr_aceptado" value="1" required>
-          <label for="gdpr">He leÍdo y acepto la PolÍtica de Privacidad y el tratamiento de mis datos.</label>
+          <label for="gdpr">He leído y acepto la Política de Privacidad y el tratamiento de mis datos.</label>
         </div>
         <button type="submit" class="btn btn-solid cform__submit">Enviar solicitud</button>
         <div class="cform__ok">Gracias. Hemos recibido tu solicitud y te responderemos lo antes posible.</div>

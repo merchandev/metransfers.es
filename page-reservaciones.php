@@ -8,7 +8,7 @@
 get_header(); ?>
 
 <main class="site-main" style="padding-top: 100px; background-color: var(--bg-secondary);">
-    <!-- Hero / TÍtulo de la página -->
+    <!-- Hero / Título de la página -->
     <header class="page-header" style="background-color: var(--bg-dark); color: white; padding: 60px 0; text-align: center;">
         <div class="wrap">
             <h1 class="page-title" style="margin: 0; font-size: clamp(2rem, 5vw, 3rem);"><?php echo mt_translate( 'Reservas Online', 'Online Reservations' ); ?></h1>
@@ -57,7 +57,7 @@ get_header(); ?>
 </main>
 
 <style>
-/* Ajustes especÍficos para que el panel se vea bien como elemento central de la página */
+/* Ajustes específicos para que el panel se vea bien como elemento central de la página */
 .page-template-page-reservaciones .hero__panel {
     box-shadow: 0 15px 40px rgba(0,0,0,0.1);
     border: 1px solid rgba(0,0,0,0.05);

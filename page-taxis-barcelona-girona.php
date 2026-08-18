@@ -139,10 +139,10 @@ get_header(); ?>
             
             <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;">De Barcelona al Barri Vell de Girona</h2>
             <p>
-                Girona es una ciudad con un encanto histórico inigualable, famosa por su vibrante barrio judÍo, sus puentes sobre el rÍo Onyar y por haber sido escenario de series famosas como Juego de Tronos. 
+                Girona es una ciudad con un encanto histórico inigualable, famosa por su vibrante barrio judío, sus puentes sobre el río Onyar y por haber sido escenario de series famosas como Juego de Tronos. 
             </p>
             <p>
-                Si tienes previsto visitarla o alojarte allÍ, reserva tu <strong>taxi de Barcelona a Girona</strong> con MeTransfers. El viaje dura poco más de una hora, es totalmente directo y te dejaremos a los pies de tu hotel o alojamiento, algo clave dado que gran parte del centro histórico es peatonal o de difÍcil acceso si no se conoce la zona.
+                Si tienes previsto visitarla o alojarte allí, reserva tu <strong>taxi de Barcelona a Girona</strong> con MeTransfers. El viaje dura poco más de una hora, es totalmente directo y te dejaremos a los pies de tu hotel o alojamiento, algo clave dado que gran parte del centro histórico es peatonal o de difÍcil acceso si no se conoce la zona.
             </p>
             
             <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">Conexiones de aeropuerto a aeropuerto</h3>

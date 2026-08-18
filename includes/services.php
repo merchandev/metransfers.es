@@ -127,8 +127,8 @@ Tanto si necesitas coordinar 3 traslados ejecutivos como 50 delegados en rotaci�
 				array( 'icon' => 'lock', 'title' => 'Máxima confidencialidad', 'desc' => 'Discreción absoluta con directivos, VIPs y delegaciones de alto nivel.' ),
 			),
 			'steps'       => array(
-				array( 'n' => '01', 'title' => 'Cuéntanos el evento', 'desc' => 'EnvÍanos el tipo de evento, número de personas, fechas y necesidades especÍficas.' ),
-				array( 'n' => '02', 'title' => 'Propuesta personalizada', 'desc' => 'Preparamos un plan logÍstico y presupuesto adaptado a tu evento en Barcelona en menos de 24h.' ),
+				array( 'n' => '01', 'title' => 'Cuéntanos el evento', 'desc' => 'Envíanos el tipo de evento, número de personas, fechas y necesidades especÍficas.' ),
+				array( 'n' => '02', 'title' => 'Propuesta personalizada', 'desc' => 'Preparamos un plan logístico y presupuesto adaptado a tu evento en Barcelona en menos de 24h.' ),
 				array( 'n' => '03', 'title' => 'Conductores en Barcelona listos', 'desc' => 'Ajustamos horarios, rutas y asignaciones de vehículos en los puntos de recogida de la ciudad. Todo confirmado con antelación.' ),
 				array( 'n' => '04', 'title' => 'Ejecución impecable', 'desc' => 'El día del evento, todo funciona. Factura única y resumen del servicio al finalizar.' ),
 			),
@@ -147,13 +147,13 @@ Tanto si necesitas coordinar 3 traslados ejecutivos como 50 delegados en rotaci�
 
 Nuestros conductores son embajadores locales que conocen los rincones que los tours masivos nunca muestran. En Montserrat, el momento para bajar a las grutas tranquilas cuando los grupos ya se han ido. En la Costa Brava, la cala escondida que no sale en los folletos. En Girona, el callejón de la época medieval que te transporta siglos atrás.
 
-Desde Barcelona, operamos excursiones de medio día (4 horas), día completo (8 horas) y rutas de varios días. Los destinos más populares incluyen Montserrat, Costa Brava, Girona, Figueres (DalÍ), Tarragona, Sitges y Andorra. También diseñamos rutas temáticas: gastronomía, vinos, arquitectura modernista o paisajes naturales.',
+Desde Barcelona, operamos excursiones de medio día (4 horas), día completo (8 horas) y rutas de varios días. Los destinos más populares incluyen Montserrat, Costa Brava, Girona, Figueres (Dalí), Tarragona, Sitges y Andorra. También diseñamos rutas temáticas: gastronomía, vinos, arquitectura modernista o paisajes naturales.',
 			'features'    => array(
 				array( 'icon' => 'map', 'title' => 'Rutas 100% personalizadas', 'desc' => 'Tú decides los destinos, paradas, tiempos y ritmo. Nosotros lo coordinamos todo.' ),
 				array( 'icon' => 'explore', 'title' => 'Chófer-guÍa local', 'desc' => 'Conocimiento local profundo: historia, gastronomía, secretos que no están en las guÍas.' ),
 				array( 'icon' => 'directions_car', 'title' => 'Sin grupos', 'desc' => 'Solo tú, tu familia o tus invitados. Privacidad y exclusividad absoluta en cada parada.' ),
 				array( 'icon' => 'schedule', 'title' => 'Desde 4 hasta 12 horas', 'desc' => 'Medio día, día completo o rutas extendidas. El tiempo que necesites, sin restricciones.' ),
-				array( 'icon' => 'wine_bar', 'title' => 'Tours temáticos', 'desc' => 'GastronomÍa, vinos, arquitectura, naturaleza, historia. Diseñamos la ruta perfecta.' ),
+				array( 'icon' => 'wine_bar', 'title' => 'Tours temáticos', 'desc' => 'Gastronomía, vinos, arquitectura, naturaleza, historia. Diseñamos la ruta perfecta.' ),
 				array( 'icon' => 'public', 'title' => 'Multilingüe', 'desc' => 'Servicio disponible en español, inglés y otros idiomas. Ideal para visitantes internacionales.' ),
 			),
 			'steps'       => array(
@@ -173,7 +173,7 @@ Desde Barcelona, operamos excursiones de medio día (4 horas), día completo (8 
 			'slug'        => 'grupos',
 			'badge'       => 'Bodas · Despedidas · Grupos Privados',
 			'hero_desc'   => 'Coordinamos el transporte de grupos desde 8 hasta 50+ personas con salida desde Barcelona: aeropuerto, hotel, puerto o cualquier dirección. Bodas, despedidas, incentivos y celebraciones en vehículos premium.',
-			'desc_long'   => 'Organizar el transporte de un grupo desde Barcelona es un reto logÍstico que MeTransfers convierte en un proceso sin estrés. Ya sea una boda de 80 invitados entre la iglesia, el hotel y la masÍa en Barcelona; una despedida de soltero con 15 personas entre varios locales de la ciudad; o un incentivo de empresa de 40 personas desde el Aeropuerto El Prat al resort — lo coordinamos todo con precisión.
+			'desc_long'   => 'Organizar el transporte de un grupo desde Barcelona es un reto logístico que MeTransfers convierte en un proceso sin estrés. Ya sea una boda de 80 invitados entre la iglesia, el hotel y la masía en Barcelona; una despedida de soltero con 15 personas entre varios locales de la ciudad; o un incentivo de empresa de 40 personas desde el Aeropuerto El Prat al resort — lo coordinamos todo con precisión.
 
 Disponemos de vehículos para grupos de todos los tamaños: desde la MINI VAN «V» Class (7 plazas) hasta múltiples unidades coordinadas para grupos grandes. Todos los coches llegan al mismo tiempo, los conductores están sincronizados y tú tienes un solo punto de contacto para gestionar cualquier incidencia o cambio.
 
