@@ -84,7 +84,7 @@ $faq_items        = me_transfers_get_faq_items();
 					<div class="faq-page-cta">
 						<span class="faq-page-cta__kicker">Reserva Ahora</span>
 						<h2>Reserva online, rápido y con pago seguro</h2>
-						<p>metransfers.es es una de las principales agencias de transporte privado en Barcelona. Reserva online, rápido y con pago seguro. Ofrecemos alquiler de coches con conductor, visitas guiadas y servicio de chofer 24/7.</p>
+						<p>En metransfers.es ofrecemos servicios de transporte privado en Barcelona para particulares, familias, empresas y grupos. Reserva online, rápido y con pago seguro. Ofrecemos alquiler de coches con conductor, visitas guiadas y servicio de chofer 24/7.</p>
 						<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary">Reservar ahora</a>
 					</div>
 				</div>
