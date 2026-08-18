@@ -83,7 +83,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
             <div class="ruta-hero__right gs-reveal" id="booking-widget">
                 <div class="hero-booking-card">
                     <?php if ( shortcode_exists( 'wptb_booking_form' ) ) : ?>
-                        <?php echo do_shortcode( '[wptb_booking_form]' ); ?>
+                        <?php echo mt_translate( do_shortcode( '[wptb_booking_form]' ) ); ?>
                     <?php else : ?>
                         <p class="hero-booking-placeholder">Activa el plugin de reservas.</p>
                     <?php endif; ?>

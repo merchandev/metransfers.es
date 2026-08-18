@@ -163,7 +163,7 @@
             <path d="M12 16v.01"></path>
             <path d="M11 12.5v.01"></path>
         </svg>
-        <h3 class="mt-cookie-title">Gestión de Cookies</h3>
+        <h3 class="mt-cookie-title"><?php echo mt_translate('Gestión de Cookies'); ?></h3>
     </div>
     
     <p class="mt-cookie-text">
@@ -176,7 +176,7 @@
                 <input type="checkbox" checked disabled>
                 Técnicas (Necesarias)
             </label>
-            <span class="required">Obligatorio</span>
+            <span class="required"><?php echo mt_translate('Obligatorio'); ?></span>
         </div>
         <div class="mt-cookie-option">
             <label>
@@ -193,9 +193,9 @@
     </div>
 
     <div class="mt-cookie-actions" style="flex-wrap: wrap;">
-        <button id="mt-btn-cookie-reject" class="mt-cookie-btn mt-cookie-btn-settings" style="flex-basis: 100%; margin-bottom: 4px;">Rechazar todas</button>
-        <button id="mt-btn-cookie-settings" class="mt-cookie-btn mt-cookie-btn-settings">Configurar</button>
-        <button id="mt-btn-cookie-accept" class="mt-cookie-btn mt-cookie-btn-accept">Aceptar todas</button>
+        <button id="mt-btn-cookie-reject" class="mt-cookie-btn mt-cookie-btn-settings" style="flex-basis: 100%; margin-bottom: 4px;"><?php echo mt_translate('Rechazar todas'); ?></button>
+        <button id="mt-btn-cookie-settings" class="mt-cookie-btn mt-cookie-btn-settings"><?php echo mt_translate('Configurar'); ?></button>
+        <button id="mt-btn-cookie-accept" class="mt-cookie-btn mt-cookie-btn-accept"><?php echo mt_translate('Aceptar todas'); ?></button>
     </div>
 </div>
 
