@@ -322,16 +322,16 @@ function gct_render_language_switcher(): void {
     $slug         = $is_trans ? implode( '/', array_slice( $segments, 1 ) ) : $path;
     ?>
     <div class="mt-lang-switcher" id="mt-lang-switcher">
-        <button class="mt-lang-trigger" aria-label="Cambiar idioma" aria-expanded="false" aria-controls="mt-lang-menu">
+        <button type="button" class="mt-lang-trigger" aria-label="Cambiar idioma" aria-expanded="false" aria-controls="mt-lang-menu">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
             <span><?php echo esc_html( $info['label'] ); ?></span>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
-        <ul class="mt-lang-menu" id="mt-lang-menu" role="listbox">
+        <nav class="mt-lang-menu" id="mt-lang-menu" aria-label="Selector de idioma"><ul>
             <!-- Close button for mobile -->
-            <li class="mt-lang-close" aria-label="Cerrar" role="button">
+            <button type="button" class="mt-lang-close" aria-label="Cerrar selector de idioma">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </li>
+            </button>
         <?php foreach ( MT_LANGS as $code => $lang_info ) :
             if ( ! in_array( $code, MT_ACTIVE_LANGS, true ) ) continue;
             $url = ( $code === 'es' )
@@ -346,7 +346,7 @@ function gct_render_language_switcher(): void {
                 </a>
             </li>
         <?php endforeach; ?>
-        </ul>
+        </ul></nav>
     </div>
     <?php
 }

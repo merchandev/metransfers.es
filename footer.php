@@ -352,11 +352,11 @@
 			<div class="footer-col js-footer-accordion">
 				<button type="button" class="footer-col-title" aria-expanded="false" aria-controls="footer-services-links">Servicios</button>
 				<ul id="footer-services-links" class="footer-links-list">
-					<li><a href="/traslados-aeropuerto/">Aeropuerto</a></li>
-					<li><a href="/traslados-puerto/">Puerto</a></li>
-					<li><a href="/chofer-por-horas/">Por horas</a></li>
-					<li><a href="/corporativo-y-eventos/">Empresas</a></li>
-					<li><a href="/grupos/">Grupos</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-aeropuerto' ) ); ?>">Aeropuerto</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-puerto' ) ); ?>">Puerto</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'chofer-por-horas' ) ); ?>">Por horas</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'corporativo-y-eventos' ) ); ?>">Empresas</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'grupos' ) ); ?>">Grupos</a></li>
 				</ul>
 			</div>
 
@@ -364,11 +364,11 @@
 			<div class="footer-col js-footer-accordion">
 				<button type="button" class="footer-col-title" aria-expanded="false" aria-controls="footer-destinations-links">Destinos y rutas</button>
 				<ul id="footer-destinations-links" class="footer-links-list">
-					<li><a href="<?php echo esc_url( home_url( '/traslados-privados/' ) ); ?>">Traslados privados Barcelona</a></li>
-					<li><a href="<?php echo esc_url( home_url( '/destinos/costa-brava/' ) ); ?>">Costa Brava</a></li>
-					<li><a href="<?php echo esc_url( home_url( '/rutas/barcelona-salou/' ) ); ?>">Salou</a></li>
-					<li><a href="<?php echo esc_url( home_url( '/rutas/barcelona-portaventura/' ) ); ?>">PortAventura</a></li>
-					<li><a href="<?php echo esc_url( home_url( '/rutas/barcelona-girona/' ) ); ?>">Girona</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-privados' ) ); ?>">Traslados privados Barcelona</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'destinos/costa-brava' ) ); ?>">Costa Brava</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-salou' ) ); ?>">Salou</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-portaventura' ) ); ?>">PortAventura</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-girona' ) ); ?>">Girona</a></li>
 					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'ruta' ) ); ?>">Todas las rutas</a></li>
 				</ul>
 			</div>
@@ -377,14 +377,14 @@
 			<div class="footer-col js-footer-accordion">
 				<button type="button" class="footer-col-title" aria-expanded="false" aria-controls="footer-info-links">Información</button>
 				<ul id="footer-info-links" class="footer-links-list">
-					<li><a href="/sobre-nosotros/">Sobre nosotros</a></li>
-					<li><a href="/blog/">Blog</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'sobre-nosotros' ) ); ?>">Sobre nosotros</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'blog' ) ); ?>">Blog</a></li>
 					<li>
     <a href="<?php echo esc_url( me_transfers_get_faq_page_url() ); ?>">
         Preguntas frecuentes
     </a>
 </li>
-					<li><a href="/contacto/">Contacto</a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'contacto' ) ); ?>">Contacto</a></li>
 				</ul>
 			</div>
 
@@ -434,10 +434,10 @@
 			<p>&copy; <?php echo date("Y"); ?> <strong>MeTransfers Barcelona</strong>.</p>
 			
 			<nav class="footer-legal-links" aria-label="Legal">
-				<a href="<?php echo esc_url( home_url( '/politica-de-privacidad' ) ); ?>">Política de privacidad</a>
-				<a href="<?php echo esc_url( home_url( '/politica-de-cookies' ) ); ?>">Política de cookies</a>
-				<a href="<?php echo esc_url( home_url( '/aviso-legal' ) ); ?>">Aviso legal</a>
-				<a href="<?php echo esc_url( home_url( '/terminos-y-condiciones' ) ); ?>">Términos y condiciones</a>
+				<a href="<?php echo esc_url( mt_localized_url( 'politica-de-privacidad' ) ); ?>">Política de privacidad</a>
+				<a href="<?php echo esc_url( mt_localized_url( 'politica-de-cookies' ) ); ?>">Política de cookies</a>
+				<a href="<?php echo esc_url( mt_localized_url( 'aviso-legal' ) ); ?>">Aviso legal</a>
+				<a href="<?php echo esc_url( mt_localized_url( 'terminos-y-condiciones' ) ); ?>">Términos y condiciones</a>
 			</nav>
 
 			<div class="footer-lang">

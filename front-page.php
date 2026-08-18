@@ -729,7 +729,7 @@ a.contact__val:hover{color:var(--blue);}
 <!-- ══════════════════════════ 5. FLOTA ══════════════════════════ -->
 <section class="sp bg-warm" id="flota">
   <div class="wrap">
-    <p class="tag tc" style="justify-content:center;">Flota Mercedes</p>
+    <p class="tag tc" style="justify-content:center;">Flota premium</p>
     <h2 class="tc">El espacio y el confort adecuados para cada reserva</h2>
     <p class="lead tc" style="margin:20px auto 0;">Asignamos el vehículo según el número de pasajeros, el equipaje y el tipo de viaje. Todos los modelos se mantienen bajo estándares de limpieza y seguridad.</p>
 
@@ -748,7 +748,7 @@ a.contact__val:hover{color:var(--blue);}
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> Hasta 3 pasajeros</span>
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Equipaje según configuración</span>
           </div>
-          <a href="#reservar" class="btn btn-ghost" style="text-align:center;justify-content:center;">Reservar berlina ejecutiva</a>
+          <a href="#panel" class="btn btn-ghost" style="text-align:center;justify-content:center;">Reservar berlina ejecutiva</a>
         </div>
       </div>
 
@@ -765,7 +765,7 @@ a.contact__val:hover{color:var(--blue);}
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Hasta 2 pasajeros</span>
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Servicio de alta gama</span>
           </div>
-          <a href="#reservar" class="btn btn-ghost" style="text-align:center;justify-content:center;">Consultar servicio premium</a>
+          <a href="#panel" class="btn btn-ghost" style="text-align:center;justify-content:center;">Consultar servicio premium</a>
         </div>
       </div>
 
@@ -782,7 +782,7 @@ a.contact__val:hover{color:var(--blue);}
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> Hasta 7 pasajeros</span>
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Capacidad máxima de equipaje</span>
           </div>
-          <a href="#reservar" class="btn btn-ghost" style="text-align:center;justify-content:center;">Reservar vehículo para grupos</a>
+          <a href="#panel" class="btn btn-ghost" style="text-align:center;justify-content:center;">Reservar vehículo para grupos</a>
         </div>
       </div>
 
@@ -799,7 +799,7 @@ a.contact__val:hover{color:var(--blue);}
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> Hasta 7 pasajeros</span>
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Capacidad estándar de equipaje</span>
           </div>
-          <a href="#reservar" class="btn btn-ghost" style="text-align:center;justify-content:center;">Reservar vehículo para grupos</a>
+          <a href="#panel" class="btn btn-ghost" style="text-align:center;justify-content:center;">Reservar vehículo para grupos</a>
         </div>
       </div>
 
@@ -953,7 +953,7 @@ a.contact__val:hover{color:var(--blue);}
   <div class="wrap">
     <p class="tag tc" style="justify-content:center;">Tours y excursiones privadas</p>
     <h2 class="tc">Descubre Cataluña a tu ritmo</h2>
-    <p class="lead tc" style="margin:20px auto 0;color:rgba(255,255,255,.75);">Recogida puerta a puerta, horarios flexibles y vehículo Mercedes reservado solo para ti y tus acompañantes.</p>
+    <p class="lead tc" style="margin:20px auto 0;color:rgba(255,255,255,.75);">Recogida puerta a puerta, horarios flexibles y vehículo premium reservado solo para ti y tus acompañantes.</p>
 
     <div class="tours__grid">
 
@@ -962,7 +962,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="tour__img" style="background-image:url('<?php echo $arts; ?>/descubre-barcelona-en-4-6-u-8-horas-elige-el-tour-en-coche-a-tu-medida-4144.jpg');"></div>
         <div class="tour__content">
           <h3>Tour privado por Barcelona</h3>
-          <p>Sagrada Familia, Passeig de Gràcia, Barrio Gótico y Montjuïc. Itinerario flexible de 4, 6 u 8 horas con vehículo Mercedes.</p>
+          <p>Sagrada Familia, Passeig de Gràcia, Barrio Gótico y Montjuïc. Itinerario flexible de 4, 6 u 8 horas con vehículo premium.</p>
           <a href="/tour-en-barcelona/#tour-booking" class="tour__cta-btn">Más información</a>
         </div>
       </div>
@@ -1136,7 +1136,7 @@ a.contact__val:hover{color:var(--blue);}
         <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
       </div>
       <div class="cta__btns">
-        <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
+        <a href="#panel" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
         <a href="https://wa.me/34662024136?text=Hola,%20necesito%20informaci%C3%B3n%20para%20organizar%20un%20traslado%20privado%20con%20MeTransfers." class="btn btn-ghost-inv" target="_blank" rel="noopener">Consultar por WhatsApp</a>
       </div>
     </div>

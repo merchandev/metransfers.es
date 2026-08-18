@@ -316,7 +316,7 @@ add_filter( 'script_loader_src', 'me_transfers_maps_async_query_arg', 20 );
  * @param string $section Section ID without the leading #.
  * @return string
  */
-function me_transfers_get_section_url( $section = 'search' ) {
+function me_transfers_get_section_url( $section = 'panel' ) {
 	$section = sanitize_title_with_dashes( ltrim( (string) $section, "# \t\n\r\0\x0B/" ) );
 
 	if ( '' === $section ) {
@@ -2482,4 +2482,16 @@ function mt_render_event_tracking_page() {
         </table>
     </div>
     <?php
+}
+
+/**
+ * Helper para preservar el idioma en enlaces internos.
+ */
+function mt_localized_url( string $path = '' ): string {
+    $lang = function_exists( 'mt_lang' ) ? mt_lang() : 'es';
+    $path = trim( $path, '/' );
+    if ( 'es' === $lang ) {
+        return home_url( '/' . ( $path ? $path . '/' : '' ) );
+    }
+    return home_url( '/' . $lang . '/' . ( $path ? $path . '/' : '' ) );
 }
