@@ -44,7 +44,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 	<section class="svc-hero">
 		<div class="container">
 			<div class="svc-hero-badge"><?php echo esc_html( $service['badge'] ); ?></div>
-			<h1><?php echo esc_html( $service['title'] ); ?></h1>
+			<h1><?php echo esc_html( isset( $service['h1'] ) ? $service['h1'] : $service['title'] ); ?></h1>
 			<p class="svc-hero-sub"><?php echo esc_html( $service['subtitle'] ); ?></p>
 			<p class="svc-hero-desc"><?php echo esc_html( $service['hero_desc'] ); ?></p>
 			<div class="svc-hero-cta-group">

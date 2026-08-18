@@ -561,8 +561,8 @@ a.contact__val:hover{color:var(--blue);}
         <p class="hero__lead"><?php echo mt_translate('Te recogemos en el Aeropuerto de Barcelona, hotel, puerto, estación o cualquier dirección y te llevamos directamente a tu destino. Servicio privado con chófer, precio cerrado y atención personalizada 24/7.'); ?></p>
         <div class="hero__checks">
           <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Presupuesto a medida'); ?></span>
-          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Cancelación gratuita hasta 24 h antes'); ?></span>
-          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Atención 24/7'); ?></span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Cancelación sujeta a condiciones'); ?></span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Atención 24/7 bajo reserva'); ?></span>
         </div>
         <div class="hero__ctas">
           <a href="#panel" class="btn btn-solid"><?php echo mt_translate('Calcular mi traslado'); ?></a>
@@ -715,9 +715,9 @@ a.contact__val:hover{color:var(--blue);}
           <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Presupuesto a medida y condiciones visibles antes de confirmar</li>
           <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Seguimiento del vuelo y recogida en la terminal</li>
           <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Chóferes profesionales, discretos y bilingües</li>
-          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos Mercedes seleccionados para cada servicio</li>
-          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Cancelación gratuita hasta 24 horas antes</li>
-          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Atención 24/7 por teléfono, email y WhatsApp</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos premium seleccionados para cada servicio</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Cancelación sujeta a condiciones</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Atención 24/7 bajo reserva por teléfono, email y WhatsApp</li>
         </ul>
         <p class="vent__note">Puedes solicitar sillas infantiles, paradas adicionales o transporte de equipaje especial durante la reserva. La disponibilidad se confirma para cada servicio.</p>
       </div>

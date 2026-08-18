@@ -21,25 +21,26 @@ function me_transfers_get_service_catalog() {
 		// ─── 1. TRASLADOS AL AEROPUERTO ─────────────────────────────────────────────
 		'traslados-aeropuerto' => array(
 			'title'       => 'MeTransfers Barcelona - Traslado al Aeropuerto desde Barcelona',
+			'h1'          => 'Traslado privado al Aeropuerto de Barcelona',
 			'subtitle'    => 'Te recogemos en Barcelona y te llevamos a El Prat',
 			'slug'        => 'traslados-aeropuerto',
 			'badge'       => 'Aeropuerto El Prat · 24/7',
-			'hero_desc'   => 'Te recogemos en tu hotel u oficina en Barcelona y te llevamos directamente al Aeropuerto El Prat. Seguimiento de vuelo en tiempo real, tarifa fija y hasta 60 min de espera gratuita en llegadas.',
+			'hero_desc'   => 'Te recogemos en tu hotel u oficina en Barcelona y te llevamos directamente al Aeropuerto El Prat. Seguimiento de vuelo en tiempo real, tarifa fija y hasta 60 min de cortesía en aeropuerto en llegadas.',
 			'desc_long'   => 'Salir desde Barcelona hacia el aeropuerto nunca fue tan sencillo. En MeTransfers calculamos el tiempo de salida desde tu domicilio, hotel u oficina con margen suficiente para que llegues tranquilo, sin carreras y con energía para tu viaje.
 
-Y si llegas a El Prat, un chófer uniformado y bilingüe te recibirá en la zona de llegadas con un cartel personalizado con tu nombre o el de tu empresa. Monitoreamos tu vuelo en tiempo real — sin importar retrasos o adelantos de última hora. Te asistirá con el equipaje y te acompañará directamente a tu vehículo Mercedes estacionado a pie de terminal. El trayecto al hotel, oficina o destino final se convierte en el primer momento de descanso tras el vuelo.',
+Y si llegas a El Prat, un chófer uniformado (idiomas bajo petición) te recibirá en la zona de llegadas con un cartel personalizado con tu nombre o el de tu empresa. Monitoreamos tu vuelo en tiempo real — sin importar retrasos o adelantos de última hora. Te asistirá con el equipaje y te acompañará directamente a tu vehículo premium estacionado a pie de terminal. El trayecto al hotel, oficina o destino final se convierte en el primer momento de descanso tras el vuelo.',
 			'features'    => array(
 				array( 'icon' => 'flight', 'title' => 'Seguimiento de Vuelo', 'desc' => 'Monitoreamos tu vuelo en tiempo real. Si hay retrasos, tu conductor espera.' ),
 				array( 'icon' => 'receipt_long', 'title' => 'Meet & Greet', 'desc' => 'Cartel personalizado en zona de llegadas. Bienvenida profesional y puntual.' ),
-				array( 'icon' => 'schedule', 'title' => '60 min de espera', 'desc' => 'Incluimos hasta 60 minutos de espera gratuita en llegadas internacionales.' ),
+				array( 'icon' => 'schedule', 'title' => 'Espera de cortesía', 'desc' => 'Incluimos hasta 60 minutos de cortesía en aeropuerto en llegadas internacionales.' ),
 				array( 'icon' => 'luggage', 'title' => 'Ayuda con el equipaje', 'desc' => 'Tu chófer te asiste con las maletas desde la terminal hasta el vehículo.' ),
-				array( 'icon' => 'directions_car', 'title' => 'Flota Mercedes Premium', 'desc' => 'Viaja en ECONOMIC CLASS, MINI VAN «V» Class, BUSINESS CLASS o MINI VAN ECONOMIC según tus necesidades.' ),
+				array( 'icon' => 'directions_car', 'title' => 'Flota Premium', 'desc' => 'Viaja en ECONOMIC CLASS, MINI VAN «V» Class, BUSINESS CLASS o MINI VAN ECONOMIC según tus necesidades.' ),
 				array( 'icon' => 'lock', 'title' => 'Precio cerrado desde Barcelona', 'desc' => 'Sin tarifas sorpresa. El precio que ves incluye la recogida en Barcelona y el trayecto completo.' ),
 			),
 			'steps'       => array(
 				array( 'n' => '01', 'title' => 'Indica tu punto de recogida en Barcelona', 'desc' => 'Introduce tu dirección en Barcelona, número de vuelo, fecha y hora de salida.' ),
-				array( 'n' => '02', 'title' => 'Confirmación en minutos', 'desc' => 'Recibirás confirmación de reserva con los datos completos del servicio y del conductor.' ),
-				array( 'n' => '03', 'title' => 'Tu chófer llega a tiempo', 'desc' => 'El día del servicio, tu conductor llega a tu dirección en Barcelona con puntualidad garantizada.' ),
+				array( 'n' => '02', 'title' => 'Confirmación rápida', 'desc' => 'Recibirás confirmación de reserva con los datos completos del servicio y del conductor.' ),
+				array( 'n' => '03', 'title' => 'Tu chófer llega a tiempo', 'desc' => 'El día del servicio, tu conductor llega a tu dirección en Barcelona con máxima puntualidad.' ),
 				array( 'n' => '04', 'title' => 'Llegas tranquilo a El Prat', 'desc' => 'Sube, relájate y disfruta del trayecto en total confort. Tu vuelo, a tiempo.' ),
 			),
 			'form_type'   => 'aeropuerto',
@@ -49,6 +50,7 @@ Y si llegas a El Prat, un chófer uniformado y bilingüe te recibirá en la zona
 		// ─── 2. TRASLADOS AL PUERTO ──────────────────────────────────────────────────
 		'traslados-puerto' => array(
 			'title'       => 'MeTransfers Barcelona - Traslado al Puerto de Barcelona desde la ciudad',
+			'h1'          => 'Traslado privado al Puerto de Barcelona',
 			'subtitle'    => 'Te recogemos en tu hotel en Barcelona y te llevamos al Puerto',
 			'slug'        => 'traslados-puerto',
 			'badge'       => 'Puerto de Barcelona · Cruceros y ferries',
@@ -79,10 +81,11 @@ Si llegas de un crucero, tu chófer te espera en el punto de salida de la termin
 		// ─── 3. CHÓFER PRIVADO POR HORAS ────────────────────────────────────────────
 		'chofer-por-horas' => array(
 			'title'       => 'MeTransfers Barcelona - Chófer Privado por Horas en Barcelona',
+			'h1'          => 'Chófer privado por horas en Barcelona',
 			'subtitle'    => 'Tu conductor exclusivo por Barcelona y alrededores',
 			'slug'        => 'chofer-por-horas',
 			'badge'       => 'Disposición por horas · Mínimo 3h',
-			'hero_desc'   => 'Dispón de un vehículo Mercedes con conductor durante el tiempo que necesites en Barcelona. Ideal para reuniones, compras, visitas o días completos con múltiples paradas por la ciudad.',
+			'hero_desc'   => 'Dispón de un vehículo premium con conductor durante el tiempo que necesites en Barcelona. Ideal para reuniones, compras, visitas o días completos con múltiples paradas por la ciudad.',
 			'desc_long'   => 'A veces no necesitas ir de A a B — necesitas un conductor que te espere en Barcelona, te lleve a varios sitios y esté disponible durante horas para todo lo que surja. Para eso está nuestro servicio de chófer privado por horas.
 
 Imagina una mañana de reuniones en el 22@ de Barcelona, una parada a comer en el Eixample y después al aeropuerto. O una tarde de compras en Passeig de Gràcia con el coche esperando. O una noche de evento con cenas y traslados entre locales de la ciudad. Con el servicio por disposición, tú marcas el ritmo.
@@ -92,9 +95,9 @@ El conductor permanece a tu disposición exclusiva durante el tiempo contratado 
 				array( 'icon' => 'schedule', 'title' => 'Flexibilidad total', 'desc' => 'Cambios de plan en tiempo real. El conductor se adapta a tu agenda, no al revés.' ),
 				array( 'icon' => 'location_on', 'title' => 'Múltiples paradas', 'desc' => 'Reuniones, compras, restaurantes, eventos — todas las paradas que necesites por Barcelona.' ),
 				array( 'icon' => 'lock', 'title' => 'Exclusividad garantizada', 'desc' => 'El vehículo y el conductor son exclusivamente tuyos durante todo el tiempo contratado.' ),
-				array( 'icon' => 'wifi', 'title' => 'Wi-Fi y agua a bordo', 'desc' => 'Trabaja, descansa o prepara tus reuniones durante los trayectos con total comodidad.' ),
+				array( 'icon' => 'wifi', 'title' => 'Wi-Fi y agua a bordo (según vehículo)', 'desc' => 'Trabaja, descansa o prepara tus reuniones durante los trayectos con total comodidad.' ),
 				array( 'icon' => 'map', 'title' => 'Toda el área metropolitana', 'desc' => 'Barcelona ciudad, costa, interior y rutas largas a Madrid, Valencia o Andorra.' ),
-				array( 'icon' => 'dark_mode', 'title' => 'Disponible 24/7', 'desc' => 'Madrugadas, días festivos, eventos nocturnos. Siempre disponible cuando lo necesites.' ),
+				array( 'icon' => 'dark_mode', 'title' => 'Disponibilidad 24/7 (bajo reserva)', 'desc' => 'Madrugadas, días festivos, eventos nocturnos. Siempre disponible cuando lo necesites.' ),
 			),
 			'steps'       => array(
 				array( 'n' => '01', 'title' => 'Dinos cuántas horas necesitas', 'desc' => 'Indica fecha, hora de inicio, dirección de recogida en Barcelona y descripción general del plan.' ),
@@ -109,19 +112,20 @@ El conductor permanece a tu disposición exclusiva durante el tiempo contratado 
 		// ─── 4. CORPORATIVO Y EVENTOS ────────────────────────────────────────────────
 		'corporativo-y-eventos' => array(
 			'title'       => 'MeTransfers Barcelona - Transporte Corporativo y Eventos desde Barcelona',
+			'h1'          => 'Transporte corporativo y eventos en Barcelona',
 			'subtitle'    => 'Logística impecable para empresas y grandes eventos en Barcelona',
 			'slug'        => 'corporativo-y-eventos',
 			'badge'       => 'MWC · ISE · Congresos · Empresas',
 			'hero_desc'   => 'Coordinamos la movilidad de directivos, delegaciones y equipos desde cualquier punto de Barcelona para congresos, ferias y eventos privados. Flota uniforme, facturación centralizada y máxima discreción.',
 			'desc_long'   => 'Cuando la movilidad de tu empresa o evento en Barcelona debe funcionar sin fisuras, MeTransfers aporta la tranquilidad logística que los equipos necesitan. Tenemos experiencia coordinando traslados durante congresos como MWC, ISE y otras grandes ferias de Barcelona.
 
-Ponemos a tu disposición una flota de vehículos Mercedes de última generación — todos del mismo modelo y color — para garantizar una imagen uniforme y profesional desde el primer punto de recogida en la ciudad. Nuestros conductores son discretos, puntuales, bilingües y con experiencia en protocolos corporativos.
+Ponemos a tu disposición una flota de vehículos premium de última generación — todos del mismo modelo y color — para garantizar una imagen uniforme y profesional desde el primer punto de recogida en la ciudad. Nuestros conductores son discretos, puntuales, bilingües y con experiencia en protocolos corporativos.
 
 Tanto si necesitas coordinar 3 traslados ejecutivos como 50 delegados en rotación durante una feria de 4 días, gestionamos la logística completa desde Barcelona: horarios, puntos de recogida, rutas, esperas y cambios de última hora. Facturación unificada al final del evento.',
 			'features'    => array(
 				array( 'icon' => 'business', 'title' => 'Gestión logística completa', 'desc' => 'Coordinador dedicado para eventos multi-vehículo desde Barcelona. Un punto de contacto para todo.' ),
 				array( 'icon' => 'directions_car', 'title' => 'Flota uniforme', 'desc' => 'Todos los vehículos del mismo modelo y acabado. Imagen de marca coherente y premium.' ),
-				array( 'icon' => 'language', 'title' => 'Conductores bilingües', 'desc' => 'Español, inglés y más idiomas. Perfectos para delegaciones internacionales.' ),
+				array( 'icon' => 'language', 'title' => 'Conductores con idiomas (bajo petición)', 'desc' => 'Español, inglés y más idiomas. Perfectos para delegaciones internacionales.' ),
 				array( 'icon' => 'receipt_long', 'title' => 'Facturación centralizada', 'desc' => 'Una sola factura al final del evento. Compatible con contabilidad de empresa.' ),
 				array( 'icon' => 'phone_iphone', 'title' => 'Coordinación en tiempo real', 'desc' => 'Cambios de última hora gestionados al instante vía WhatsApp o coordinador dedicado.' ),
 				array( 'icon' => 'lock', 'title' => 'Máxima confidencialidad', 'desc' => 'Discreción absoluta con directivos, VIPs y delegaciones de alto nivel.' ),
@@ -139,6 +143,7 @@ Tanto si necesitas coordinar 3 traslados ejecutivos como 50 delegados en rotaci�
 		// ─── 5. TOURS PRIVADOS ───────────────────────────────────────────────────────
 		'tours-privados' => array(
 			'title'       => 'MeTransfers Barcelona - Tours Privados desde Barcelona',
+			'h1'          => 'Tours privados desde Barcelona',
 			'subtitle'    => 'Salimos desde tu hotel en Barcelona hacia los mejores destinos',
 			'slug'        => 'tours-privados',
 			'badge'       => 'Montserrat · Costa Brava · Girona · Andorra',
@@ -169,6 +174,7 @@ Desde Barcelona, operamos excursiones de medio día (4 horas), día completo (8 
 		// ─── 6. GRUPOS Y CELEBRACIONES ──────────────────────────────────────────────
 		'grupos' => array(
 			'title'       => 'MeTransfers Barcelona - Transporte para Grupos desde Barcelona',
+			'h1'          => 'Transporte para grupos y celebraciones',
 			'subtitle'    => 'Movilidad coordinada desde Barcelona para grupos, bodas y celebraciones',
 			'slug'        => 'grupos',
 			'badge'       => 'Bodas · Despedidas · Grupos Privados',
