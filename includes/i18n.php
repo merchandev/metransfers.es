@@ -28,8 +28,8 @@ if ( ! defined('MT_LANGS') ) {
 if ( ! defined('MT_ACTIVE_LANGS') ) {
     // All languages active. Translation via Google Cloud Translate (mt_google_api_key option).
     // Without an API key, content is shown in Spanish (safe fallback, no errors).
-    // Limitamos temporalmente a 'es' hasta tener las traducciones reales
-    define( 'MT_ACTIVE_LANGS', [ 'es' ] );
+    // Reactivamos Inglés para que el sistema de reservas y navegación lo puedan usar
+    define( 'MT_ACTIVE_LANGS', [ 'es', 'en' ] );
 }
 
 if ( ! defined( 'MT_SEO_LANGS' ) ) {
@@ -63,6 +63,33 @@ function mt_lang(): string {
 function mt_is_translated(): bool {
     return mt_lang() !== 'es';
 }
+
+add_filter( 'locale', function( $locale ) {
+    if ( function_exists('mt_lang') && mt_lang() !== 'es' ) {
+        $lang = mt_lang();
+        // Convert to standard WP locale format if possible
+        $map = [
+            'en' => 'en_US',
+            'fr' => 'fr_FR',
+            'de' => 'de_DE',
+            'it' => 'it_IT',
+            'pt' => 'pt_PT',
+            'ca' => 'ca',
+            'ru' => 'ru_RU',
+            'zh' => 'zh_CN',
+            'ja' => 'ja',
+        ];
+        return isset($map[$lang]) ? $map[$lang] : $locale;
+    }
+    return $locale;
+} );
+
+add_filter( 'language_attributes', function( $output ) {
+    if ( function_exists('mt_lang') && mt_lang() !== 'es' ) {
+        return 'lang="' . esc_attr( mt_lang() ) . '"';
+    }
+    return $output;
+} );
 
 
 // =================================================================

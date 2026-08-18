@@ -256,6 +256,7 @@ function me_transfers_scripts() {
 		'ajaxUrl'           => admin_url( 'admin-ajax.php' ),
 		'tourBookingNonce'  => wp_create_nonce( 'mt_tour_booking_nonce' ),
 		'contactNonce'      => wp_create_nonce( 'mt_contact_request' ),
+		'lang'              => function_exists( 'mt_lang' ) ? mt_lang() : 'es',
 	);
 
 	wp_localize_script( 'me-transfers-main-js', 'meTransfers', $ajax_config );
