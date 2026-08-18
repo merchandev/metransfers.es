@@ -87,6 +87,9 @@
 	font-weight: 600;
 	font-size: 14px;
 	text-decoration: none;
+	border: none;
+	cursor: pointer;
+	font-family: inherit;
 	margin-bottom: 16px;
 	transition: background 0.2s;
 }
@@ -390,17 +393,17 @@
 				<p class="footer-col-title" style="display:none;">Ayuda</p>
 				<p class="footer-help-text">¿Necesitas ayuda con tu reserva?<br>Atención por teléfono y WhatsApp, 24 horas.</p>
 				
-				<a href="#" class="footer-wa-btn js-wa-trigger">
-					<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
+				<button type="button" class="footer-wa-btn js-wa-trigger">
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
 					Hablar por WhatsApp
-				</a>
+				</button>
 				
 				<div class="footer-contact-item">
-					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3A2 2 0 0 1 8.6 3.72c.12.92.34 1.82.67 2.69a2 2 0 0 1-.45 2.11L7.73 9.61a16 16 0 0 0 6.66 6.66l1.09-1.09a2 2 0 0 1 2.11-.45c.87.33 1.77.55 2.69.67A2 2 0 0 1 22 16.92z"/></svg>
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3A2 2 0 0 1 8.6 3.72c.12.92.34 1.82.67 2.69a2 2 0 0 1-.45 2.11L7.73 9.61a16 16 0 0 0 6.66 6.66l1.09-1.09a2 2 0 0 1 2.11-.45c.87.33 1.77.55 2.69.67A2 2 0 0 1 22 16.92z"/></svg>
 					<a href="tel:+34662024136">+34 662 02 41 36</a>
 				</div>
 				<div class="footer-contact-item">
-					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 4 10 8 10-8"/></svg>
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 4 10 8 10-8"/></svg>
 					<a href="mailto:info@metransfers.es">info@metransfers.es</a>
 				</div>
 			</div>
@@ -410,15 +413,15 @@
 		<!-- Trust Badges Horizontal -->
 		<div class="footer-trust-row">
 			<span class="trust-badge-item">
-				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
 				Pago seguro
 			</span>
 			<a href="https://www.getyourguide.com/es-es/metransfers-s12737/" target="_blank" rel="noopener noreferrer" class="trust-badge-item">
-				<svg width="18" height="18" viewBox="0 0 24 24" fill="#FFB547" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="#FFB547" stroke="none" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
 				Opiniones verificadas en GetYourGuide
 			</a>
 			<span class="trust-badge-item">
-				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
 				Cancelación gratuita hasta 24 h antes
 			</span>
 		</div>
@@ -496,7 +499,7 @@
                     </label>
                 </div>
                 <button type="submit" class="wa-submit">
-                	<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Iniciar Chat
+                	<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Iniciar Chat
                 </button>
             </form>
         </div>
@@ -512,6 +515,27 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 	// Mobile Accordion Logic
+	const footerAccordionQuery = window.matchMedia('(max-width: 768px)');
+
+	function syncFooterAccordions() {
+		document.querySelectorAll('.js-footer-accordion').forEach(function(section) {
+			const button = section.querySelector('.footer-col-title');
+			const list = section.querySelector('.footer-links-list');
+			if (!button || !list) return;
+
+			if (footerAccordionQuery.matches) {
+				const isOpen = section.classList.contains('is-open');
+				button.setAttribute('aria-expanded', String(isOpen));
+			} else {
+				section.classList.remove('is-open');
+				button.setAttribute('aria-expanded', 'true');
+			}
+		});
+	}
+
+	syncFooterAccordions();
+	footerAccordionQuery.addEventListener('change', syncFooterAccordions);
+
 	const accordions = document.querySelectorAll('.js-footer-accordion .footer-col-title');
 	accordions.forEach(button => {
 		button.addEventListener('click', function() {
@@ -556,6 +580,22 @@ document.addEventListener('DOMContentLoaded', function() {
 			closeModal();
 		}
 	});
+
+	function trapModalFocus(e) {
+		if (e.key !== 'Tab' || !modal.classList.contains('is-active')) return;
+		const focusable = Array.from(modal.querySelectorAll('button:not([disabled]), a[href], input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'));
+		if (!focusable.length) return;
+		const first = focusable[0];
+		const last = focusable[focusable.length - 1];
+		if (e.shiftKey && document.activeElement === first) {
+			e.preventDefault();
+			last.focus();
+		} else if (!e.shiftKey && document.activeElement === last) {
+			e.preventDefault();
+			first.focus();
+		}
+	}
+	document.addEventListener('keydown', trapModalFocus);
 
 	triggers.forEach(t => t.addEventListener('click', openModal));
 	if(close) close.addEventListener('click', closeModal);

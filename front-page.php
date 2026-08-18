@@ -1013,7 +1013,7 @@ a.contact__val:hover{color:var(--blue);}
 
     <div class="tc">
       <a href="https://www.getyourguide.com/es-es/metransfers-s12737/" target="_blank" rel="noopener noreferrer" class="gyg-badge" style="text-decoration:none;display:inline-flex;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFB547"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFB547" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         Opiniones verificadas en GetYourGuide &rarr; Ver opiniones
       </a>
     </div>
@@ -1051,44 +1051,74 @@ a.contact__val:hover{color:var(--blue);}
 
     <div class="faq__wrap">
       <div class="faq__item">
-        <button class="faq__q">¿Desde dónde podéis recogerme en Barcelona? <span class="faq__icon"></span></button>
-        <div class="faq__a">Te recogemos en cualquier punto de Barcelona: hotel, apartamento, oficina, Aeropuerto El Prat, Puerto de Cruceros o estación de tren. Solo indícanos la dirección exacta y la hora al hacer la reserva.</div>
+        <button type="button" class="faq__q" id="faq-q-1" aria-expanded="false" aria-controls="faq-a-1">
+          ¿Desde dónde podéis recogerme en Barcelona?
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a" id="faq-a-1" role="region" aria-labelledby="faq-q-1" hidden>Te recogemos en cualquier punto de Barcelona: hotel, apartamento, oficina, Aeropuerto El Prat, Puerto de Cruceros o estación de tren. Solo indícanos la dirección exacta y la hora al hacer la reserva.</div>
       </div>
       <div class="faq__item">
-        <button class="faq__q">¿Podéis llevarme desde Barcelona al Aeropuerto de El Prat? <span class="faq__icon"></span></button>
-        <div class="faq__a">Sí. Puedes reservar traslados privados desde Barcelona al Aeropuerto Josep Tarradellas Barcelona-El Prat. Al confirmar la reserva, indica la hora de salida de tu vuelo para que calculemos la hora de recogida óptima.</div>
+        <button type="button" class="faq__q" id="faq-q-2" aria-expanded="false" aria-controls="faq-a-2">
+          ¿Podéis llevarme desde Barcelona al Aeropuerto de El Prat?
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a" id="faq-a-2" role="region" aria-labelledby="faq-q-2" hidden>Sí. Puedes reservar traslados privados desde Barcelona al Aeropuerto Josep Tarradellas Barcelona-El Prat. Al confirmar la reserva, indica la hora de salida de tu vuelo para que calculemos la hora de recogida óptima.</div>
       </div>
       <div class="faq__item">
-        <button class="faq__q">¿Qué ocurre si mi vuelo se retrasa? <span class="faq__icon"></span></button>
-        <div class="faq__a">Monitorizamos el estado del vuelo con el número facilitado en la reserva. Si se produce un retraso, ajustamos la hora de recogida para que el chófer te espere en función de la llegada real.</div>
+        <button type="button" class="faq__q" id="faq-q-3" aria-expanded="false" aria-controls="faq-a-3">
+          ¿Qué ocurre si mi vuelo se retrasa?
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a" id="faq-a-3" role="region" aria-labelledby="faq-q-3" hidden>Monitorizamos el estado del vuelo con el número facilitado en la reserva. Si se produce un retraso, ajustamos la hora de recogida para que el chófer te espere en función de la llegada real.</div>
       </div>
       <div class="faq__item">
-        <button class="faq__q">¿Dónde me espera el conductor? <span class="faq__icon"></span></button>
-        <div class="faq__a">En el aeropuerto, el chófer te espera en la zona de llegadas con un cartel identificativo. En hoteles, viviendas, puertos y otros puntos, la ubicación exacta se confirma en los datos de la reserva.</div>
+        <button type="button" class="faq__q" id="faq-q-4" aria-expanded="false" aria-controls="faq-a-4">
+          ¿Dónde me espera el conductor?
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a" id="faq-a-4" role="region" aria-labelledby="faq-q-4" hidden>En el aeropuerto, el chófer te espera en la zona de llegadas con un cartel identificativo. En hoteles, viviendas, puertos y otros puntos, la ubicación exacta se confirma en los datos de la reserva.</div>
       </div>
       <div class="faq__item">
-        <button class="faq__q">¿Puedo solicitar un presupuesto a medida? <span class="faq__icon"></span></button>
-        <div class="faq__a">El presupuesto y las condiciones principales se muestran antes de confirmar el pago. Cualquier cambio posterior de ruta, horario, pasajeros o equipaje que modifique el servicio deberá revisarse y confirmarse de nuevo.</div>
+        <button type="button" class="faq__q" id="faq-q-5" aria-expanded="false" aria-controls="faq-a-5">
+          ¿Puedo solicitar un presupuesto a medida?
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a" id="faq-a-5" role="region" aria-labelledby="faq-q-5" hidden>El presupuesto y las condiciones principales se muestran antes de confirmar el pago. Cualquier cambio posterior de ruta, horario, pasajeros o equipaje que modifique el servicio deberá revisarse y confirmarse de nuevo.</div>
       </div>
       <div class="faq__item">
-        <button class="faq__q">¿Puedo cancelar mi reserva? <span class="faq__icon"></span></button>
-        <div class="faq__a">MeTransfers ofrece cancelación gratuita hasta 24 horas antes del servicio, salvo condiciones diferentes indicadas en reservas especiales.</div>
+        <button type="button" class="faq__q" id="faq-q-6" aria-expanded="false" aria-controls="faq-a-6">
+          ¿Puedo cancelar mi reserva?
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a" id="faq-a-6" role="region" aria-labelledby="faq-q-6" hidden>MeTransfers ofrece cancelación gratuita hasta 24 horas antes del servicio, salvo condiciones diferentes indicadas en reservas especiales.</div>
       </div>
       <div class="faq__item">
-        <button class="faq__q">¿Puedo solicitar una silla infantil? <span class="faq__icon"></span></button>
-        <div class="faq__a">Sí. Puedes solicitar sillas infantiles o elevadores al realizar la reserva. Indica la edad y el peso aproximado del menor para confirmar la opción adecuada y su disponibilidad.</div>
+        <button type="button" class="faq__q" id="faq-q-7" aria-expanded="false" aria-controls="faq-a-7">
+          ¿Puedo solicitar una silla infantil?
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a" id="faq-a-7" role="region" aria-labelledby="faq-q-7" hidden>Sí. Puedes solicitar sillas infantiles o elevadores al realizar la reserva. Indica la edad y el peso aproximado del menor para confirmar la opción adecuada y su disponibilidad.</div>
       </div>
       <div class="faq__item">
-        <button class="faq__q">¿Tenéis vehículos para grupos y equipaje voluminoso? <span class="faq__icon"></span></button>
-        <div class="faq__a">Sí. La MINI VAN «V» Class permite viajar hasta siete pasajeros, dependiendo del equipaje. Para maletas especiales o material deportivo, indícalo antes de confirmar para asignar el vehículo correcto.</div>
+        <button type="button" class="faq__q" id="faq-q-8" aria-expanded="false" aria-controls="faq-a-8">
+          ¿Tenéis vehículos para grupos y equipaje voluminoso?
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a" id="faq-a-8" role="region" aria-labelledby="faq-q-8" hidden>Sí. La MINI VAN «V» Class permite viajar hasta siete pasajeros, dependiendo del equipaje. Para maletas especiales o material deportivo, indícalo antes de confirmar para asignar el vehículo correcto.</div>
       </div>
       <div class="faq__item">
-        <button class="faq__q">¿Puedo contratar un coche con chófer por horas? <span class="faq__icon"></span></button>
-        <div class="faq__a">Sí. El servicio por horas es ideal para reuniones, cenas, compras, eventos o agendas con varias paradas. Envíanos el horario aproximado y el recorrido para preparar una propuesta.</div>
+        <button type="button" class="faq__q" id="faq-q-9" aria-expanded="false" aria-controls="faq-a-9">
+          ¿Puedo contratar un coche con chófer por horas?
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a" id="faq-a-9" role="region" aria-labelledby="faq-q-9" hidden>Sí. El servicio por horas es ideal para reuniones, cenas, compras, eventos o agendas con varias paradas. Envíanos el horario aproximado y el recorrido para preparar una propuesta.</div>
       </div>
       <div class="faq__item">
-        <button class="faq__q">¿Qué formas de pago están disponibles? <span class="faq__icon"></span></button>
-        <div class="faq__a">Las formas de pago disponibles se muestran durante el proceso de reserva antes de confirmar. El pago online se realiza a través de una pasarela segura.</div>
+        <button type="button" class="faq__q" id="faq-q-10" aria-expanded="false" aria-controls="faq-a-10">
+          ¿Qué formas de pago están disponibles?
+          <span class="faq__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq__a" id="faq-a-10" role="region" aria-labelledby="faq-q-10" hidden>Las formas de pago disponibles se muestran durante el proceso de reserva antes de confirmar. El pago online se realiza a través de una pasarela segura.</div>
       </div>
     </div>
   </div>
@@ -1126,19 +1156,19 @@ a.contact__val:hover{color:var(--blue);}
       <div>
         <ul class="contact__list">
           <li class="contact__li">
-            <div class="contact__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+            <div class="contact__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
             <div><div class="contact__label">Teléfono y WhatsApp</div><a href="tel:+34662024136" class="contact__val">+34 662 02 41 36</a></div>
           </li>
           <li class="contact__li">
-            <div class="contact__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div class="contact__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
             <div><div class="contact__label">Email</div><a href="mailto:info@metransfers.es" class="contact__val">info@metransfers.es</a></div>
           </li>
           <li class="contact__li">
-            <div class="contact__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg></div>
+            <div class="contact__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg></div>
             <div><div class="contact__label">Ubicación</div><span class="contact__val" style="font-weight:600;font-size:18px;color:var(--muted);">Barcelona, España</span></div>
           </li>
           <li class="contact__li">
-            <div class="contact__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div class="contact__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
             <div><div class="contact__label">Horario de atención</div><span class="contact__val" style="font-weight:600;font-size:18px;color:var(--muted);">24 horas, 7 días a la semana</span></div>
           </li>
         </ul>
@@ -1188,12 +1218,24 @@ a.contact__val:hover{color:var(--blue);}
 
 <script>
 /* FAQ */
-document.querySelectorAll('.faq__q').forEach(function(btn){
-  btn.addEventListener('click', function(){
-    var item = btn.closest('.faq__item');
-    var isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq__item.open').forEach(function(el){ el.classList.remove('open'); });
-    if(!isOpen) item.classList.add('open');
+document.querySelectorAll('.faq__q').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    const item = btn.closest('.faq__item');
+    const answer = document.getElementById(btn.getAttribute('aria-controls'));
+    const isOpen = btn.getAttribute('aria-expanded') === 'true';
+
+    document.querySelectorAll('.faq__q').forEach(function(otherBtn) {
+      const otherAnswer = document.getElementById(otherBtn.getAttribute('aria-controls'));
+      otherBtn.setAttribute('aria-expanded', 'false');
+      if (otherAnswer) otherAnswer.hidden = true;
+      otherBtn.closest('.faq__item')?.classList.remove('open');
+    });
+
+    if (!isOpen) {
+      btn.setAttribute('aria-expanded', 'true');
+      if (answer) answer.hidden = false;
+      item.classList.add('open');
+    }
   });
 });
 
