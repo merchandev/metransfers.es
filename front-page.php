@@ -826,7 +826,7 @@ a.contact__val:hover{color:var(--blue);}
         <span class="route__time">1 h 15 min</span>
       </a>
       <a href="/taxis-barcelona-salou/" class="route__item" style="text-decoration:none;color:inherit;">
-        <div class="route__info"><h3>Barcelona ↔ Salou</h3><p>Traslado directo a hoteles y apartamentos turÍsticos.</p></div>
+        <div class="route__info"><h3>Barcelona ↔ Salou</h3><p>Traslado directo a hoteles y apartamentos turísticos.</p></div>
         <span class="route__time">1 h 15 min</span>
       </a>
       <a href="/taxis-barcelona-girona/" class="route__item" style="text-decoration:none;color:inherit;">

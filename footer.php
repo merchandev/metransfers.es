@@ -6,7 +6,7 @@
  */
 ?>
 <style>
-/* ─── Footer: colores explÍcitos y diseño compacto ─── */
+/* ─── Footer: colores explícitos y diseño compacto ─── */
 .site-footer {
 	background: #0B1F35;
 	color: rgba(255,255,255,0.75);
@@ -536,7 +536,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			formData.append('origen', 'whatsapp');
 
 			if(!window.mtAjax) {
-				console.error('Error crÍtico: mtAjax no definido. Abortando envÍo.');
+				console.error('Error crítico: mtAjax no definido. Abortando envío.');
 				alert('Ocurrió un error en la configuración. Por favor recargue la página.');
 				btn.innerHTML = originalHtml;
 				btn.disabled = false;

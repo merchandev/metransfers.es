@@ -107,7 +107,7 @@ function me_transfers_redirect_legacy_cookies_page() {
 		return;
 	}
 
-	wp_safe_redirect( home_url( '/cookie' ), 301 );
+	wp_safe_redirect( home_url( '/politica-de-cookies/' ), 301 );
 	exit;
 }
 add_action( 'template_redirect', 'me_transfers_redirect_legacy_cookies_page' );

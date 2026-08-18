@@ -687,7 +687,7 @@ function me_transfers_migrate_legal_to_editor() {
 <li><strong>Cookies de preferencias:</strong> destinadas a recordar opciones expresamente solicitadas por el usuario, como el idioma o determinadas configuraciones de visualización, cuando estas funcionalidades estén habilitadas.</li>
 <li><strong>Cookies técnicas de terceros vinculadas al servicio:</strong> determinados proveedores externos integrados en la web, como herramientas de traducción, mapas, contenidos embebidos o pasarelas de pago seguras, pueden instalar sus propias cookies cuando el usuario interactúa con dichas funcionalidades.</li>
 </ul>
-<p>Este tema no instala por sÍ mismo cookies de publicidad comportamental. Si en el futuro se incorporan herramientas analíticas no exentas, servicios de personalización avanzada o soluciones publicitarias que requieran consentimiento, se informará al usuario de forma previa y se recabará la autorización correspondiente antes de su activación.</p>
+<p>Este tema no instala por sí mismo cookies de publicidad comportamental. Si en el futuro se incorporan herramientas analíticas no exentas, servicios de personalización avanzada o soluciones publicitarias que requieran consentimiento, se informará al usuario de forma previa y se recabará la autorización correspondiente antes de su activación.</p>
 <h2>5. Base jurídica</h2>
 <p>Las cookies técnicas o estrictamente necesarias pueden utilizarse sin consentimiento previo cuando resultan imprescindibles para prestar el servicio solicitado por el usuario o para posibilitar la navegación segura por el sitio web. Las cookies no necesarias solo podrán utilizarse cuando exista una base jurídica adecuada y, en los casos exigidos por la normativa, tras obtener el consentimiento informado del usuario.</p>
 <h2>6. Plazo de conservación</h2>
@@ -703,7 +703,7 @@ function me_transfers_migrate_legal_to_editor() {
 <h2>8. Cookies de terceros</h2>
 <p>La aceptación, configuración y uso de cookies de terceros se rige por las políticas propias de dichos proveedores. METRANSFERS GESTION SL no puede controlar en todo momento las actualizaciones que esos terceros realicen en sus políticas, por lo que se recomienda al usuario revisar directamente sus condiciones cuando interactúe con herramientas externas integradas o enlazadas desde la web.</p>
 <h2>9. Información adicional y contacto</h2>
-<p>Para obtener más información sobre el tratamiento de datos personales, puede consultar nuestra <a href="' . home_url( '/privacidad' ) . '">Política de Privacidad</a>. Si necesita aclaraciones sobre el uso de cookies en este sitio web, puede escribir a <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</p>
+<p>Para obtener más información sobre el tratamiento de datos personales, puede consultar nuestra <a href="' . home_url( '/politica-de-privacidad/' ) . '">Política de Privacidad</a>. Si necesita aclaraciones sobre el uso de cookies en este sitio web, puede escribir a <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</p>
 <p>La presente Política de Cookies podrá actualizarse cuando se produzcan cambios normativos, técnicos o funcionales en el sitio web. Se recomienda revisarla periódicamente.</p>',
         'terminos-y-condiciones' => '<h2>1. MARCO LEGAL APLICABLE</h2>
 <p>El presente contrato se rige por lo dispuesto en la legislación española vigente, específicamente:</p>
@@ -753,19 +753,19 @@ function me_transfers_migrate_legal_to_editor() {
 <p><strong>NIF:</strong> B22522353</p>
 <p><strong>Domicilio Social:</strong> AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ &ndash; (BARCELONA)</p>
 <p><strong>Correo electrónico de contacto:</strong> <a href="mailto:info@metransfers.es">info@metransfers.es</a></p>
-<p><strong>Actividad:</strong> Transporte de viajeros y gestión de servicios turÍsticos.</p>
+<p><strong>Actividad:</strong> Transporte de viajeros y gestión de servicios turísticos.</p>
 <h2>2. CONDICIONES DE USO</h2>
 <p>El acceso y/o uso de este portal atribuye la condición de USUARIO, que acepta, desde dicho acceso y/o uso, las Condiciones Generales de Uso aquí reflejadas.</p>
 <p>El sitio web proporciona acceso a informaciones, servicios o datos (en adelante, &ldquo;los contenidos&rdquo;) en Internet pertenecientes a METRANSFERS GESTION SL. El USUARIO asume la responsabilidad del uso del portal. Dicha responsabilidad se extiende al registro que fuese necesario para acceder a determinados servicios o contenidos (como el formulario de reservas).</p>
 <h2>3. PROPIEDAD INTELECTUAL E INDUSTRIAL</h2>
-<p>METRANSFERS GESTION SL es titular de todos los derechos de propiedad intelectual e industrial de su página web, así como de los elementos contenidos en la misma (a título enunciativo: imágenes, sonido, audio, vÍdeo, software o textos; marcas o logotipos, combinaciones de colores, estructura y diseño, selección de materiales usados, programas de ordenador necesarios para su funcionamiento, acceso y uso, etc.).</p>
+<p>METRANSFERS GESTION SL es titular de todos los derechos de propiedad intelectual e industrial de su página web, así como de los elementos contenidos en la misma (a título enunciativo: imágenes, sonido, audio, vídeo, software o textos; marcas o logotipos, combinaciones de colores, estructura y diseño, selección de materiales usados, programas de ordenador necesarios para su funcionamiento, acceso y uso, etc.).</p>
 <p>En virtud de lo dispuesto en los artículos 8 y 32.1, párrafo segundo, de la Ley de Propiedad Intelectual, quedan expresamente prohibidas la reproducción, la distribución y la comunicación pública, incluida su modalidad de puesta a disposición, de la totalidad o parte de los contenidos de esta página web, con fines comerciales, en cualquier soporte y por cualquier medio técnico, sin la autorización de METRANSFERS GESTION SL.</p>
 <h2>4. EXCLUSIÓN DE GARANTÍAS Y RESPONSABILIDAD</h2>
 <p>EL PRESTADOR no se hace responsable, en ningún caso, de los daños y perjuicios de cualquier naturaleza que pudieran ocasionar, a título enunciativo: errores u omisiones en los contenidos, falta de disponibilidad del portal o la transmisión de virus o programas maliciosos o lesivos en los contenidos, a pesar de haber adoptado todas las medidas tecnológicas necesarias para evitarlo.</p>
 <h2>5. MODIFICACIONES</h2>
 <p>METRANSFERS GESTION SL se reserva el derecho de efectuar sin previo aviso las modificaciones que considere oportunas en su portal, pudiendo cambiar, suprimir o añadir tanto los contenidos y servicios que se presten a través de la misma como la forma en la que éstos aparezcan presentados o localizados en su portal.</p>
 <h2>6. ENLACES (LINKS)</h2>
-<p>En el caso de que en el sitio web se dispusiesen enlaces o hipervÍnculos hacÍa otros sitios de Internet, METRANSFERS GESTION SL no ejercerá ningún tipo de control sobre dichos sitios y contenidos. En ningún caso asumirá responsabilidad alguna por los contenidos de algún enlace perteneciente a un sitio web ajeno.</p>
+<p>En el caso de que en el sitio web se dispusiesen enlaces o hipervínculos hacia otros sitios de Internet, METRANSFERS GESTION SL no ejercerá ningún tipo de control sobre dichos sitios y contenidos. En ningún caso asumirá responsabilidad alguna por los contenidos de algún enlace perteneciente a un sitio web ajeno.</p>
 <h2>7. DERECHO DE EXCLUSIÓN</h2>
 <p>METRANSFERS GESTION SL se reserva el derecho a denegar o retirar el acceso al portal y/o los servicios ofrecidos sin necesidad de preaviso, a instancia propia o de un tercero, a aquellos usuarios que incumplan las presentes Condiciones Generales de Uso.</p>
 <h2>8. PROTECCIÓN DE DATOS</h2>
@@ -1271,7 +1271,7 @@ function mt_ensure_seo_pages() {
         'Besalú',
         'Bagur',
         'Delta del Ebro',
-        'PeñÍscola',
+        'Peñíscola',
         'Morella',
         'Altea',
         'Valderrobres',
@@ -1728,11 +1728,11 @@ add_filter( 'wpseo_metadesc', function( $desc ) {
 /**
  * Full restoration of legal pages (Title, Slug, Content) to fix 404s and empty content.
  */
-// DESACTIVADO: mt_full_restore_legal_pages_once() sobreescribÍa el contenido de las páginas
+// DESACTIVADO: mt_full_restore_legal_pages_once() sobreescribía el contenido de las páginas
 // legales con texto hardcodeado en functions.php en cada instalación nueva.
 // Las páginas legales deben editarse desde el panel de WordPress. El contenido de esta
 // función se conserva como referencia pero NO debe re-activarse: cualquier actualización del
-// tema sobreescribirÍa cambios legales aprobados.
+// tema sobreescribiría cambios legales aprobados.
 // add_action( 'admin_init', 'mt_full_restore_legal_pages_once' );
 function mt_full_restore_legal_pages_once() {
     if ( get_transient( 'mt_full_restored_legal_pages_v1' ) ) {
