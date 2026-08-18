@@ -560,22 +560,24 @@ add_action( 'wp_head', function() {
     // Inyectar hreflang para decirle a Google que son variantes de idioma y no duplicados
     $seo_langs = defined( 'MT_SEO_LANGS' ) ? MT_SEO_LANGS : array( 'es' );
     
-    foreach ( $seo_langs as $code ) {
-        if ( ! isset( MT_LANGS[ $code ] ) ) {
-            continue;
-        }
+    if ( count( $seo_langs ) > 1 ) {
+        foreach ( $seo_langs as $code ) {
+            if ( ! isset( MT_LANGS[ $code ] ) ) {
+                continue;
+            }
 
-        $url = ( $code === 'es' )
-            ? home_url( '/' . ( $slug ? $slug . '/' : '' ) )
-            : home_url( '/' . $code . '/' . ( $slug ? $slug . '/' : '' ) );
-            
-        // Ajuste para el código de idioma chino (zh)
-        $hreflang = ( $code === 'zh' ) ? 'zh-Hans' : $code; 
-        echo '<link rel="alternate" hreflang="' . esc_attr( $hreflang ) . '" href="' . esc_url( $url ) . '" />' . "\n";
+            $url = ( $code === 'es' )
+                ? home_url( '/' . ( $slug ? $slug . '/' : '' ) )
+                : home_url( '/' . $code . '/' . ( $slug ? $slug . '/' : '' ) );
+                
+            // Ajuste para el código de idioma chino (zh)
+            $hreflang = ( $code === 'zh' ) ? 'zh-Hans' : $code; 
+            echo '<link rel="alternate" hreflang="' . esc_attr( $hreflang ) . '" href="' . esc_url( $url ) . '" />' . "\n";
+        }
+        
+        // x-default siempre apunta a la versión en español
+        echo '<link rel="alternate" hreflang="x-default" href="' . esc_url( home_url( '/' . ( $slug ? $slug . '/' : '' ) ) ) . '" />' . "\n";
     }
-    
-    // x-default siempre apunta a la versión en español
-    echo '<link rel="alternate" hreflang="x-default" href="' . esc_url( home_url( '/' . ( $slug ? $slug . '/' : '' ) ) ) . '" />' . "\n";
 }, 2 );
 
 
