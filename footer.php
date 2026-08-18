@@ -357,7 +357,7 @@
 				<p class="footer-col-title">Destinos y rutas</p>
 				<ul class="footer-links-list">
 					<li><a href="<?php echo esc_url( home_url( '/traslados-privados/' ) ); ?>">Traslados privados Barcelona</a></li>
-					<li><a href="<?php echo esc_url( home_url( '/rutas/barcelona-costa-brava/' ) ); ?>">Costa Brava</a></li>
+					<li><a href="<?php echo esc_url( home_url( '/destinos/costa-brava/' ) ); ?>">Costa Brava</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/rutas/barcelona-salou/' ) ); ?>">Salou</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/rutas/barcelona-portaventura/' ) ); ?>">PortAventura</a></li>
 					<li><a href="<?php echo esc_url( home_url( '/rutas/barcelona-girona/' ) ); ?>">Girona</a></li>

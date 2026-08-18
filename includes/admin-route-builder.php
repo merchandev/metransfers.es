@@ -224,6 +224,7 @@ function mt_get_phase1_routes() {
 
         // ── FASE 1: PortAventura ────────────────────────────────────
         'aeropuerto-barcelona-portaventura'    => 'Aeropuerto de Barcelona–PortAventura',
+        'barcelona-portaventura'               => 'Barcelona centro–PortAventura',
         'aeropuerto-reus-portaventura'         => 'Aeropuerto de Reus–PortAventura',
         'salou-portaventura'                   => 'Salou–PortAventura',
 
@@ -305,6 +306,7 @@ function mt_get_route_duration( $slug ) {
         'puerto-barcelona-salou' => '1h 15 min',
         'estacion-sants-salou' => '1h 15 min',
         'aeropuerto-barcelona-portaventura' => '1h 15 min',
+        'barcelona-portaventura' => '1h 15 min',
         'aeropuerto-reus-portaventura' => '15 min',
         'salou-portaventura' => '10 min',
         'aeropuerto-barcelona-sitges' => '40 min',

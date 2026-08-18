@@ -788,7 +788,7 @@ a.contact__val:hover{color:var(--blue);}
 
       <div class="fleet__card">
         <div class="fleet__img-wrap">
-          <img src="<?php echo $bdi; ?>/family-v-class.webp" alt="MINI VAN ECONOMIC - Minivan" loading="lazy" decoding="async" class="fleet__img" loading="lazy" decoding="async">
+          <img src="<?php echo $bdi; ?>/family-v-class.webp" alt="MINI VAN ECONOMIC - Minivan" class="fleet__img" loading="lazy" decoding="async">
           <span class="fleet__badge">Hasta 7 pasajeros</span>
         </div>
         <div class="fleet__body">
@@ -864,7 +864,7 @@ a.contact__val:hover{color:var(--blue);}
       </a>
 
       <a
-        href="<?php echo esc_url( home_url( '/rutas/barcelona-costa-brava/' ) ); ?>"
+        href="<?php echo esc_url( home_url( '/destinos/costa-brava/' ) ); ?>"
         class="route__item"
         style="text-decoration:none;color:inherit;"
       >
@@ -885,7 +885,7 @@ a.contact__val:hover{color:var(--blue);}
           <p>Traslado privado para familias y grupos.</p>
         </div>
         <span class="route__time">
-            <?php echo esc_html( mt_get_route_duration( 'aeropuerto-barcelona-portaventura' ) ?: 'Según tráfico' ); ?>
+            <?php echo esc_html( mt_get_route_duration( 'barcelona-portaventura' ) ?: 'Según tráfico' ); ?>
         </span>
       </a>
 
@@ -899,7 +899,7 @@ a.contact__val:hover{color:var(--blue);}
           <p>Traslado directo a hoteles y apartamentos turísticos.</p>
         </div>
         <span class="route__time">
-            <?php echo esc_html( mt_get_route_duration( 'aeropuerto-barcelona-salou' ) ?: 'Según tráfico' ); ?>
+            <?php echo esc_html( mt_get_route_duration( 'barcelona-salou' ) ?: 'Según tráfico' ); ?>
         </span>
       </a>
 
@@ -913,17 +913,28 @@ a.contact__val:hover{color:var(--blue);}
           <p>Traslado directo a la ciudad o al aeropuerto de Girona.</p>
         </div>
         <span class="route__time">
-            <?php echo esc_html( mt_get_route_duration( 'aeropuerto-barcelona-girona' ) ?: 'Según tráfico' ); ?>
+            <?php echo esc_html( mt_get_route_duration( 'barcelona-girona' ) ?: 'Según tráfico' ); ?>
         </span>
       </a>
 
-      <div class="route__item">
+      <a
+        href="<?php echo esc_url( home_url( '/rutas/barcelona-andorra/' ) ); ?>"
+        class="route__item"
+        style="text-decoration:none;color:inherit;"
+      >
         <div class="route__info">
           <h3>Barcelona ↔ Andorra</h3>
-          <p>Larga distancia con paradas programadas bajo petición.</p>
+          <p>Servicio privado de larga distancia con paradas bajo petición.</p>
         </div>
-        <span class="route__time">2 h 45–3 h 15</span>
-      </div>
+        <span class="route__time">
+            <?php
+            echo esc_html(
+                mt_get_route_duration( 'barcelona-andorra' )
+                ?: 'Según tráfico'
+            );
+            ?>
+        </span>
+      </a>
 
     </div>
 
