@@ -657,7 +657,7 @@ function me_transfers_migrate_legal_to_editor() {
 <ul>
 <li><strong>Ejecución Contractual:</strong> Necesaria para procesar su reserva y prestarle el servicio solicitado.</li>
 <li><strong>Obligación Legal:</strong> Derivada de la normativa fiscal y mercantil vigente en España.</li>
-<li><strong>Consentimiento:</strong> Otorgado explÍcitamente al marcar la casilla de aceptación en nuestros formularios.</li>
+<li><strong>Consentimiento:</strong> Otorgado explícitamente al marcar la casilla de aceptación en nuestros formularios.</li>
 </ul>
 <h2>6. Conservación y Destinatarios</h2>
 <p><strong>Plazos:</strong> Los datos se conservarán durante el tiempo que dure la relación comercial y, posteriormente, durante los plazos legales de prescripción (generalmente 6 años para documentos contables según el Código de Comercio).</p>
@@ -687,9 +687,9 @@ function me_transfers_migrate_legal_to_editor() {
 <li><strong>Cookies de preferencias:</strong> destinadas a recordar opciones expresamente solicitadas por el usuario, como el idioma o determinadas configuraciones de visualización, cuando estas funcionalidades estén habilitadas.</li>
 <li><strong>Cookies técnicas de terceros vinculadas al servicio:</strong> determinados proveedores externos integrados en la web, como herramientas de traducción, mapas, contenidos embebidos o pasarelas de pago seguras, pueden instalar sus propias cookies cuando el usuario interactúa con dichas funcionalidades.</li>
 </ul>
-<p>Este tema no instala por sÍ mismo cookies de publicidad comportamental. Si en el futuro se incorporan herramientas analÍticas no exentas, servicios de personalización avanzada o soluciones publicitarias que requieran consentimiento, se informará al usuario de forma previa y se recabará la autorización correspondiente antes de su activación.</p>
-<h2>5. Base jurÍdica</h2>
-<p>Las cookies técnicas o estrictamente necesarias pueden utilizarse sin consentimiento previo cuando resultan imprescindibles para prestar el servicio solicitado por el usuario o para posibilitar la navegación segura por el sitio web. Las cookies no necesarias solo podrán utilizarse cuando exista una base jurÍdica adecuada y, en los casos exigidos por la normativa, tras obtener el consentimiento informado del usuario.</p>
+<p>Este tema no instala por sÍ mismo cookies de publicidad comportamental. Si en el futuro se incorporan herramientas analíticas no exentas, servicios de personalización avanzada o soluciones publicitarias que requieran consentimiento, se informará al usuario de forma previa y se recabará la autorización correspondiente antes de su activación.</p>
+<h2>5. Base jurídica</h2>
+<p>Las cookies técnicas o estrictamente necesarias pueden utilizarse sin consentimiento previo cuando resultan imprescindibles para prestar el servicio solicitado por el usuario o para posibilitar la navegación segura por el sitio web. Las cookies no necesarias solo podrán utilizarse cuando exista una base jurídica adecuada y, en los casos exigidos por la normativa, tras obtener el consentimiento informado del usuario.</p>
 <h2>6. Plazo de conservación</h2>
 <p>Las cookies de sesión permanecen activas únicamente mientras el usuario navega por el sitio y se eliminan al cerrar el navegador. Las cookies persistentes, cuando existan, se conservarán durante el tiempo estrictamente necesario para cumplir su finalidad o hasta que el usuario las elimine manualmente desde la configuración de su navegador o del servicio correspondiente.</p>
 <h2>7. Gestión, configuración y desactivación</h2>
@@ -706,7 +706,7 @@ function me_transfers_migrate_legal_to_editor() {
 <p>Para obtener más información sobre el tratamiento de datos personales, puede consultar nuestra <a href="' . home_url( '/privacidad' ) . '">Política de Privacidad</a>. Si necesita aclaraciones sobre el uso de cookies en este sitio web, puede escribir a <a href="mailto:info@metransfers.es">info@metransfers.es</a>.</p>
 <p>La presente Política de Cookies podrá actualizarse cuando se produzcan cambios normativos, técnicos o funcionales en el sitio web. Se recomienda revisarla periódicamente.</p>',
         'terminos-y-condiciones' => '<h2>1. MARCO LEGAL APLICABLE</h2>
-<p>El presente contrato se rige por lo dispuesto en la legislación española vigente, especÍficamente:</p>
+<p>El presente contrato se rige por lo dispuesto en la legislación española vigente, específicamente:</p>
 <ul>
 <li>Ley 16/1987, de 30 de julio, de Ordenación de los Transportes Terrestres (LOTT) y su Reglamento (ROTT).</li>
 <li>Ley 34/2002 (LSSI-CE) sobre servicios de la sociedad de la información.</li>
@@ -715,13 +715,13 @@ function me_transfers_migrate_legal_to_editor() {
 </ul>
 <h2>2. IDENTIFICACIÓN DE LAS PARTES</h2>
 <p><strong>El Prestador:</strong> METRANSFERS GESTION SL, con NIF B22522353 y domicilio social en AVDA MARE DE DEU DE MONTSERRAT, NUM 18, PLANTA 5, PUERTA 2, 08970 SANT JOAN DESPÍ (BARCELONA).</p>
-<p><strong>El Cliente:</strong> Persona fÍsica o jurÍdica que formaliza la reserva y garantiza tener capacidad legal para contratar.</p>
+<p><strong>El Cliente:</strong> Persona física o jurídica que formaliza la reserva y garantiza tener capacidad legal para contratar.</p>
 <h2>3. OBLIGACIÓN DE NOTIFICACIÓN Y REQUISITOS DEL SERVICIO</h2>
 <p>Para garantizar la seguridad y legalidad del transporte, el Cliente tiene la obligación inexcusable de declarar las siguientes necesidades en el formulario de reserva:</p>
 <h3>3.1. Sistemas de Retención Infantil (SRI)</h3>
-<p>Conforme al ArtÍculo 117 del Reglamento General de Circulación, es obligatorio el uso de sillas homologadas para menores de estatura igual o inferior a 135 cm. El Cliente debe seleccionar el número y tipo de sillas necesarias en el formulario. La omisión de este dato facultará al conductor a denegar el servicio por razones de seguridad, sin derecho a reembolso.</p>
+<p>Conforme al Artículo 117 del Reglamento General de Circulación, es obligatorio el uso de sillas homologadas para menores de estatura igual o inferior a 135 cm. El Cliente debe seleccionar el número y tipo de sillas necesarias en el formulario. La omisión de este dato facultará al conductor a denegar el servicio por razones de seguridad, sin derecho a reembolso.</p>
 <h3>3.2. Equipaje Extraordinario</h3>
-<p>La capacidad del vehículo está limitada por su ficha técnica. El transporte de maletas adicionales, material deportivo (golf, esquÍ) o bultos voluminosos debe ser notificado. EL PRESTADOR se reserva el derecho de cobrar suplementos o denegar el transporte si el volumen excede la capacidad del maletero del vehículo contratado.</p>
+<p>La capacidad del vehículo está limitada por su ficha técnica. El transporte de maletas adicionales, material deportivo (golf, esquí) o bultos voluminosos debe ser notificado. EL PRESTADOR se reserva el derecho de cobrar suplementos o denegar el transporte si el volumen excede la capacidad del maletero del vehículo contratado.</p>
 <h3>3.3. Transporte de Mascotas</h3>
 <p>El transporte de animales domésticos está sujeto a notificación previa y debe realizarse en trasportines homologados proporcionados por el cliente, salvo acuerdo en contrario. Los perros guía viajarán sin coste adicional conforme a la normativa vigente.</p>
 <h2>4. PASARELA DE PAGO Y SEGURIDAD (REDSYS)</h2>
@@ -732,7 +732,7 @@ function me_transfers_migrate_legal_to_editor() {
 <li><strong>Fraude:</strong> EL PRESTADOR se reserva el derecho de anular cualquier transacción ante sospechas de uso fraudulento de tarjetas.</li>
 </ul>
 <h2>5. DERECHO DE DESISTIMIENTO Y POLÍTICA DE CANCELACIÓN</h2>
-<p>En virtud del ArtÍculo 103 l) del Real Decreto Legislativo 1/2007, el derecho de desistimiento no será aplicable a los servicios de transporte de pasajeros si el contrato prevé una fecha o un periodo de ejecución específicos. No obstante, EL PRESTADOR ofrece las siguientes condiciones comerciales:</p>
+<p>En virtud del Artículo 103 l) del Real Decreto Legislativo 1/2007, el derecho de desistimiento no será aplicable a los servicios de transporte de pasajeros si el contrato prevé una fecha o un periodo de ejecución específicos. No obstante, EL PRESTADOR ofrece las siguientes condiciones comerciales:</p>
 <ul>
 <li><strong>Cancelación con &gt;24 horas:</strong> Devolución del 100% del importe mediante el mismo sistema de pago (Redsys).</li>
 <li><strong>Cancelación con &lt;24 horas o No-Show:</strong> Penalización del 100% del valor de la reserva.</li>
@@ -1076,7 +1076,7 @@ add_action( 'wp_ajax_mt_save_lead', 'mt_ajax_save_lead' );
 add_action( 'wp_ajax_nopriv_mt_save_lead', 'mt_ajax_save_lead' );
 
 // ELIMINADO: El bloque AUTO-CREAR PÁGINAS ESENCIALES re-publicaba /contacto y /reservaciones
-// en cada carga de WordPress, incluso si se habÍan dejado como borrador o papelera intencionalmente.
+// en cada carga de WordPress, incluso si se habían dejado como borrador o papelera intencionalmente.
 // Las páginas esenciales deben gestionarse manualmente desde el panel de WordPress.
 // Si las páginas no existen, créalas una vez desde Páginas > Añadir nueva.
 
@@ -1230,7 +1230,7 @@ function mt_ensure_service_pages_and_templates() {
 }
 
 // DESACTIVADO: mt_ensure_seo_pages() generaba automáticamente 35 páginas /taxis-* y /traslados-*
-// que competÍan directamente con el CPT /rutas/* y /destinos/*.
+// que competían directamente con el CPT /rutas/* y /destinos/*.
 // Las URLs antiguas se gestionan mediante redirecciones 301 (ver me_transfers_custom_redirects).
 // add_action( 'admin_init', 'mt_ensure_seo_pages' );
 function mt_ensure_seo_pages() {

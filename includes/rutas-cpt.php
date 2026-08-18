@@ -116,7 +116,7 @@ function mt_ruta_details_callback( $post ) {
     echo '<td>';
     echo '<label><input type="checkbox" id="mt_ruta_seo_ready" name="mt_ruta_seo_ready" value="1"' . checked( $seo_ready, '1', false ) . ' /> ';
     echo '<strong>Marcar esta ruta como lista para indexación</strong></label>';
-    echo '<br><small style="color:#555;">Cuando está marcada, la ruta se indexa aunque no tenga precio. Úsaóla solo cuando la ruta tenga: origen, destino, precio, contenido único, FAQ específica, H1, title y meta description.</small>';
+    echo '<br><small style="color:#555;">Cuando está marcada, la ruta se indexa aunque no tenga precio. Úsala solo cuando la ruta tenga: origen, destino, precio, contenido único, FAQ específica, H1, title y meta description.</small>';
     echo '</td></tr>';
 
     echo '</table>';

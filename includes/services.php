@@ -109,7 +109,7 @@ El conductor permanece a tu disposición exclusiva durante el tiempo contratado 
 		// ─── 4. CORPORATIVO Y EVENTOS ────────────────────────────────────────────────
 		'corporativo-y-eventos' => array(
 			'title'       => 'MeTransfers Barcelona - Transporte Corporativo y Eventos desde Barcelona',
-			'subtitle'    => 'LogÍstica impecable para empresas y grandes eventos en Barcelona',
+			'subtitle'    => 'Logística impecable para empresas y grandes eventos en Barcelona',
 			'slug'        => 'corporativo-y-eventos',
 			'badge'       => 'MWC · ISE · Congresos · Empresas',
 			'hero_desc'   => 'Coordinamos la movilidad de directivos, delegaciones y equipos desde cualquier punto de Barcelona para congresos, ferias y eventos privados. Flota uniforme, facturación centralizada y máxima discreción.',
