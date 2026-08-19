@@ -187,11 +187,6 @@ add_action( 'template_redirect', function() {
         }
     }
 
-    
-    }
-
-    
-    }
 
     if ( ! $is_valid && ($page === 'blog' || $page === 'noticias') ) {
         $is_valid = true;
