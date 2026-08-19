@@ -42,13 +42,21 @@
             return;
         }
 
-        // ===== STEP 2: LOAD BOOKING DATA =====
-        const bookingData = loadBookingData();
+        // ===== STEP 2: LOAD SERVER-SIDE DRAFT =====
+        const draftToken = loadDraftToken();
 
         if (paymentResult === 'ok') {
             $('#wptb-payment-step').hide();
             if (serverPaymentState === 'confirmed') {
-                handlePaymentSuccess(paymentOID);
+                if (draftToken) {
+                    loadBookingData(draftToken, function (bookingData) {
+                        handlePaymentSuccess(paymentOID, bookingData);
+                    }, function () {
+                        handlePaymentSuccess(paymentOID, null);
+                    });
+                } else {
+                    handlePaymentSuccess(paymentOID, null);
+                }
             }
             return;
         } else if (paymentResult === 'ko') {
@@ -56,36 +64,42 @@
             showError(t('payment_cancelled', 'El pago ha sido cancelado o rechazado por el banco.'));
         }
 
-        if (!bookingData) {
+        if (!draftToken) {
             if (paymentResult !== 'ok') { // Only redirect if not on success page
-                // loadBookingData handles redirection or error
+                // loadDraftToken handles redirection or error
             }
             return;
         }
 
-        // ===== STEP 3: POPULATE SUMMARY =====
-        populateSummary(bookingData);
+        setLoading(true);
+        loadBookingData(draftToken, function (bookingData) {
+            // ===== STEP 3: POPULATE SUMMARY =====
+            populateSummary(bookingData);
+            setLoading(false);
 
-        // ===== STEP 4: ATTACH HANDLER =====
-        // Explicitly handle click to avoid form submit issues
-        $('#submit-payment').off('click').on('click', function (e) {
-            e.preventDefault();
-            initiateRedsysPayment(bookingData);
-        });
+            // ===== STEP 4: ATTACH HANDLER =====
+            $('#submit-payment').off('click').on('click', function (e) {
+                e.preventDefault();
+                initiateRedsysPayment(draftToken, bookingData);
+            });
 
-        // Also bind form submit just in case
-        $('#payment-form').off('submit').on('submit', function (e) {
-            e.preventDefault();
-            initiateRedsysPayment(bookingData);
+            $('#payment-form').off('submit').on('submit', function (e) {
+                e.preventDefault();
+                initiateRedsysPayment(draftToken, bookingData);
+            });
+        }, function () {
+            setLoading(false);
+            track('payment_error', { error_type: 'draft_invalid_or_expired' });
+            showError(t('invalid_booking_data', 'No hay datos de reserva válidos. Inicia una nueva reserva.'));
         });
 
         $('#wptb-payment-back').off('click').on('click', function () {
-            window.history.back();
+            window.location.href = wptb_vars.home_url || '/';
         });
 
         // ===== FUNCTIONS =====
 
-        function loadBookingData() {
+        function loadDraftToken() {
             const saved = sessionStorage.getItem('wptb_booking_data');
             if (!saved) {
                 if (isRedsysReturn) return null;
@@ -99,12 +113,51 @@
             }
 
             try {
-                return JSON.parse(saved);
+                const stored = JSON.parse(saved);
+                if (stored && /^[a-f0-9]{64}$/.test(stored.draft_token || '')) {
+                    return stored.draft_token;
+                }
+                throw new Error('Invalid draft token');
             } catch (error) {
                 track('payment_error', { error_type: 'booking_data_corrupt' });
                 showError(t('corrupt_booking_data', 'Los datos de la reserva están dañados.'));
                 return null;
             }
+        }
+
+        function loadBookingData(token, onSuccess, onFailure) {
+            $.ajax({
+                url: wptb_vars.ajax_url,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'wptb_get_booking_draft',
+                    draft_token: token,
+                    security: wptb_vars.nonce
+                }
+            }).done(function (response) {
+                if (response && response.success && response.data && response.data.booking) {
+                    onSuccess(response.data.booking);
+                    return;
+                }
+
+                if (typeof onFailure === 'function') {
+                    onFailure();
+                    return;
+                }
+                track('payment_error', { error_type: 'draft_invalid_or_expired' });
+                const message = response && response.data && response.data.message
+                    ? response.data.message
+                    : t('invalid_booking_data', 'No hay datos de reserva válidos. Inicia una nueva reserva.');
+                showError(message);
+            }).fail(function () {
+                if (typeof onFailure === 'function') {
+                    onFailure();
+                    return;
+                }
+                track('payment_error', { error_type: 'draft_connection' });
+                showError(t('connection_error', 'Error de conexión.'));
+            });
         }
 
         function populateSummary(data) {
@@ -120,6 +173,7 @@
 
             $('#payment-origin').text(data.origin || '-');
             $('#payment-destination').text(data.destination || '-');
+            $('#payment-passengers').text(data.passengers || '1');
             $('#payment-date').text(data.date + ' ' + (data.time || ''));
             $('#payment-price').text('€' + parseFloat(data.price).toFixed(2));
             // Price removed from button as per user request
@@ -193,7 +247,7 @@
             });
         }
 
-        function initiateRedsysPayment(bookingData) {
+        function initiateRedsysPayment(token, bookingData) {
 
             const $terms = $('#wptb-accept-terms');
             if ($terms.length && !$terms.is(':checked')) {
@@ -204,10 +258,7 @@
             $('#wptb-terms-error').hide();
             setLoading(true);
 
-            bookingData.language = (typeof wptb_vars !== 'undefined' && wptb_vars.language) ? wptb_vars.language : 'es';
-            bookingData.terms_accepted = true;
-            bookingData.terms_version = wptb_vars.terms_version || '';
-            bookingData.analytics_client_id = typeof window.mtAnalyticsClientId === 'function' ? window.mtAnalyticsClientId() : '';
+            const analyticsClientId = typeof window.mtAnalyticsClientId === 'function' ? window.mtAnalyticsClientId() : '';
             track('add_payment_info', {
                 payment_type: 'redsys',
                 vehicle_id: bookingData.vehicle_id,
@@ -221,7 +272,10 @@
                 dataType: 'json',
                 data: {
                     action: 'wptb_initiate_redsys',
-                    booking_data: JSON.stringify(bookingData),
+                    draft_token: token,
+                    terms_accepted: '1',
+                    terms_version: wptb_vars.terms_version || '',
+                    analytics_client_id: analyticsClientId,
                     security: wptb_vars.nonce
                 },
                 success: function (response) {
@@ -231,7 +285,6 @@
                         track('payment_error', { error_type: errorCode });
                         if (response.data && response.data.code === 'price_changed') {
                             bookingData.price = parseFloat(response.data.server_price);
-                            sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
                             populateSummary(bookingData);
                         }
                         showError((response.data && response.data.message) || t('bank_connection_error', 'No se pudo conectar con el banco.'));
@@ -274,20 +327,13 @@
             form.submit();
         }
 
-        function handlePaymentSuccess(oid) {
+        function handlePaymentSuccess(oid, bookingData) {
             $('#wptb-step-3').hide();
             $('#wptb-step-4').show();
             $('#success-order-id').text('#' + oid);
 
-            // Try to recover data for PDF
-            const saved = sessionStorage.getItem('wptb_booking_data');
-            if (saved) {
-                const data = JSON.parse(saved);
-                window.lastBookingData = data;
-
-                // Clean up
-                sessionStorage.removeItem('wptb_booking_data');
-            }
+            window.lastBookingData = bookingData || {};
+            sessionStorage.removeItem('wptb_booking_data');
         }
 
         // ===== UTILITY =====

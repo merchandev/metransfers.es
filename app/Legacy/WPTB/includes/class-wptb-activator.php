@@ -36,6 +36,7 @@ class WPTB_Activator {
             status varchar(20) DEFAULT 'pending',
             payment_method varchar(50),
             payment_intent_id varchar(255),
+            payment_idempotency_key char(64) DEFAULT NULL,
             payment_status varchar(20) DEFAULT 'pending',
             booking_locale varchar(10) DEFAULT 'es',
             terms_accepted_at datetime DEFAULT NULL,
@@ -52,6 +53,7 @@ class WPTB_Activator {
             KEY payment_status_created_at (payment_status, created_at),
             KEY vehicle_booking_date (vehicle_id, booking_date),
             KEY payment_intent_id (payment_intent_id),
+            UNIQUE KEY payment_idempotency_key (payment_idempotency_key),
             KEY hotel_token (hotel_token),
             KEY origin (origin(50)),
             KEY destination (destination(50))
@@ -103,6 +105,26 @@ class WPTB_Activator {
             KEY status_available (status, available_at)
         ) $charset_collate;";
         dbDelta( $sql_outbox );
+
+        // Short-lived server-side booking drafts keep PII out of browser
+        // storage. Only a one-way digest of the opaque token is persisted.
+        $table_drafts = $wpdb->prefix . 'mt_booking_drafts';
+        $sql_drafts = "CREATE TABLE $table_drafts (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            token_hash char(64) NOT NULL,
+            idempotency_key char(64) NOT NULL,
+            payload longtext NOT NULL,
+            payment_booking_id bigint(20) unsigned DEFAULT NULL,
+            created_at datetime NOT NULL,
+            expires_at datetime NOT NULL,
+            consumed_at datetime DEFAULT NULL,
+            PRIMARY KEY  (id),
+            UNIQUE KEY token_hash (token_hash),
+            UNIQUE KEY idempotency_key (idempotency_key),
+            KEY expires_at (expires_at),
+            KEY payment_booking_id (payment_booking_id)
+        ) $charset_collate;";
+        dbDelta( $sql_drafts );
 
         // Asegurar que el AUTO_INCREMENT inicia en 10000 (IDs para Getnet siempre >= 10000)
         $max_id = (int) $wpdb->get_var( "SELECT MAX(id) FROM $table_bookings" );

@@ -34,7 +34,11 @@ assert_readiness( false !== strpos( $booking_details, "array( 'confirmed', 'comp
 assert_readiness( false !== strpos( $booking_details, 'validate_confirmation_request' ), 'Both OK and KO returns must validate their order-bound HMAC token.' );
 assert_readiness( false !== strpos( $booking_details, 'data-payment-state' ), 'The server-confirmed state must be available to the tracking layer.' );
 
-assert_readiness( false === strpos( $public_controller, 'wp_ajax_wptb_create_booking' ), 'The orphan create-booking hook must stay removed.' );
+assert_readiness(
+    false === strpos( $public_controller, "'wp_ajax_wptb_create_booking'," )
+        && false === strpos( $public_controller, "'wp_ajax_nopriv_wptb_create_booking'," ),
+    'The orphan create-booking hook must stay removed.'
+);
 assert_readiness( false === strpos( $public_controller, 'wp_ajax_wptb_get_pricing' ), 'The orphan pricing hook must stay removed.' );
 assert_readiness( false === strpos( $loader, 'wptb_calculate_price' ) && false === strpos( $public_controller, 'function ajax_calculate_price' ), 'The legacy browser-supplied pricing endpoint must stay removed.' );
 assert_readiness( false === strpos( $public_controller, 'debug_info' ), 'Public AJAX responses must not expose debug payloads.' );

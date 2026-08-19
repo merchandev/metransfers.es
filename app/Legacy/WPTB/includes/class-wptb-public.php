@@ -18,6 +18,10 @@ class WPTB_Public {
         // Redsys Actions
         add_action( 'wp_ajax_wptb_initiate_redsys', array( $this, 'initiate_redsys_payment' ) );
         add_action( 'wp_ajax_nopriv_wptb_initiate_redsys', array( $this, 'initiate_redsys_payment' ) );
+        add_action( 'wp_ajax_wptb_create_booking_draft', array( $this, 'ajax_create_booking_draft' ) );
+        add_action( 'wp_ajax_nopriv_wptb_create_booking_draft', array( $this, 'ajax_create_booking_draft' ) );
+        add_action( 'wp_ajax_wptb_get_booking_draft', array( $this, 'ajax_get_booking_draft' ) );
+        add_action( 'wp_ajax_nopriv_wptb_get_booking_draft', array( $this, 'ajax_get_booking_draft' ) );
         add_action( 'init', array( $this, 'listen_redsys_ipn' ) );
         add_action( 'wptb_new_booking_created', array( $this, 'notify_new_booking' ) );
 
@@ -590,14 +594,28 @@ class WPTB_Public {
         );
         return false;
     }
-    
-    // ===== REDSYS PAYMENT METHODS =====
-    
-    public function initiate_redsys_payment() {
+
+    public function ajax_create_booking_draft() {
         try {
             check_ajax_referer( 'wptb-booking-nonce', 'security' );
 
+            if ( ! \MeTransfers\Security\RequestRateLimiter::consume( 'booking_draft', 8, MINUTE_IN_SECONDS ) ) {
+                wp_send_json_error(
+                    array(
+                        'code'    => 'draft_rate_limited',
+                        'message' => \MeTransfers\Booking\I18n::text( 'quote_rate_limited', 'es' ),
+                    ),
+                    429
+                );
+                return;
+            }
+
             $booking_json = isset( $_POST['booking_data'] ) ? wp_unslash( $_POST['booking_data'] ) : '';
+            if ( ! is_string( $booking_json ) || strlen( $booking_json ) > \MeTransfers\Booking\BookingDraftService::MAX_PAYLOAD_BYTES ) {
+                wp_send_json_error( array( 'code' => 'invalid_draft', 'message' => \MeTransfers\Booking\I18n::text( 'invalid_booking_request', 'es' ) ) );
+                return;
+            }
+
             $booking_data = json_decode( $booking_json, true );
             $language = \MeTransfers\Booking\I18n::normalizeLanguage(
                 is_array( $booking_data ) && ! empty( $booking_data['language'] ) && is_scalar( $booking_data['language'] )
@@ -605,19 +623,188 @@ class WPTB_Public {
                     : 'es'
             );
             $required_fields = array( 'date', 'time', 'origin', 'destination', 'vehicle_id', 'price', 'customer_name', 'customer_email', 'customer_phone' );
-
             if ( ! is_array( $booking_data ) || array_diff( $required_fields, array_keys( $booking_data ) ) ) {
-                wp_send_json_error( array( 'message' => \MeTransfers\Booking\I18n::text( 'invalid_booking_request', $language ) ) );
+                wp_send_json_error( array( 'code' => 'invalid_draft', 'message' => \MeTransfers\Booking\I18n::text( 'invalid_booking_request', $language ) ) );
+                return;
+            }
+            foreach ( $required_fields as $required_field ) {
+                if ( ! is_scalar( $booking_data[ $required_field ] ) ) {
+                    wp_send_json_error( array( 'code' => 'invalid_draft', 'message' => \MeTransfers\Booking\I18n::text( 'invalid_booking_request', $language ) ) );
+                    return;
+                }
+            }
+
+            $vehicle_id = absint( $booking_data['vehicle_id'] );
+            $vehicle = \WPTB_Vehicle_Manager::get_vehicle( $vehicle_id );
+            $customer_email = sanitize_email( $booking_data['customer_email'] );
+            if ( ! $vehicle || ! is_email( $customer_email ) ) {
+                wp_send_json_error( array( 'code' => 'invalid_draft', 'message' => \MeTransfers\Booking\I18n::text( 'invalid_contact', $language ) ) );
                 return;
             }
 
-            $terms_accepted = isset( $booking_data['terms_accepted'] ) && true === filter_var( $booking_data['terms_accepted'], FILTER_VALIDATE_BOOLEAN );
-            $terms_version = isset( $booking_data['terms_version'] ) ? sanitize_text_field( $booking_data['terms_version'] ) : '';
+            $payload = array(
+                'date'               => sanitize_text_field( $booking_data['date'] ),
+                'time'               => sanitize_text_field( $booking_data['time'] ),
+                'origin'             => sanitize_text_field( $booking_data['origin'] ),
+                'destination'        => sanitize_text_field( $booking_data['destination'] ),
+                'vehicle_id'         => $vehicle_id,
+                'vehicle_name'       => sanitize_text_field( $vehicle->name ),
+                'trip_type'          => isset( $booking_data['trip_type'] ) && 'round_trip' === $booking_data['trip_type'] ? 'round_trip' : 'one_way',
+                'price'              => round( (float) $booking_data['price'], 2 ),
+                'customer_name'      => sanitize_text_field( $booking_data['customer_name'] ),
+                'customer_email'     => $customer_email,
+                'customer_phone'     => sanitize_text_field( $booking_data['customer_phone'] ),
+                'passengers'         => ! empty( $booking_data['passengers'] ) ? absint( $booking_data['passengers'] ) : 1,
+                'suitcases'          => ! empty( $booking_data['suitcases'] ) ? absint( $booking_data['suitcases'] ) : 0,
+                'carry_ons'          => ! empty( $booking_data['carry_ons'] ) ? absint( $booking_data['carry_ons'] ) : 0,
+                'flight_number'      => ! empty( $booking_data['flight_number'] ) ? sanitize_text_field( $booking_data['flight_number'] ) : '',
+                'notes'              => ! empty( $booking_data['notes'] ) ? sanitize_textarea_field( $booking_data['notes'] ) : '',
+                'language'           => $language,
+            );
+
+            if ( '' === $payload['customer_name'] || '' === $payload['customer_phone'] || '' === $payload['origin'] || '' === $payload['destination'] ) {
+                wp_send_json_error( array( 'code' => 'invalid_draft', 'message' => \MeTransfers\Booking\I18n::text( 'missing_booking_fields', $language ) ) );
+                return;
+            }
+
+            if ( 'round_trip' === $payload['trip_type'] ) {
+                foreach ( array( 'return_date', 'return_time', 'return_origin', 'return_destination' ) as $return_field ) {
+                    $payload[ $return_field ] = ! empty( $booking_data[ $return_field ] ) && is_scalar( $booking_data[ $return_field ] )
+                        ? sanitize_text_field( $booking_data[ $return_field ] )
+                        : '';
+                    if ( '' === $payload[ $return_field ] ) {
+                        wp_send_json_error( array( 'code' => 'invalid_draft', 'message' => \MeTransfers\Booking\I18n::text( 'return_fields_required', $language ) ) );
+                        return;
+                    }
+                }
+            }
+
+            $drafts = new \MeTransfers\Booking\BookingDraftService();
+            $token = $drafts->create( $payload );
+            wp_send_json_success( array( 'draft_token' => $token ) );
+        } catch ( \Throwable $e ) {
+            error_log( 'WPTB booking draft creation failed: ' . $e->getMessage() );
+            wp_send_json_error( array( 'code' => 'draft_save_failed', 'message' => \MeTransfers\Booking\I18n::text( 'booking_save_error', isset( $language ) ? $language : 'es' ) ) );
+        }
+    }
+
+    public function ajax_get_booking_draft() {
+        check_ajax_referer( 'wptb-booking-nonce', 'security' );
+
+        $token = isset( $_POST['draft_token'] ) ? sanitize_text_field( wp_unslash( $_POST['draft_token'] ) ) : '';
+        $draft = ( new \MeTransfers\Booking\BookingDraftService() )->get( $token );
+        if ( ! $draft ) {
+            wp_send_json_error(
+                array(
+                    'code'    => 'draft_invalid_or_expired',
+                    'message' => \MeTransfers\Booking\I18n::text( 'invalid_booking_request', 'es' ),
+                ),
+                410
+            );
+            return;
+        }
+
+        wp_send_json_success(
+            array( 'booking' => \MeTransfers\Booking\BookingDraftService::summary( $draft['payload'] ) )
+        );
+    }
+
+    private function send_redsys_payment_response( $booking_id, $gateway, $fallback_language ) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'wptb_bookings';
+        $booking = $wpdb->get_row(
+            $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d LIMIT 1", $booking_id )
+        );
+        if ( ! $booking ) {
+            throw new \RuntimeException( 'booking_reload_failed' );
+        }
+
+        if ( 'paid' === (string) $booking->payment_status || in_array( (string) $booking->status, array( 'confirmed', 'completed' ), true ) ) {
+            wp_send_json_error(
+                array(
+                    'code'       => 'payment_already_completed',
+                    'message'    => \MeTransfers\Booking\I18n::text( 'payment_received', $fallback_language ),
+                    'booking_id' => (int) $booking_id,
+                ),
+                409
+            );
+            return;
+        }
+
+        $amount = (int) round( (float) $booking->price * 100 );
+        $order_id = ! empty( $booking->payment_intent_id )
+            ? (string) $booking->payment_intent_id
+            : str_pad( (int) $booking_id, 12, '0', STR_PAD_LEFT );
+
+        $order_saved = $wpdb->update(
+            $table_name,
+            array( 'payment_intent_id' => $order_id ),
+            array( 'id' => (int) $booking_id ),
+            array( '%s' ),
+            array( '%d' )
+        );
+        if ( false === $order_saved ) {
+            throw new \RuntimeException( 'payment_reference_save_failed' );
+        }
+
+        $language = ! empty( $booking->booking_locale ) ? (string) $booking->booking_locale : $fallback_language;
+        $payment = $gateway->generate_payment_form( (int) $booking_id, $amount, $order_id, (string) $booking->customer_name, $language );
+
+        if ( ! \MeTransfers\Booking\BookingEvents::pending( (int) $booking_id ) ) {
+            throw new \RuntimeException( 'pending_event_enqueue_failed' );
+        }
+
+        wp_send_json_success(
+            array(
+                'url'                    => $payment['url'],
+                'ds_signature_version'   => $payment['version'],
+                'ds_merchant_parameters' => $payment['params'],
+                'ds_signature'           => $payment['signature'],
+                'booking_id'             => (int) $booking_id,
+            )
+        );
+    }
+    
+    // ===== REDSYS PAYMENT METHODS =====
+    
+    public function initiate_redsys_payment() {
+        try {
+            check_ajax_referer( 'wptb-booking-nonce', 'security' );
+
+            $draft_token = isset( $_POST['draft_token'] ) ? sanitize_text_field( wp_unslash( $_POST['draft_token'] ) ) : '';
+            $drafts = new \MeTransfers\Booking\BookingDraftService();
+            $draft = $drafts->get( $draft_token );
+            $booking_data = $draft ? $draft['payload'] : null;
+            $language = \MeTransfers\Booking\I18n::normalizeLanguage(
+                is_array( $booking_data ) && ! empty( $booking_data['language'] ) && is_scalar( $booking_data['language'] )
+                    ? $booking_data['language']
+                    : 'es'
+            );
+            $required_fields = array( 'date', 'time', 'origin', 'destination', 'vehicle_id', 'price', 'customer_name', 'customer_email', 'customer_phone' );
+
+            if ( ! $draft || ! is_array( $booking_data ) || array_diff( $required_fields, array_keys( $booking_data ) ) ) {
+                wp_send_json_error( array( 'code' => 'draft_invalid_or_expired', 'message' => \MeTransfers\Booking\I18n::text( 'invalid_booking_request', $language ) ) );
+                return;
+            }
+
+            $terms_accepted = isset( $_POST['terms_accepted'] ) && true === filter_var( wp_unslash( $_POST['terms_accepted'] ), FILTER_VALIDATE_BOOLEAN );
+            $terms_version = isset( $_POST['terms_version'] ) ? sanitize_text_field( wp_unslash( $_POST['terms_version'] ) ) : '';
             if ( ! $terms_accepted || ! hash_equals( (string) MT_TERMS_VERSION, $terms_version ) ) {
                 wp_send_json_error( array(
                     'code'    => 'terms_required',
                     'message' => \MeTransfers\Booking\I18n::text( 'terms_server_required', $language ),
                 ) );
+                return;
+            }
+
+            $gateway = new \MeTransfers\Payments\Redsys\Gateway();
+            if ( ! $gateway->is_configured() ) {
+                throw new \RuntimeException( 'Redsys is not configured.' );
+            }
+
+            $existing_booking_id = $drafts->existingPaymentBookingId( $draft );
+            if ( $existing_booking_id > 0 ) {
+                $this->send_redsys_payment_response( $existing_booking_id, $gateway, $language );
                 return;
             }
 
@@ -677,6 +864,10 @@ class WPTB_Public {
             $duration_minutes = (int) $quote['duration_minutes'];
             $displayed_price = (float) $booking_data['price'];
             if ( abs( $server_price - $displayed_price ) > 0.01 ) {
+                $booking_data['price'] = $server_price;
+                $booking_data['distance_km'] = $distance_km;
+                $booking_data['duration_minutes'] = $duration_minutes;
+                $drafts->updatePayload( (int) $draft['id'], $booking_data );
                 wp_send_json_error( array(
                     'code' => 'price_changed',
                     'message' => \MeTransfers\Booking\I18n::text( 'price_changed', $language ),
@@ -692,11 +883,6 @@ class WPTB_Public {
             if ( ! $vehicle || $passengers > (int) $vehicle->capacity || ( $suitcases + $carry_ons ) > (int) $vehicle->luggage_capacity ) {
                 wp_send_json_error( array( 'message' => \MeTransfers\Booking\I18n::text( 'vehicle_capacity_error', $language ) ) );
                 return;
-            }
-
-            $gateway = new \MeTransfers\Payments\Redsys\Gateway();
-            if ( ! $gateway->is_configured() ) {
-                throw new \RuntimeException( 'Redsys is not configured.' );
             }
 
             // Save Pending Booking
@@ -736,7 +922,7 @@ class WPTB_Public {
                 'booking_locale' => $language,
                 'terms_accepted_at' => current_time( 'mysql' ),
                 'terms_version' => $terms_version,
-                'analytics_client_id' => ! empty( $booking_data['analytics_client_id'] ) ? sanitize_text_field( $booking_data['analytics_client_id'] ) : '',
+                'analytics_client_id' => ! empty( $_POST['analytics_client_id'] ) ? sanitize_text_field( wp_unslash( $_POST['analytics_client_id'] ) ) : '',
                 'created_at' => current_time( 'mysql' )
             );
 
@@ -746,54 +932,28 @@ class WPTB_Public {
                 $data_db['return_pickup_address'] = $return_origin;
                 $data_db['return_dropoff_address'] = $return_destination;
             }
-            $format_db = array();
-            foreach ( $data_db as $key => $val ) {
-                if ( is_int( $val ) ) {
-                    $format_db[] = '%d';
-                } elseif ( is_float( $val ) ) {
-                    $format_db[] = '%f';
-                } else {
-                    $format_db[] = '%s';
+            $booking_id = $drafts->ensurePaymentBooking(
+                $draft,
+                function ( $idempotency_key ) use ( $wpdb, $table_name, $data_db ) {
+                    $insert_data = $data_db;
+                    $insert_data['payment_idempotency_key'] = $idempotency_key;
+                    $formats = array();
+                    foreach ( $insert_data as $value ) {
+                        if ( is_int( $value ) ) {
+                            $formats[] = '%d';
+                        } elseif ( is_float( $value ) ) {
+                            $formats[] = '%f';
+                        } else {
+                            $formats[] = '%s';
+                        }
+                    }
+
+                    $inserted = $wpdb->insert( $table_name, $insert_data, $formats );
+                    return false === $inserted ? 0 : (int) $wpdb->insert_id;
                 }
-            }
-
-            $result = $wpdb->insert( $table_name, $data_db, $format_db );
-            $booking_id = $wpdb->insert_id;
-
-            if ( $result === false || $booking_id <= 0 ) {
-                wp_send_json_error( array( 'message' => \MeTransfers\Booking\I18n::text( 'booking_save_error', $language ) ) );
-                return;
-            }
-
-            $amount = (int) round( $data_db['price'] * 100 );
-            $order_id = str_pad( $booking_id, 12, '0', STR_PAD_LEFT );
-
-            // Save Order ID to DB
-            $order_saved = $wpdb->update(
-                $table_name,
-                array( 'payment_intent_id' => $order_id ),
-                array( 'id' => $booking_id ),
-                array( '%s' ),
-                array( '%d' )
             );
 
-            if ( false === $order_saved ) {
-                throw new \RuntimeException( 'No se pudo asociar la referencia de pago a la reserva.' );
-            }
-
-            $payment = $gateway->generate_payment_form( $booking_id, $amount, $order_id, $data_db['customer_name'], $language );
-
-            if ( ! \MeTransfers\Booking\BookingEvents::pending( $booking_id ) ) {
-                throw new \RuntimeException( 'pending_event_enqueue_failed' );
-            }
-
-            wp_send_json_success( array(
-                'url' => $payment['url'],
-                'ds_signature_version' => $payment['version'],
-                'ds_merchant_parameters' => $payment['params'],
-                'ds_signature' => $payment['signature'],
-                'booking_id' => $booking_id
-            ));
+            $this->send_redsys_payment_response( $booking_id, $gateway, $language );
 
         } catch ( \Throwable $e ) {
             error_log( 'WPTB Redsys payment creation failed: ' . $e->getMessage() );

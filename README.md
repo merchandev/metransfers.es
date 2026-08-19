@@ -94,6 +94,9 @@ php tests/test-pricing.php
 php tests/test-route-distance.php
 php tests/test-booking-policies.php
 php tests/test-redsys-gateway.php
+php tests/test-hardening-phase1.php
+php tests/test-outbox.php
+php tests/test-booking-drafts.php
 php tests/test-i18n.php
 php tests/test-production-readiness.php
 find . -path ./node_modules -prune -o -path ./vendor -prune -o -type f -name "*.js" -print0 | xargs -0 -n1 node --check

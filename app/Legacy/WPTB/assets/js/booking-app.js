@@ -1016,6 +1016,7 @@ jQuery(document).ready(function ($) {
                     : t('invalid_server_price', 'No se pudo calcular un precio válido para la reserva.');
                 track('booking_error', { error_type: 'invalid_quote' });
                 alert(message);
+                $confirmButton.prop('disabled', false);
                 return;
             }
 
@@ -1032,17 +1033,46 @@ jQuery(document).ready(function ($) {
                 trip_type: bookingData.trip_type
             });
 
-            sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
-            if (wptb_vars.payment_url) {
-                window.location.href = wptb_vars.payment_url;
-            } else {
-                track('booking_error', { error_type: 'payment_url_missing' });
-                alert(t('configuration_error', 'Error de configuración. Contacta con soporte.'));
-            }
+            $.ajax({
+                url: wptb_vars.ajax_url,
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'wptb_create_booking_draft',
+                    booking_data: JSON.stringify(bookingData),
+                    security: wptb_vars.nonce
+                }
+            }).done(function (draftResponse) {
+                const draftToken = draftResponse && draftResponse.success && draftResponse.data
+                    ? draftResponse.data.draft_token
+                    : '';
+                if (!/^[a-f0-9]{64}$/.test(draftToken)) {
+                    const message = draftResponse && draftResponse.data && draftResponse.data.message
+                        ? draftResponse.data.message
+                        : t('invalid_booking_data', 'No hay datos de reserva válidos. Inicia una nueva reserva.');
+                    track('booking_error', { error_type: 'draft_creation' });
+                    alert(message);
+                    return;
+                }
+
+                // The opaque token is the only booking value persisted after
+                // PII has been collected. The full payload lives server-side.
+                sessionStorage.setItem('wptb_booking_data', JSON.stringify({ draft_token: draftToken }));
+                if (wptb_vars.payment_url) {
+                    window.location.href = wptb_vars.payment_url;
+                } else {
+                    track('booking_error', { error_type: 'payment_url_missing' });
+                    alert(t('configuration_error', 'Error de configuración. Contacta con soporte.'));
+                }
+            }).fail(function () {
+                track('booking_error', { error_type: 'draft_connection' });
+                alert(t('connection_error', 'Error de conexión.'));
+            }).always(function () {
+                $confirmButton.prop('disabled', false);
+            });
         }).fail(function () {
             track('booking_error', { error_type: 'quote_connection' });
             alert(t('connection_error', 'Error de conexión.'));
-        }).always(function () {
             $confirmButton.prop('disabled', false);
         });
     });
