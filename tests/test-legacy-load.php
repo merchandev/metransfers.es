@@ -72,6 +72,8 @@ try {
         'MeTransfers\\Booking\\QuoteService',
         'MeTransfers\\Notifications\\NotificationService',
         'MeTransfers\\Analytics\\PurchaseOutbox',
+        'MeTransfers\\Security\\RequestRateLimiter',
+        'MeTransfers\\Security\\PathGuard',
         'MeTransfers\\Payments\\Redsys\\Gateway'
     ];
     

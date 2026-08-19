@@ -19,15 +19,14 @@ Estos endpoints manejan la busqueda de vehiculos, el calculo de precios y la cre
   - `security` (string): Nonce (debe coincidir con `wptb_vars.nonce`)
 - **Respuesta esperada:** JSON con array de vehiculos y `price` calculado por el servidor.
 
-### 1.2 `wptb_calculate_price`
-**Descripcion:** Recalcula el precio (similar a get_vehicles, posiblemente usado en otros flujos).
-- **Acceso:** Privado y publico
-
-### 1.2.1 `wptb_get_quote`
+### 1.2 `wptb_get_quote`
 **Descripcion:** Devuelve el presupuesto autoritativo que también consume el pago.
 - **Acceso:** Privado y publico, protegido por `wptb_vars.nonce`.
 - **Validaciones:** área de servicio, fecha/antelación, vuelta posterior, rutas reales, vehículo y reglas completas de pricing.
+- **Protección antiabuso:** límite global por cliente antes de geocodificar o consultar rutas; devuelve HTTP `429` cuando se supera.
 - **Respuesta:** precio, distancia total y por trayecto, duración, desglose, vehículo y `booking_locale`.
+
+El endpoint heredado `wptb_calculate_price`, que aceptaba distancia y duración del navegador, fue retirado. Ningún consumidor debe utilizarlo.
 
 ### 1.3 `wptb_save_booking`
 **Descripcion:** Guarda los datos de la reserva en base de datos.

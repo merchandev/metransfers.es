@@ -70,6 +70,8 @@ define( 'MT_MAPS_CREDENTIALS_ROTATED_AT', '2026-08-19T12:00:00+02:00' );
 define( 'MT_REDSYS_SANDBOX_VERIFIED_AT', '2026-08-19T12:00:00+02:00' );
 ```
 
+`MT_GOOGLE_MAPS_API_KEY` se utiliza únicamente en el navegador y debe restringirse por dominio/referrer. `MT_GOOGLE_MAPS_SERVER_API_KEY` es obligatoria para geocodificar y cotizar en el servidor, debe restringirse por IP y APIs, y nunca utiliza la clave pública como fallback.
+
 La clave Maps pública debe restringirse por dominio. La clave de servidor debe restringirse por IP y por API. Las credenciales Redsys/SMTP deben rotarse antes de producción si estuvieron presentes en commits antiguos.
 El gateway bloquea el endpoint Live mientras falte cualquiera de las cuatro attestaciones anteriores; las fechas son evidencia operativa y no deben inventarse.
 

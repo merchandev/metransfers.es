@@ -111,4 +111,17 @@ class Settings {
 
         return $default;
     }
+
+    /**
+     * Return the private Maps credential used by server-side provider calls.
+     * Browser credentials are intentionally never accepted as a fallback.
+     */
+    public static function requireServerMapsKey() {
+        $key = trim( (string) self::get( 'google_maps_server_api_key', '' ) );
+        if ( '' === $key ) {
+            throw new \RuntimeException( 'Server Maps key missing.' );
+        }
+
+        return $key;
+    }
 }

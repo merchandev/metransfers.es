@@ -303,9 +303,25 @@ class WPTB_Admin {
             wp_send_json_error( 'Respaldo no encontrado.' );
         }
 
-        // Eliminar archivo físico
-        if ( file_exists($backup->filepath) ) {
-            unlink($backup->filepath);
+        // Delete only regular files resolved inside the dedicated backup root.
+        $upload_dir = wp_upload_dir();
+        if ( ! empty( $upload_dir['error'] ) || empty( $upload_dir['basedir'] ) ) {
+            wp_send_json_error( 'No se pudo resolver el directorio de respaldos.', 500 );
+            return;
+        }
+        $backup_dir = trailingslashit( $upload_dir['basedir'] ) . 'wptb-backups';
+        $backup_path = (string) $backup->filepath;
+        if ( file_exists( $backup_path ) ) {
+            if ( ! \MeTransfers\Security\PathGuard::containsFile( $backup_dir, $backup_path ) ) {
+                wp_send_json_error( 'La ruta del respaldo no es válida.', 403 );
+                return;
+            }
+
+            wp_delete_file( $backup_path );
+            if ( file_exists( $backup_path ) ) {
+                wp_send_json_error( 'No se pudo eliminar el archivo de respaldo.', 500 );
+                return;
+            }
         }
 
         // Marcar como eliminado en base de datos
@@ -953,7 +969,7 @@ class WPTB_Admin {
                         <td>
                             <input type="password" name="wptb_google_maps_server_api_key"
                                    value="" class="regular-text" autocomplete="new-password" placeholder="Dejar vacío para conservar la actual" />
-                            <p class="description">Opcional. Úsala con restricciones de IP para verificar distancia y precio en el servidor. Si no existe, se usa la clave pública anterior. <?php echo \MeTransfers\Core\Settings::get( 'google_maps_server_api_key', '' ) ? 'Hay una clave de servidor configurada.' : ''; ?></p>
+                            <p class="description">Obligatoria para cotizar en el servidor. Debe estar restringida por IP y APIs; la clave pública del navegador nunca se utiliza como fallback. <?php echo \MeTransfers\Core\Settings::get( 'google_maps_server_api_key', '' ) ? 'Hay una clave de servidor configurada.' : 'No hay una clave de servidor configurada.'; ?></p>
                         </td>
                     </tr>
                 </table>

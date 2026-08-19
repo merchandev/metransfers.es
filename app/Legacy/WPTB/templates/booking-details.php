@@ -8,36 +8,39 @@ $wptb_payment_booking = null;
 $wptb_i18n = \MeTransfers\Booking\I18n::strings();
 
 if ( isset( $_GET['payment_result'] ) ) {
-    $result = sanitize_key( wp_unslash( $_GET['payment_result'] ) );
-    $raw_order = isset( $_GET['oid'] ) ? sanitize_text_field( wp_unslash( $_GET['oid'] ) ) : '';
-    $wptb_payment_order_id = preg_replace( '/[^0-9A-Za-z]/', '', $raw_order );
+    $raw_result = wp_unslash( $_GET['payment_result'] );
+    $result = is_scalar( $raw_result ) ? sanitize_key( $raw_result ) : '';
+    $raw_order = isset( $_GET['oid'] ) ? wp_unslash( $_GET['oid'] ) : '';
+    $token = isset( $_GET['token'] ) ? wp_unslash( $_GET['token'] ) : '';
+    $return_request = \MeTransfers\Payments\Redsys\Gateway::validate_confirmation_request(
+        $result,
+        $raw_order,
+        $token
+    );
 
-    if ( 'ko' === $result ) {
-        $wptb_payment_state = 'failed';
-    } elseif ( 'ok' === $result && '' !== $wptb_payment_order_id && $raw_order === $wptb_payment_order_id ) {
-        $token = isset( $_GET['token'] ) ? sanitize_text_field( wp_unslash( $_GET['token'] ) ) : '';
-        if ( ! \MeTransfers\Payments\Redsys\Gateway::verify_confirmation_token( $wptb_payment_order_id, $token ) ) {
-            $wptb_payment_state = 'invalid';
-        } else {
-            global $wpdb;
-            $table = $wpdb->prefix . 'wptb_bookings';
-            $wptb_payment_booking = $wpdb->get_row(
-                $wpdb->prepare(
-                    "SELECT id, status, payment_status, price, booking_locale FROM $table WHERE payment_intent_id = %s",
-                    $wptb_payment_order_id
-                )
-            );
-            if ( $wptb_payment_booking && ! empty( $wptb_payment_booking->booking_locale ) ) {
-                $wptb_i18n = \MeTransfers\Booking\I18n::strings( $wptb_payment_booking->booking_locale );
-            }
-            $wptb_payment_state = $wptb_payment_booking
-                && 'paid' === $wptb_payment_booking->payment_status
-                && in_array( $wptb_payment_booking->status, array( 'confirmed', 'completed' ), true )
-                    ? 'confirmed'
-                    : 'pending';
-        }
-    } else {
+    if ( empty( $return_request['valid'] ) ) {
         $wptb_payment_state = 'invalid';
+    } elseif ( 'ko' === $return_request['result'] ) {
+        $wptb_payment_order_id = $return_request['order_id'];
+        $wptb_payment_state = 'failed';
+    } else {
+        $wptb_payment_order_id = $return_request['order_id'];
+        global $wpdb;
+        $table = $wpdb->prefix . 'wptb_bookings';
+        $wptb_payment_booking = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT id, status, payment_status, price, booking_locale FROM $table WHERE payment_intent_id = %s",
+                $wptb_payment_order_id
+            )
+        );
+        if ( $wptb_payment_booking && ! empty( $wptb_payment_booking->booking_locale ) ) {
+            $wptb_i18n = \MeTransfers\Booking\I18n::strings( $wptb_payment_booking->booking_locale );
+        }
+        $wptb_payment_state = $wptb_payment_booking
+            && 'paid' === $wptb_payment_booking->payment_status
+            && in_array( $wptb_payment_booking->status, array( 'confirmed', 'completed' ), true )
+                ? 'confirmed'
+                : 'pending';
     }
 }
 

@@ -563,6 +563,12 @@ class WPTB_Public {
     public function ajax_get_quote() {
         check_ajax_referer( 'wptb-booking-nonce', 'security' );
 
+        $raw_language = isset( $_POST['language'] ) ? wp_unslash( $_POST['language'] ) : 'es';
+        $language = \MeTransfers\Booking\I18n::normalizeLanguage( is_scalar( $raw_language ) ? $raw_language : 'es' );
+        if ( ! $this->consume_quote_rate_limit( $language ) ) {
+            return;
+        }
+
         $result = \MeTransfers\Booking\QuoteService::create( wp_unslash( $_POST ) );
         if ( empty( $result['valid'] ) ) {
             wp_send_json_error( array(
@@ -574,23 +580,22 @@ class WPTB_Public {
 
         wp_send_json_success( $result );
     }
-    
-    /**
-     * AJAX: Calculate price for vehicle and trip
-     */
-    public function ajax_calculate_price() {
-        $vehicle_id = isset( $_POST['vehicle_id'] ) ? absint( $_POST['vehicle_id'] ) : 0;
-        $distance_km = isset( $_POST['distance_km'] ) ? floatval( $_POST['distance_km'] ) : 0;
-        $trip_type = isset( $_POST['trip_type'] ) ? sanitize_text_field( $_POST['trip_type'] ) : 'one_way';
-        $duration_minutes = isset( $_POST['duration_minutes'] ) ? absint( $_POST['duration_minutes'] ) : 0;
-        
-        $result = WPTB_Pricing::calculate_price( $vehicle_id, $distance_km, $trip_type, $duration_minutes );
-        
-        if ( isset( $result['error'] ) ) {
-            wp_send_json_error( $result );
+
+    private function consume_quote_rate_limit( $language ) {
+        $limit = (int) apply_filters( 'mt_quote_rate_limit_max', 12 );
+        $window = (int) apply_filters( 'mt_quote_rate_limit_window', MINUTE_IN_SECONDS );
+        if ( \MeTransfers\Security\RequestRateLimiter::consume( 'booking_quote', $limit, $window ) ) {
+            return true;
         }
-        
-        wp_send_json_success( $result );
+
+        wp_send_json_error(
+            array(
+                'code'    => 'quote_rate_limited',
+                'message' => \MeTransfers\Booking\I18n::text( 'quote_rate_limited', $language ),
+            ),
+            429
+        );
+        return false;
     }
     
     // ===== REDSYS PAYMENT METHODS =====
@@ -602,7 +607,9 @@ class WPTB_Public {
             $booking_json = isset( $_POST['booking_data'] ) ? wp_unslash( $_POST['booking_data'] ) : '';
             $booking_data = json_decode( $booking_json, true );
             $language = \MeTransfers\Booking\I18n::normalizeLanguage(
-                is_array( $booking_data ) && ! empty( $booking_data['language'] ) ? $booking_data['language'] : 'es'
+                is_array( $booking_data ) && ! empty( $booking_data['language'] ) && is_scalar( $booking_data['language'] )
+                    ? $booking_data['language']
+                    : 'es'
             );
             $required_fields = array( 'date', 'time', 'origin', 'destination', 'vehicle_id', 'price', 'customer_name', 'customer_email', 'customer_phone' );
 
@@ -645,6 +652,10 @@ class WPTB_Public {
                     return;
                 }
 
+            }
+
+            if ( ! $this->consume_quote_rate_limit( $language ) ) {
+                return;
             }
 
             $quote = \MeTransfers\Booking\QuoteService::create( array(

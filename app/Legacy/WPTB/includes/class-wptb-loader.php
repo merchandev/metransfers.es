@@ -38,10 +38,6 @@ class WPTB_Loader {
         add_action( 'wp_ajax_wptb_save_booking', array( $plugin_public, 'save_booking' ) );
         add_action( 'wp_ajax_nopriv_wptb_save_booking', array( $plugin_public, 'save_booking' ) );
         
-        // New AJAX endpoints for vehicles
-        add_action( 'wp_ajax_wptb_calculate_price', array( $plugin_public, 'ajax_calculate_price' ) );
-        add_action( 'wp_ajax_nopriv_wptb_calculate_price', array( $plugin_public, 'ajax_calculate_price' ) );
-        
         // Stripe payment endpoints are handled by Unified_Integration when available.
         if ( method_exists( $plugin_public, 'create_payment_intent' ) ) {
             add_action( 'wp_ajax_wptb_create_payment_intent', array( $plugin_public, 'create_payment_intent' ) );

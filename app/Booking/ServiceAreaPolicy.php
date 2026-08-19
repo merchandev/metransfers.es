@@ -84,11 +84,9 @@ final class ServiceAreaPolicy {
             return self::normalize( $cached );
         }
 
-        $api_key = (string) Settings::get( 'google_maps_server_api_key', '' );
-        if ( '' === $api_key ) {
-            $api_key = (string) Settings::get( 'google_maps_api_key', '' );
-        }
-        if ( '' === $api_key ) {
+        try {
+            $api_key = Settings::requireServerMapsKey();
+        } catch ( \RuntimeException $exception ) {
             return array( 'valid' => false );
         }
 

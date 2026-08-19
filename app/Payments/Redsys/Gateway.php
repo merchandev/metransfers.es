@@ -152,6 +152,41 @@ class Gateway {
             && hash_equals( self::confirmation_token( $order_id ), $token );
     }
 
+    /**
+     * Validate both successful and failed browser returns before rendering them.
+     * This does not mutate payment state; the database/IPN remains authoritative.
+     */
+    public static function validate_confirmation_request( $result, $raw_order_id, $token ) {
+        if ( ! is_scalar( $result ) || ! is_scalar( $raw_order_id ) || ! is_scalar( $token ) ) {
+            return array(
+                'valid'    => false,
+                'result'   => '',
+                'order_id' => '',
+            );
+        }
+
+        $result = strtolower( (string) $result );
+        $raw_order_id = (string) $raw_order_id;
+        $order_id = preg_replace( '/[^0-9A-Za-z]/', '', $raw_order_id );
+
+        if ( ! in_array( $result, array( 'ok', 'ko' ), true )
+            || '' === $order_id
+            || $raw_order_id !== $order_id
+            || ! self::verify_confirmation_token( $order_id, $token ) ) {
+            return array(
+                'valid'    => false,
+                'result'   => '',
+                'order_id' => '',
+            );
+        }
+
+        return array(
+            'valid'    => true,
+            'result'   => $result,
+            'order_id' => $order_id,
+        );
+    }
+
     private function new_api() {
         if ( ! class_exists( 'WPTB_Redsys_API' ) ) {
             require_once WPTB_PLUGIN_DIR . 'includes/class-wptb-redsys.php';

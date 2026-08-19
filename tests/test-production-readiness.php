@@ -21,6 +21,7 @@ $notification_service = file_get_contents( $root . '/app/Notifications/Notificat
 $outbox = file_get_contents( $root . '/app/Analytics/PurchaseOutbox.php' );
 $release_gate = file_get_contents( $root . '/app/Core/ReleaseGate.php' );
 $readme = file_get_contents( $root . '/README.md' );
+$loader = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-loader.php' );
 
 assert_readiness( false === strpos( $booking_form, 'payment_result' ), 'The search form must not interpret payment return parameters.' );
 assert_readiness( false === strpos( $booking_form, 'payment_intent_id' ), 'The search form must not query bookings by predictable payment references.' );
@@ -28,11 +29,12 @@ assert_readiness( false === strpos( $booking_form, '$wpdb' ), 'The search form m
 
 assert_readiness( false !== strpos( $booking_details, "'paid' === \$wptb_payment_booking->payment_status" ), 'Confirmation must require a paid database state.' );
 assert_readiness( false !== strpos( $booking_details, "array( 'confirmed', 'completed' )" ), 'Confirmation must require a final booking state.' );
-assert_readiness( false !== strpos( $booking_details, 'verify_confirmation_token' ), 'Confirmation lookup must require an order-bound HMAC token.' );
+assert_readiness( false !== strpos( $booking_details, 'validate_confirmation_request' ), 'Both OK and KO returns must validate their order-bound HMAC token.' );
 assert_readiness( false !== strpos( $booking_details, 'data-payment-state' ), 'The server-confirmed state must be available to the tracking layer.' );
 
 assert_readiness( false === strpos( $public_controller, 'wp_ajax_wptb_create_booking' ), 'The orphan create-booking hook must stay removed.' );
 assert_readiness( false === strpos( $public_controller, 'wp_ajax_wptb_get_pricing' ), 'The orphan pricing hook must stay removed.' );
+assert_readiness( false === strpos( $loader, 'wptb_calculate_price' ) && false === strpos( $public_controller, 'function ajax_calculate_price' ), 'The legacy browser-supplied pricing endpoint must stay removed.' );
 assert_readiness( false === strpos( $public_controller, 'debug_info' ), 'Public AJAX responses must not expose debug payloads.' );
 assert_readiness( false === strpos( $public_controller, 'total_vehicles_in_db' ), 'Public AJAX responses must not expose database counts.' );
 assert_readiness( false === strpos( $public_controller, 'wptb-debug' ), 'The frontend must not enqueue the legacy debug helper.' );

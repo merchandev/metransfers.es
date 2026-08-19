@@ -1163,12 +1163,12 @@ jQuery(document).ready(function ($) {
                         loadVehicles();
                     },
                     function (errMsg) {
-                        console.error('❌ Distance Matrix error:', errMsg);
-                        // Still load vehicles without distance filter as fallback
-                        urlData.distance_km = 50; // safe default
-                        bookingData = urlData;
-                        sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
-                        loadVehicles();
+                        const message = errMsg || t('route_error', 'No se pudo calcular la ruta. Verifica el origen y el destino.');
+                        $('#vehicles-grid').html(
+                            '<div class="mt-alert mt-alert--error mt-empty-state" role="alert">' +
+                            escapeHtml(message) +
+                            '</div>'
+                        );
                     }
                 );
                 return;
