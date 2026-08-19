@@ -207,6 +207,7 @@ add_action( 'template_redirect', function() {
             setup_postdata( $post );
         } elseif ( in_array( $template_file, ['template-servicio.php', 'template-tours.php', 'template-flota.php'] ) ) {
             $fallback = get_page_by_path( $page );
+            if ( is_array( $fallback ) ) $fallback = (object) $fallback;
             if ( $fallback ) {
                 global $post, $wp_query;
                 $post = $fallback;
