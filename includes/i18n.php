@@ -246,26 +246,58 @@ add_action( 'template_redirect', function() {
             $wp_query->is_singular       = true;
             $wp_query->is_single         = ( $original_post->post_type !== 'page' );
             setup_postdata( $post );
-        } elseif ( in_array( $template_file, ['template-servicio.php', 'template-tours.php', 'template-flota.php'] ) ) {
+                } else {
             $fallback = get_page_by_path( $page );
               if ( is_array( $fallback ) ) {
                   $fallback = new WP_Post( (object) $fallback );
               }
-            if ( $fallback ) {
-                global $post, $wp_query;
-                $post = $fallback;
-                $wp_query->queried_object    = $fallback;
-                $wp_query->queried_object_id = $fallback->ID;
-                  $wp_query->post              = $fallback;
-                  $wp_query->posts             = [ $fallback ];
-                  $wp_query->post_count        = 1;
-                  $wp_query->found_posts       = 1;
-                  $wp_query->current_post      = -1;
-                $wp_query->is_page           = true;
-                $wp_query->is_singular       = true;
-                setup_postdata( $post );
+            if ( ! $fallback ) {
+                // Mock a dummy post object for all other virtual pages (like home, etc)
+                $dummy = new stdClass();
+                $dummy->ID = 0;
+                $dummy->post_author = 1;
+                $dummy->post_date = current_time( 'mysql' );
+                $dummy->post_date_gmt = current_time( 'mysql', 1 );
+                $dummy->post_content = '';
+                $dummy->post_title = ucfirst( str_replace('-', ' ', $page) );
+                $dummy->post_excerpt = '';
+                $dummy->post_status = 'publish';
+                $dummy->comment_status = 'closed';
+                $dummy->ping_status = 'closed';
+                $dummy->post_password = '';
+                $dummy->post_name = $page;
+                $dummy->to_ping = '';
+                $dummy->pinged = '';
+                $dummy->post_modified = $dummy->post_date;
+                $dummy->post_modified_gmt = $dummy->post_date_gmt;
+                $dummy->post_content_filtered = '';
+                $dummy->post_parent = 0;
+                $dummy->guid = home_url( '/' . $page );
+                $dummy->menu_order = 0;
+                $dummy->post_type = 'page';
+                $dummy->post_mime_type = '';
+                $dummy->comment_count = 0;
+                $dummy->filter = 'raw';
+                
+                $fallback = new WP_Post( $dummy );
             }
+
+            global $post, $wp_query;
+            $post = $fallback;
+            $wp_query->queried_object    = $fallback;
+            $wp_query->queried_object_id = $fallback->ID;
+            $wp_query->post              = $fallback;
+            $wp_query->posts             = [ $fallback ];
+            $wp_query->post_count        = 1;
+            $wp_query->found_posts       = 1;
+            $wp_query->current_post      = -1;
+            $wp_query->is_page           = true;
+            $wp_query->is_singular       = true;
+            $wp_query->is_home           = ( $page === 'home' );
+            $wp_query->is_front_page     = ( $page === 'home' );
+            setup_postdata( $post );
         }
+
         status_header( 200 );
         include $full_path;
         exit;

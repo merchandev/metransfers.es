@@ -8,7 +8,7 @@ $hub_content_plain = trim( wp_strip_all_tags( strip_shortcodes( get_the_content(
 					<h1 class="destinations-hub-title"><?php esc_html_e( 'Destinos', 'me-transfers' ); ?></h1>
 					<p class="destinations-hub-intro">
 						<?php
-						if ( $hub_content_plain ) {
+						if ( ! empty( $hub_content_plain ) ) {
 							echo esc_html( $hub_content_plain );
 						} else {
 							esc_html_e( 'Explora los destinos más solicitados y accede a una ficha rápida para pedir información de traslados privados, recogidas en aeropuerto, hoteles, puertos y rutas personalizadas.', 'me-transfers' );

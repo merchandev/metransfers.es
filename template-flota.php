@@ -10,53 +10,53 @@ get_header(); ?>
 <main id="primary" class="site-main">
     <section class="hero-section" style="padding-bottom: 4rem;">
         <div class="container hero-container" style="text-align:center;">
-            <h1 class="hero-title" style="color:#fff; margin-top:2rem;">Nuestra <span class="text-gradient">Flota VIP</span></h1>
-            <p style="color:#e4f2ff; font-size:1.2rem;">ECONOMIC CLASS, MINI VAN «V» Class, la majestuosa BUSINESS CLASS y MINI VAN ECONOMIC.</p>
+            <h1 class="hero-title" style="color:#fff; margin-top:2rem;"><?php echo mt_translate('Nuestra'); ?> <span class="text-gradient"><?php echo mt_translate('Flota VIP'); ?></span></h1>
+            <p style="color:#e4f2ff; font-size:1.2rem;"><?php echo mt_translate('ECONOMIC CLASS, MINI VAN V Class, la majestuosa BUSINESS CLASS y MINI VAN ECONOMIC.'); ?></p>
         </div>
     </section>
     <section class="section container">
         <div class="tours-grid" style="margin-top: 2rem;">
             <article class="tour-card gs-stagger">
                 <div class="tour-content" style="padding: 2rem;">
-                    <h3>ECONOMIC CLASS</h3>
-                    <p>Elegancia ejecutiva para 1 a 3 pasajeros. Ideal para traslados al aeropuerto y reuniones de negocios con máximo confort y privacidad.</p>
+                    <h3><?php echo mt_translate('ECONOMIC CLASS'); ?></h3>
+                    <p><?php echo mt_translate('Elegancia ejecutiva para 1 a 3 pasajeros. Ideal para traslados al aeropuerto y reuniones de negocios con máximo confort y privacidad.'); ?></p>
                     <ul style="list-style: none; padding: 0; margin-top: 1rem; color: #a0aec0;">
-                        <li>✓ Asientos de piel premium</li>
-                        <li>✓ Wi-Fi a bordo</li>
-                        <li>✓ Agua embotellada de cortesía</li>
+                        <li>✓ <?php echo mt_translate('Asientos de piel premium'); ?></li>
+                        <li>✓ <?php echo mt_translate('Wi-Fi a bordo'); ?></li>
+                        <li>✓ <?php echo mt_translate('Agua embotellada de cortesía'); ?></li>
                     </ul>
                 </div>
             </article>
             <article class="tour-card gs-stagger">
                 <div class="tour-content" style="padding: 2rem;">
-                    <h3>MINI VAN «V» Class</h3>
-                    <p>Amplitud premium para hasta 7 pasajeros. La opción perfecta para grupos pequeños, familias o tours con exceso de equipaje sin renunciar al lujo.</p>
+                    <h3><?php echo mt_translate('MINI VAN V Class'); ?></h3>
+                    <p><?php echo mt_translate('Amplitud premium para hasta 7 pasajeros. La opción perfecta para grupos pequeños, familias o tours con exceso de equipaje sin renunciar al lujo.'); ?></p>
                     <ul style="list-style: none; padding: 0; margin-top: 1rem; color: #a0aec0;">
-                        <li>✓ Asientos modulares ajustables</li>
-                        <li>✓ Espacio extra para equipaje</li>
-                        <li>✓ Climatización trasera independiente</li>
+                        <li>✓ <?php echo mt_translate('Asientos modulares ajustables'); ?></li>
+                        <li>✓ <?php echo mt_translate('Espacio extra para equipaje'); ?></li>
+                        <li>✓ <?php echo mt_translate('Climatización trasera independiente'); ?></li>
                     </ul>
                 </div>
             </article>
             <article class="tour-card gs-stagger">
                 <div class="tour-content" style="padding: 2rem;">
-                    <h3>BUSINESS CLASS</h3>
-                    <p>El estándar absoluto de lujo y representación. Asientos reclinables, insonorización perfecta y una experiencia inigualable en Barcelona.</p>
+                    <h3><?php echo mt_translate('BUSINESS CLASS'); ?></h3>
+                    <p><?php echo mt_translate('El estándar absoluto de lujo y representación. Asientos reclinables, insonorización perfecta y una experiencia inigualable en Barcelona.'); ?></p>
                     <ul style="list-style: none; padding: 0; margin-top: 1rem; color: #a0aec0;">
-                        <li>✓ Máxima insonorización y confort</li>
-                        <li>✓ Asientos reclinables con ajuste premium</li>
-                        <li>✓ Detalles VIP absolutos</li>
+                        <li>✓ <?php echo mt_translate('Máxima insonorización y confort'); ?></li>
+                        <li>✓ <?php echo mt_translate('Asientos reclinables con ajuste premium'); ?></li>
+                        <li>✓ <?php echo mt_translate('Detalles VIP absolutos'); ?></li>
                     </ul>
                 </div>
             </article>
             <article class="tour-card gs-stagger">
                 <div class="tour-content" style="padding: 2rem;">
-                    <h3>MINI VAN ECONOMIC</h3>
-                    <p>Opción económica y espaciosa para hasta 7 pasajeros. Ideal para traslados grupales eficientes con equipaje.</p>
+                    <h3><?php echo mt_translate('MINI VAN ECONOMIC'); ?></h3>
+                    <p><?php echo mt_translate('Opción económica y espaciosa para hasta 7 pasajeros. Ideal para traslados grupales eficientes con equipaje.'); ?></p>
                     <ul style="list-style: none; padding: 0; margin-top: 1rem; color: #a0aec0;">
-                        <li>✓ Espacio para 7 pasajeros</li>
-                        <li>✓ Maletero amplio</li>
-                        <li>✓ Tarifa económica</li>
+                        <li>✓ <?php echo mt_translate('Espacio para 7 pasajeros'); ?></li>
+                        <li>✓ <?php echo mt_translate('Maletero amplio'); ?></li>
+                        <li>✓ <?php echo mt_translate('Tarifa económica'); ?></li>
                     </ul>
                 </div>
             </article>

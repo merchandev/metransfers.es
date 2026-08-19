@@ -29,7 +29,7 @@ get_header(); ?>
     <section id="search" class="search-plugin-section section" style="background-color: #f8fafc;">
         <div class="container gs-reveal">
             <header class="section-header section-header--compact text-center">
-                <h2 class="section-title">Busca tu <span class="text-gradient">Destino</span></h2>
+                <h2 class="section-title"><?php echo mt_translate('Busca tu'); ?> <span class="text-gradient"><?php echo mt_translate('Destino'); ?></span></h2>
             </header>
             <div class="search-plugin-wrapper" style="max-width: 800px; margin: 0 auto;">
                 <?php if ( shortcode_exists( 'premium_transfers_search' ) ) : ?>

@@ -10303,3 +10303,74 @@ summary:focus-visible {
     outline-offset: 3px;
 }
 
+
+/* ==========================================================================
+   Tours & Excursions Template Styles (template-tours.php)
+   ========================================================================== */
+
+/* Hero Section */
+.hero-tours {
+	background-image: linear-gradient(to bottom, rgba(0,28,56,0.7), rgba(0,28,56,0.9)), url('https://metransfers.es/wp-content/uploads/2026/07/airport-transfer-me-tranfers-me-tranfers-barcelona-espana.webp') !important;
+	background-size: cover !important;
+	background-position: center !important;
+	padding: 120px 20px !important;
+	text-align: center;
+	color: white;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hc-tours { max-width: 800px; margin: 0 auto; }
+.h1-tours { color: white; font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 20px; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+.p-tours { font-size: clamp(1.1rem, 2vw, 1.3rem); opacity: 0.9; line-height: 1.6; font-weight: 300; }
+
+/* Grid Layout */
+.ts-wrapper { padding: 80px 20px; background-color: #f8fafc; }
+.c-tours { max-width: 1200px; margin: 0 auto; }
+.tg-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+
+/* Cards */
+.tc-wrapper {
+    background: white; border-radius: 16px; overflow: hidden; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    display: flex; flex-direction: column;
+}
+.tc-wrapper:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 15px 40px rgba(0,0,0,0.1) !important;
+}
+
+/* Images */
+.tour-image { position: relative; height: 240px; background-size: cover !important; background-position: center !important; }
+.ti-1 { background-image: url('https://metransfers.es/wp-content/uploads/2026/07/metransfers-transfer-privado-barcelona-san-sebastin.webp') !important; }
+.ti-2 { background-image: url('https://metransfers.es/wp-content/uploads/2026/06/V2-scaled.png') !important; }
+.ti-3 { background-image: url('https://metransfers.es/wp-content/uploads/2026/06/V1-scaled.png') !important; }
+.ti-4 { background-image: url('https://metransfers.es/wp-content/uploads/2026/04/catedral-de-girona_principal.jpg') !important; }
+
+/* Card Content */
+.tour-gradient { position: absolute; bottom: 0; left: 0; right: 0; padding: 50px 20px 15px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
+.th3-tours { color: white !important; margin: 0; font-size: 1.4rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+.tc-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+.tp-tours { color: #475569; line-height: 1.6; font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1; }
+
+/* Buttons */
+.tb-tours { background-color: #004E9A; color: white !important; font-weight: 700; text-decoration: none; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 8px; padding: 12px 24px; transition: background-color 0.3s ease, transform 0.3s ease; align-self: flex-start; border: none; }
+.tb-tours:hover { background-color: #003A75; transform: translateY(-2px); }
+
+/* CTA Area */
+.cta-tours { padding: 80px 20px; background-color: #0D1B2A; text-align: center; color: white; }
+.cta-content { max-width: 700px; margin: 0 auto; }
+.cta-h2 { color: white; font-size: 2.2rem; margin-bottom: 20px; }
+.cta-p { font-size: 1.1rem; opacity: 0.8; margin-bottom: 40px; line-height: 1.6; }
+.cta-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+.bw-tours { 
+    background-color: #25D366; color: white; padding: 15px 30px; border-radius: 100px; font-weight: bold; 
+    text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: transform 0.3s ease; 
+}
+.bc-tours { 
+    background-color: white; color: #004E9A; padding: 15px 30px; border-radius: 100px; font-weight: bold; 
+    text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: transform 0.3s ease; 
+}
+.bw-tours:hover, .bc-tours:hover { transform: translateY(-2px); opacity: 0.95; }
