@@ -196,3 +196,31 @@ jobs:
         uses: docker://ghcr.io/gitleaks/gitleaks:v8.30.1
         with:
           args: dir --redact --no-banner /github/workspace
+
+  required-status:
+    name: php-lint
+    if: ${{ always() }}
+    needs:
+      - php-quality
+      - javascript-quality
+      - wordpress-integration
+      - security
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Enforce complete quality gate
+        shell: bash
+        env:
+          PHP_QUALITY_RESULT: ${{ needs.php-quality.result }}
+          JAVASCRIPT_QUALITY_RESULT: ${{ needs.javascript-quality.result }}
+          WORDPRESS_INTEGRATION_RESULT: ${{ needs.wordpress-integration.result }}
+          SECURITY_RESULT: ${{ needs.security.result }}
+        run: |
+          set -euo pipefail
+          for result in \
+            "$PHP_QUALITY_RESULT" \
+            "$JAVASCRIPT_QUALITY_RESULT" \
+            "$WORDPRESS_INTEGRATION_RESULT" \
+            "$SECURITY_RESULT"; do
+            test "$result" = "success"
+          done
