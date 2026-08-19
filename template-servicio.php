@@ -134,7 +134,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-form-row">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-nombre"><?php echo mt_translate("Nombre completo *"); ?></label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-nombre" name="nombre" autocomplete="name" placeholder="Ej: Juan García" required>
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-nombre" name="nombre" autocomplete="name" placeholder="<?php echo esc_attr( mt_translate( 'Ej: Juan García' ) ); ?>" required>
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
@@ -144,7 +144,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 						</div>
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-email">Email</label>
-							<input type="email" id="<?php echo esc_attr( $form_id ); ?>-email" name="email" autocomplete="email" placeholder="tu@email.com">
+							<input type="email" id="<?php echo esc_attr( $form_id ); ?>-email" name="email" autocomplete="email" placeholder="<?php echo esc_attr( mt_translate( 'tu@email.com' ) ); ?>">
 						</div>
 					</div>
 
@@ -160,7 +160,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-vuelo">Nº de vuelo</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-vuelo" name="extra_vuelo" placeholder="Ej: VY1234">
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-vuelo" name="extra_vuelo" placeholder="<?php echo esc_attr( mt_translate( 'Ej: VY1234' ) ); ?>">
 						</div>
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-fecha">Fecha *</label>
@@ -174,7 +174,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 						</div>
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-direccion">Origen / Destino</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-direccion" name="extra_direccion" placeholder="Hotel o dirección">
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-direccion" name="extra_direccion" placeholder="<?php echo esc_attr( mt_translate( 'Hotel o dirección' ) ); ?>">
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
@@ -205,7 +205,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-form-row">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-barco">Nombre del barco / crucero</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-barco" name="extra_barco" placeholder="Ej: MSC Grandiosa">
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-barco" name="extra_barco" placeholder="<?php echo esc_attr( mt_translate( 'Ej: MSC Grandiosa' ) ); ?>">
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
@@ -235,7 +235,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 						</div>
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-origen">Origen / Destino</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-origen" name="extra_origen" placeholder="Ej: Aeropuerto T1">
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-origen" name="extra_origen" placeholder="<?php echo esc_attr( mt_translate( 'Ej: Aeropuerto T1' ) ); ?>">
 						</div>
 					</div>
 
@@ -266,13 +266,13 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 						</div>
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-partida">Punto de partida</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-partida" name="extra_partida" placeholder="Hotel o dirección">
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-partida" name="extra_partida" placeholder="<?php echo esc_attr( mt_translate( 'Hotel o dirección' ) ); ?>">
 						</div>
 					</div>
 					<div class="svc-form-row">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-plan">Descripción del plan</label>
-							<textarea id="<?php echo esc_attr( $form_id ); ?>-plan" name="extra_plan" placeholder="Describe las paradas..."></textarea>
+							<textarea id="<?php echo esc_attr( $form_id ); ?>-plan" name="extra_plan" placeholder="<?php echo esc_attr( mt_translate( 'Describe las paradas...' ) ); ?>"></textarea>
 						</div>
 					</div>
 
@@ -284,7 +284,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-empresa">Empresa</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-empresa" name="extra_empresa" placeholder="Nombre de tu empresa">
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-empresa" name="extra_empresa" placeholder="<?php echo esc_attr( mt_translate( 'Nombre de tu empresa' ) ); ?>">
 						</div>
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-tipo-evento">Tipo de evento</label>
@@ -314,7 +314,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-form-row">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-descripcion">Descripción</label>
-							<textarea id="<?php echo esc_attr( $form_id ); ?>-descripcion" name="extra_descripcion" placeholder="Horarios, rutas..."></textarea>
+							<textarea id="<?php echo esc_attr( $form_id ); ?>-descripcion" name="extra_descripcion" placeholder="<?php echo esc_attr( mt_translate( 'Horarios, rutas...' ) ); ?>"></textarea>
 						</div>
 					</div>
 
@@ -370,7 +370,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-form-row">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-grupo">Nombre del grupo</label>
-							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-grupo" name="extra_grupo" placeholder="Ej: Boda García">
+							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-grupo" name="extra_grupo" placeholder="<?php echo esc_attr( mt_translate( 'Ej: Boda García' ) ); ?>">
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
@@ -400,7 +400,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-form-row">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-descripcion">Servicio necesario</label>
-							<textarea id="<?php echo esc_attr( $form_id ); ?>-descripcion" name="extra_descripcion" placeholder="Origen, destino, horarios..."></textarea>
+							<textarea id="<?php echo esc_attr( $form_id ); ?>-descripcion" name="extra_descripcion" placeholder="<?php echo esc_attr( mt_translate( 'Origen, destino, horarios...' ) ); ?>"></textarea>
 						</div>
 					</div>
 
@@ -410,7 +410,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-form-row">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-mensaje">Comentarios adicionales</label>
-							<textarea id="<?php echo esc_attr( $form_id ); ?>-mensaje" name="mensaje" placeholder="Cualquier detalle adicional..."></textarea>
+							<textarea id="<?php echo esc_attr( $form_id ); ?>-mensaje" name="mensaje" placeholder="<?php echo esc_attr( mt_translate( 'Cualquier detalle adicional...' ) ); ?>"></textarea>
 						</div>
 					</div>
 

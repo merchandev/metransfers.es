@@ -83,7 +83,7 @@ $total = count( $all_rutas );
                 Traslados Privados desde Barcelona
             </div>
             <h1 class="rutas-hero__title gs-reveal">
-                Todas nuestras <span class="text-gradient">Rutas</span>
+                <?php echo mt_translate( 'Todas nuestras' ); ?> <span class="text-gradient"><?php echo mt_translate( 'Rutas' ); ?></span>
             </h1>
             <p class="rutas-hero__subtitle gs-reveal">
                 <?php echo $total; ?> rutas disponibles con vehículo privado Mercedes-Benz, conductor profesional y precio cerrado.
@@ -92,7 +92,7 @@ $total = count( $all_rutas );
             <div class="rutas-hero__search gs-reveal">
                 <div class="rutas-search-box">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                    <input type="text" id="ruta-search" placeholder="Busca tu destino: Salou, Sitges, Lloret…" autocomplete="off">
+                    <input type="text" id="ruta-search" placeholder="<?php echo esc_attr( mt_translate( 'Busca tu destino: Salou, Sitges, Lloret…' ) ); ?>" autocomplete="off">
                 </div>
             </div>
         </div>
@@ -103,22 +103,22 @@ $total = count( $all_rutas );
         <div class="container rutas-statsbar__grid">
             <div class="rutas-statsbar__item">
                 <span class="rutas-statsbar__num"><?php echo $total; ?></span>
-                <span class="rutas-statsbar__lbl">Rutas disponibles</span>
+                <span class="rutas-statsbar__lbl"><?php echo esc_html( mt_translate( 'Rutas disponibles' ) ); ?></span>
             </div>
             <div class="rutas-statsbar__sep"></div>
             <div class="rutas-statsbar__item">
                 <span class="rutas-statsbar__num"><?php echo count( $grupos ); ?></span>
-                <span class="rutas-statsbar__lbl">Destinos</span>
+                <span class="rutas-statsbar__lbl"><?php echo esc_html( mt_translate( 'Destinos' ) ); ?></span>
             </div>
             <div class="rutas-statsbar__sep"></div>
             <div class="rutas-statsbar__item">
                 <span class="rutas-statsbar__num">24/7</span>
-                <span class="rutas-statsbar__lbl">Disponibilidad</span>
+                <span class="rutas-statsbar__lbl"><?php echo esc_html( mt_translate( 'Disponibilidad' ) ); ?></span>
             </div>
             <div class="rutas-statsbar__sep"></div>
             <div class="rutas-statsbar__item">
                 <span class="rutas-statsbar__num">GYG</span>
-                <span class="rutas-statsbar__lbl">Opiniones verificadas</span>
+                <span class="rutas-statsbar__lbl"><?php echo esc_html( mt_translate( 'Opiniones verificadas' ) ); ?></span>
             </div>
         </div>
     </div>
