@@ -205,12 +205,12 @@ class WPTB_Public {
         
         // Validate vehicle
         if ( ! $vehicle_id ) {
-            wp_send_json_error( array( 'message' => 'Debe seleccionar un vehículo' ) );
+            wp_send_json_error( array( 'message' => 'Debe seleccionar un vehÃ­culo' ) );
         }
         
         $vehicle = WPTB_Vehicle_Manager::get_vehicle( $vehicle_id );
         if ( ! $vehicle ) {
-            wp_send_json_error( array( 'message' => 'Vehículo no válido' ) );
+            wp_send_json_error( array( 'message' => 'VehÃ­culo no vÃ¡lido' ) );
         }
         
         // Validate price meets minimums
@@ -306,7 +306,7 @@ class WPTB_Public {
             $data = $cart_item['wptb_booking_data'];
             
             if ( isset( $data['vehicle_name'] ) ) {
-                $item_data[] = array( 'key' => 'Vehículo', 'value' => $data['vehicle_name'] );
+                $item_data[] = array( 'key' => 'VehÃ­culo', 'value' => $data['vehicle_name'] );
             }
             
             if ( isset( $data['trip_type'] ) ) {
@@ -338,7 +338,7 @@ class WPTB_Public {
             $data = $values['wptb_booking_data'];
             
             if ( isset( $data['vehicle_name'] ) ) {
-                $item->add_meta_data( 'Vehículo', $data['vehicle_name'] );
+                $item->add_meta_data( 'VehÃ­culo', $data['vehicle_name'] );
             }
             
             if ( isset( $data['trip_type'] ) ) {
@@ -576,7 +576,7 @@ class WPTB_Public {
             $booking_data = json_decode( stripslashes( $_POST['booking_data'] ), true );
             
             if ( ! $booking_data || ! isset( $booking_data['price'] ) ) {
-                wp_send_json_error( array( 'message' => 'Datos de reserva inválidos' ) );
+                wp_send_json_error( array( 'message' => 'Datos de reserva invÃ¡lidos' ) );
                 return;
             }
             
@@ -672,7 +672,7 @@ class WPTB_Public {
             
             $amount = intval( $booking_data['price'] * 100 ); // Cents
             
-            // Order ID para Getnet/Redsys: 12 dígitos rellenos con ceros a la izquierda.
+            // Order ID para Getnet/Redsys: 12 dÃ­gitos rellenos con ceros a la izquierda.
             // El booking_id ya es >= 10000 gracias al AUTO_INCREMENT configurado en el activador.
             $order_id = str_pad( $booking_id, 12, '0', STR_PAD_LEFT );
             
@@ -686,7 +686,7 @@ class WPTB_Public {
             $merchant_code = '48234082';
             $terminal = '1';
             $currency = '978'; // EUR
-            $trans_type = '0'; // Autorización
+            $trans_type = '0'; // AutorizaciÃ³n
             
             $url_notification = home_url( '/?wptb_redsys_ipn=1' );
             $url_ok = home_url( '/reservas-metransfers/?payment_result=ok&oid=' . $order_id );
@@ -869,11 +869,11 @@ class WPTB_Public {
 
         // Create Vehicle Name
         $vehicle_obj = WPTB_Vehicle_Manager::get_vehicle( $booking->vehicle_id );
-        $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'Vehículo no encontrado';
+        $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'VehÃ­culo no encontrado';
 
         $client_email = $booking->customer_email;
         
-        $subject = "Confirmación de Reserva #{$booking_id} - Metransfers";
+        $subject = "ConfirmaciÃ³n de Reserva #{$booking_id} - Metransfers";
         
         // Dynamic Fields
         $flight_row = !empty($booking->flight_number) ? "<div class='detail-row'><strong>Vuelo:</strong> <span>{$booking->flight_number}</span></div>" : '';
@@ -904,31 +904,31 @@ class WPTB_Public {
         <body>
             <div class='container'>
                 <div class='header'>
-                    <h2>¡Reserva Confirmada!</h2>
+                    <h2>Â¡Reserva Confirmada!</h2>
                     <p>Referencia: #{$booking_id}</p>
                 </div>
                 
                 <div class='content'>
                     <p>Hola <strong>{$booking->customer_name}</strong>,</p>
-                    <p>Gracias por confirmar tu reserva. Hemos recibido tu pago correctamente y tu vehículo está reservado.</p>
+                    <p>Gracias por confirmar tu reserva. Hemos recibido tu pago correctamente y tu vehÃ­culo estÃ¡ reservado.</p>
                     
                     <div class='detail-box'>
                         <div class='detail-row'><strong>Fecha / Hora:</strong> <span>{$booking->booking_date} {$booking->booking_time}</span></div>
                         <div class='detail-row'><strong>Tipo de Viaje:</strong> <span style='color: #ff7100;'> " . ( isset( $trip_labels[$booking->trip_type] ) ? $trip_labels[$booking->trip_type] : ( $booking->trip_type === 'round_trip' ? 'Ida y Vuelta' : 'Solo Ida' ) ) . "</span></div>
                         <div class='detail-row'><strong>Origen:</strong> <span>{$booking->origin}</span></div>
                         <div class='detail-row'><strong>Destino:</strong> <span>{$booking->destination}</span></div>
-                        <div class='detail-row'><strong>Vehículo:</strong> <span>{$vehicle_name}</span></div>
+                        <div class='detail-row'><strong>VehÃ­culo:</strong> <span>{$vehicle_name}</span></div>
                         <div class='detail-row'><strong>Pasajeros:</strong> <span>{$booking->passengers}</span></div>
                         <div class='detail-row'><strong>Equipaje:</strong> <span>{$luggage_info}</span></div>
                         {$flight_row}
                         " . ( $booking->trip_type === 'round_trip' ? "
-                        <div class='detail-row' style='background:#f0f7ff; margin-top:15px; border-top:2px solid #ff7100; padding-top:10px;'><strong>📅 VUELTA CONFIRMADA:</strong> <span>{$booking->return_date} {$booking->return_time}</span></div>
+                        <div class='detail-row' style='background:#f0f7ff; margin-top:15px; border-top:2px solid #ff7100; padding-top:10px;'><strong>ðŸ“… VUELTA CONFIRMADA:</strong> <span>{$booking->return_date} {$booking->return_time}</span></div>
                         <div class='detail-row' style='background:#f0f7ff;'><strong>Recogida Vuelta:</strong> <span>{$booking->return_pickup_address}</span></div>
                         <div class='detail-row' style='background:#f0f7ff; margin-bottom:15px; border-bottom:1px solid #ddd;'><strong>Destino Vuelta:</strong> <span>{$booking->return_dropoff_address}</span></div>
                         " : "" ) . "
-                        <div class='detail-row'><strong>Precio Total:</strong> <span style='color:#28a745;'>€{$booking->price}</span></div>
+                        <div class='detail-row'><strong>Precio Total:</strong> <span style='color:#28a745;'>â‚¬{$booking->price}</span></div>
                         {$notes_row}
-                        <div class='detail-row'><strong>Teléfono:</strong> <span>{$booking->customer_phone}</span></div>
+                        <div class='detail-row'><strong>TelÃ©fono:</strong> <span>{$booking->customer_phone}</span></div>
                     </div>
                     
                     <p style='text-align: center;'>
@@ -1051,15 +1051,15 @@ class WPTB_Public {
         
         // Get Vehicle Name
         $vehicle_obj = WPTB_Vehicle_Manager::get_vehicle( $booking->vehicle_id );
-        $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'Vehículo #' . $booking->vehicle_id;
+        $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'VehÃ­culo #' . $booking->vehicle_id;
 
         $text = "*Nueva Reserva #{$booking_id}*\n";
-        $text .= "👤 {$booking->customer_name}\n";
-        $text .= "🚘 {$vehicle_name}\n";
-        $text .= "📍 {$booking->origin} \n⬇️\n📍 {$booking->destination}\n";
-        $text .= "📅 {$booking->booking_date} {$booking->booking_time}\n";
-        $text .= "💶 €{$booking->price}\n";
-        $text .= "📞 {$booking->customer_phone}";
+        $text .= "ðŸ‘¤ {$booking->customer_name}\n";
+        $text .= "ðŸš˜ {$vehicle_name}\n";
+        $text .= "ðŸ“ {$booking->origin} \nâ¬‡ï¸\nðŸ“ {$booking->destination}\n";
+        $text .= "ðŸ“… {$booking->booking_date} {$booking->booking_time}\n";
+        $text .= "ðŸ’¶ â‚¬{$booking->price}\n";
+        $text .= "ðŸ“ž {$booking->customer_phone}";
         
         $url = 'https://api.callmebot.com/whatsapp.php';
         $params = array(
@@ -1101,7 +1101,7 @@ class WPTB_Public {
 
         // A. Prepare Data
         $vehicle_obj = WPTB_Vehicle_Manager::get_vehicle( $booking->vehicle_id );
-        $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'Vehículo no encontrado';
+        $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'VehÃ­culo no encontrado';
         
         $trip_labels = array( 'one_way' => 'Solo Ida', 'round_trip' => 'Ida y Vuelta', 'return' => 'Vuelta' );
         $trip_type_label = isset( $trip_labels[$booking->trip_type] ) ? $trip_labels[$booking->trip_type] : 'Solo Ida';
@@ -1110,9 +1110,9 @@ class WPTB_Public {
         $notes_row = !empty($booking->notes) ? "<div class='detail-row'><strong>Notas:</strong> <span>{$booking->notes}</span></div>" : '';
         $luggage_info = "{$booking->suitcases} Maletas, {$booking->carry_ons} Mochilas";
 
-        $title = ( $status_context === 'pending' ) ? 'Reserva Recibida' : '¡Reserva Confirmada!';
-        $intro = ( $status_context === 'pending' ) ? 'Hemos recibido tu solicitud de reserva y está pendiente de pago.' : 'Tu reserva ha sido confirmada correctamente.';
-        $subject = ( $status_context === 'pending' ) ? "Reserva Recibida #{$booking_id} - Metransfers" : "Confirmación de Reserva #{$booking_id} - Metransfers";
+        $title = ( $status_context === 'pending' ) ? 'Reserva Recibida' : 'Â¡Reserva Confirmada!';
+        $intro = ( $status_context === 'pending' ) ? 'Hemos recibido tu solicitud de reserva y estÃ¡ pendiente de pago.' : 'Tu reserva ha sido confirmada correctamente.';
+        $subject = ( $status_context === 'pending' ) ? "Reserva Recibida #{$booking_id} - Metransfers" : "ConfirmaciÃ³n de Reserva #{$booking_id} - Metransfers";
         $admin_subject = ( $status_context === 'pending' ) ? "NUEVA Reserva Pendiente #{$booking_id}" : "Reserva PAGADA #{$booking_id}";
 
         // B. HTML Content
@@ -1149,13 +1149,13 @@ class WPTB_Public {
                         <div class='detail-row'><strong>Tipo:</strong> <span style='color: #ff7100;'>{$trip_type_label}</span></div>
                         <div class='detail-row'><strong>Origen:</strong> <span>{$booking->origin}</span></div>
                         <div class='detail-row'><strong>Destino:</strong> <span>{$booking->destination}</span></div>
-                        <div class='detail-row'><strong>Vehículo:</strong> <span>{$vehicle_name}</span></div>
+                        <div class='detail-row'><strong>VehÃ­culo:</strong> <span>{$vehicle_name}</span></div>
                         <div class='detail-row'><strong>Pasajeros:</strong> <span>{$booking->passengers}</span></div>
                         <div class='detail-row'><strong>Equipaje:</strong> <span>{$luggage_info}</span></div>
                         {$flight_row}
-                        <div class='detail-row'><strong>Precio:</strong> <span style='color:#28a745;'>€{$booking->price}</span></div>
+                        <div class='detail-row'><strong>Precio:</strong> <span style='color:#28a745;'>â‚¬{$booking->price}</span></div>
                         {$notes_row}
-                        <div class='detail-row'><strong>Teléfono:</strong> <span>{$booking->customer_phone}</span></div>
+                        <div class='detail-row'><strong>TelÃ©fono:</strong> <span>{$booking->customer_phone}</span></div>
                     </div>
                     <p style='text-align: center;'><a href='" . home_url() . "' class='btn'>Ir a la Web</a></p>
                 </div>

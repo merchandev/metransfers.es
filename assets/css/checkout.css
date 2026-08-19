@@ -1,0 +1,18 @@
+﻿.mt-checkout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    max-width: var(--mt-container);
+    margin: 0 auto;
+    padding: 20px;
+}
+@media (min-width: 992px) {
+    .mt-checkout {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+.mt-checkout__form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}

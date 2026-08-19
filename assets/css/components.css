@@ -1,0 +1,69 @@
+﻿/* Buttons */
+.mt-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    background-color: var(--mt-color-primary);
+    color: var(--mt-color-surface);
+    border: none;
+    border-radius: var(--mt-radius-md);
+    font-family: var(--mt-font-body);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    text-decoration: none;
+    width: 100%;
+}
+@media (min-width: 768px) {
+    .mt-button { width: auto; }
+}
+.mt-button:hover {
+    background-color: var(--mt-color-primary-hover);
+    color: var(--mt-color-surface);
+}
+.mt-button:focus-visible {
+    outline: 2px solid var(--mt-color-focus);
+    outline-offset: 2px;
+}
+
+/* Forms */
+.mt-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.mt-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.mt-form__field label {
+    font-weight: 500;
+    color: var(--mt-color-text);
+}
+.mt-input, .mt-select {
+    padding: 12px 16px;
+    border: 1px solid var(--mt-border-color);
+    border-radius: var(--mt-radius-sm);
+    font-family: var(--mt-font-body);
+    color: var(--mt-color-text);
+    background-color: var(--mt-color-surface);
+    width: 100%;
+    box-sizing: border-box;
+}
+.mt-input:focus, .mt-select:focus {
+    outline: none;
+    border-color: var(--mt-color-primary);
+    box-shadow: 0 0 0 3px var(--mt-color-focus);
+}
+
+/* Cards */
+.mt-card {
+    background: var(--mt-color-surface);
+    border-radius: var(--mt-radius-md);
+    box-shadow: var(--mt-shadow-sm);
+    border: 1px solid var(--mt-border-color);
+    padding: 20px;
+    overflow: hidden;
+}

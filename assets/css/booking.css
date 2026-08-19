@@ -1,0 +1,42 @@
+﻿.mt-booking {
+    max-width: var(--mt-container);
+    margin: 0 auto;
+    padding: 20px;
+    font-family: var(--mt-font-body);
+    color: var(--mt-color-text);
+}
+.mt-booking__step {
+    margin-bottom: 32px;
+}
+.mt-booking__summary {
+    background: var(--mt-color-surface-alt);
+    padding: 20px;
+    border-radius: var(--mt-radius-md);
+    position: sticky;
+    top: 20px;
+}
+.mt-vehicle-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+@media (min-width: 768px) {
+    .mt-vehicle-card {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+.mt-vehicle-card img {
+    width: 100%;
+    max-width: 250px;
+    border-radius: var(--mt-radius-sm);
+    object-fit: cover;
+}
+.mt-vehicle-card__info {
+    flex: 1;
+}
+.mt-vehicle-card__price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--mt-color-primary);
+}

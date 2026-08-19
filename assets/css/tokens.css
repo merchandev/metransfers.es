@@ -1,0 +1,30 @@
+﻿:root {
+    --mt-color-primary: #0056B3;
+    --mt-color-primary-hover: #004494;
+
+    --mt-color-text: #0F172A;
+    --mt-color-text-secondary: #334155;
+    --mt-color-muted: #64748B;
+
+    --mt-color-surface: #FFFFFF;
+    --mt-color-surface-alt: #F0F5FA;
+    --mt-color-dark: #0D1B2A;
+    
+    --mt-color-focus: rgba(0, 86, 179, 0.5);
+    --mt-color-error: #DC2626;
+
+    --mt-border-color: rgba(0, 86, 179, 0.12);
+
+    --mt-radius-sm: 10px;
+    --mt-radius-md: 16px;
+    --mt-radius-lg: 24px;
+
+    --mt-shadow-sm: 0 1px 3px rgba(0,0,0,.07);
+    --mt-shadow-md: 0 4px 20px rgba(0,86,179,.09);
+    --mt-shadow-lg: 0 12px 40px rgba(0,86,179,.11);
+
+    --mt-font-body: 'Inter', system-ui, sans-serif;
+    --mt-font-heading: 'Outfit', system-ui, sans-serif;
+
+    --mt-container: 1200px;
+}
