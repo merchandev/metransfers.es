@@ -17,14 +17,12 @@ class WPTB_Admin {
         // AUTO-MIGRATION: Ensure DB is up to date (v3.2)
         if ( ! get_option( 'wptb_db_version_3_2' ) ) {
             require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wptb-activator.php';
-            WPTB_Activator::activate();
             update_option( 'wptb_db_version_3_2', true );
         }
 
         // Ensure Vehicle Selection page exists for the separated Step 2 flow.
         if ( ! get_option( 'wptb_vehicle_page_version_1' ) ) {
             require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wptb-activator.php';
-            WPTB_Activator::activate();
             update_option( 'wptb_vehicle_page_version_1', true );
         }
 

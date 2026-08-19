@@ -45,7 +45,11 @@ class WPTB_Activator {
             KEY booking_date (booking_date),
             KEY status (status),
             KEY payment_intent_id (payment_intent_id),
-            KEY hotel_token (hotel_token)
+            KEY hotel_token (hotel_token),
+            KEY booking_date (booking_date),
+            KEY origin (origin(50)),
+            KEY destination (destination(50)),
+            KEY status (status)
         ) $charset_collate;";
         dbDelta( $sql_bookings );
 

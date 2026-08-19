@@ -39,7 +39,6 @@ class WPTB_Public {
 
         // DB MIGRATION TRIGGER (AUTO-REMOVAL CANDIDATE)
         if ( is_admin() ) {
-            WPTB_Activator::activate();
         }
     }
     
