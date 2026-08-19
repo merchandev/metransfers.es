@@ -122,9 +122,6 @@ jobs:
         shell: bash
         run: find assets app/Legacy tests/e2e -type f -name "*.js" -print0 | xargs -0 -n1 node --check
 
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-
       - name: Run Playwright contracts
         run: npm run test:e2e
 

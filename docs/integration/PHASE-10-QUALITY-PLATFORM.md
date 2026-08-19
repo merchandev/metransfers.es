@@ -18,7 +18,7 @@ El alcance de PHPStan/WPCS es incremental y explícito. `app/Legacy/` no se pres
 
 ESLint analiza los 11 scripts públicos/legacy y el harness E2E. Sus primeros hallazgos permitieron corregir dos referencias inexistentes en el flujo hotel/vehículo.
 
-Playwright ejecuta Chromium contra los assets reales del repositorio y valida:
+Playwright ejecuta Chromium localmente y el canal Chrome preinstalado del runner CI contra los assets reales del repositorio. Esto evita una descarga de navegador no fijada durante cada job y valida:
 
 - apertura/cierre accesible del selector y devolución de foco;
 - bloqueo de scroll móvil;
