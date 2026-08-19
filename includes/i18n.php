@@ -187,6 +187,44 @@ add_action( 'template_redirect', function() {
         }
     }
 
+    
+    }
+
+    
+    }
+
+    if ( ! $is_valid && ($page === 'blog' || $page === 'noticias') ) {
+        $is_valid = true;
+        $template_map[ $page ] = 'index.php';
+        
+        global $wp_query;
+        $paged = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
+        $posts_query = new WP_Query( [
+            'post_type' => 'post',
+            'post_status' => 'publish',
+            'paged' => $paged
+        ] );
+        
+        $wp_query->posts         = $posts_query->posts;
+        $wp_query->post_count    = $posts_query->post_count;
+        $wp_query->found_posts   = $posts_query->found_posts;
+        $wp_query->max_num_pages = $posts_query->max_num_pages;
+        $wp_query->is_home       = true;
+        $wp_query->is_archive    = false;
+        $wp_query->is_singular   = false;
+        $wp_query->is_page       = false;
+        
+        $blog_id = get_option( 'page_for_posts' );
+        if ( $blog_id ) {
+            $blog_post = get_post( $blog_id );
+            if ( is_array( $blog_post ) ) { $blog_post = new WP_Post( (object) $blog_post ); }
+            $wp_query->queried_object    = $blog_post;
+            $wp_query->queried_object_id = $blog_post->ID;
+        }
+        
+        $original_post = null; // Prevent singular logic below
+    }
+
     if ( ! $is_valid ) {
         global $wp_query;
         $wp_query->set_404();
