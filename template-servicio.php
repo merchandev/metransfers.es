@@ -43,10 +43,10 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 	<!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
 	<section class="svc-hero">
 		<div class="container">
-			<div class="svc-hero-badge"><?php echo esc_html( $service['badge'] ); ?></div>
-			<h1><?php echo esc_html( isset( $service['h1'] ) ? $service['h1'] : $service['title'] ); ?></h1>
-			<p class="svc-hero-sub"><?php echo esc_html( $service['subtitle'] ); ?></p>
-			<p class="svc-hero-desc"><?php echo esc_html( $service['hero_desc'] ); ?></p>
+			<div class="svc-hero-badge"><?php echo esc_html( mt_translate( $service['badge']  )); ?></div>
+			<h1><?php echo esc_html( mt_translate( isset( $service['h1'] ) ? $service['h1'] : $service['title'] ) ); ?></h1>
+			<p class="svc-hero-sub"><?php echo esc_html( mt_translate( $service['subtitle']  )); ?></p>
+			<p class="svc-hero-desc"><?php echo esc_html( mt_translate( $service['hero_desc']  )); ?></p>
 			<div class="svc-hero-cta-group">
 				<?php
 				$cta_href = '#solicitar';
@@ -55,7 +55,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 				}
 				?>
 				<a href="<?php echo esc_url( $cta_href ); ?>" class="btn btn-solid" style="background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;border:none;padding:14px 32px;font-size:15px;border-radius:10px;">
-					<?php echo esc_html( $service['cta_text'] ); ?>
+					<?php echo esc_html( mt_translate( $service['cta_text']  )); ?>
 				</a>
 				<button type="button" class="btn js-wa-trigger" style="background:#25d366;color:#fff;border:none;padding:14px 28px;font-size:15px;border-radius:10px;display:flex;align-items:center;gap:8px;cursor:pointer;">
 					<span class="material-symbols-outlined" aria-hidden="true">chat</span>
@@ -72,13 +72,13 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 			
 			<!-- DESCRIPCIÓN COMPLETA -->
 			<div class="svc-block">
-				<span class="svc-label">Sobre este servicio</span>
-				<h2><?php echo esc_html( $service['subtitle'] ); ?></h2>
+				<span class="svc-label"><?php echo mt_translate("Sobre este servicio"); ?></span>
+				<h2><?php echo esc_html( mt_translate( $service['subtitle']  )); ?></h2>
 				<div class="svc-desc-text">
 					<?php
 					$paragraphs = explode( "\n\n", $service['desc_long'] );
 					foreach ( $paragraphs as $p ) {
-						echo '<p>' . nl2br( esc_html( trim( $p ) ) ) . '</p>';
+						echo '<p>' . nl2br( esc_html( trim( mt_translate( $p ) ) ) ) . '</p>';
 					}
 					?>
 				</div>
@@ -92,8 +92,8 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<?php foreach ( $service['features'] as $feat ) : ?>
 					<div class="svc-feature-card">
 						<span class="material-symbols-outlined svc-feature-icon"><?php echo esc_attr( $feat['icon'] ); ?></span>
-						<h3><?php echo esc_html( $feat['title'] ); ?></h3>
-						<p><?php echo esc_html( $feat['desc'] ); ?></p>
+						<h3><?php echo esc_html( mt_translate( $feat['title']  )); ?></h3>
+						<p><?php echo esc_html( mt_translate( $feat['desc']  )); ?></p>
 					</div>
 					<?php endforeach; ?>
 				</div>
@@ -106,10 +106,10 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 				<div class="svc-steps-grid">
 					<?php foreach ( $service['steps'] as $step ) : ?>
 					<div class="svc-step">
-						<div class="svc-step-number"><?php echo esc_html( $step['n'] ); ?></div>
+						<div class="svc-step-number"><?php echo esc_html( mt_translate( $step['n']  )); ?></div>
 						<div>
-							<h3><?php echo esc_html( $step['title'] ); ?></h3>
-							<p><?php echo esc_html( $step['desc'] ); ?></p>
+							<h3><?php echo esc_html( mt_translate( $step['title']  )); ?></h3>
+							<p><?php echo esc_html( mt_translate( $step['desc']  )); ?></p>
 						</div>
 					</div>
 					<?php endforeach; ?>
@@ -121,10 +121,10 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 		<!-- ═══ BARRA LATERAL: FORMULARIO ═══════════════════════════════════════ -->
 		<div class="svc-sidebar" id="solicitar">
 			<div class="svc-form-box">
-				<h2>Solicita presupuesto</h2>
-				<p class="svc-form-sub">Rellena el formulario y te respondemos en menos de 2 horas — o al instante por WhatsApp.</p>
+				<h2><?php echo mt_translate("Solicita presupuesto"); ?></h2>
+				<p class="svc-form-sub"><?php echo mt_translate("Rellena el formulario y te respondemos en menos de 2 horas — o al instante por WhatsApp."); ?></p>
 
-				<form id="<?php echo esc_attr( $form_id ); ?>" class="svc-form" data-service="<?php echo esc_attr( $form_type ); ?>">
+				<form id="<?php echo esc_attr( $form_id ); ?>" class="svc-form" data-service="<?php echo esc_attr( mt_translate( $form_type  )); ?>">
 
 					<!-- Campos comunes: Nombre, Email, Teléfono -->
 					<p class="svc-form-section-title">
@@ -133,7 +133,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					</p>
 					<div class="svc-form-row">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-nombre">Nombre completo *</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-nombre"><?php echo mt_translate("Nombre completo *"); ?></label>
 							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-nombre" name="nombre" autocomplete="name" placeholder="Ej: Juan García" required>
 						</div>
 					</div>
@@ -424,7 +424,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 
 					<button type="submit" class="svc-submit-btn">
 						<span class="material-symbols-outlined" aria-hidden="true">send</span>
-						<?php echo esc_html( $service['cta_text'] ); ?>
+						<?php echo esc_html( mt_translate( $service['cta_text']  )); ?>
 					</button>
 
 					<div class="svc-form-ok" id="<?php echo esc_attr( $form_id ); ?>-ok">

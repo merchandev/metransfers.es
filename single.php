@@ -137,7 +137,7 @@ while ( have_posts() ) :
 				<nav class="single-breadcrumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'me-transfers' ); ?>">
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Inicio', 'me-transfers' ); ?></a>
 					<span aria-hidden="true">/</span>
-					<a href="<?php echo esc_url( $blog_url ); ?>"><?php echo esc_html( $blog_label ); ?></a>
+					<a href="<?php echo esc_url( $blog_url ); ?>"><?php echo esc_html( mt_translate( $blog_label  )); ?></a>
 					<span aria-hidden="true">/</span>
 					<span aria-current="page"><?php the_title(); ?></span>
 				</nav>
@@ -146,7 +146,7 @@ while ( have_posts() ) :
 
 				<div class="single-article-meta">
 					<span class="single-meta-pill">
-						<time datetime="<?php echo esc_attr( $published_iso ); ?>"><?php echo esc_html( get_the_date( 'd M Y' ) ); ?></time>
+						<time datetime="<?php echo esc_attr( mt_translate( $published_iso  )); ?>"><?php echo esc_html( mt_translate( get_the_date( 'd M Y' ) ) ); ?></time>
 					</span>
 				</div>
 			</div>
@@ -271,18 +271,18 @@ while ( have_posts() ) :
 									$related_categories = get_the_category();
 									if ( ! empty( $related_categories ) ) :
 										?>
-										<span class="single-category-badge single-category-badge--small"><?php echo esc_html( $related_categories[0]->name ); ?></span>
+										<span class="single-category-badge single-category-badge--small"><?php echo esc_html( mt_translate( $related_categories[0]->name  )); ?></span>
 									<?php endif; ?>
 
 									<h3 class="related-card-title">
 										<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 									</h3>
 
-									<p class="related-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?></p>
+									<p class="related-card-excerpt"><?php echo esc_html( mt_translate( wp_trim_words( get_the_excerpt(), 18, '...' ) ) ); ?></p>
 
 									<div class="related-card-meta">
-										<time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>"><?php echo esc_html( get_the_date( 'd M Y' ) ); ?></time>
-										<span><?php echo esc_html( $related_read_time ); ?> <?php esc_html_e( 'min', 'me-transfers' ); ?></span>
+										<time datetime="<?php echo esc_attr( mt_translate( get_the_date( 'c' ) ) ); ?>"><?php echo esc_html( mt_translate( get_the_date( 'd M Y' ) ) ); ?></time>
+										<span><?php echo esc_html( mt_translate( $related_read_time  )); ?> <?php esc_html_e( 'min', 'me-transfers' ); ?></span>
 									</div>
 								</div>
 							</article>

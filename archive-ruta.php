@@ -132,12 +132,12 @@ $total = count( $all_rutas );
             <?php else : ?>
 
             <?php foreach ( $grupos as $destino => $posts ) : ?>
-            <div class="rutas-grupo gs-reveal" data-destino="<?php echo esc_attr( strtolower( $destino ) ); ?>">
+            <div class="rutas-grupo gs-reveal" data-destino="<?php echo esc_attr( mt_translate( strtolower( $destino ) ) ); ?>">
 
                 <div class="rutas-grupo__header">
                     <h2 class="rutas-grupo__title">
                         <svg class="rutas-grupo__pin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <?php echo esc_html( $destino ); ?>
+                        <?php echo esc_html( mt_translate( $destino  )); ?>
                     </h2>
                     <span class="rutas-grupo__count"><?php echo count( $posts ); ?> ruta<?php echo count( $posts ) > 1 ? 's' : ''; ?></span>
                 </div>
@@ -154,19 +154,19 @@ $total = count( $all_rutas );
                         elseif ( stripos( $origen, 'sants' ) !== false )   $icono = '🚄';
                         else                                                $icono = '🏙️';
                     ?>
-                    <a href="<?php echo esc_url( $url ); ?>" class="ruta-card" data-search="<?php echo esc_attr( strtolower( $destino . ' ' . $origen . ' ' . $ruta->post_title ) ); ?>">
+                    <a href="<?php echo esc_url( $url ); ?>" class="ruta-card" data-search="<?php echo esc_attr( mt_translate( strtolower( $destino . ' ' . $origen . ' ' . $ruta->post_title ) ) ); ?>">
                         <div class="ruta-card__icon"><?php echo $icono; ?></div>
                         <div class="ruta-card__body">
-                            <div class="ruta-card__origen"><?php echo esc_html( $origen ); ?></div>
+                            <div class="ruta-card__origen"><?php echo esc_html( mt_translate( $origen  )); ?></div>
                             <div class="ruta-card__arrow">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                             </div>
-                            <div class="ruta-card__dest"><?php echo esc_html( $destino ); ?></div>
+                            <div class="ruta-card__dest"><?php echo esc_html( mt_translate( $destino  )); ?></div>
                         </div>
                         <?php if ( $duracion || $pax ) : ?>
                         <div class="ruta-card__meta">
-                            <?php if ( $duracion ) : ?><span>⏱ <?php echo esc_html( $duracion ); ?></span><?php endif; ?>
-                            <?php if ( $pax ) : ?><span>👤 Máx. <?php echo esc_html( $pax ); ?> pax</span><?php endif; ?>
+                            <?php if ( $duracion ) : ?><span>⏱ <?php echo esc_html( mt_translate( $duracion  )); ?></span><?php endif; ?>
+                            <?php if ( $pax ) : ?><span>👤 Máx. <?php echo esc_html( mt_translate( $pax  )); ?> pax</span><?php endif; ?>
                         </div>
                         <?php endif; ?>
                         <div class="ruta-card__cta">Ver ruta <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>

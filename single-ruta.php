@@ -59,14 +59,14 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                 <div class="ruta-hero__route">
                     <span class="ruta-hero__route-point ruta-hero__route-point--origin">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
-                        <?php echo esc_html( $origen ); ?>
+                        <?php echo esc_html( mt_translate( $origen  )); ?>
                     </span>
                     <span class="ruta-hero__route-arrow">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </span>
                     <span class="ruta-hero__route-point ruta-hero__route-point--dest">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <?php echo esc_html( $destino ); ?>
+                        <?php echo esc_html( mt_translate( $destino  )); ?>
                     </span>
                 </div>
                 <?php endif; ?>
@@ -103,7 +103,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                     </div>
                     <div>
                         <div class="ruta-statsbar__label">Duración</div>
-                        <div class="ruta-statsbar__value"><?php echo esc_html( $duracion ); ?> <span style="font-size: 0.85em; opacity: 0.7;" title="Tiempo estimado. Puede variar según tráfico.">*</span></div>
+                        <div class="ruta-statsbar__value"><?php echo esc_html( mt_translate( $duracion  )); ?> <span style="font-size: 0.85em; opacity: 0.7;" title="Tiempo estimado. Puede variar según tráfico.">*</span></div>
                     </div>
                 </div>
                 <?php else : ?>
@@ -125,7 +125,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                     </div>
                     <div>
                         <div class="ruta-statsbar__label">Pasajeros</div>
-                        <div class="ruta-statsbar__value">Máx. <?php echo esc_html( $pax ); ?></div>
+                        <div class="ruta-statsbar__value">Máx. <?php echo esc_html( mt_translate( $pax  )); ?></div>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -137,7 +137,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                     </div>
                     <div>
                         <div class="ruta-statsbar__label">Equipaje</div>
-                        <div class="ruta-statsbar__value"><?php echo esc_html( $maletas ); ?> maletas</div>
+                        <div class="ruta-statsbar__value"><?php echo esc_html( mt_translate( $maletas  )); ?> maletas</div>
                     </div>
                 </div>
                 <?php endif; ?>

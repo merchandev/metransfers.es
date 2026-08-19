@@ -148,9 +148,9 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
             <!-- TEXTO -->
             <div>
                 <div class="hero-badge-seo">De puerta a puerta | Confort garantizado</div>
-                <h1 class="hero-title-seo"><?php echo esc_html( $title_hero ); ?></h1>
+                <h1 class="hero-title-seo"><?php echo esc_html( mt_translate( $title_hero  )); ?></h1>
                 <p class="hero-lead-seo">
-                    <?php echo esc_html( $lead_hero ); ?>
+                    <?php echo esc_html( mt_translate( $lead_hero  )); ?>
                 </p>
                 <div class="hero__checks">
                   <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Precio fijo sin cargos ocultos</span>
@@ -183,12 +183,12 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
                 the_content();
             else : 
             ?>
-                <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;"><?php echo esc_html( $tipo_servicio ); ?> a <?php echo esc_html( $destino ); ?> sin esperas</h2>
+                <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;"><?php echo esc_html( mt_translate( $tipo_servicio  )); ?> a <?php echo esc_html( mt_translate( $destino  )); ?> sin esperas</h2>
                 <p>
-                    Llegar a <?php echo esc_html( $destino ); ?> desde Barcelona nunca fue tan sencillo. Evita las largas colas para el autobús y las incómodas combinaciones de trenes con equipaje. Nuestro servicio de <strong><?php echo esc_html( strtolower($tipo_servicio) ); ?> a <?php echo esc_html( $destino ); ?></strong> está pensado para que tu descanso comience desde el momento en que aterrizas.
+                    Llegar a <?php echo esc_html( mt_translate( $destino  )); ?> desde Barcelona nunca fue tan sencillo. Evita las largas colas para el autobús y las incómodas combinaciones de trenes con equipaje. Nuestro servicio de <strong><?php echo esc_html( mt_translate( strtolower($tipo_servicio) ) ); ?> a <?php echo esc_html( mt_translate( $destino  )); ?></strong> está pensado para que tu descanso comience desde el momento en que aterrizas.
                 </p>
                 <p>
-                    Nuestros conductores monitorizan los vuelos de llegada al Aeropuerto de El Prat, por lo que incluso si tu vuelo se retrasa, te estaremos esperando en la terminal de llegadas con un cartel con tu nombre. Desde allí, el trayecto hasta <?php echo esc_html( $destino ); ?> será directo y confortable.
+                    Nuestros conductores monitorizan los vuelos de llegada al Aeropuerto de El Prat, por lo que incluso si tu vuelo se retrasa, te estaremos esperando en la terminal de llegadas con un cartel con tu nombre. Desde allí, el trayecto hasta <?php echo esc_html( mt_translate( $destino  )); ?> será directo y confortable.
                 </p>
                 
                 <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">La mejor opción para familias y grupos</h3>
@@ -202,7 +202,7 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
                 <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
                     <h4 style="margin-top:0; color:#0066CC;">CONSEJO: Reserva tu trayecto de ida y vuelta</h4>
                     <p style="margin-bottom:0;">
-                        Para disfrutar de un viaje sin sobresaltos, te aconsejamos reservar conjuntamente el trayecto de ida y el de vuelta al aeropuerto. Nuestro conductor te recogerá en la puerta de tu hotel en <?php echo esc_html( $destino ); ?> a la hora óptima para que llegues a tiempo a tu vuelo en Barcelona.
+                        Para disfrutar de un viaje sin sobresaltos, te aconsejamos reservar conjuntamente el trayecto de ida y el de vuelta al aeropuerto. Nuestro conductor te recogerá en la puerta de tu hotel en <?php echo esc_html( mt_translate( $destino  )); ?> a la hora óptima para que llegues a tiempo a tu vuelo en Barcelona.
                     </p>
                 </div>
             <?php endif; ?>
