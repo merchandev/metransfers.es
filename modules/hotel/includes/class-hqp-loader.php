@@ -11,11 +11,13 @@ class HQP_Loader {
     private function load_dependencies() {
         if (!class_exists('FPDF')) { require_once HQP_PLUGIN_DIR . 'includes/fpdf.php'; }
         require_once HQP_PLUGIN_DIR . 'admin/class-hqp-admin.php';
+        require_once HQP_PLUGIN_DIR . 'admin/class-hqp-import-export.php';
         require_once HQP_PLUGIN_DIR . 'public/class-hqp-public.php';
     }
 
     private function define_admin_hooks() {
         $plugin_admin = new HQP_Admin();
+        $import_export = new HQP_Import_Export();
         
         // CPT & Meta Boxes
         add_action( 'init', array( $plugin_admin, 'register_hotel_cpt' ) );
