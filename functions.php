@@ -1076,13 +1076,6 @@ function me_transfers_custom_redirects() {
     }
 }
 
-// ==========================================
-// 1. Theme Support & Setup
-// ==========================================
-require_once get_template_directory() . '/mt-seo-importer.php';
-// No ejecutar automáticamente.
-// add_action( 'admin_init', 'mt_run_seo_importer_phase_1' );
-
 // Herramienta nativa para construir y publicar rutas de la Fase 1
 require_once get_template_directory() . '/includes/admin-route-builder.php';
 
