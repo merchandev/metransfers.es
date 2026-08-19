@@ -21,7 +21,7 @@ class WPTB_Loader {
     public function run() {
         // Admin Hooks
         $plugin_admin = new WPTB_Admin();
-        add_action( 'admin_menu', array( $plugin_admin, 'add_plugin_admin_menu' ) );
+        // admin_menu migrated to app/Admin/Menu.php
         add_action( 'admin_init', array( $plugin_admin, 'register_settings' ) );
         
         // Dashboard Widgets
@@ -30,7 +30,7 @@ class WPTB_Loader {
         
         // Vehicles Admin Hooks
         $vehicles_admin = new WPTB_Vehicles_Admin();
-        add_action( 'admin_menu', array( $vehicles_admin, 'add_vehicles_menu' ) );
+        // admin_menu migrated to app/Admin/Menu.php
 
         // Public Hooks
         $plugin_public = new WPTB_Public();

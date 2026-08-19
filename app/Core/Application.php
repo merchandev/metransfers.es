@@ -30,6 +30,8 @@ class Application {
         self::loadLegacyModules();
 
         // Boot modern components
+        $postTypes = new \MeTransfers\Core\PostTypes();
+        add_action('init', [$postTypes, 'register']);
         $shortcodes = new \MeTransfers\Booking\Shortcodes();
         $shortcodes->register();
     }

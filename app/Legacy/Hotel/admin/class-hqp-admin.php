@@ -4,60 +4,7 @@ require_once HQP_PLUGIN_DIR . 'admin/class-hqp-vehicles-admin.php';
 
 class HQP_Admin {
 
-    public function register_hotel_cpt() {
-        $labels = array(
-            'name'                  => 'Hoteles',
-            'singular_name'         => 'Hotel',
-            'menu_name'             => 'Hoteles QR',
-            'name_admin_bar'        => 'Hotel',
-            'add_new'               => 'Añadir Nuevo',
-            'add_new_item'          => 'Añadir Nuevo Hotel',
-            'new_item'              => 'Nuevo Hotel',
-            'edit_item'             => 'Editar Hotel',
-            'view_item'             => 'Ver Hotel',
-            'all_items'             => 'Todos los Hoteles',
-            'search_items'          => 'Buscar Hoteles',
-            'not_found'             => 'No encontrados',
-            'not_found_in_trash'    => 'No encontrados en papelera',
-        );
-
-        $args = array(
-            'labels'             => $labels,
-            'public'             => true, // Habilitado para evitar conflictos con Gutenberg y publicación
-            'publicly_queryable' => false,
-            'show_ui'            => true,
-            'show_in_menu'       => true,
-            'query_var'          => true,
-            'rewrite'            => array( 'slug' => 'hotel' ),
-            'capability_type'    => 'post',
-            'map_meta_cap'       => true,
-            'has_archive'        => false,
-            'hierarchical'       => false,
-            'show_in_rest'       => true,
-            'menu_position'      => 56, // Below WooCommerce usually
-            'menu_icon'          => 'dashicons-building',
-            'supports'           => array( 'title', 'custom-fields' ),
-        );
-
-        register_post_type( 'hotel_partner', $args );
-        
-        // Highlight Men— Item
-        add_action('admin_head', function() {
-            echo '<style>
-                #menu-posts-hotel_partner > a {
-                    background-color: #28a745 !important;
-                    color: #fff !important;
-                    font-weight: bold !important;
-                }
-                #menu-posts-hotel_partner > a:hover {
-                    background-color: #218838 !important;
-                }
-                #menu-posts-hotel_partner .wp-menu-image:before {
-                    color: #fff !important;
-                }
-            </style>';
-        });
-    }
+    public function register_hotel_cpt() { /* Migrated to app/Core/PostTypes.php */ }
 
     public function enqueue_admin_scripts( $hook ) {
         global $post;

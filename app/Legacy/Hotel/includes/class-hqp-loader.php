@@ -24,7 +24,7 @@ class HQP_Loader {
         
         // Admin Menu
         add_action( 'admin_init', array( $plugin_admin, 'create_booking_page' ) );
-        add_action( 'admin_menu', array( $plugin_admin, 'add_hotel_submenu' ) );
+        // admin_menu migrated to app/Admin/Menu.php
         add_action( 'admin_enqueue_scripts', array( $plugin_admin, 'enqueue_admin_scripts' ) );
         
         // Admin Columns

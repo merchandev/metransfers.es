@@ -7,7 +7,7 @@
 class WPTB_Bookings_Admin {
 
     public function __construct() {
-        add_action('admin_menu', array($this, 'add_menu_page'));
+        // admin_menu migrated to app/Admin/Menu.php
         add_action('wp_ajax_wptb_update_booking_status', array($this, 'ajax_update_booking_status'));
         add_action('wp_ajax_wptb_delete_all_bookings', array($this, 'ajax_delete_all_bookings'));
     }
