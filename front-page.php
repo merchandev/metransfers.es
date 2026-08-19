@@ -951,9 +951,9 @@ a.contact__val:hover{color:var(--blue);}
 <!-- ══════════════════════════ 7. TOURS ══════════════════════════ -->
 <section class="sp tours-section" id="tours">
   <div class="wrap">
-    <p class="tag tc" style="justify-content:center;">Tours y excursiones privadas</p>
-    <h2 class="tc">Descubre Cataluña a tu ritmo</h2>
-    <p class="lead tc" style="margin:20px auto 0;color:rgba(255,255,255,.75);">Recogida puerta a puerta, horarios flexibles y vehículo premium reservado solo para ti y tus acompañantes.</p>
+    <p class="tag tc" style="justify-content:center;"><?php echo mt_translate("Tours y excursiones privadas"); ?></p>
+    <h2 class="tc"><?php echo mt_translate("Descubre Cataluña a tu ritmo"); ?></h2>
+    <p class="lead tc" style="margin:20px auto 0;color:rgba(255,255,255,.75);"><?php echo mt_translate("Recogida puerta a puerta, horarios flexibles y vehículo premium reservado solo para ti y tus acompañantes."); ?></p>
 
     <div class="tours__grid">
 
@@ -1141,9 +1141,9 @@ a.contact__val:hover{color:var(--blue);}
   <div class="wrap">
     <div class="cta__inner">
       <div>
-        <p class="tag">Reserva tu próximo traslado</p>
+        <p class="tag"><?php echo mt_translate("Reserva tu próximo traslado"); ?></p>
         <h2><?php echo mt_translate("Tu viaje comienza con una recogida bien organizada"); ?></h2>
-        <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
+        <p class="cta__lead"><?php echo mt_translate("Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto."); ?></p>
       </div>
       <div class="cta__btns">
         <a href="#panel" class="btn btn-solid" style="background:#fff;color:var(--deep);"><?php echo mt_translate("Presupuestar y reservar"); ?></a>
@@ -1157,9 +1157,9 @@ a.contact__val:hover{color:var(--blue);}
 <!-- ══════════════════════════ 12. CONTACTO ══════════════════════════ -->
 <section class="sp bg-white" id="contacto">
   <div class="wrap">
-    <p class="tag">Atención personalizada</p>
-    <h2>¿<?php echo mt_translate("¿Necesitas ayuda para organizar tu traslado?"); ?></h2>
-    <p class="lead" style="margin-top:16px;">Cuéntanos la ruta, la fecha, los pasajeros y cualquier necesidad especial. Te respondemos lo antes posible.</p>
+    <p class="tag"><?php echo mt_translate("Atención personalizada"); ?></p>
+    <h2><?php echo mt_translate("¿Necesitas ayuda para organizar tu traslado?"); ?></h2>
+    <p class="lead" style="margin-top:16px;"><?php echo mt_translate("Cuéntanos la ruta, la fecha, los pasajeros y cualquier necesidad especial. Te respondemos lo antes posible."); ?></p>
 
     <div class="contact__grid">
       <!-- Info -->
@@ -1167,7 +1167,7 @@ a.contact__val:hover{color:var(--blue);}
         <ul class="contact__list">
           <li class="contact__li">
             <div class="contact__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-            <div><div class="contact__label">Teléfono y WhatsApp</div><a href="tel:+34662024136" class="contact__val">+34 662 02 41 36</a></div>
+            <div><div class="contact__label"><?php echo mt_translate("Teléfono y WhatsApp"); ?></div><a href="tel:+34662024136" class="contact__val">+34 662 02 41 36</a></div>
           </li>
           <li class="contact__li">
             <div class="contact__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
@@ -1175,11 +1175,11 @@ a.contact__val:hover{color:var(--blue);}
           </li>
           <li class="contact__li">
             <div class="contact__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg></div>
-            <div><div class="contact__label">Ubicación</div><span class="contact__val" style="font-weight:600;font-size:18px;color:var(--muted);">Barcelona, España</span></div>
+            <div><div class="contact__label"><?php echo mt_translate("Ubicación"); ?></div><span class="contact__val" style="font-weight:600;font-size:18px;color:var(--muted);"><?php echo mt_translate("Barcelona, España"); ?></span></div>
           </li>
           <li class="contact__li">
             <div class="contact__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-            <div><div class="contact__label">Horario de atención</div><span class="contact__val" style="font-weight:600;font-size:18px;color:var(--muted);">24 horas, 7 días a la semana</span></div>
+            <div><div class="contact__label"><?php echo mt_translate("Horario de atención"); ?></div><span class="contact__val" style="font-weight:600;font-size:18px;color:var(--muted);"><?php echo mt_translate("24 horas, 7 días a la semana"); ?></span></div>
           </li>
         </ul>
         <div style="margin-top:48px;">
@@ -1194,17 +1194,17 @@ a.contact__val:hover{color:var(--blue);}
       <form class="cform" id="mainContactForm">
         <div class="cform__row">
           <div class="fg"><label for="contact-nombre"><?php echo mt_translate("Nombre y apellidos"); ?></label><input id="contact-nombre" type="text" name="nombre" autocomplete="name" required></div>
-          <div class="fg"><label for="contact-email">Correo electrónico</label><input id="contact-email" type="email" name="email" autocomplete="email" required></div>
+          <div class="fg"><label for="contact-email"><?php echo mt_translate("Correo electrónico"); ?></label><input id="contact-email" type="email" name="email" autocomplete="email" required></div>
         </div>
         <div class="cform__row">
-          <div class="fg"><label for="contact-telefono">Teléfono</label><input id="contact-telefono" type="tel" name="telefono" autocomplete="tel"></div>
+          <div class="fg"><label for="contact-telefono"><?php echo mt_translate("Teléfono"); ?></label><input id="contact-telefono" type="tel" name="telefono" autocomplete="tel"></div>
           <div class="fg">
             <label for="contact-servicio"><?php echo mt_translate("Servicio que necesitas"); ?></label>
             <select id="contact-servicio" name="servicio" required>
-              <option value="">Selecciona una opción</option>
+              <option value=""><?php echo mt_translate("Selecciona una opción"); ?></option>
               <option value="aeropuerto"><?php echo mt_translate("Traslado al aeropuerto"); ?></option>
               <option value="puerto"><?php echo mt_translate("Traslado al puerto"); ?></option>
-              <option value="horas">Chófer por horas</option>
+              <option value="horas"><?php echo mt_translate("Chófer por horas"); ?></option>
               <option value="evento"><?php echo mt_translate("Empresa o evento"); ?></option>
               <option value="tour"><?php echo mt_translate("Tour privado"); ?></option>
               <option value="grupo">Grupo o celebración</option>
