@@ -1,10 +1,21 @@
-﻿# Security Findings — MeTransfers Platform Integration
+# Security Findings — MeTransfers Platform Integration
 **Fase:** 1 — Inventario | **Fecha:** 2026-08-19 | **Clasificacion:** CONFIDENCIAL
 
 > [!CAUTION]
 > Este documento contiene hallazgos de seguridad criticos. Los valores reales de secretos
 > NO estan documentados aqui — solo se documenta su ubicacion y tipo.
 > LOS SECRETOS DEBEN ROTARSE antes de que el repositorio sea publico.
+
+## ESTADO DE REMEDIACION (2026-08-19)
+
+- Credenciales SMTP, Google Maps y Redsys retiradas del codigo y centralizadas mediante `MeTransfers\Core\Settings` (constantes `MT_*` u options de WordPress).
+- Distancia, duracion y precio recalculados en servidor en Redsys y WooCommerce; el flujo Hotel exige un token QR valido y obtiene su tarifa desde la base de datos.
+- IPN Redsys valida firma e importe y confirma con una transicion idempotente.
+- Cookies Hotel usan `Secure` cuando corresponde, `HttpOnly` y `SameSite=Lax`.
+- Scripts temporales de diagnostico/configuracion con tokens incrustados fueron eliminados del artefacto.
+- **Pendiente fuera del repositorio:** rotar las credenciales que estuvieron expuestas y revisar el historial Git; no se ha reescrito el historial.
+
+Los apartados siguientes se conservan como registro del diagnostico original.
 
 ---
 

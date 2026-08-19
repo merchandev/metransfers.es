@@ -1,4 +1,4 @@
-﻿# Design Migration Report
+# Design Migration Report
 **Fase:** 9 — Unificacion Visual | **Fecha:** 2026-08-19
 
 > **Objetivo:** Eliminar la guerra de estilos CSS entre el tema y el plugin, creando un Design System unificado donde el tema es la unica fuente visual de verdad.

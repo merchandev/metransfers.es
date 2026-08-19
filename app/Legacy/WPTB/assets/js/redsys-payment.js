@@ -10,6 +10,7 @@
         const paymentResult = urlParams.get('payment_result');
         const paymentOID = urlParams.get('oid');
         const isRedsysReturn = (paymentResult === 'ok');
+        const serverPaymentState = $('#wptb-plugin-container').attr('data-payment-state') || 'none';
 
         // Only run on payment page OR if returning from Redsys
         if ($('#wptb-payment-step').length === 0 && !isRedsysReturn) {
@@ -34,8 +35,9 @@
 
         if (paymentResult === 'ok') {
             $('#wptb-payment-step').hide();
-            // Show success logic
-            handlePaymentSuccess(paymentOID);
+            if (serverPaymentState === 'confirmed') {
+                handlePaymentSuccess(paymentOID);
+            }
             return;
         } else if (paymentResult === 'ko') {
             showError('El pago ha sido cancelado o rechazado por el banco.');
@@ -173,9 +175,6 @@
             console.log('🔄 Initiating Redsys Payment...');
             setLoading(true);
 
-            // Check if we already have a booking ID
-            const existingBookingId = bookingData.id || null;
-
             $.ajax({
                 url: wptb_vars.ajax_url,
                 type: 'POST',
@@ -183,13 +182,17 @@
                 data: {
                     action: 'wptb_initiate_redsys',
                     booking_data: JSON.stringify(bookingData),
-                    existing_booking_id: existingBookingId,
                     security: wptb_vars.nonce
                 },
                 success: function (response) {
                     console.log('📥 Redsys Response:', response);
 
                     if (!response.success) {
+                        if (response.data && response.data.code === 'price_changed') {
+                            bookingData.price = parseFloat(response.data.server_price);
+                            sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
+                            populateSummary(bookingData);
+                        }
                         showError(response.data.message || 'Error al conectar con el banco.');
                         setLoading(false);
                         return;
@@ -233,13 +236,10 @@
             const saved = sessionStorage.getItem('wptb_booking_data');
             if (saved) {
                 const data = JSON.parse(saved);
-                $('#success-order-id').text('#' + (data.id || oid));
                 window.lastBookingData = data;
 
                 // Clean up
                 sessionStorage.removeItem('wptb_booking_data');
-            } else {
-                $('#success-order-id').text('#' + oid.replace(/^0+/, '')); // Remove leading zeros
             }
         }
 

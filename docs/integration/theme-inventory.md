@@ -1,4 +1,4 @@
-﻿# Theme Inventory — MeTransfers Platform Integration
+# Theme Inventory — MeTransfers Platform Integration
 **Fase:** 1 — Inventario | **Fecha:** 2026-08-19
 
 > Este documento contiene el inventario exhaustivo del tema WordPress actual (`mt120826_merchandev`), enfocado en identificar los puntos de integracion, dependencias y conflictos potenciales con el plugin de reservas.

@@ -1,4 +1,4 @@
-﻿# Public API Contract — MeTransfers Platform Integration
+# Public API Contract — MeTransfers Platform Integration
 **Fase:** 1 — Inventario | **Fecha:** 2026-08-19
 
 > Este documento define el contrato de las APIs publicas (principalmente endpoints AJAX de WordPress) expuestas por el ecosistema actual (Tema + Plugin). Durante la integracion, estas firmas DEBEN respetarse para no romper el frontend legacy hasta que sea reemplazado.
@@ -27,24 +27,23 @@ Estos endpoints manejan la busqueda de vehiculos, el calculo de precios y la cre
 **Descripcion:** Guarda los datos de la reserva en base de datos.
 - **Acceso:** Privado y publico
 - **Parametros esperados (basado en el JS y BD):**
-  - Datos de origen, destino, fechas, horas, cliente (nombre, email, telefono), vehiculo, precio, trip_type.
+  - Datos de origen, destino, fechas, horas, cliente (nombre, email, telefono), vehiculo y trip_type.
   - `security` (nonce).
-- **Intercepcion (Peligro):** El modulo de Hotel (`class-hqp-public.php`) intercepta `wptb_save_booking` con prioridad 1 para modificar `$_POST['price']` aplicando descuentos.
+- **Garantia:** Precio, distancia y duracion enviados por el navegador se ignoran; la ruta y el precio se recalculan en servidor. El flujo Hotel ya no intercepta este endpoint.
 
 ### 1.4 `wptb_initiate_redsys`
 **Descripcion:** Inicia el proceso de pago con Redsys. Construye los parametros HMAC-SHA256 para el formulario de redireccion.
 - **Acceso:** Privado y publico
 - **Parametros esperados:**
-  - `booking_data` (JSON/string): Datos de la reserva (actualmente incluye el precio client-side, lo cual es una vulnerabilidad).
-  - `existing_booking_id` (int/opcional): Si se reintenta un pago.
+  - `booking_data` (JSON/string): Datos de la reserva. Precio, distancia y duracion client-side se ignoran.
   - `security` (nonce).
-- **Respuesta esperada:** JSON con url (`https://sis.redsys.es/...`) y parametros encriptados (`Ds_Signature`, `Ds_MerchantParameters`).
+- **Respuesta esperada:** JSON con la URL del entorno configurado y parametros firmados (`Ds_Signature`, `Ds_MerchantParameters`).
 
 ### 1.5 Redsys IPN (No-AJAX)
 **Descripcion:** URL de callback (webhook) desde los servidores de Redsys/Getnet.
 - **Hook:** `init`
 - **Condicion de disparo:** Parámetro GET `?wptb_redsys_ipn=1`
-- **Parametros esperados:** Payload SOAP o form-data cifrado de Redsys. Verifica firma con clave secreta del servidor y procesa el estado del pago.
+- **Parametros esperados:** Form-data firmado de Redsys. Verifica version, firma HMAC, orden e importe antes de confirmar de forma idempotente.
 
 ---
 
@@ -56,7 +55,7 @@ Estos endpoints son especificos para el flujo de reservas a traves de codigos QR
 **Descripcion:** Devuelve los precios de los vehiculos para un hotel especifico (ignora la distancia, usa tarifas planas o descuentos).
 - **Acceso:** Privado y publico
 - **Parametros esperados:**
-  - Identificador de hotel (presumiblemente por token o ID enviado).
+  - Identificador de hotel, vinculado obligatoriamente al token QR valido de la cookie segura.
 
 ### 2.2 `hqp_create_booking`
 **Descripcion:** Crea una reserva en el flujo de hoteles y llama a Redsys.
@@ -66,17 +65,9 @@ Estos endpoints son especificos para el flujo de reservas a traves de codigos QR
 
 ---
 
-## 3. ENDPOINTS DE INTEGRACION EXTERNA (Unified_Integration - Deshabilitados/Legacy)
+## 3. INTEGRACION EXTERNA LEGACY
 
-### 3.1 `wptb_create_payment_intent` (Deshabilitado)
-**Descripcion:** Integracion legacy con Stripe. Genera un PaymentIntent.
-- **Acceso:** Privado y publico
-- **Nota:** Actualmente interceptado y deshabilitado, pero registrado en el Loader.
-
-### 3.2 `wptb_confirm_payment`
-**Descripcion:** Confirma el pago finalizado.
-- **Acceso:** Privado y publico
-- **Intercepcion:** `Unified_Integration::intercept_confirm_payment` lo usa en prioridad 0 para borrar las cookies del hotel (hqp_hotel_token, hqp_hotel_discount, etc.) una vez finalizado el pago.
+El shim `Unified_Integration` y sus endpoints Stripe incompletos fueron retirados del runtime. WooCommerce conserva su flujo propio y Redsys usa el gateway centralizado.
 
 ---
 

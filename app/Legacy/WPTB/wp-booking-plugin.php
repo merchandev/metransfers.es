@@ -41,31 +41,3 @@ function run_wp_transfer_booking() {
 }
 } 
 run_wp_transfer_booking();
-
-// Upgrade routine for independent hotel vehicles table
-add_action( 'admin_init', function() {
-    if ( get_option( 'wptb_version_453_hotel_vehicles_v2' ) !== 'done' ) {
-        global $wpdb;
-        $charset_collate = $wpdb->get_charset_collate();
-        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-        
-        $table_hotel_vehicles = $wpdb->prefix . 'wptb_hotel_vehicles';
-        $sql = "CREATE TABLE $table_hotel_vehicles (
-            id mediumint(9) NOT NULL AUTO_INCREMENT,
-            name varchar(200) NOT NULL,
-            description text,
-            capacity int NOT NULL DEFAULT 4,
-            image_url varchar(500),
-            display_order int DEFAULT 0,
-            is_active tinyint(1) DEFAULT 1,
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY  (id)
-        ) $charset_collate;";
-        
-        dbDelta( $sql );
-        
-        // Also remove the old columns from wptb_vehicles to clean up if we want, but let's just mark it done.
-        update_option( 'wptb_version_453_hotel_vehicles_v2', 'done' );
-    }
-});
-

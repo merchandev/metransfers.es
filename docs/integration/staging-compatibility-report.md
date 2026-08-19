@@ -1,4 +1,4 @@
-﻿# Staging Compatibility Report — Plugin OFF
+# Staging Compatibility Report — Plugin OFF
 **Fase:** 8 — Prueba de Staging | **Fecha:** 2026-08-19
 
 > **Objetivo:** Verificar que el Tema con la estructura integrada (`MeTransfers Platform`) es capaz de reemplazar al 100% las funcionalidades del plugin original *sin alterar la base de datos ni romper la web en producción*.

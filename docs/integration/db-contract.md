@@ -1,4 +1,4 @@
-﻿# DB Contract — MeTransfers Platform Integration
+# DB Contract — MeTransfers Platform Integration
 **Fase:** 1 — Inventario | **Fecha:** 2026-08-19
 
 > Este documento define el contrato de base de datos que DEBE preservarse

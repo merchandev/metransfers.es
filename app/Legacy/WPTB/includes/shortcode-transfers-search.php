@@ -12,7 +12,7 @@ add_action('init', 'wptb_premium_transfers_search_shortcode');
 
 // Include PTS Modal in footer
 function wptb_include_pts_modal() {
-    if (!is_admin()) {
+    if ( \MeTransfers\Core\Assets::is_booking_context() ) {
         include WPTB_PLUGIN_DIR . 'templates/pts-booking-modal.php';
     }
 }
@@ -20,8 +20,7 @@ add_action('wp_footer', 'wptb_include_pts_modal');
 
 // Enqueue Assets for Shortcode
 function wptb_enqueue_transfers_search_assets() {
-    // Always enqueue on frontend (shortcode check doesn't work reliably)
-    if (!is_admin()) {
+    if ( \MeTransfers\Core\Assets::is_booking_context() ) {
         // Google Fonts
         wp_enqueue_style(
             'wptb-inter-font',
@@ -32,14 +31,14 @@ function wptb_enqueue_transfers_search_assets() {
         
         wp_enqueue_style(
             'wptb-transfers-search',
-            plugin_dir_url(dirname(__FILE__)) . 'assets/css/transfers-search.css',
+            WPTB_PLUGIN_URL . 'assets/css/transfers-search.css',
             array(),
             '1.0.2'
         );
         
         wp_enqueue_script(
             'wptb-transfers-search',
-            plugin_dir_url(dirname(__FILE__)) . 'assets/js/transfers-search.js',
+            WPTB_PLUGIN_URL . 'assets/js/transfers-search.js',
             array('jquery', 'wptb-booking-js'), // Depend on booking-js so wptbEnsurePlacesReady is available
             '1.0.7',
             true
@@ -92,16 +91,7 @@ function wptb_enqueue_transfers_search_assets() {
             array('name' => 'Barcelona Bagueira Beret', 'category' => 'montana', 'region' => 'Cataluña')
         );
 
-        $maps_api_key = trim( (string) get_option( 'wptb_google_maps_api_key', '' ) );
-        if ( empty( $maps_api_key ) ) {
-            $maps_api_key = trim( (string) get_option( 'wptb_google_api_key', '' ) );
-        }
-        if ( empty( $maps_api_key ) && defined( 'WPTB_GOOGLE_MAPS_API_KEY' ) ) {
-            $maps_api_key = trim( (string) constant( 'WPTB_GOOGLE_MAPS_API_KEY' ) );
-        }
-        if ( empty( $maps_api_key ) && defined( 'GOOGLE_MAPS_API_KEY' ) ) {
-            $maps_api_key = trim( (string) constant( 'GOOGLE_MAPS_API_KEY' ) );
-        }
+        $maps_api_key = trim( (string) \MeTransfers\Core\Settings::get( 'google_maps_api_key', '' ) );
 
         wp_localize_script('wptb-transfers-search', 'ptsData', array(
             'destinations' => $destinations,

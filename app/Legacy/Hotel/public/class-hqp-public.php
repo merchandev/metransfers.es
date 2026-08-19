@@ -7,9 +7,9 @@ class HQP_Public {
         
         $token = '';
         if ( isset( $_GET['promo'] ) && ! empty( $_GET['promo'] ) ) {
-             $token = sanitize_text_field( $_GET['promo'] );
+             $token = sanitize_text_field( wp_unslash( $_GET['promo'] ) );
         } elseif ( isset( $_GET['hotel_token'] ) && ! empty( $_GET['hotel_token'] ) ) {
-             $token = sanitize_text_field( $_GET['hotel_token'] );
+             $token = sanitize_text_field( wp_unslash( $_GET['hotel_token'] ) );
         }
 
         if ( $token ) {
@@ -25,8 +25,18 @@ class HQP_Public {
             if ( $query->have_posts() ) {
                 $hotel_id = $query->posts[0];
                 
-                setcookie( 'hqp_hotel_token', $token, time() + 86400, COOKIEPATH, COOKIE_DOMAIN );
-                setcookie( 'hqp_hotel_id', $hotel_id, time() + 86400, COOKIEPATH, COOKIE_DOMAIN );
+                $cookie_options = array(
+                    'expires'  => time() + DAY_IN_SECONDS,
+                    'path'     => COOKIEPATH ?: '/',
+                    'domain'   => COOKIE_DOMAIN,
+                    'secure'   => is_ssl(),
+                    'httponly' => true,
+                    'samesite' => 'Lax',
+                );
+                setcookie( 'hqp_hotel_token', $token, $cookie_options );
+                setcookie( 'hqp_hotel_id', (string) $hotel_id, $cookie_options );
+                $_COOKIE['hqp_hotel_token'] = $token;
+                $_COOKIE['hqp_hotel_id'] = (string) $hotel_id;
 
                 $booking_page_id = get_transient( 'hqp_booking_page_id' );
                 if ( false === $booking_page_id ) {
@@ -41,10 +51,10 @@ class HQP_Public {
                     $booking_page_url = get_permalink( $booking_page_id );
                     if ( $booking_page_url ) {
                         $target_url = add_query_arg( 'promo', $token, $booking_page_url );
-                        $current_url = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-                        
                         $target_path = parse_url( $target_url, PHP_URL_PATH );
-                        $current_path = parse_url( $current_url, PHP_URL_PATH );
+                        $current_path = isset( $_SERVER['REQUEST_URI'] )
+                            ? wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ), PHP_URL_PATH )
+                            : '';
 
                         if ( trim($target_path, '/') !== trim($current_path, '/') ) {
                             wp_safe_redirect( $target_url );
@@ -57,10 +67,14 @@ class HQP_Public {
     }
 
     public function enqueue_scripts() {
+        if ( ! \MeTransfers\Core\Assets::is_booking_context() ) {
+            return;
+        }
+
         $token = '';
-        if ( isset( $_GET['promo'] ) ) $token = sanitize_text_field( $_GET['promo'] );
-        elseif ( isset( $_GET['hotel_token'] ) ) $token = sanitize_text_field( $_GET['hotel_token'] );
-        elseif ( isset( $_COOKIE['hqp_hotel_token'] ) ) $token = sanitize_text_field( $_COOKIE['hqp_hotel_token'] );
+        if ( isset( $_GET['promo'] ) ) $token = sanitize_text_field( wp_unslash( $_GET['promo'] ) );
+        elseif ( isset( $_GET['hotel_token'] ) ) $token = sanitize_text_field( wp_unslash( $_GET['hotel_token'] ) );
+        elseif ( isset( $_COOKIE['hqp_hotel_token'] ) ) $token = sanitize_text_field( wp_unslash( $_COOKIE['hqp_hotel_token'] ) );
 
         if ( $token ) {
             $args = array(
@@ -90,13 +104,10 @@ class HQP_Public {
     }
 
     public function render_booking_form( $atts ) {
-        $hotel_id = 0;
-        if ( isset( $_COOKIE['hqp_hotel_id'] ) ) {
-            $hotel_id = intval( $_COOKIE['hqp_hotel_id'] );
-        }
+        $hotel_id = $this->get_authorized_hotel_id();
 
         if ( ! $hotel_id && isset( $_GET['promo'] ) ) {
-            $token = sanitize_text_field( $_GET['promo'] );
+            $token = sanitize_text_field( wp_unslash( $_GET['promo'] ) );
             $args = array(
                 'post_type' => 'hotel_partner',
                 'meta_key' => '_hqp_token',
@@ -110,8 +121,8 @@ class HQP_Public {
             }
         }
 
-        wp_enqueue_style( 'hqp-booking-css', plugin_dir_url( __FILE__ ) . 'css/hqp-booking.css', array(), '1.0.1' );
-        wp_enqueue_script( 'hqp-booking-js', plugin_dir_url( __FILE__ ) . 'js/hqp-booking.js', array( 'jquery', 'wptb-booking-js' ), '1.0.2', true );
+        wp_enqueue_style( 'hqp-booking-css', HQP_PLUGIN_URL . 'public/css/hqp-booking.css', array(), HQP_VERSION );
+        wp_enqueue_script( 'hqp-booking-js', HQP_PLUGIN_URL . 'public/js/hqp-booking.js', array( 'jquery', 'wptb-booking-js' ), HQP_VERSION, true );
 
         $hotel_name = '';
         $hotel_address = '';
@@ -129,17 +140,19 @@ class HQP_Public {
         ));
 
         ob_start();
-        include plugin_dir_path( __FILE__ ) . 'partials/hqp-booking-form.php';
+        include HQP_PLUGIN_DIR . 'public/partials/hqp-booking-form.php';
         return ob_get_clean();
     }
 
     public function ajax_get_fixed_pricing() {
         check_ajax_referer( 'wptb-booking-nonce', 'security' );
 
-        $hotel_id = isset( $_POST['hotel_id'] ) ? intval( $_POST['hotel_id'] ) : 0;
+        $hotel_id = isset( $_POST['hotel_id'] ) ? absint( $_POST['hotel_id'] ) : 0;
+        $authorized_hotel_id = $this->get_authorized_hotel_id();
         
-        if ( ! $hotel_id ) {
-            wp_send_json_error( array( 'message' => 'Hotel ID missing.' ) );
+        if ( ! $hotel_id || $hotel_id !== $authorized_hotel_id ) {
+            wp_send_json_error( array( 'message' => 'El token del hotel no es válido.' ) );
+            return;
         }
 
         $passengers = isset( $_POST['passengers'] ) ? intval( $_POST['passengers'] ) : 1;
@@ -210,10 +223,27 @@ class HQP_Public {
         // 1. Validation
         if ( empty( $data['hotel_id'] ) || empty( $data['vehicle_id'] ) || empty( $data['date'] ) || empty( $data['time'] ) ) {
             wp_send_json_error( array( 'message' => 'Faltan datos obligatorios.' ) );
+            return;
         }
 
-        $hotel_id = intval( $data['hotel_id'] );
-        $vehicle_id = intval( $data['vehicle_id'] );
+        $hotel_id = absint( $data['hotel_id'] );
+        $vehicle_id = absint( $data['vehicle_id'] );
+        if ( $hotel_id !== $this->get_authorized_hotel_id() ) {
+            wp_send_json_error( array( 'message' => 'El token del hotel no es válido.' ) );
+            return;
+        }
+
+        $passengers = isset( $data['passengers'] ) ? max( 1, absint( $data['passengers'] ) ) : 1;
+        $vehicle = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT id, capacity FROM {$wpdb->prefix}wptb_hotel_vehicles WHERE id = %d AND is_active = 1",
+                $vehicle_id
+            )
+        );
+        if ( ! $vehicle || (int) $vehicle->capacity < $passengers ) {
+            wp_send_json_error( array( 'message' => 'El vehículo seleccionado no está disponible para este grupo.' ) );
+            return;
+        }
 
         $price = get_post_meta( $hotel_id, '_hqp_price_vehicle_' . $vehicle_id, true );
 
@@ -227,28 +257,28 @@ class HQP_Public {
             $price = $price_val - ( $price_val * ( $discount_percent / 100 ) );
         }
 
+        $gateway = null;
+        if ( (float) $price > 0 ) {
+            $gateway = new \MeTransfers\Payments\Redsys\Gateway();
+            if ( ! $gateway->is_configured() ) {
+                wp_send_json_error( array( 'message' => 'El pago no está configurado. Contacta con soporte.' ) );
+                return;
+            }
+        }
+
         $date = sanitize_text_field( $data['date'] );
         $time = sanitize_text_field( $data['time'] );
         
         $origin = sanitize_text_field( $data['origin'] );
         $destination = sanitize_text_field( $data['destination'] );
         
-        // --- ADD DISTANCE CALCULATION FOR HOTELS ---
         $distance_km = 0;
-        $api_key = get_option( 'wptb_google_maps_api_key' );
-        if ( ! empty( $api_key ) && ! empty( $origin ) && ! empty( $destination ) ) {
-            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins=' . urlencode($origin) . '&destinations=' . urlencode($destination) . '&key=' . $api_key . '&units=metric';
-            $response = wp_remote_get( $url );
-            if ( ! is_wp_error( $response ) ) {
-                $body = wp_remote_retrieve_body( $response );
-                $json = json_decode( $body, true );
-                if ( isset( $json['rows'][0]['elements'][0]['status'] ) && $json['rows'][0]['elements'][0]['status'] === 'OK' ) {
-                    $meters = $json['rows'][0]['elements'][0]['distance']['value'];
-                    $distance_km = round( $meters / 1000, 1 );
-                }
-            }
+        $duration_minutes = 0;
+        $route = \MeTransfers\Booking\RouteDistance::calculate( $origin, $destination );
+        if ( empty( $route['error'] ) ) {
+            $distance_km = (float) $route['distance_km'];
+            $duration_minutes = (int) $route['duration_minutes'];
         }
-        // -------------------------------------------
         
         $booking_data = array(
             'booking_date'   => $date,
@@ -256,12 +286,12 @@ class HQP_Public {
             'origin'         => $origin,
             'destination'    => $destination,
             'distance_km'    => $distance_km,
-            'duration_minutes' => 0,
+            'duration_minutes' => $duration_minutes,
             'price'          => $price,
             'customer_name'  => sanitize_text_field( $data['customer_name'] ),
             'customer_email' => sanitize_email( $data['customer_email'] ),
             'customer_phone' => sanitize_text_field( $data['customer_phone'] ),
-            'passengers'     => intval( $data['passengers'] ),
+            'passengers'     => $passengers,
             'flight_number'  => sanitize_text_field( $data['flight_number'] ),
             'notes'          => sanitize_textarea_field( $data['notes'] ),
             'vehicle_id'     => $vehicle_id,
@@ -278,7 +308,8 @@ class HQP_Public {
         $booking_id = $wpdb->insert_id;
 
         if ( ! $result || ! $booking_id ) {
-            wp_send_json_error( array( 'message' => 'Error al guardar la reserva en la base de datos. ' . $wpdb->last_error ) );
+            error_log( 'HQP booking insert failed: ' . $wpdb->last_error );
+            wp_send_json_error( array( 'message' => 'No se pudo guardar la reserva. Contacta con soporte.' ) );
             return;
         }
         
@@ -291,61 +322,61 @@ class HQP_Public {
             array( 'id' => $booking_id ) 
         );
 
-        // Enviar notificaciones de reserva pendiente (Admin y Cliente)
-        if ( class_exists( 'WPTB_Public' ) ) {
-            $booking_obj = $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", $booking_id) );
-            if ( $booking_obj ) {
-                $wptb_public = new WPTB_Public();
-                $wptb_public->process_booking_notifications( $booking_id, $booking_obj, 'pending' );
-            }
-        }
-
         $url_ok = home_url( '/reservas-metransfers/?payment_result=ok&oid=' . $order_id );
 
         if ( $price <= 0 ) {
+            $wpdb->update(
+                $table_name,
+                array(
+                    'status' => 'confirmed',
+                    'payment_status' => 'paid',
+                    'payment_method' => 'complimentary',
+                ),
+                array( 'id' => $booking_id ),
+                array( '%s', '%s', '%s' ),
+                array( '%d' )
+            );
+
+            if ( class_exists( 'WPTB_Public' ) ) {
+                $booking_obj = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking_id ) );
+                if ( $booking_obj ) {
+                    $wptb_public = new WPTB_Public();
+                    $wptb_public->process_booking_notifications( $booking_id, $booking_obj );
+                    $wptb_public->send_whatsapp_alert( $booking_id, $booking_obj );
+                }
+            }
+
             wp_send_json_success( array( 'redirect' => $url_ok ) );
             return;
         }
 
         try {
-            if ( ! class_exists( 'WPTB_Redsys_API' ) ) {
-                require_once WPTB_PLUGIN_DIR . 'includes/class-wptb-redsys.php';
-            }
-            
-            $merchant_code = '48234082';
-            $terminal = '1';
-            $currency = '978'; // EUR
-            $trans_type = '0'; // Autorización
-            
-            $amount = intval( $price * 100 ); // Cents
-            
-            $url_notification = home_url( '/?wptb_redsys_ipn=1' );
-            $url_ko = home_url( '/reservas-metransfers/?payment_result=ko&oid=' . $order_id );
-            
-            $redsys->setParameter("DS_MERCHANT_AMOUNT", $amount);
-            $redsys->setParameter("DS_MERCHANT_ORDER", $order_id);
-            $redsys->setParameter("DS_MERCHANT_MERCHANTCODE", $merchant_code);
-            $redsys->setParameter("DS_MERCHANT_CURRENCY", $currency);
-            $redsys->setParameter("DS_MERCHANT_TRANSACTIONTYPE", $trans_type);
-            $redsys->setParameter("DS_MERCHANT_TERMINAL", $terminal);
-            $redsys->setParameter("DS_MERCHANT_MERCHANTURL", $url_notification);
-            $redsys->setParameter("DS_MERCHANT_URLOK", $url_ok);
-            $redsys->setParameter("DS_MERCHANT_URLKO", $url_ko);
-            $redsys->setParameter("DS_MERCHANT_PRODUCTDESCRIPTION", "Reserva #" . $booking_id);
-            $redsys->setParameter("DS_MERCHANT_TITULAR", substr($data['customer_name'], 0, 60));
+            $payment = $gateway->generate_payment_form(
+                $booking_id,
+                (int) round( $price * 100 ),
+                $order_id,
+                $booking_data['customer_name']
+            );
 
-            $params = $redsys->createMerchantParameters();
-            $signature = $redsys->createMerchantSignature($key);
-            
+            // Notify only after a valid payment form has been generated.
+            if ( class_exists( 'WPTB_Public' ) ) {
+                $booking_obj = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking_id ) );
+                if ( $booking_obj ) {
+                    $wptb_public = new WPTB_Public();
+                    $wptb_public->process_booking_notifications( $booking_id, $booking_obj, 'pending' );
+                }
+            }
+
             wp_send_json_success( array(
-                'url' => 'https://sis.redsys.es/sis/realizarPago', 
-                'ds_signature_version' => 'HMAC_SHA256_V1',
-                'ds_merchant_parameters' => $params,
-                'ds_signature' => $signature
+                'url' => $payment['url'],
+                'ds_signature_version' => $payment['version'],
+                'ds_merchant_parameters' => $payment['params'],
+                'ds_signature' => $payment['signature']
             ));
 
-        } catch ( Exception $e ) {
-            wp_send_json_error( array( 'message' => 'Error generando pago: ' . $e->getMessage() ) );
+        } catch ( \Throwable $e ) {
+            error_log( 'HQP Redsys payment creation failed: ' . $e->getMessage() );
+            wp_send_json_error( array( 'message' => 'No se pudo iniciar el pago. Revisa la configuración de Redsys o contacta con soporte.' ) );
         }
     }
 
@@ -366,6 +397,31 @@ class HQP_Public {
              return (int) get_post_meta( $query->posts[0], '_hqp_discount_percent', true );
         }
         return 0;
+    }
+
+    private function get_authorized_hotel_id() {
+        if ( empty( $_COOKIE['hqp_hotel_token'] ) ) {
+            return 0;
+        }
+
+        $token = sanitize_text_field( wp_unslash( $_COOKIE['hqp_hotel_token'] ) );
+        if ( '' === $token ) {
+            return 0;
+        }
+
+        $query = new WP_Query(
+            array(
+                'post_type'      => 'hotel_partner',
+                'post_status'    => 'publish',
+                'meta_key'       => '_hqp_token',
+                'meta_value'     => $token,
+                'posts_per_page' => 1,
+                'fields'         => 'ids',
+                'no_found_rows'  => true,
+            )
+        );
+
+        return $query->have_posts() ? absint( $query->posts[0] ) : 0;
     }
 
     public function apply_booking_discount( $price ) {

@@ -46,10 +46,8 @@ class WPTB_Activator {
             KEY status (status),
             KEY payment_intent_id (payment_intent_id),
             KEY hotel_token (hotel_token),
-            KEY booking_date (booking_date),
             KEY origin (origin(50)),
-            KEY destination (destination(50)),
-            KEY status (status)
+            KEY destination (destination(50))
         ) $charset_collate;";
         dbDelta( $sql_bookings );
 
@@ -131,6 +129,23 @@ class WPTB_Activator {
             KEY is_primary (is_primary)
         ) $charset_collate;";
         dbDelta( $sql_images );
+
+        // Table 5: Independent vehicle catalogue for hotel bookings.
+        $table_hotel_vehicles = $wpdb->prefix . 'wptb_hotel_vehicles';
+        $sql_hotel_vehicles = "CREATE TABLE $table_hotel_vehicles (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            name varchar(200) NOT NULL,
+            description text,
+            capacity int NOT NULL DEFAULT 4,
+            image_url varchar(500),
+            display_order int DEFAULT 0,
+            is_active tinyint(1) DEFAULT 1,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY  (id),
+            KEY is_active (is_active),
+            KEY display_order (display_order)
+        ) $charset_collate;";
+        dbDelta( $sql_hotel_vehicles );
         
         // Insert default vehicle types if table is empty
         $types_count = $wpdb->get_var( "SELECT COUNT(*) FROM $table_types" );

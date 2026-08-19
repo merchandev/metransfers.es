@@ -19,7 +19,6 @@ class WPTB_Public {
         add_action( 'wp_ajax_wptb_initiate_redsys', array( $this, 'initiate_redsys_payment' ) );
         add_action( 'wp_ajax_nopriv_wptb_initiate_redsys', array( $this, 'initiate_redsys_payment' ) );
         add_action( 'init', array( $this, 'listen_redsys_ipn' ) );
-        add_action( 'template_redirect', array( $this, 'check_return_url_payment_force' ) ); // FORCE CHECK ON RETURN
         add_action( 'wptb_new_booking_created', array( $this, 'notify_new_booking' ) );
 
         // ===== BOOKING AJAX ACTIONS =====
@@ -49,6 +48,10 @@ class WPTB_Public {
     }
 
     public function enqueue_scripts() {
+        if ( ! \MeTransfers\Core\Assets::is_booking_context() ) {
+            return;
+        }
+
         // 1. STYLES
         // Core Styles
         if (is_page(array('seleccionar-vehiculo', 'reservas-metransfers', 'pago', 'reservas-hotel'))) {
@@ -60,10 +63,7 @@ class WPTB_Public {
         wp_enqueue_style( 'material-symbols-outlined', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200', array(), null );
         
         // 2. GOOGLE MAPS API
-        $api_key = get_option( 'wptb_google_maps_api_key' );
-        if ( empty( $api_key ) ) {
-            $api_key = 'AIzaSyCHNNn7ZxfS5PLtsPDifp2y-5ym4Ds7Its';
-        }
+        $api_key = \MeTransfers\Core\Settings::get( 'google_maps_api_key', '' );
         
         // If API key is present, load Google Maps
         if ( ! empty( $api_key ) ) {
@@ -154,43 +154,66 @@ class WPTB_Public {
     
 
     public function save_booking() {
+        check_ajax_referer( 'wptb-booking-nonce', 'security' );
+
         // Check for WooCommerce
-        if ( ! class_exists( 'WooCommerce' ) ) {
+        if ( ! class_exists( 'WooCommerce' ) || ! function_exists( 'WC' ) || ! WC()->cart ) {
             wp_send_json_error( array( 'message' => 'WooCommerce is not active.' ) );
+            return;
         }
 
         global $wpdb;
         $table_name = $wpdb->prefix . 'wptb_bookings';
 
-        // Sanitize Input
-        $data = $_POST;
-        
+        $data = wp_unslash( $_POST );
+        $required_fields = array( 'date', 'time', 'origin', 'destination', 'vehicle_id', 'fullName', 'email', 'phone' );
+        if ( array_diff( $required_fields, array_keys( $data ) ) ) {
+            wp_send_json_error( array( 'message' => 'Faltan datos obligatorios.' ) );
+            return;
+        }
+
         $date = sanitize_text_field( $data['date'] );
         $time = sanitize_text_field( $data['time'] );
         $origin = sanitize_text_field( $data['origin'] );
         $destination = sanitize_text_field( $data['destination'] );
-        $distance = floatval( $data['distance'] );
-        $duration_minutes = isset( $data['duration_minutes'] ) ? absint( $data['duration_minutes'] ) : 0;
-        $vehicle_id = isset( $data['vehicle_id'] ) ? absint( $data['vehicle_id'] ) : 0;
-        $trip_type = isset( $data['trip_type'] ) ? sanitize_text_field( $data['trip_type'] ) : 'one_way';
-        $price = floatval( $data['price'] );
+        $vehicle_id = absint( $data['vehicle_id'] );
+        $trip_type = isset( $data['trip_type'] ) && 'round_trip' === $data['trip_type'] ? 'round_trip' : 'one_way';
         $fullName = sanitize_text_field( $data['fullName'] );
-        
-        // Validate vehicle
-        if ( ! $vehicle_id ) {
-            wp_send_json_error( array( 'message' => 'Debe seleccionar un vehÃ­culo' ) );
+        $email = sanitize_email( $data['email'] );
+        $phone = sanitize_text_field( $data['phone'] );
+        $passengers = isset( $data['passengers'] ) ? max( 1, absint( $data['passengers'] ) ) : 1;
+        $suitcases = isset( $data['suitcases'] ) ? absint( $data['suitcases'] ) : 0;
+        $carry_ons = isset( $data['carryOns'] ) ? absint( $data['carryOns'] ) : 0;
+        $flight_number = isset( $data['flight'] ) ? sanitize_text_field( $data['flight'] ) : '';
+        $notes = isset( $data['notes'] ) ? sanitize_textarea_field( $data['notes'] ) : '';
+
+        $route = \MeTransfers\Booking\RouteDistance::calculate( $origin, $destination );
+        if ( isset( $route['error'] ) ) {
+            wp_send_json_error( array( 'message' => $route['error'] ) );
+            return;
         }
-        
+        $distance = (float) $route['distance_km'];
+        $duration_minutes = (int) $route['duration_minutes'];
+        if ( 'round_trip' === $trip_type ) {
+            $duration_minutes *= 2;
+        }
+
         $vehicle = WPTB_Vehicle_Manager::get_vehicle( $vehicle_id );
-        if ( ! $vehicle ) {
-            wp_send_json_error( array( 'message' => 'VehÃ­culo no vÃ¡lido' ) );
+        if ( ! $vehicle || $distance <= 0 || '' === $fullName || ! is_email( $email ) || '' === $phone || '' === $origin || '' === $destination ) {
+            wp_send_json_error( array( 'message' => 'Vehículo o datos de reserva no válidos.' ) );
+            return;
         }
-        
-        // Validate price meets minimums
-        $validation = WPTB_Pricing::validate_booking_price( $vehicle_id, $distance, $trip_type, $price );
-        if ( ! $validation['valid'] ) {
-            wp_send_json_error( array( 'message' => $validation['message'] ) );
+        if ( $passengers > (int) $vehicle->capacity || ( $suitcases + $carry_ons ) > (int) $vehicle->luggage_capacity ) {
+            wp_send_json_error( array( 'message' => 'El vehículo no tiene capacidad suficiente para los pasajeros o el equipaje.' ) );
+            return;
         }
+
+        $pricing = WPTB_Pricing::calculate_price( $vehicle_id, $distance, $trip_type, $duration_minutes );
+        if ( isset( $pricing['error'] ) || empty( $pricing['price'] ) ) {
+            wp_send_json_error( array( 'message' => 'No se pudo calcular el precio de la reserva.' ) );
+            return;
+        }
+        $price = (float) $pricing['price'];
 
         // Add to WooCommerce Cart
         $product_id = get_option( 'wptb_transfer_product_id' );
@@ -201,8 +224,6 @@ class WPTB_Public {
         }
 
         if ( $product_id ) {
-            WC()->cart->empty_cart(); // Optional: Clear cart to ensure only this booking is there
-            
             $cart_item_data = array(
                 'wptb_booking_data' => array(
                     'origin' => $origin,
@@ -215,47 +236,65 @@ class WPTB_Public {
                     'vehicle_name' => $vehicle->name,
                     'trip_type' => $trip_type,
                     'custom_price' => $price,
-                    'passengers' => intval($data['passengers']),
-                    'suitcases' => intval($data['suitcases']),
-                    'carry_ons' => intval($data['carryOns']),
-                    'flight_number' => sanitize_text_field($data['flight']),
-                    'notes' => sanitize_textarea_field($data['notes']),
+                    'passengers' => $passengers,
+                    'suitcases' => $suitcases,
+                    'carry_ons' => $carry_ons,
+                    'flight_number' => $flight_number,
+                    'notes' => $notes,
                     'name' => $fullName,
-                    'email' => sanitize_email($data['email']),
-                    'phone' => sanitize_text_field($data['phone'])
+                    'email' => $email,
+                    'phone' => $phone
                 )
             );
 
-            WC()->cart->add_to_cart( $product_id, 1, 0, array(), $cart_item_data );
+            $cart_item_key = WC()->cart->add_to_cart( $product_id, 1, 0, array(), $cart_item_data );
+            if ( ! $cart_item_key ) {
+                wp_send_json_error( array( 'message' => 'No se pudo añadir la reserva al carrito.' ) );
+                return;
+            }
 
             // Save to DB as 'pending payment'
-             $wpdb->insert( 
+            $inserted = $wpdb->insert(
                 $table_name, 
                 array( 
-                    'booking_date' => $date . ' ' . $time, 
-                    'pickup_address' => $origin,
-                    'dropoff_address' => $destination,
+                    'booking_date' => $date,
+                    'booking_time' => $time,
+                    'origin' => $origin,
+                    'destination' => $destination,
                     'distance_km' => $distance,
                     'duration_minutes' => $duration_minutes,
                     'price' => $price,
                     'customer_name' => $fullName,
-                    'customer_email' => sanitize_email($data['email']),
-                    'customer_phone' => sanitize_text_field($data['phone']),
-                    'passengers' => intval($data['passengers']),
-                    'suitcases' => intval($data['suitcases']),
-                    'carry_ons' => intval($data['carryOns']),
-                    'flight_number' => sanitize_text_field($data['flight']),
-                    'notes' => sanitize_textarea_field($data['notes']),
+                    'customer_email' => $email,
+                    'customer_phone' => $phone,
+                    'passengers' => $passengers,
+                    'suitcases' => $suitcases,
+                    'carry_ons' => $carry_ons,
+                    'flight_number' => $flight_number,
+                    'notes' => $notes,
                     'vehicle_id' => $vehicle_id,
                     'trip_type' => $trip_type,
-                    'status' => 'added-to-cart'
+                    'status' => 'added-to-cart',
+                    'payment_status' => 'pending',
+                    'created_at' => current_time( 'mysql' )
                 ),
-                array( '%s', '%s', '%s', '%f', '%d', '%f', '%s', '%s', '%s', '%d', '%d', '%d', '%s', '%s', '%d', '%s', '%s' )
+                array( '%s', '%s', '%s', '%s', '%f', '%d', '%f', '%s', '%s', '%s', '%d', '%d', '%d', '%s', '%s', '%d', '%s', '%s', '%s', '%s' )
             );
+
+            if ( false === $inserted || ! $wpdb->insert_id ) {
+                WC()->cart->remove_cart_item( $cart_item_key );
+                wp_send_json_error( array( 'message' => 'No se pudo guardar la reserva.' ) );
+                return;
+            }
+
+            $booking_id = (int) $wpdb->insert_id;
+            WC()->cart->cart_contents[ $cart_item_key ]['wptb_booking_data']['booking_id'] = $booking_id;
+            WC()->cart->set_session();
 
             wp_send_json_success( array( 
                 'message' => 'Redirecting to checkout...', 
-                'redirect_url' => wc_get_checkout_url() 
+                'redirect_url' => wc_get_checkout_url(),
+                'booking_id' => $booking_id
             ));
         } else {
             wp_send_json_error( array( 'message' => 'Transfer Product not found. Please contact admin.' ) );
@@ -279,7 +318,7 @@ class WPTB_Public {
             $data = $cart_item['wptb_booking_data'];
             
             if ( isset( $data['vehicle_name'] ) ) {
-                $item_data[] = array( 'key' => 'VehÃ­culo', 'value' => $data['vehicle_name'] );
+                $item_data[] = array( 'key' => 'Vehículo', 'value' => $data['vehicle_name'] );
             }
             
             if ( isset( $data['trip_type'] ) ) {
@@ -309,9 +348,13 @@ class WPTB_Public {
     public function add_order_item_meta( $item, $cart_item_key, $values, $order ) {
         if ( isset( $values['wptb_booking_data'] ) ) {
             $data = $values['wptb_booking_data'];
+
+            if ( ! empty( $data['booking_id'] ) ) {
+                $item->add_meta_data( '_wptb_booking_id', absint( $data['booking_id'] ), true );
+            }
             
             if ( isset( $data['vehicle_name'] ) ) {
-                $item->add_meta_data( 'VehÃ­culo', $data['vehicle_name'] );
+                $item->add_meta_data( 'Vehículo', $data['vehicle_name'] );
             }
             
             if ( isset( $data['trip_type'] ) ) {
@@ -404,23 +447,25 @@ class WPTB_Public {
         // Get booking data from order items
         foreach ( $order->get_items() as $item ) {
             $booking_data = $item->get_meta( 'Origen', true );
+            $booking_id = absint( $item->get_meta( '_wptb_booking_id', true ) );
             
             // If this item has booking data, find and process it
             if ( $booking_data ) {
                 global $wpdb;
                 $table_name = $wpdb->prefix . 'wptb_bookings';
                 
-                $customer_email = $order->get_billing_email();
-                $customer_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
-                
-                // Find booking by customer email and pending/added-to-cart status
-                $booking = $wpdb->get_row( $wpdb->prepare(
-                    "SELECT * FROM $table_name 
-                    WHERE customer_email = %s 
-                    AND status IN ('pending', 'added-to-cart', 'pending_payment')
-                    ORDER BY created_at DESC LIMIT 1",
-                    $customer_email
-                ) );
+                if ( $booking_id ) {
+                    $booking = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking_id ) );
+                } else {
+                    // Compatibility with orders created before the booking ID was saved in item metadata.
+                    $booking = $wpdb->get_row( $wpdb->prepare(
+                        "SELECT * FROM $table_name
+                        WHERE customer_email = %s
+                        AND status IN ('pending', 'added-to-cart', 'pending_payment')
+                        ORDER BY created_at DESC LIMIT 1",
+                        $order->get_billing_email()
+                    ) );
+                }
                 
                 if ( $booking ) {
                     // Check if already notified to prevent duplicates
@@ -430,17 +475,26 @@ class WPTB_Public {
                         return;
                     }
                     
-                    // Update booking status
-                    $wpdb->update(
-                        $table_name,
-                        array( 
-                            'status' => 'confirmed',
-                            'payment_status' => 'paid',
-                            'payment_method' => $order->get_payment_method(),
-                            'payment_intent_id' => $order->get_transaction_id()
-                        ),
-                        array( 'id' => $booking->id )
+                    // Atomic transition prevents duplicate notifications when the thank-you hook repeats.
+                    $updated = $wpdb->query(
+                        $wpdb->prepare(
+                            "UPDATE $table_name
+                             SET status = %s, payment_status = %s, payment_method = %s, payment_intent_id = %s
+                             WHERE id = %d
+                               AND NOT (status = %s AND payment_status = %s)",
+                            'confirmed',
+                            'paid',
+                            sanitize_key( $order->get_payment_method() ),
+                            $order->get_transaction_id() ?: 'wc_' . $order_id,
+                            $booking->id,
+                            'confirmed',
+                            'paid'
+                        )
                     );
+
+                    if ( 1 !== $updated ) {
+                        continue;
+                    }
                     
                     // Re-fetch updated booking
                     $booking_updated = $wpdb->get_row( $wpdb->prepare(
@@ -545,53 +599,132 @@ class WPTB_Public {
     public function initiate_redsys_payment() {
         try {
             check_ajax_referer( 'wptb-booking-nonce', 'security' );
-            
-            $booking_data = json_decode( stripslashes( $_POST['booking_data'] ), true );
-            
-            if ( ! $booking_data || ! isset( $booking_data['price'] ) ) {
-                wp_send_json_error( array( 'message' => 'Datos de reserva invÃ¡lidos' ) );
+
+            $booking_json = isset( $_POST['booking_data'] ) ? wp_unslash( $_POST['booking_data'] ) : '';
+            $booking_data = json_decode( $booking_json, true );
+            $required_fields = array( 'date', 'time', 'origin', 'destination', 'vehicle_id', 'price', 'customer_name', 'customer_email', 'customer_phone' );
+
+            if ( ! is_array( $booking_data ) || array_diff( $required_fields, array_keys( $booking_data ) ) ) {
+                wp_send_json_error( array( 'message' => 'Datos de reserva inválidos' ) );
                 return;
             }
-            
+
+            $vehicle_id = absint( $booking_data['vehicle_id'] );
+            $trip_type = isset( $booking_data['trip_type'] ) && 'round_trip' === $booking_data['trip_type'] ? 'round_trip' : 'one_way';
+            $customer_name = sanitize_text_field( $booking_data['customer_name'] );
+            $customer_phone = sanitize_text_field( $booking_data['customer_phone'] );
+            $origin = sanitize_text_field( $booking_data['origin'] );
+            $destination = sanitize_text_field( $booking_data['destination'] );
+            if ( '' === $customer_name || '' === $customer_phone || '' === $origin || '' === $destination ) {
+                wp_send_json_error( array( 'message' => 'Faltan datos obligatorios de la reserva.' ) );
+                return;
+            }
+            $route = \MeTransfers\Booking\RouteDistance::calculate( $origin, $destination );
+            if ( isset( $route['error'] ) ) {
+                wp_send_json_error( array( 'message' => $route['error'] ) );
+                return;
+            }
+            $distance_km = (float) $route['distance_km'];
+            $duration_minutes = (int) $route['duration_minutes'];
+            $return_date = '';
+            $return_time = '';
+            $return_origin = '';
+            $return_destination = '';
+            if ( 'round_trip' === $trip_type ) {
+                $return_date = ! empty( $booking_data['return_date'] ) ? sanitize_text_field( $booking_data['return_date'] ) : '';
+                $return_time = ! empty( $booking_data['return_time'] ) ? sanitize_text_field( $booking_data['return_time'] ) : '';
+                $return_origin = ! empty( $booking_data['return_origin'] ) ? sanitize_text_field( $booking_data['return_origin'] ) : '';
+                $return_destination = ! empty( $booking_data['return_destination'] ) ? sanitize_text_field( $booking_data['return_destination'] ) : '';
+                if ( '' === $return_date || '' === $return_time || '' === $return_origin || '' === $return_destination ) {
+                    wp_send_json_error( array( 'message' => 'Debes completar todos los datos de la vuelta.' ) );
+                    return;
+                }
+
+                $return_route = \MeTransfers\Booking\RouteDistance::calculate( $return_origin, $return_destination );
+                if ( isset( $return_route['error'] ) ) {
+                    wp_send_json_error( array( 'message' => $return_route['error'] ) );
+                    return;
+                }
+
+                // Calculator doubles round-trip distance, so pass the average of both legs.
+                $distance_km = ( $distance_km + (float) $return_route['distance_km'] ) / 2;
+                $duration_minutes += (int) $return_route['duration_minutes'];
+            }
+            $pricing = \WPTB_Pricing::calculate_price( $vehicle_id, $distance_km, $trip_type, $duration_minutes );
+
+            if ( isset( $pricing['error'] ) || empty( $pricing['price'] ) || (float) $pricing['price'] <= 0 ) {
+                wp_send_json_error( array( 'message' => 'No se pudo calcular un precio válido para la reserva.' ) );
+                return;
+            }
+
+            $server_price = (float) $pricing['price'];
+            $displayed_price = (float) $booking_data['price'];
+            if ( abs( $server_price - $displayed_price ) > 0.01 ) {
+                wp_send_json_error( array(
+                    'code' => 'price_changed',
+                    'message' => 'La ruta se ha verificado y el precio se actualizó. Revísalo y pulsa PAGAR de nuevo.',
+                    'server_price' => $server_price,
+                ) );
+                return;
+            }
+
+            $vehicle = \WPTB_Vehicle_Manager::get_vehicle( $vehicle_id );
+            $passengers = ! empty( $booking_data['passengers'] ) ? absint( $booking_data['passengers'] ) : 1;
+            $suitcases = ! empty( $booking_data['suitcases'] ) ? absint( $booking_data['suitcases'] ) : 0;
+            $carry_ons = ! empty( $booking_data['carry_ons'] ) ? absint( $booking_data['carry_ons'] ) : 0;
+            if ( ! $vehicle || $passengers > (int) $vehicle->capacity || ( $suitcases + $carry_ons ) > (int) $vehicle->luggage_capacity ) {
+                wp_send_json_error( array( 'message' => 'El vehículo no tiene capacidad suficiente para los pasajeros o el equipaje.' ) );
+                return;
+            }
+
+            $gateway = new \MeTransfers\Payments\Redsys\Gateway();
+            if ( ! $gateway->is_configured() ) {
+                throw new \RuntimeException( 'Redsys is not configured.' );
+            }
+
             // Save Pending Booking
             // ---------------------------------------------------------
             global $wpdb;
             $table_name = $wpdb->prefix . 'wptb_bookings';
-            
-            $existing_id = isset($_POST['existing_booking_id']) ? intval($_POST['existing_booking_id']) : 0;
-            $booking_id = 0;
 
-            // Get hotel token from cookie if set (DESHABILITADO PARA NO MEZCLAR CON RESERVAS NORMALES)
-            // $hotel_token = isset($_COOKIE['hqp_hotel_token']) ? sanitize_text_field($_COOKIE['hqp_hotel_token']) : null;
-            
+            $booking_id = 0;
+            $customer_email = ! empty( $booking_data['customer_email'] ) ? sanitize_email( $booking_data['customer_email'] ) : '';
+
+            if ( ! is_email( $customer_email ) ) {
+                wp_send_json_error( array( 'message' => 'El email o el teléfono no son válidos.' ) );
+                return;
+            }
+
             $data_db = array(
-                'booking_date' => $booking_data['date'],
-                'booking_time' => $booking_data['time'],
-                'origin' => sanitize_text_field( $booking_data['origin'] ),
-                'destination' => sanitize_text_field( $booking_data['destination'] ),
-                'distance_km' => floatval( $booking_data['distance_km'] ),
-                'vehicle_id' => intval( $booking_data['vehicle_id'] ),
-                'trip_type' => !empty( $booking_data['trip_type'] ) ? sanitize_text_field( $booking_data['trip_type'] ) : 'one_way',
-                'price' => \WPTB_Pricing::calculate_price( floatval($booking_data['distance_km']), intval($booking_data['vehicle_id']), !empty($booking_data['trip_type']) ? sanitize_text_field($booking_data['trip_type']) : 'one_way' ),
-                'customer_name' => !empty($booking_data['customer_name']) ? sanitize_text_field( $booking_data['customer_name'] ) : '',
-                'customer_email' => !empty($booking_data['customer_email']) ? sanitize_email( $booking_data['customer_email'] ) : '',
-                'customer_phone' => !empty($booking_data['customer_phone']) ? sanitize_text_field( $booking_data['customer_phone'] ) : '',
-                'passengers' => !empty($booking_data['passengers']) ? intval( $booking_data['passengers'] ) : 1,
-                'suitcases' => !empty($booking_data['suitcases']) ? intval( $booking_data['suitcases'] ) : 0,
-                'carry_ons' => !empty($booking_data['carry_ons']) ? intval( $booking_data['carry_ons'] ) : 0,
-                'flight_number' => !empty($booking_data['flight_number']) ? sanitize_text_field( $booking_data['flight_number'] ) : '',
-                'notes' => !empty($booking_data['notes']) ? sanitize_textarea_field( $booking_data['notes'] ) : '',
+                'booking_date' => sanitize_text_field( $booking_data['date'] ),
+                'booking_time' => sanitize_text_field( $booking_data['time'] ),
+                'origin' => $origin,
+                'destination' => $destination,
+                'distance_km' => $distance_km,
+                'duration_minutes' => $duration_minutes,
+                'vehicle_id' => $vehicle_id,
+                'trip_type' => $trip_type,
+                'price' => $server_price,
+                'customer_name' => $customer_name,
+                'customer_email' => $customer_email,
+                'customer_phone' => $customer_phone,
+                'passengers' => $passengers,
+                'suitcases' => $suitcases,
+                'carry_ons' => $carry_ons,
+                'flight_number' => ! empty( $booking_data['flight_number'] ) ? sanitize_text_field( $booking_data['flight_number'] ) : '',
+                'notes' => ! empty( $booking_data['notes'] ) ? sanitize_textarea_field( $booking_data['notes'] ) : '',
                 'status' => 'pending_payment',
+                'payment_status' => 'pending',
                 'payment_method' => 'redsys',
                 'created_at' => current_time( 'mysql' )
             );
 
-            if ( !empty( $booking_data['return_date'] ) ) $data_db['return_date'] = sanitize_text_field( $booking_data['return_date'] );
-            if ( !empty( $booking_data['return_time'] ) ) $data_db['return_time'] = sanitize_text_field( $booking_data['return_time'] );
-            if ( !empty( $booking_data['return_origin'] ) ) $data_db['return_pickup_address'] = sanitize_text_field( $booking_data['return_origin'] );
-            if ( !empty( $booking_data['return_destination'] ) ) $data_db['return_dropoff_address'] = sanitize_text_field( $booking_data['return_destination'] );
-            // if ( !empty( $hotel_token ) ) $data_db['hotel_token'] = $hotel_token; // DESHABILITADO
-
+            if ( 'round_trip' === $trip_type ) {
+                $data_db['return_date'] = $return_date;
+                $data_db['return_time'] = $return_time;
+                $data_db['return_pickup_address'] = $return_origin;
+                $data_db['return_dropoff_address'] = $return_destination;
+            }
             $format_db = array();
             foreach ( $data_db as $key => $val ) {
                 if ( is_int( $val ) ) {
@@ -603,163 +736,146 @@ class WPTB_Public {
                 }
             }
 
-            // Asegurar que los IDs de reserva empiezan en 10000 (para Getnet/Redsys)
-            $max_id = $wpdb->get_var("SELECT MAX(id) FROM $table_name");
-            if ( ! $max_id || (int) $max_id < 10000 ) {
-                $wpdb->query("ALTER TABLE $table_name AUTO_INCREMENT = 10000");
-            }
-
-            if ( $existing_id > 0 ) {
-                $existing_booking = $wpdb->get_row( $wpdb->prepare( "SELECT id, status FROM $table_name WHERE id = %d", $existing_id ) );
-                if ( $existing_booking && $existing_booking->status === 'pending_payment' ) {
-                    $result = $wpdb->update( $table_name, $data_db, array( 'id' => $existing_id ), $format_db, array( '%d' ) );
-                    $booking_id = $existing_id;
-                } else {
-                    $result = $wpdb->insert( $table_name, $data_db, $format_db );
-                    $booking_id = $wpdb->insert_id;
-                }
-            } else {
-                $result = $wpdb->insert( $table_name, $data_db, $format_db );
-                $booking_id = $wpdb->insert_id;
-            }
+            $result = $wpdb->insert( $table_name, $data_db, $format_db );
+            $booking_id = $wpdb->insert_id;
 
             if ( $result === false || $booking_id <= 0 ) {
                 wp_send_json_error( array( 'message' => 'Error al guardar en la base de datos (Posible fallo de campos). Por favor, contacta con soporte.' ) );
                 return;
             }
 
-            // --- SEND PENDING NOTIFICATIONS ---
-            // Only send if it's a new booking to avoid spamming on retries
-            if ( $existing_id <= 0 ) {
-                $new_booking_obj = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking_id ) );
-                if ( $new_booking_obj ) {
-                    $this->process_booking_notifications( $booking_id, $new_booking_obj, 'pending' );
-                }
-            }
-            
-
-            // 2. Prepare Redsys Params
-            // ---------------------------------------------------------
-            $amount = intval( $data_db['price'] * 100 ); // Cents
-            
-            // Order ID para Getnet/Redsys: 12 dÃ­gitos rellenos con ceros a la izquierda.
-            // El booking_id ya es >= 10000 gracias al AUTO_INCREMENT configurado en el activador.
+            $amount = (int) round( $data_db['price'] * 100 );
             $order_id = str_pad( $booking_id, 12, '0', STR_PAD_LEFT );
-            
+
             // Save Order ID to DB
-            $wpdb->update( 
-                $table_name, 
-                array( 'payment_intent_id' => $order_id ), 
-                array( 'id' => $booking_id ) 
+            $order_saved = $wpdb->update(
+                $table_name,
+                array( 'payment_intent_id' => $order_id ),
+                array( 'id' => $booking_id ),
+                array( '%s' ),
+                array( '%d' )
             );
 
-            $merchant_code = '48234082';
-            $terminal = '1';
-            $currency = '978'; // EUR
-            $trans_type = '0'; // AutorizaciÃ³n
-            
-            $url_notification = home_url( '/?wptb_redsys_ipn=1' );
-            $url_ok = home_url( '/reservas-metransfers/?payment_result=ok&oid=' . $order_id );
-            $url_ko = home_url( '/reservas-metransfers/?payment_result=ko&oid=' . $order_id );
-            
-            // Use Official API Methods
-            $redsys->setParameter("DS_MERCHANT_AMOUNT", $amount);
-            $redsys->setParameter("DS_MERCHANT_ORDER", $order_id);
-            $redsys->setParameter("DS_MERCHANT_MERCHANTCODE", $merchant_code);
-            $redsys->setParameter("DS_MERCHANT_CURRENCY", $currency);
-            $redsys->setParameter("DS_MERCHANT_TRANSACTIONTYPE", $trans_type);
-            $redsys->setParameter("DS_MERCHANT_TERMINAL", $terminal);
-            $redsys->setParameter("DS_MERCHANT_MERCHANTURL", $url_notification);
-            $redsys->setParameter("DS_MERCHANT_URLOK", $url_ok);
-            $redsys->setParameter("DS_MERCHANT_URLKO", $url_ko);
-            $redsys->setParameter("DS_MERCHANT_PRODUCTDESCRIPTION", "Reserva " . $booking_id);
-            $redsys->setParameter("DS_MERCHANT_TITULAR", substr($booking_data['customer_name'], 0, 60));
+            if ( false === $order_saved ) {
+                throw new \RuntimeException( 'No se pudo asociar la referencia de pago a la reserva.' );
+            }
 
-            $params = $redsys->createMerchantParameters();
-            $signature = $redsys->createMerchantSignature($key);
-            
+            $payment = $gateway->generate_payment_form( $booking_id, $amount, $order_id, $data_db['customer_name'] );
+
+            $new_booking_obj = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking_id ) );
+            if ( $new_booking_obj ) {
+                $this->process_booking_notifications( $booking_id, $new_booking_obj, 'pending' );
+            }
+
             wp_send_json_success( array(
-                'url' => 'https://sis.redsys.es/sis/realizarPago',
-                'ds_signature_version' => 'HMAC_SHA256_V1',
-                'ds_merchant_parameters' => $params,
-                'ds_signature' => $signature
+                'url' => $payment['url'],
+                'ds_signature_version' => $payment['version'],
+                'ds_merchant_parameters' => $payment['params'],
+                'ds_signature' => $payment['signature'],
+                'booking_id' => $booking_id
             ));
-            
-        } catch ( Exception $e ) {
-            wp_send_json_error( array( 'message' => $e->getMessage() ) );
+
+        } catch ( \Throwable $e ) {
+            error_log( 'WPTB Redsys payment creation failed: ' . $e->getMessage() );
+            wp_send_json_error( array( 'message' => 'No se pudo iniciar el pago. Revisa la configuración de Redsys o contacta con soporte.' ) );
         }
     }
     
     public function listen_redsys_ipn() {
-        if ( isset( $_GET['wptb_redsys_ipn'] ) && isset( $_POST['Ds_MerchantParameters'] ) ) {
-            
-            $key = '6N2lZu0nf+j7MnyFKGWyOxdzZau5sAAE';
-            $version = $_POST['Ds_SignatureVersion'];
-            $params = $_POST['Ds_MerchantParameters'];
-            $signature_recv = $_POST['Ds_Signature'];
-            
-            // Check Signature
-            $signature_calc = $redsys->createMerchantSignatureNotif( $key, $params );
-            
-            if ( $signature_calc === $signature_recv ) {
-                
-                $decoded = $redsys->decodeMerchantParameters( $params );
-                $response = intval( $decoded['Ds_Response'] );
-                $order_id = $decoded['Ds_Order'];
-                
-                // 0000 to 0099 = Authorized
-                if ( $response >= 0 && $response <= 99 ) {
-                    global $wpdb;
-                    $table_name = $wpdb->prefix . 'wptb_bookings';
-                    
-                    // Update Booking
-                    $booking = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE payment_intent_id = %s", $order_id ) );
-                    
-                    if ( $booking ) {
-                        // PREVENT DUPLICATE PROCESSING
-                        if ( $booking->status === 'confirmed' || $booking->payment_status === 'paid' ) {
-                            // Already confirmed (possibly by force check), just exit or log
-                            error_log( "WPTB INFO: IPN received for ALREADY CONFIRMED booking #{$booking->id}. Skipping emails." );
-                            die();
-                        }
+        if ( ! isset( $_GET['wptb_redsys_ipn'] ) ) {
+            return;
+        }
 
-                        $wpdb->update(
-                            $table_name,
-                            array( 'status' => 'confirmed', 'payment_status' => 'paid' ),
-                            array( 'id' => $booking->id )
-                        );
-                        
-                        $booking_updated = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking->id ) );
-                        
-                        // Send Notification Emails
-                        $this->process_booking_notifications( $booking->id, $booking_updated );
-                        $this->send_whatsapp_alert( $booking->id, $booking_updated );
-                    }
-                }
-            } else {
-                 error_log( "Redsys Signature Mismatch for parameters: " . $params );
+        if ( ! isset( $_POST['Ds_MerchantParameters'], $_POST['Ds_Signature'], $_POST['Ds_SignatureVersion'] ) ) {
+            status_header( 400 );
+            exit;
+        }
+
+        $params = (string) wp_unslash( $_POST['Ds_MerchantParameters'] );
+        $signature = (string) wp_unslash( $_POST['Ds_Signature'] );
+        $version = sanitize_text_field( wp_unslash( $_POST['Ds_SignatureVersion'] ) );
+
+        try {
+            $gateway = new \MeTransfers\Payments\Redsys\Gateway();
+            $notification = $gateway->verify_notification( $params, $signature, $version );
+        } catch ( \Throwable $e ) {
+            error_log( 'WPTB Redsys notification verification failed: ' . $e->getMessage() );
+            status_header( 500 );
+            exit;
+        }
+
+        if ( empty( $notification['valid'] ) ) {
+            error_log( 'WPTB Redsys notification rejected: invalid signature or parameters.' );
+            status_header( 400 );
+            exit;
+        }
+
+        if ( empty( $notification['authorized'] ) ) {
+            status_header( 200 );
+            exit;
+        }
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'wptb_bookings';
+        $order_id = $notification['order_id'];
+        $booking = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM $table_name WHERE payment_intent_id = %s AND payment_method = %s",
+                $order_id,
+                'redsys'
+            )
+        );
+
+        if ( ! $booking ) {
+            status_header( 200 );
+            exit;
+        }
+
+        $notification_parameters = array_change_key_case( $notification['parameters'], CASE_LOWER );
+        $reported_amount = isset( $notification_parameters['ds_amount'] )
+            ? (int) $notification_parameters['ds_amount']
+            : 0;
+        $expected_amount = (int) round( (float) $booking->price * 100 );
+        if ( $reported_amount !== $expected_amount ) {
+            error_log( 'WPTB Redsys notification rejected: amount mismatch for booking #' . (int) $booking->id . '.' );
+            status_header( 400 );
+            exit;
+        }
+
+        $updated = $wpdb->query(
+            $wpdb->prepare(
+                "UPDATE $table_name
+                 SET status = %s, payment_status = %s
+                 WHERE id = %d
+                   AND NOT (status = %s AND payment_status = %s)",
+                'confirmed',
+                'paid',
+                $booking->id,
+                'confirmed',
+                'paid'
+            )
+        );
+
+        if ( false === $updated ) {
+            status_header( 500 );
+            exit;
+        }
+
+        if ( 1 === $updated ) {
+            $booking_updated = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking->id ) );
+            if ( $booking_updated ) {
+                $this->process_booking_notifications( $booking->id, $booking_updated );
+                $this->send_whatsapp_alert( $booking->id, $booking_updated );
             }
-            
-            // Always die() to prevent WP rendering
-            die();
         }
+
+        status_header( 200 );
+        exit;
     }
 
     /**
-     * FORCE CHECK ON RETURN URL (Backup for IPN failure)
+     * Optional SMTP configuration sourced from platform settings.
      */
-    public function check_return_url_payment_force() {
-        if ( isset( $_GET['payment_result'] ) && $_GET['payment_result'] === 'ok' && isset( $_GET['oid'] ) ) {
-            $order_id = sanitize_text_field( $_GET['oid'] );
-            error_log( 'WPTB: Return URL hit for Order ' . $order_id . '. Confirmation is now handled exclusively by IPN.' );
-        }
-    }
-
-
-    /**
-     * SMTP Configuration (Hardcoded as per request)
-     */
-    // [EMAIL REFACTOR] Old Configure SMTP Removed
 
     /**
      * Send Booking Emails (Client & Admin)
@@ -771,18 +887,31 @@ class WPTB_Public {
      * Send Booking Emails (Client & Admin)
      */
     public function configure_smtp( $phpmailer ) {
+        $host = \MeTransfers\Core\Settings::get( 'smtp_host', '' );
+        $user = \MeTransfers\Core\Settings::get( 'smtp_user', '' );
+        $password = \MeTransfers\Core\Settings::get( 'smtp_password', '' );
+
+        // Keep WordPress' configured mail transport when no explicit SMTP
+        // credentials have been supplied outside the repository.
+        if ( '' === $host || '' === $user || '' === $password ) {
+            return;
+        }
+
+        $from = \MeTransfers\Core\Settings::get( 'smtp_from', $user );
+        $from_name = \MeTransfers\Core\Settings::get( 'smtp_from_name', 'MeTransfers' );
+
         $phpmailer->isSMTP();
-        $phpmailer->Host       = 'mail.barcelonatours.email';
+        $phpmailer->Host       = $host;
         $phpmailer->SMTPAuth   = true;
-        $phpmailer->Port       = 465;
-        $phpmailer->Username   = 'reservas@barcelonatours.email';
-        $phpmailer->Password   = 'G0ku*1896_@';
-        $phpmailer->SMTPSecure = 'ssl';
-        $phpmailer->From       = 'reservas@barcelonatours.email';
-        $phpmailer->FromName   = 'Metransfers';
-        $phpmailer->Sender     = 'reservas@barcelonatours.email'; // Return-Path
+        $phpmailer->Port       = (int) \MeTransfers\Core\Settings::get( 'smtp_port', 465 );
+        $phpmailer->Username   = $user;
+        $phpmailer->Password   = $password;
+        $phpmailer->SMTPSecure = \MeTransfers\Core\Settings::get( 'smtp_encryption', 'ssl' );
+        $phpmailer->From       = $from;
+        $phpmailer->FromName   = $from_name;
+        $phpmailer->Sender     = $from;
         $phpmailer->ClearReplyTos();
-        $phpmailer->addReplyTo('reservas@barcelonatours.email', 'Metransfers');
+        $phpmailer->addReplyTo( $from, $from_name );
     }
 
     public function send_booking_emails( $booking_id, $booking ) {
@@ -803,11 +932,11 @@ class WPTB_Public {
 
         // Create Vehicle Name
         $vehicle_obj = WPTB_Vehicle_Manager::get_vehicle( $booking->vehicle_id );
-        $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'VehÃ­culo no encontrado';
+        $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'Vehículo no encontrado';
 
         $client_email = $booking->customer_email;
         
-        $subject = "ConfirmaciÃ³n de Reserva #{$booking_id} - Metransfers";
+        $subject = "Confirmación de Reserva #{$booking_id} - Metransfers";
         
         // Dynamic Fields
         $flight_row = !empty($booking->flight_number) ? "<div class='detail-row'><strong>Vuelo:</strong> <span>{$booking->flight_number}</span></div>" : '';
@@ -838,31 +967,31 @@ class WPTB_Public {
         <body>
             <div class='container'>
                 <div class='header'>
-                    <h2>Â¡Reserva Confirmada!</h2>
+                    <h2>¡Reserva Confirmada!</h2>
                     <p>Referencia: #{$booking_id}</p>
                 </div>
                 
                 <div class='content'>
                     <p>Hola <strong>{$booking->customer_name}</strong>,</p>
-                    <p>Gracias por confirmar tu reserva. Hemos recibido tu pago correctamente y tu vehÃ­culo estÃ¡ reservado.</p>
+                    <p>Gracias por confirmar tu reserva. Hemos recibido tu pago correctamente y tu vehículo está reservado.</p>
                     
                     <div class='detail-box'>
                         <div class='detail-row'><strong>Fecha / Hora:</strong> <span>{$booking->booking_date} {$booking->booking_time}</span></div>
                         <div class='detail-row'><strong>Tipo de Viaje:</strong> <span style='color: #ff7100;'> " . ( isset( $trip_labels[$booking->trip_type] ) ? $trip_labels[$booking->trip_type] : ( $booking->trip_type === 'round_trip' ? 'Ida y Vuelta' : 'Solo Ida' ) ) . "</span></div>
                         <div class='detail-row'><strong>Origen:</strong> <span>{$booking->origin}</span></div>
                         <div class='detail-row'><strong>Destino:</strong> <span>{$booking->destination}</span></div>
-                        <div class='detail-row'><strong>VehÃ­culo:</strong> <span>{$vehicle_name}</span></div>
+                        <div class='detail-row'><strong>Vehículo:</strong> <span>{$vehicle_name}</span></div>
                         <div class='detail-row'><strong>Pasajeros:</strong> <span>{$booking->passengers}</span></div>
                         <div class='detail-row'><strong>Equipaje:</strong> <span>{$luggage_info}</span></div>
                         {$flight_row}
                         " . ( $booking->trip_type === 'round_trip' ? "
-                        <div class='detail-row' style='background:#f0f7ff; margin-top:15px; border-top:2px solid #ff7100; padding-top:10px;'><strong>ðŸ“… VUELTA CONFIRMADA:</strong> <span>{$booking->return_date} {$booking->return_time}</span></div>
+                        <div class='detail-row' style='background:#f0f7ff; margin-top:15px; border-top:2px solid #ff7100; padding-top:10px;'><strong>📅 VUELTA CONFIRMADA:</strong> <span>{$booking->return_date} {$booking->return_time}</span></div>
                         <div class='detail-row' style='background:#f0f7ff;'><strong>Recogida Vuelta:</strong> <span>{$booking->return_pickup_address}</span></div>
                         <div class='detail-row' style='background:#f0f7ff; margin-bottom:15px; border-bottom:1px solid #ddd;'><strong>Destino Vuelta:</strong> <span>{$booking->return_dropoff_address}</span></div>
                         " : "" ) . "
-                        <div class='detail-row'><strong>Precio Total:</strong> <span style='color:#28a745;'>â‚¬{$booking->price}</span></div>
+                        <div class='detail-row'><strong>Precio Total:</strong> <span style='color:#28a745;'>€{$booking->price}</span></div>
                         {$notes_row}
-                        <div class='detail-row'><strong>TelÃ©fono:</strong> <span>{$booking->customer_phone}</span></div>
+                        <div class='detail-row'><strong>Teléfono:</strong> <span>{$booking->customer_phone}</span></div>
                     </div>
                     
                     <p style='text-align: center;'>
@@ -985,15 +1114,15 @@ class WPTB_Public {
         
         // Get Vehicle Name
         $vehicle_obj = WPTB_Vehicle_Manager::get_vehicle( $booking->vehicle_id );
-        $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'VehÃ­culo #' . $booking->vehicle_id;
+        $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'Vehículo #' . $booking->vehicle_id;
 
         $text = "*Nueva Reserva #{$booking_id}*\n";
-        $text .= "ðŸ‘¤ {$booking->customer_name}\n";
-        $text .= "ðŸš˜ {$vehicle_name}\n";
-        $text .= "ðŸ“ {$booking->origin} \nâ¬‡ï¸\nðŸ“ {$booking->destination}\n";
-        $text .= "ðŸ“… {$booking->booking_date} {$booking->booking_time}\n";
-        $text .= "ðŸ’¶ â‚¬{$booking->price}\n";
-        $text .= "ðŸ“ž {$booking->customer_phone}";
+        $text .= "👤 {$booking->customer_name}\n";
+        $text .= "🚘 {$vehicle_name}\n";
+        $text .= "📍 {$booking->origin} \n⬇️\n📍 {$booking->destination}\n";
+        $text .= "📅 {$booking->booking_date} {$booking->booking_time}\n";
+        $text .= "💶 €{$booking->price}\n";
+        $text .= "📞 {$booking->customer_phone}";
         
         $url = 'https://api.callmebot.com/whatsapp.php';
         $params = array(
@@ -1035,7 +1164,7 @@ class WPTB_Public {
 
         // A. Prepare Data
         $vehicle_obj = WPTB_Vehicle_Manager::get_vehicle( $booking->vehicle_id );
-        $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'VehÃ­culo no encontrado';
+        $vehicle_name = $vehicle_obj ? $vehicle_obj->name : 'Vehículo no encontrado';
         
         $trip_labels = array( 'one_way' => 'Solo Ida', 'round_trip' => 'Ida y Vuelta', 'return' => 'Vuelta' );
         $trip_type_label = isset( $trip_labels[$booking->trip_type] ) ? $trip_labels[$booking->trip_type] : 'Solo Ida';
@@ -1044,9 +1173,9 @@ class WPTB_Public {
         $notes_row = !empty($booking->notes) ? "<div class='detail-row'><strong>Notas:</strong> <span>{$booking->notes}</span></div>" : '';
         $luggage_info = "{$booking->suitcases} Maletas, {$booking->carry_ons} Mochilas";
 
-        $title = ( $status_context === 'pending' ) ? 'Reserva Recibida' : 'Â¡Reserva Confirmada!';
-        $intro = ( $status_context === 'pending' ) ? 'Hemos recibido tu solicitud de reserva y estÃ¡ pendiente de pago.' : 'Tu reserva ha sido confirmada correctamente.';
-        $subject = ( $status_context === 'pending' ) ? "Reserva Recibida #{$booking_id} - Metransfers" : "ConfirmaciÃ³n de Reserva #{$booking_id} - Metransfers";
+        $title = ( $status_context === 'pending' ) ? 'Reserva Recibida' : '¡Reserva Confirmada!';
+        $intro = ( $status_context === 'pending' ) ? 'Hemos recibido tu solicitud de reserva y está pendiente de pago.' : 'Tu reserva ha sido confirmada correctamente.';
+        $subject = ( $status_context === 'pending' ) ? "Reserva Recibida #{$booking_id} - Metransfers" : "Confirmación de Reserva #{$booking_id} - Metransfers";
         $admin_subject = ( $status_context === 'pending' ) ? "NUEVA Reserva Pendiente #{$booking_id}" : "Reserva PAGADA #{$booking_id}";
 
         // B. HTML Content
@@ -1083,13 +1212,13 @@ class WPTB_Public {
                         <div class='detail-row'><strong>Tipo:</strong> <span style='color: #ff7100;'>{$trip_type_label}</span></div>
                         <div class='detail-row'><strong>Origen:</strong> <span>{$booking->origin}</span></div>
                         <div class='detail-row'><strong>Destino:</strong> <span>{$booking->destination}</span></div>
-                        <div class='detail-row'><strong>VehÃ­culo:</strong> <span>{$vehicle_name}</span></div>
+                        <div class='detail-row'><strong>Vehículo:</strong> <span>{$vehicle_name}</span></div>
                         <div class='detail-row'><strong>Pasajeros:</strong> <span>{$booking->passengers}</span></div>
                         <div class='detail-row'><strong>Equipaje:</strong> <span>{$luggage_info}</span></div>
                         {$flight_row}
-                        <div class='detail-row'><strong>Precio:</strong> <span style='color:#28a745;'>â‚¬{$booking->price}</span></div>
+                        <div class='detail-row'><strong>Precio:</strong> <span style='color:#28a745;'>€{$booking->price}</span></div>
                         {$notes_row}
-                        <div class='detail-row'><strong>TelÃ©fono:</strong> <span>{$booking->customer_phone}</span></div>
+                        <div class='detail-row'><strong>Teléfono:</strong> <span>{$booking->customer_phone}</span></div>
                     </div>
                     <p style='text-align: center;'><a href='" . home_url() . "' class='btn'>Ir a la Web</a></p>
                 </div>

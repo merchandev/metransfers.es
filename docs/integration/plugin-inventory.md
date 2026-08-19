@@ -1,4 +1,4 @@
-﻿# Plugin Inventory — complete-booking-plugin
+# Plugin Inventory — complete-booking-plugin
 **Version:** 5.0.2 | **Fecha:** 2026-08-19 | **Fase:** 1 — Inventario
 
 ## 1. ESTRUCTURA DE ARCHIVOS

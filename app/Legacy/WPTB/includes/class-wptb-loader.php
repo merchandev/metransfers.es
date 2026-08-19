@@ -35,13 +35,10 @@ class WPTB_Loader {
         // Public Hooks
         $plugin_public = new WPTB_Public();
         add_action( 'wp_enqueue_scripts', array( $plugin_public, 'enqueue_scripts' ) );
-        add_action( 'init', array( $plugin_public, 'register_shortcodes' ) );
         add_action( 'wp_ajax_wptb_save_booking', array( $plugin_public, 'save_booking' ) );
         add_action( 'wp_ajax_nopriv_wptb_save_booking', array( $plugin_public, 'save_booking' ) );
         
         // New AJAX endpoints for vehicles
-        add_action( 'wp_ajax_wptb_get_vehicles', array( $plugin_public, 'ajax_get_vehicles' ) );
-        add_action( 'wp_ajax_nopriv_wptb_get_vehicles', array( $plugin_public, 'ajax_get_vehicles' ) );
         add_action( 'wp_ajax_wptb_calculate_price', array( $plugin_public, 'ajax_calculate_price' ) );
         add_action( 'wp_ajax_nopriv_wptb_calculate_price', array( $plugin_public, 'ajax_calculate_price' ) );
         

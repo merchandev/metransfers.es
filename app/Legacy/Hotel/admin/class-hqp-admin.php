@@ -10,9 +10,9 @@ class HQP_Admin {
         global $post;
         
         if ( ($hook == 'post-new.php' || $hook == 'post.php') && 'hotel_partner' === $post->post_type ) {
-            $api_key = get_option( 'wptb_google_maps_api_key' );
-            if ( empty( $api_key ) ) {
-                $api_key = 'AIzaSyCHNNn7ZxfS5PLtsPDifp2y-5ym4Ds7Its'; // Fallback
+            $api_key = \MeTransfers\Core\Settings::get( 'google_maps_api_key', '' );
+            if ( '' === $api_key ) {
+                return;
             }
             
             $maps_url = add_query_arg(
@@ -750,4 +750,3 @@ class HQP_Admin {
         }
     }
 }
-

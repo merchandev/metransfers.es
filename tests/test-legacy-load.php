@@ -61,7 +61,11 @@ try {
         'WPTB_Public',
         'WPTB_Admin',
         'WPTB_Pricing',
-        'HQP_Public'
+        'HQP_Public',
+        'MeTransfers\\Core\\Assets',
+        'MeTransfers\\Core\\Migrations',
+        'MeTransfers\\Booking\\RouteDistance',
+        'MeTransfers\\Payments\\Redsys\\Gateway'
     ];
     
     $all_loaded = true;
@@ -76,9 +80,13 @@ try {
     
     if ($all_loaded) {
         echo "\nLegacy modules successfully bootstrapped!\n";
+    } else {
+        exit(1);
     }
 } catch (Exception $e) {
     echo "X FATAL ERROR: " . $e->getMessage() . "\n";
+    exit(1);
 } catch (Error $e) {
     echo "X FATAL ERROR: " . $e->getMessage() . "\n";
+    exit(1);
 }

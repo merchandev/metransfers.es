@@ -2,9 +2,19 @@
 namespace MeTransfers\Core;
 
 class Application {
+    private static $booted = false;
+
     public static function boot() {
+        if ( self::$booted ) {
+            return;
+        }
+        self::$booted = true;
+
         if (!defined('MT_PLATFORM_VERSION')) {
             define('MT_PLATFORM_VERSION', '5.0.0');
+        }
+        if (!defined('MT_PLATFORM_DB_VERSION')) {
+            define('MT_PLATFORM_DB_VERSION', '5.1.0');
         }
 
         if (!defined('WPTB_PLUGIN_DIR')) {
@@ -31,9 +41,20 @@ class Application {
 
         // Boot modern components
         $postTypes = new \MeTransfers\Core\PostTypes();
-        add_action('init', [$postTypes, 'register']);
+        add_action('init', [$postTypes, 'register'], 5);
         $shortcodes = new \MeTransfers\Booking\Shortcodes();
         $shortcodes->register();
+
+        $assets = new \MeTransfers\Core\Assets();
+        $assets->register();
+
+        $migrations = new \MeTransfers\Core\Migrations();
+        $migrations->register();
+
+        if ( is_admin() ) {
+            $admin_menu = new \MeTransfers\Admin\Menu();
+            add_action( 'admin_menu', array( $admin_menu, 'register' ) );
+        }
     }
 
     private static function loadLegacyModules() {
@@ -45,13 +66,7 @@ class Application {
             require_once HQP_PLUGIN_DIR . 'hotel-qr-plugin.php';
         }
 
-        if (file_exists(get_template_directory() . '/app/Legacy/class-unified-integration.php')) {
-            require_once get_template_directory() . '/app/Legacy/class-unified-integration.php';
-            
-            if (class_exists('Unified_Integration')) {
-                $unified_integration = new \Unified_Integration();
-                $unified_integration->run();
-            }
-        }
+        // The former Unified_Integration shim is intentionally not loaded. Its
+        // responsibilities now live in the dedicated booking and hotel modules.
     }
 }
