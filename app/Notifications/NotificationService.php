@@ -18,6 +18,10 @@ final class NotificationService {
         if ( '' === $api_key ) {
             return true;
         }
+        $phone = preg_replace( '/\s+/', '', (string) get_option( 'wptb_admin_phone_notifications', '' ) );
+        if ( '' === $phone ) {
+            return false;
+        }
 
         $vehicle = \WPTB_Vehicle_Manager::get_vehicle( $booking->vehicle_id );
         $vehicle_name = $vehicle ? $vehicle->name : 'Vehículo #' . (int) $booking->vehicle_id;
@@ -32,7 +36,7 @@ final class NotificationService {
         $response = wp_remote_get(
             add_query_arg(
                 array(
-                    'phone'  => preg_replace( '/\s+/', '', (string) get_option( 'wptb_admin_phone_notifications', '' ) ),
+                    'phone'  => $phone,
                     'text'   => $text,
                     'apikey' => $api_key,
                 ),
@@ -42,10 +46,79 @@ final class NotificationService {
         );
 
         if ( is_wp_error( $response ) ) {
-            error_log( 'MeTransfers WhatsApp notification failed: ' . $response->get_error_message() );
             return false;
         }
-        return true;
+        $status_code = wp_remote_retrieve_response_code( $response );
+        return $status_code >= 200 && $status_code < 300;
+    }
+
+    public static function sendEmails( $booking_id, $booking, $status ) {
+        $errors = array();
+        if ( ! self::sendCustomerEmail( $booking_id, $booking, $status ) ) {
+            $errors[] = 'customer_email';
+        }
+        if ( ! self::sendAdminEmail( $booking_id, $booking, $status ) ) {
+            $errors[] = 'admin_email';
+        }
+        if ( ! self::sendHotelEmail( $booking_id, $booking, $status ) ) {
+            $errors[] = 'hotel_email';
+        }
+        return empty( $errors ) ? true : implode( ',', $errors );
+    }
+
+    public static function sendCustomerEmail( $booking_id, $booking, $status ) {
+        if ( ! is_email( $booking->customer_email ) ) {
+            return false;
+        }
+        $locale = I18n::normalizeLanguage( isset( $booking->booking_locale ) ? $booking->booking_locale : 'es' );
+        $title = I18n::text( 'pending' === $status ? 'notification_pending_title' : 'notification_confirmed_title', $locale );
+        return self::mail(
+            $booking->customer_email,
+            $title . ' #' . (int) $booking_id . ' - MeTransfers',
+            self::message( $booking_id, $booking, $status, $locale )
+        );
+    }
+
+    public static function sendAdminEmail( $booking_id, $booking, $status ) {
+        $recipients = self::adminRecipients();
+        if ( empty( $recipients ) ) {
+            return false;
+        }
+        $title = 'pending' === $status ? 'Nueva reserva pendiente' : 'Reserva pagada';
+        $message = self::message( $booking_id, $booking, $status, 'es' );
+        $success = true;
+        foreach ( $recipients as $recipient ) {
+            if ( ! self::mail( $recipient, $title . ' #' . (int) $booking_id, $message ) ) {
+                $success = false;
+            }
+        }
+        return $success;
+    }
+
+    public static function sendHotelEmail( $booking_id, $booking, $status ) {
+        if ( empty( $booking->hotel_token ) ) {
+            return true;
+        }
+        $query = new \WP_Query( array(
+            'post_type'      => 'hotel_partner',
+            'meta_key'       => '_hqp_token',
+            'meta_value'     => $booking->hotel_token,
+            'posts_per_page' => 1,
+            'fields'         => 'ids',
+        ) );
+        if ( empty( $query->posts[0] ) ) {
+            return false;
+        }
+        $email = get_post_meta( $query->posts[0], '_hqp_contact_email', true );
+        if ( ! is_email( $email ) ) {
+            return false;
+        }
+        $title = 'pending' === $status ? 'Nueva reserva pendiente desde tu hotel' : 'Reserva pagada desde tu hotel';
+        return self::mail(
+            $email,
+            $title . ' #' . (int) $booking_id,
+            self::message( $booking_id, $booking, $status, 'es' )
+        );
     }
 
     public static function configureSmtp( $mailer ) {
@@ -68,27 +141,8 @@ final class NotificationService {
     }
 
     private static function dispatch( $booking_id, $booking, $status ) {
-        $locale = I18n::normalizeLanguage( isset( $booking->booking_locale ) ? $booking->booking_locale : 'es' );
-        $customer_message = self::message( $booking_id, $booking, $status, $locale );
-        $admin_message = self::message( $booking_id, $booking, $status, 'es' );
-        $customer_title = I18n::text( 'pending' === $status ? 'notification_pending_title' : 'notification_confirmed_title', $locale );
-        $admin_title = 'pending' === $status ? 'Nueva reserva pendiente' : 'Reserva pagada';
-        $headers = self::headers();
-        $errors = array();
-
-        add_action( 'phpmailer_init', array( __CLASS__, 'configureSmtp' ), 9999 );
-        if ( is_email( $booking->customer_email ) && ! wp_mail( $booking->customer_email, $customer_title . ' #' . (int) $booking_id . ' - MeTransfers', $customer_message, $headers ) ) {
-            $errors[] = 'customer_email';
-        }
-
-        foreach ( self::adminRecipients() as $recipient ) {
-            if ( ! wp_mail( $recipient, $admin_title . ' #' . (int) $booking_id, $admin_message, $headers ) ) {
-                $errors[] = 'admin_email';
-            }
-        }
-
-        self::sendHotelEmail( $booking_id, $booking, $admin_message, $headers );
-        remove_action( 'phpmailer_init', array( __CLASS__, 'configureSmtp' ), 9999 );
+        $email_result = self::sendEmails( $booking_id, $booking, $status );
+        $errors = true === $email_result ? array() : explode( ',', (string) $email_result );
 
         if ( 'confirmed' === $status && ! self::sendWhatsapp( $booking_id, $booking ) ) {
             $errors[] = 'whatsapp';
@@ -96,6 +150,15 @@ final class NotificationService {
 
         do_action( 'mt_booking_notifications_dispatched', $booking_id, $status, $errors );
         return empty( $errors ) ? true : implode( ',', array_unique( $errors ) );
+    }
+
+    private static function mail( $recipient, $subject, $message ) {
+        add_action( 'phpmailer_init', array( __CLASS__, 'configureSmtp' ), 9999 );
+        try {
+            return wp_mail( $recipient, $subject, $message, self::headers() );
+        } finally {
+            remove_action( 'phpmailer_init', array( __CLASS__, 'configureSmtp' ), 9999 );
+        }
     }
 
     private static function message( $booking_id, $booking, $status, $locale ) {
@@ -157,22 +220,4 @@ final class NotificationService {
         return array_values( array_unique( array_filter( $recipients, 'is_email' ) ) );
     }
 
-    private static function sendHotelEmail( $booking_id, $booking, $message, $headers ) {
-        if ( empty( $booking->hotel_token ) ) {
-            return;
-        }
-        $query = new \WP_Query( array(
-            'post_type'      => 'hotel_partner',
-            'meta_key'       => '_hqp_token',
-            'meta_value'     => $booking->hotel_token,
-            'posts_per_page' => 1,
-            'fields'         => 'ids',
-        ) );
-        if ( ! empty( $query->posts[0] ) ) {
-            $email = get_post_meta( $query->posts[0], '_hqp_contact_email', true );
-            if ( is_email( $email ) ) {
-                wp_mail( $email, 'Nueva reserva desde tu hotel #' . (int) $booking_id, $message, $headers );
-            }
-        }
-    }
 }

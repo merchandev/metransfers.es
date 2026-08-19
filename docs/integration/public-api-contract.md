@@ -53,6 +53,8 @@ Los nombres legacy `wptb_create_booking` y `wptb_get_pricing` no forman parte de
 - **Hook:** `init`
 - **Condicion de disparo:** Parámetro GET `?wptb_redsys_ipn=1`
 - **Parametros esperados:** Form-data firmado de Redsys. Verifica version, firma HMAC, orden e importe antes de confirmar de forma idempotente.
+- **ACK:** Tras el cambio atómico de estado inserta `booking.paid:{booking_id}` con clave única y responde HTTP 200. Email, WhatsApp y GA4 se ejecutan después en el worker del outbox.
+- **Reintentos:** Un IPN duplicado vuelve a intentar el `INSERT IGNORE`; no duplica eventos y puede reparar un callback previo que confirmara DB sin dejar evento.
 
 ---
 

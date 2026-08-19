@@ -350,12 +350,9 @@ class HQP_Public {
                 array( '%d' )
             );
 
-            if ( class_exists( 'WPTB_Public' ) ) {
-                $booking_obj = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking_id ) );
-                if ( $booking_obj ) {
-                    $wptb_public = new WPTB_Public();
-                    $wptb_public->process_booking_notifications( $booking_id, $booking_obj );
-                }
+            if ( ! \MeTransfers\Booking\BookingEvents::paid( $booking_id ) ) {
+                wp_send_json_error( array( 'message' => 'La reserva se guardó, pero no se pudo programar su confirmación.' ) );
+                return;
             }
 
             wp_send_json_success( array( 'redirect' => $url_ok ) );
@@ -370,13 +367,10 @@ class HQP_Public {
                 $booking_data['customer_name']
             );
 
-            // Notify only after a valid payment form has been generated.
-            if ( class_exists( 'WPTB_Public' ) ) {
-                $booking_obj = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking_id ) );
-                if ( $booking_obj ) {
-                    $wptb_public = new WPTB_Public();
-                    $wptb_public->process_booking_notifications( $booking_id, $booking_obj, 'pending' );
-                }
+            // Persist the pending event only after a valid payment form exists.
+            if ( ! \MeTransfers\Booking\BookingEvents::pending( $booking_id ) ) {
+                wp_send_json_error( array( 'message' => 'No se pudo programar la notificación de la reserva.' ) );
+                return;
             }
 
             wp_send_json_success( array(

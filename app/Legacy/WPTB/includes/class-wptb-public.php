@@ -489,19 +489,12 @@ class WPTB_Public {
                         continue;
                     }
                     
-                    // Re-fetch updated booking
-                    $booking_updated = $wpdb->get_row( $wpdb->prepare(
-                        "SELECT * FROM $table_name WHERE id = %d",
-                        $booking->id
-                    ) );
-                    
-                    // Send notifications
-                    error_log( "WPTB WooCommerce: Sending notifications for booking #{$booking->id}" );
-                    \MeTransfers\Analytics\PurchaseOutbox::recordPurchase( $booking_updated );
-                    $this->process_booking_notifications( $booking->id, $booking_updated );
+                    if ( ! \MeTransfers\Booking\BookingEvents::paid( $booking->id ) ) {
+                        error_log( 'WPTB WooCommerce: failed to enqueue paid event for booking #' . (int) $booking->id . '.' );
+                    }
                     
                 } else {
-                    error_log( 'WPTB WooCommerce: No booking found for order #' . (int) $order_id . ' (email: ' . $order->get_billing_email() . ')' );
+                    error_log( 'WPTB WooCommerce: no booking found for order #' . (int) $order_id . '.' );
                 }
                 
                 break; // Only process first booking item
@@ -790,9 +783,8 @@ class WPTB_Public {
 
             $payment = $gateway->generate_payment_form( $booking_id, $amount, $order_id, $data_db['customer_name'], $language );
 
-            $new_booking_obj = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking_id ) );
-            if ( $new_booking_obj ) {
-                $this->process_booking_notifications( $booking_id, $new_booking_obj, 'pending' );
+            if ( ! \MeTransfers\Booking\BookingEvents::pending( $booking_id ) ) {
+                throw new \RuntimeException( 'pending_event_enqueue_failed' );
             }
 
             wp_send_json_success( array(
@@ -890,12 +882,12 @@ class WPTB_Public {
             exit;
         }
 
-        if ( 1 === $updated ) {
-            $booking_updated = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking->id ) );
-            if ( $booking_updated ) {
-                \MeTransfers\Analytics\PurchaseOutbox::recordPurchase( $booking_updated );
-                $this->process_booking_notifications( $booking->id, $booking_updated );
-            }
+        // Enqueue on both the first transition and duplicate callbacks. The
+        // unique event key makes this idempotent and repairs a missing event if
+        // the first callback stopped after committing the paid state.
+        if ( ! \MeTransfers\Booking\BookingEvents::paid( $booking->id ) ) {
+            status_header( 500 );
+            exit;
         }
 
         status_header( 200 );
@@ -920,11 +912,11 @@ class WPTB_Public {
     }
 
     /**
-     * @deprecated 6.0.0 Use NotificationService::bookingConfirmed().
+     * @deprecated 6.1.0 Use NotificationService::sendEmails().
      */
     public function send_booking_emails( $booking_id, $booking ) {
-        _deprecated_function( __METHOD__, '6.0.0', '\\MeTransfers\\Notifications\\NotificationService::bookingConfirmed' );
-        return \MeTransfers\Notifications\NotificationService::bookingConfirmed( $booking_id, $booking );
+        _deprecated_function( __METHOD__, '6.1.0', '\\MeTransfers\\Notifications\\NotificationService::sendEmails' );
+        return \MeTransfers\Notifications\NotificationService::sendEmails( $booking_id, $booking, 'confirmed' );
     }
 
     /**
@@ -940,7 +932,7 @@ class WPTB_Public {
         $table_name = $wpdb->prefix . 'wptb_bookings';
         $booking = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking_id ) );
         if ( $booking ) {
-            $this->process_booking_notifications( $booking_id, $booking, 'pending' );
+            \MeTransfers\Booking\BookingEvents::pending( $booking_id );
         }
     }
 
@@ -948,9 +940,10 @@ class WPTB_Public {
      * Backwards-compatible facade for callers in the imported admin/hotel code.
      */
     public function process_booking_notifications( $booking_id, $booking, $status_context = 'confirmed' ) {
+        unset( $booking );
         return 'pending' === $status_context
-            ? \MeTransfers\Notifications\NotificationService::bookingPending( $booking_id, $booking )
-            : \MeTransfers\Notifications\NotificationService::bookingConfirmed( $booking_id, $booking );
+            ? \MeTransfers\Booking\BookingEvents::pending( $booking_id )
+            : \MeTransfers\Booking\BookingEvents::paid( $booking_id );
     }
 
 }

@@ -191,14 +191,14 @@ class WPTB_Admin {
         }
 
         try {
-            // Instantiate public class to use email method
-            require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wptb-public.php';
-            $public = new WPTB_Public();
-            $result = $public->process_booking_notifications( $id, $booking ); // Returns true OR error string
-            // WhatsApp is already called inside process_booking_notifications
+            $notification_status = 'paid' === (string) $booking->payment_status
+                && in_array( (string) $booking->status, array( 'confirmed', 'completed' ), true )
+                    ? 'confirmed'
+                    : 'pending';
+            $result = \MeTransfers\Notifications\NotificationService::sendEmails( $id, $booking, $notification_status );
             
             if ( $result === true ) {
-                wp_send_json_success( 'Notificación enviada (Email + WhatsApp).' );
+                wp_send_json_success( 'Emails reenviados. WhatsApp no se ha reenviado.' );
             } else {
                 // Return exact error from SMTP
                 $error_msg = is_string($result) ? $result : 'Error desconocido';

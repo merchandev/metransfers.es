@@ -42,6 +42,7 @@ jobs:
           php tests/test-booking-policies.php
           php tests/test-redsys-gateway.php
           php tests/test-hardening-phase1.php
+          php tests/test-outbox.php
           php tests/test-i18n.php
           php tests/test-production-readiness.php
 

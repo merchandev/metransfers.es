@@ -13,9 +13,9 @@ Plataforma WordPress integrada para la web, reservas de traslados, pricing, pago
 ```text
 app/
 ├── Admin/                 Menú administrativo unificado
-├── Analytics/             Outbox idempotente para conversiones financieras
+├── Analytics/             Adaptador GA4 y drenaje del outbox analítico legado
 ├── Booking/               Shortcodes, rutas, i18n y flujo de reserva
-├── Core/                  Bootstrap, assets, settings y migraciones
+├── Core/                  Bootstrap, assets, settings, migraciones y outbox genérico
 ├── Payments/Redsys/       Generación y verificación de pagos
 ├── Pricing/               Cálculo de tarifas
 └── Legacy/
@@ -110,8 +110,9 @@ GitHub Actions repite estas verificaciones y añade controles de BOM/mojibake, p
 5. Redsys recibe un importe derivado exclusivamente del servidor.
 6. La Return URL exige un token HMAC ligado a la orden y solo presenta el estado; nunca confirma el pago.
 7. El IPN valida firma, comercio, terminal, moneda, orden e importe antes de marcar la reserva como pagada.
-8. Un único `NotificationService` envía email localizado y una sola alerta WhatsApp.
-9. El IPN registra `purchase` en un outbox único por reserva; el navegador conserva el evento de confirmación como señal complementaria.
+8. Después del `UPDATE`, el IPN inserta de forma idempotente `booking.paid:{booking_id}` y responde HTTP 200 sin esperar a SMTP, WhatsApp ni GA4.
+9. El worker expande el evento en claves únicas por canal: cliente, administración, hotel, WhatsApp y analytics. Cada canal tiene retry exponencial y dead-letter independiente.
+10. Un único `NotificationService` genera los mensajes localizados; el reenvío manual de email nunca reenvía WhatsApp.
 
 ## Assets, idiomas y analítica
 
@@ -126,7 +127,7 @@ Los assets se cargan por fase:
 
 El booking incluye catálogo español e inglés sin dependencia externa. En los demás idiomas, el frontend lee exclusivamente traducciones pre-generadas desde caché/DB. La llamada remota solo se permite desde **Ajustes → Traducción MT → Pre-generar catálogo booking**. Las URLs internas conservan el prefijo de idioma y los idiomas fuera de `MT_SEO_LANGS` usan `noindex,follow`.
 
-Los eventos disponibles en `dataLayer` son `booking_start`, `route_search`, `vehicle_select`, `begin_checkout`, `add_payment_info`, `generate_lead`, `purchase`, `click_whatsapp`, `click_phone`, `booking_error` y `payment_error`. Teléfono y WhatsApp se capturan globalmente mediante un script mínimo. No se envía PII. Con `MT_GA4_MEASUREMENT_ID` y `MT_GA4_API_SECRET`, el cron despacha conversiones financieras desde el outbox de servidor.
+Los eventos disponibles en `dataLayer` son `booking_start`, `route_search`, `vehicle_select`, `begin_checkout`, `add_payment_info`, `generate_lead`, `purchase`, `click_whatsapp`, `click_phone`, `booking_error` y `payment_error`. Teléfono y WhatsApp se capturan globalmente mediante un script mínimo. No se envía PII a `dataLayer`. Con `MT_GA4_MEASUREMENT_ID` y `MT_GA4_API_SECRET`, el worker despacha `analytics.purchase:{booking_id}` desde el outbox genérico. La tabla analítica anterior se mantiene únicamente para drenar eventos creados antes de la versión 6.1.0.
 
 ## Validación de staging
 

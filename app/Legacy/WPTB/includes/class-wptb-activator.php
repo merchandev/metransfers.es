@@ -70,13 +70,39 @@ class WPTB_Activator {
             status varchar(20) NOT NULL DEFAULT 'pending',
             last_error text,
             locked_at datetime DEFAULT NULL,
+            available_at datetime DEFAULT NULL,
             created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
             sent_at datetime DEFAULT NULL,
+            failed_at datetime DEFAULT NULL,
             PRIMARY KEY  (id),
             UNIQUE KEY event_key (event_key),
-            KEY status_created_at (status, created_at)
+            KEY status_created_at (status, created_at),
+            KEY status_available_at (status, available_at)
         ) $charset_collate;";
         dbDelta( $sql_analytics );
+
+        // Generic outbox for payment follow-up work. The payment callback only
+        // persists an event; remote channels are processed by the worker.
+        $table_outbox = $wpdb->prefix . 'mt_outbox';
+        $sql_outbox = "CREATE TABLE $table_outbox (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            event_key varchar(191) NOT NULL,
+            event_type varchar(80) NOT NULL,
+            aggregate_id bigint(20) unsigned NOT NULL,
+            payload longtext NOT NULL,
+            status varchar(20) NOT NULL DEFAULT 'pending',
+            attempts smallint unsigned NOT NULL DEFAULT 0,
+            available_at datetime NOT NULL,
+            locked_at datetime DEFAULT NULL,
+            last_error text,
+            created_at datetime NOT NULL,
+            processed_at datetime DEFAULT NULL,
+            failed_at datetime DEFAULT NULL,
+            PRIMARY KEY  (id),
+            UNIQUE KEY event_key (event_key),
+            KEY status_available (status, available_at)
+        ) $charset_collate;";
+        dbDelta( $sql_outbox );
 
         // Asegurar que el AUTO_INCREMENT inicia en 10000 (IDs para Getnet siempre >= 10000)
         $max_id = (int) $wpdb->get_var( "SELECT MAX(id) FROM $table_bookings" );

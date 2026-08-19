@@ -1,71 +1,50 @@
 <?php
 namespace MeTransfers\Analytics;
 
+use MeTransfers\Core\Outbox;
 use MeTransfers\Core\Settings;
 
+/**
+ * GA4 delivery adapter. New purchases use the generic outbox; the legacy
+ * dispatcher remains registered only to drain rows created before 6.1.0.
+ */
 final class PurchaseOutbox {
     const CRON_HOOK = 'mt_dispatch_analytics_outbox';
 
     public function register() {
-        add_action( self::CRON_HOOK, array( __CLASS__, 'dispatch' ) );
-        if ( function_exists( 'wp_next_scheduled' ) && function_exists( 'wp_schedule_event' ) && ! wp_next_scheduled( self::CRON_HOOK ) ) {
+        add_action( self::CRON_HOOK, array( __CLASS__, 'dispatchLegacy' ) );
+        if ( function_exists( 'wp_next_scheduled' )
+            && function_exists( 'wp_schedule_event' )
+            && ! wp_next_scheduled( self::CRON_HOOK ) ) {
             wp_schedule_event( time() + 300, 'hourly', self::CRON_HOOK );
         }
     }
 
     public static function recordPurchase( $booking ) {
-        global $wpdb;
-        if ( ! $booking || empty( $booking->id ) || (float) $booking->price <= 0 ) {
+        if ( ! self::eligible( $booking ) ) {
             return false;
         }
-
-        // No GA cookie means no analytics consent/client identity. Keep the
-        // financial record in WordPress only and do not send it to Google.
-        if ( empty( $booking->analytics_client_id ) ) {
-            return false;
-        }
-        $client_id = sanitize_text_field( $booking->analytics_client_id );
-        if ( ! preg_match( '/^\d+\.\d+$/', $client_id ) ) {
-            return false;
-        }
-        $payload = array(
-            'client_id' => $client_id,
-            'events'    => array(
-                array(
-                    'name'   => 'purchase',
-                    'params' => array(
-                        'transaction_id' => (string) $booking->id,
-                        'value'          => (float) $booking->price,
-                        'currency'       => 'EUR',
-                        'engagement_time_msec' => 1,
-                    ),
-                ),
-            ),
+        return Outbox::enqueue(
+            'analytics.purchase',
+            'analytics.purchase:' . (int) $booking->id,
+            (int) $booking->id,
+            array( 'booking_id' => (int) $booking->id )
         );
-
-        $inserted = $wpdb->query(
-            $wpdb->prepare(
-                "INSERT IGNORE INTO {$wpdb->prefix}mt_analytics_outbox
-                    (event_name, event_key, payload, status, created_at)
-                 VALUES (%s, %s, %s, %s, %s)",
-                'purchase',
-                'purchase:' . (int) $booking->id,
-                wp_json_encode( $payload ),
-                'pending',
-                current_time( 'mysql', true )
-            )
-        );
-        if ( $inserted && ! wp_next_scheduled( self::CRON_HOOK ) ) {
-            wp_schedule_single_event( time() + 5, self::CRON_HOOK );
-        }
-        return false !== $inserted;
     }
 
-    public static function dispatch() {
+    public static function deliverPurchase( $booking ) {
+        // Absence of an analytics client ID is a deliberate no-op, not a
+        // delivery failure that should fill the dead-letter queue.
+        if ( ! self::eligible( $booking ) ) {
+            return true;
+        }
+
+        return self::sendPayload( self::payload( $booking ) );
+    }
+
+    public static function dispatchLegacy() {
         global $wpdb;
-        $measurement_id = (string) Settings::get( 'ga4_measurement_id', '' );
-        $api_secret = (string) Settings::get( 'ga4_api_secret', '' );
-        if ( '' === $measurement_id || '' === $api_secret ) {
+        if ( ! self::configured() ) {
             return;
         }
 
@@ -73,7 +52,8 @@ final class PurchaseOutbox {
         $events = $wpdb->get_results(
             "SELECT * FROM $table
              WHERE attempts < 8
-               AND (status = 'pending' OR (status = 'processing' AND locked_at < DATE_SUB(UTC_TIMESTAMP(), INTERVAL 15 MINUTE)))
+               AND ((status = 'pending' AND (available_at IS NULL OR available_at <= UTC_TIMESTAMP()))
+                 OR (status = 'processing' AND locked_at < DATE_SUB(UTC_TIMESTAMP(), INTERVAL 15 MINUTE)))
              ORDER BY id ASC LIMIT 20"
         );
         foreach ( (array) $events as $event ) {
@@ -81,7 +61,8 @@ final class PurchaseOutbox {
                 $wpdb->prepare(
                     "UPDATE $table SET status = 'processing', locked_at = %s
                      WHERE id = %d
-                       AND (status = 'pending' OR (status = 'processing' AND locked_at < DATE_SUB(UTC_TIMESTAMP(), INTERVAL 15 MINUTE)))",
+                       AND ((status = 'pending' AND (available_at IS NULL OR available_at <= UTC_TIMESTAMP()))
+                         OR (status = 'processing' AND locked_at < DATE_SUB(UTC_TIMESTAMP(), INTERVAL 15 MINUTE)))",
                     current_time( 'mysql', true ),
                     (int) $event->id
                 )
@@ -90,29 +71,93 @@ final class PurchaseOutbox {
                 continue;
             }
 
-            $url = add_query_arg(
-                array( 'measurement_id' => $measurement_id, 'api_secret' => $api_secret ),
-                'https://www.google-analytics.com/mp/collect'
-            );
-            $response = wp_remote_post( $url, array(
-                'timeout' => 8,
-                'headers' => array( 'Content-Type' => 'application/json' ),
-                'body'    => $event->payload,
-            ) );
-            $success = ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) >= 200 && wp_remote_retrieve_response_code( $response ) < 300;
+            $success = self::sendPayload( (string) $event->payload );
+            $attempts = (int) $event->attempts + 1;
+            $outcome = Outbox::outcomeForAttempt( $attempts, $success );
+            $now = current_time( 'mysql', true );
             $wpdb->update(
                 $table,
                 array(
-                    'attempts'   => (int) $event->attempts + 1,
-                    'status'     => $success ? 'sent' : 'pending',
-                    'last_error' => $success ? null : ( is_wp_error( $response ) ? $response->get_error_message() : 'HTTP ' . wp_remote_retrieve_response_code( $response ) ),
-                    'locked_at'  => null,
-                    'sent_at'    => $success ? current_time( 'mysql', true ) : null,
+                    'attempts'     => $attempts,
+                    'status'       => $success ? 'sent' : $outcome['status'],
+                    'last_error'   => $success ? null : 'analytics_delivery_failed',
+                    'locked_at'    => null,
+                    'available_at' => $success || 'failed' === $outcome['status']
+                        ? $now
+                        : gmdate( 'Y-m-d H:i:s', time() + $outcome['delay'] ),
+                    'sent_at'      => $success ? $now : null,
+                    'failed_at'    => 'failed' === $outcome['status'] ? $now : null,
                 ),
                 array( 'id' => (int) $event->id ),
-                array( '%d', '%s', '%s', '%s', '%s' ),
+                array( '%d', '%s', '%s', '%s', '%s', '%s', '%s' ),
                 array( '%d' )
             );
         }
+    }
+
+    /**
+     * Backwards-compatible entry point for custom cron invocations.
+     */
+    public static function dispatch() {
+        self::dispatchLegacy();
+    }
+
+    private static function eligible( $booking ) {
+        if ( ! $booking || empty( $booking->id ) || (float) $booking->price <= 0 ) {
+            return false;
+        }
+        $client_id = isset( $booking->analytics_client_id )
+            ? sanitize_text_field( $booking->analytics_client_id )
+            : '';
+        return 1 === preg_match( '/^\d+\.\d+$/', $client_id );
+    }
+
+    private static function payload( $booking ) {
+        return array(
+            'client_id' => sanitize_text_field( $booking->analytics_client_id ),
+            'events'    => array(
+                array(
+                    'name'   => 'purchase',
+                    'params' => array(
+                        'transaction_id'       => (string) $booking->id,
+                        'value'                => (float) $booking->price,
+                        'currency'             => 'EUR',
+                        'engagement_time_msec' => 1,
+                    ),
+                ),
+            ),
+        );
+    }
+
+    private static function configured() {
+        return '' !== (string) Settings::get( 'ga4_measurement_id', '' )
+            && '' !== (string) Settings::get( 'ga4_api_secret', '' );
+    }
+
+    private static function sendPayload( $payload ) {
+        $measurement_id = (string) Settings::get( 'ga4_measurement_id', '' );
+        $api_secret = (string) Settings::get( 'ga4_api_secret', '' );
+        if ( '' === $measurement_id || '' === $api_secret ) {
+            return false;
+        }
+
+        $body = is_array( $payload ) ? wp_json_encode( $payload ) : (string) $payload;
+        $url = add_query_arg(
+            array( 'measurement_id' => $measurement_id, 'api_secret' => $api_secret ),
+            'https://www.google-analytics.com/mp/collect'
+        );
+        $response = wp_remote_post(
+            $url,
+            array(
+                'timeout' => 8,
+                'headers' => array( 'Content-Type' => 'application/json' ),
+                'body'    => $body,
+            )
+        );
+        if ( is_wp_error( $response ) ) {
+            return false;
+        }
+        $status_code = wp_remote_retrieve_response_code( $response );
+        return $status_code >= 200 && $status_code < 300;
     }
 }

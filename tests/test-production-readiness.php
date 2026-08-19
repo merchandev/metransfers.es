@@ -19,6 +19,8 @@ $i18n_runtime = file_get_contents( $root . '/includes/i18n.php' );
 $functions = file_get_contents( $root . '/functions.php' );
 $notification_service = file_get_contents( $root . '/app/Notifications/NotificationService.php' );
 $outbox = file_get_contents( $root . '/app/Analytics/PurchaseOutbox.php' );
+$generic_outbox = file_get_contents( $root . '/app/Core/Outbox.php' );
+$booking_events = file_get_contents( $root . '/app/Booking/BookingEvents.php' );
 $release_gate = file_get_contents( $root . '/app/Core/ReleaseGate.php' );
 $readme = file_get_contents( $root . '/README.md' );
 $loader = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-loader.php' );
@@ -63,7 +65,9 @@ assert_readiness( false !== strpos( $notification_service, "Settings::get( 'smtp
 assert_readiness( false !== strpos( $functions, 'mt_is_transactional_page' ) && false !== strpos( $functions, "'noindex' => true" ), 'Transactional pages must be noindex.' );
 assert_readiness( false !== strpos( $assets, "'mt-site-tracking'" ), 'Phone and WhatsApp tracking must be enqueued globally.' );
 assert_readiness( false === strpos( $public_controller, "wp_enqueue_style( 'wptb-main-style'" ), 'Legacy funnel CSS must not be enqueued.' );
-assert_readiness( false !== strpos( $outbox, "'purchase:'" ) && false !== strpos( $outbox, 'INSERT IGNORE' ), 'Financial purchase tracking must use a durable idempotent outbox.' );
+assert_readiness( false !== strpos( $outbox, "'analytics.purchase'" ) && false !== strpos( $outbox, 'Outbox::enqueue' ), 'Financial purchase tracking must use the generic durable outbox.' );
+assert_readiness( false !== strpos( $generic_outbox, 'INSERT IGNORE' ) && false !== strpos( $generic_outbox, "'failed'" ) && false !== strpos( $generic_outbox, 'backoffSeconds' ), 'The generic outbox must provide idempotency, retry backoff and dead-letter state.' );
+assert_readiness( false !== strpos( $booking_events, "'booking.paid:'" ) && false !== strpos( $booking_events, "'whatsapp.admin'" ), 'Paid booking work must expand into idempotent per-channel events.' );
 assert_readiness( false !== strpos( $release_gate, 'redsys_sandbox_verified_at' ) && false !== strpos( $release_gate, 'maps_credentials_rotated_at' ), 'Live payments must be gated by external security attestations.' );
 
 foreach ( array(

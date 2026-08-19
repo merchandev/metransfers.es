@@ -46,7 +46,9 @@ A continuación, la lista de elementos que debes verificar manualmente en Stagin
 
 ### 2.5. Notificaciones (Emails)
 - [ ] Llega el email de confirmación al cliente tras pagar.
-- [ ] Llega el email de notificación al administrador (`reservas@barcelonatours.email`).
+- [ ] Llega el email de notificación a los destinatarios configurados en WordPress/MeTransfers.
+- [ ] Una caída simulada de SMTP o WhatsApp no retrasa el ACK del IPN y deja el evento pendiente para retry.
+- [ ] Un IPN duplicado no crea eventos de canal duplicados.
 
 ---
 
