@@ -177,18 +177,19 @@ class WPTB_Public {
         $carry_ons = isset( $data['carryOns'] ) ? absint( $data['carryOns'] ) : 0;
         $flight_number = isset( $data['flight'] ) ? sanitize_text_field( $data['flight'] ) : '';
         $notes = isset( $data['notes'] ) ? sanitize_textarea_field( $data['notes'] ) : '';
+        $language = \MeTransfers\Booking\I18n::normalizeLanguage( isset( $data['language'] ) && is_scalar( $data['language'] ) ? $data['language'] : 'es' );
 
         $vehicle = WPTB_Vehicle_Manager::get_vehicle( $vehicle_id );
         if ( ! $vehicle || '' === $fullName || ! is_email( $email ) || '' === $phone || '' === $origin || '' === $destination ) {
             wp_send_json_error( array( 'message' => 'Vehículo o datos de reserva no válidos.' ) );
             return;
         }
-        if ( $passengers > (int) $vehicle->capacity || ( $suitcases + $carry_ons ) > (int) $vehicle->luggage_capacity ) {
-            wp_send_json_error( array( 'message' => 'El vehículo no tiene capacidad suficiente para los pasajeros o el equipaje.' ) );
+        $capacity = \MeTransfers\Booking\VehicleCapacityPolicy::validate( $vehicle, $passengers, $suitcases, $carry_ons, $language );
+        if ( empty( $capacity['valid'] ) ) {
+            wp_send_json_error( array( 'message' => $capacity['message'] ) );
             return;
         }
 
-        $language = \MeTransfers\Booking\I18n::normalizeLanguage( isset( $data['language'] ) ? $data['language'] : 'es' );
         $quote = \MeTransfers\Booking\QuoteService::create( array(
             'language'           => $language,
             'date'               => $date,
@@ -510,48 +511,26 @@ class WPTB_Public {
      * AJAX: Get available vehicles
      */
     public function ajax_get_vehicles() {
-        check_ajax_referer( 'wptb-booking-nonce', 'security' ); // Security Check
+        check_ajax_referer( 'wptb-booking-nonce', 'security' );
 
-        $vehicles = WPTB_Vehicle_Manager::get_active_vehicles();
-        $response = array();
-        
-        if ( ! empty( $vehicles ) ) {
-            foreach ( $vehicles as $vehicle ) {
-                $price_range = WPTB_Pricing::get_vehicle_price_range( $vehicle->id );
-                
-                // Fetch type name separately if needed or default
-                $type_name = 'Standard'; 
-                // We're skipping the join for now, so type_name might be missing
-                if(isset($vehicle->type_name)) $type_name = $vehicle->type_name;
-
-                $response[] = array(
-                    'id' => $vehicle->id,
-                    'name' => $vehicle->name,
-                    'type' => $type_name,
-                    'description' => $vehicle->description,
-                    'capacity' => $vehicle->capacity,
-                    'luggage_capacity' => $vehicle->luggage_capacity,
-                    'image' => WPTB_Vehicle_Manager::get_primary_image( $vehicle->id ),
-                    'image_url' => WPTB_Vehicle_Manager::get_primary_image( $vehicle->id ), // For modal compatibility
-                    'price_range' => $price_range,
-                    'is_active_db' => $vehicle->is_active, 
-                    'pricing' => array(
-                        'min_transfer' => floatval( $vehicle->min_transfer_price ),
-                        'min_oneway' => floatval( $vehicle->min_oneway_price ),
-                        'min_roundtrip' => floatval( $vehicle->min_roundtrip_price ),
-                        'price_per_km_oneway' => floatval( $vehicle->price_per_km_oneway ),
-                        'price_per_km_roundtrip' => floatval( $vehicle->price_per_km_roundtrip ),
-                        'price_per_hour' => floatval( $vehicle->price_per_hour )
-                    )
-                );
-            }
-            wp_send_json_success( $response );
-        } else {
-            $language = isset( $_POST['language'] ) ? sanitize_key( wp_unslash( $_POST['language'] ) ) : 'es';
-            wp_send_json_error( array(
-                'message' => \MeTransfers\Booking\I18n::text( 'no_vehicles', $language ),
-            ) );
+        $raw_language = isset( $_POST['language'] ) ? wp_unslash( $_POST['language'] ) : 'es';
+        $language = \MeTransfers\Booking\I18n::normalizeLanguage( is_scalar( $raw_language ) ? $raw_language : 'es' );
+        if ( ! $this->consume_quote_rate_limit( $language ) ) {
+            return;
         }
+
+        $result = \MeTransfers\Booking\QuoteService::createVehicleList( wp_unslash( $_POST ) );
+        if ( empty( $result['valid'] ) ) {
+            wp_send_json_error(
+                array(
+                    'code'    => 'vehicle_quote_failed',
+                    'message' => isset( $result['error'] ) ? $result['error'] : \MeTransfers\Booking\I18n::text( 'no_vehicles', $language ),
+                )
+            );
+            return;
+        }
+
+        wp_send_json_success( $result );
     }
 
     /**
@@ -575,6 +554,7 @@ class WPTB_Public {
             return;
         }
 
+        unset( $result['breakdown'] );
         wp_send_json_success( $result );
     }
 
@@ -664,6 +644,18 @@ class WPTB_Public {
 
             if ( '' === $payload['customer_name'] || '' === $payload['customer_phone'] || '' === $payload['origin'] || '' === $payload['destination'] ) {
                 wp_send_json_error( array( 'code' => 'invalid_draft', 'message' => \MeTransfers\Booking\I18n::text( 'missing_booking_fields', $language ) ) );
+                return;
+            }
+
+            $capacity = \MeTransfers\Booking\VehicleCapacityPolicy::validate(
+                $vehicle,
+                $payload['passengers'],
+                $payload['suitcases'],
+                $payload['carry_ons'],
+                $language
+            );
+            if ( empty( $capacity['valid'] ) ) {
+                wp_send_json_error( array( 'code' => 'vehicle_capacity', 'message' => $capacity['message'] ) );
                 return;
             }
 
@@ -880,8 +872,9 @@ class WPTB_Public {
             $passengers = ! empty( $booking_data['passengers'] ) ? absint( $booking_data['passengers'] ) : 1;
             $suitcases = ! empty( $booking_data['suitcases'] ) ? absint( $booking_data['suitcases'] ) : 0;
             $carry_ons = ! empty( $booking_data['carry_ons'] ) ? absint( $booking_data['carry_ons'] ) : 0;
-            if ( ! $vehicle || $passengers > (int) $vehicle->capacity || ( $suitcases + $carry_ons ) > (int) $vehicle->luggage_capacity ) {
-                wp_send_json_error( array( 'message' => \MeTransfers\Booking\I18n::text( 'vehicle_capacity_error', $language ) ) );
+            $capacity = \MeTransfers\Booking\VehicleCapacityPolicy::validate( $vehicle, $passengers, $suitcases, $carry_ons, $language );
+            if ( empty( $capacity['valid'] ) ) {
+                wp_send_json_error( array( 'message' => $capacity['message'] ) );
                 return;
             }
 

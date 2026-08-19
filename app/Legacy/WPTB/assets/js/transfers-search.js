@@ -202,6 +202,17 @@ document.addEventListener("DOMContentLoaded", () => {
         return [];
     }
 
+    function applyServerRouteFromResponse(response) {
+        const route = response && response.data ? response.data.route : null;
+        if (!route || !window.bookingData) return;
+        window.bookingData.distance_km = Number.parseFloat(route.total_distance_km || route.distance_km || 0);
+        window.bookingData.duration_minutes = Number.parseInt(route.duration_minutes || 0, 10);
+        window.bookingData.duration_text = window.bookingData.duration_minutes > 0
+            ? window.bookingData.duration_minutes + ' min'
+            : '';
+        window.bookingData.quote_verified = true;
+    }
+
     function getVehiclesResponseMessage(response) {
         if (!response || typeof response !== "object") {
             return "";
@@ -569,13 +580,17 @@ document.addEventListener("DOMContentLoaded", () => {
             data: {
                 action: 'wptb_get_vehicles',
                 security: wptb_vars.nonce,
-                distance_km: window.bookingData.distance_km,
+                date: window.bookingData.date || '',
+                time: window.bookingData.time || '',
+                origin: window.bookingData.origin || '',
+                destination: window.bookingData.destination || '',
                 trip_type: window.bookingData.trip_type || 'one_way',
                 language: wptb_vars.language || 'es'
             },
             success: function (response, textStatus, xhr) {
                 const normalizedResponse = normalizeVehiclesResponse(response, xhr);
                 const vehicles = extractVehiclesFromResponse(normalizedResponse);
+                applyServerRouteFromResponse(normalizedResponse);
 
                 if (vehicles.length > 0) {
                     displayVehiclesInPTSModal(vehicles);
@@ -615,12 +630,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         vehicles.forEach(function (vehicle) {
             const img = vehicle.image_url || vehicle.image || '';
-            const pricing = vehicle.pricing || {};
-            const tripType = window.bookingData.trip_type || 'one_way';
-            const minPriceBase = tripType === 'round_trip'
-                ? (pricing.min_roundtrip ?? pricing.min_oneway ?? pricing.min_transfer ?? 0)
-                : (pricing.min_oneway ?? pricing.min_transfer ?? 0);
-            const minPrice = parseFloat(minPriceBase) || 0;
+            const serverPrice = Number.parseFloat(vehicle.price || 0);
             const capacity = parseInt(vehicle.capacity, 10);
             const capacityText = Number.isFinite(capacity) && capacity > 0
                 ? `${capacity} pax`
@@ -633,7 +643,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="vehicle-info-compact">
                         <strong>${vehicle.name}</strong>
                         <span class="vehicle-capacity"><span class="material-symbols-outlined vehicle-inline-icon" aria-hidden="true">group</span>${capacityText}</span>
-                        <span class="vehicle-price-compact">${escapeHtml(t('from_price', 'Desde'))} ${formatCurrencyLabel(minPrice)}</span>
+                        <span class="vehicle-price-compact">${escapeHtml(t('price', 'Precio'))} ${formatCurrencyLabel(serverPrice)}</span>
                     </div>
                 </div>
             `;
@@ -655,34 +665,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 window.bookingData.vehicle_id = vehicle.id;
                 window.bookingData.vehicle_name = vehicle.name;
-
-                const distance = parseFloat(window.bookingData.distance_km);
-                const pricing = vehicle.pricing;
-                const tripType = window.bookingData.trip_type || 'one_way';
-
-                let calculatedPrice = 0;
-
-                if (tripType === 'round_trip') {
-                    // Round Trip Calculation: Double distance * Round Trip Rate
-                    // Using max of calculated vs min_roundtrip
-                    const effectiveDistance = distance * 2;
-                    const rate = pricing.price_per_km_roundtrip > 0 ? pricing.price_per_km_roundtrip : pricing.price_per_km_oneway;
-
-                    calculatedPrice = Math.max(
-                        effectiveDistance * rate,
-                        pricing.min_roundtrip,
-                        pricing.min_transfer
-                    );
-                } else {
-                    // One Way Calculation
-                    calculatedPrice = Math.max(
-                        distance * pricing.price_per_km_oneway,
-                        pricing.min_oneway,
-                        pricing.min_transfer
-                    );
-                }
-
-                window.bookingData.price = parseFloat(calculatedPrice.toFixed(2));
+                window.bookingData.vehicle = vehicle;
+                window.bookingData.price = Number.parseFloat(vehicle.price);
 
                 track('vehicle_select', {
                     vehicle_id: vehicle.id,
