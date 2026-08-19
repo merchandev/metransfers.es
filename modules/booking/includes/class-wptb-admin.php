@@ -6,7 +6,13 @@ class WPTB_Admin {
         // Handle AJAX status updates
         add_action( 'wp_ajax_wptb_update_status', array( $this, 'update_booking_status' ) );
         add_action( 'wp_ajax_wptb_resend_email', array( $this, 'resend_booking_email' ) );
+        add_action( 'wp_ajax_wptb_delete_single_booking', array( $this, 'delete_single_booking' ) );
+        add_action( 'wp_ajax_wptb_delete_date_range_bookings', array( $this, 'delete_date_range_bookings' ) );
+        add_action( 'wp_ajax_wptb_delete_backup_file', array( $this, 'delete_backup_file' ) );
+        add_action( 'wp_ajax_wptb_check_recent_backup', array( $this, 'check_recent_backup' ) );
+        
         add_action( 'admin_post_wptb_view_receipt', array( $this, 'view_booking_receipt' ) );
+        add_action( 'admin_post_wptb_export_excel', array( $this, 'export_bookings_excel' ) );
         
         // AUTO-MIGRATION: Ensure DB is up to date (v3.2)
         if ( ! get_option( 'wptb_db_version_3_2' ) ) {
@@ -104,9 +110,6 @@ class WPTB_Admin {
 
     public function register_settings() {
         register_setting( 'wptb_settings_group', 'wptb_google_maps_api_key', array( 'sanitize_callback' => 'sanitize_text_field' ) );
-        register_setting( 'wptb_settings_group', 'wptb_stripe_publishable_key', array( 'sanitize_callback' => 'sanitize_text_field' ) );
-        register_setting( 'wptb_settings_group', 'wptb_stripe_secret_key', array( 'sanitize_callback' => 'sanitize_text_field' ) );
-        register_setting( 'wptb_settings_group', 'wptb_stripe_mode', array( 'sanitize_callback' => 'sanitize_text_field' ) ); // 'test' or 'live'
         
         // Notifications
         register_setting( 'wptb_settings_group', 'wptb_admin_email_notifications', array( 'sanitize_callback' => 'sanitize_email' ) );
@@ -175,6 +178,109 @@ class WPTB_Admin {
         } catch ( Exception $e ) {
             wp_send_json_error( $e->getMessage() );
         }
+    }
+
+    public function delete_single_booking() {
+        check_ajax_referer( 'wptb_delete_single_nonce', 'security' );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( 'No tienes permisos suficientes.' );
+        }
+
+        $id = isset( $_POST['id'] ) ? intval( $_POST['id'] ) : 0;
+        if ( ! $id ) {
+            wp_send_json_error( 'ID inválido.' );
+        }
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'wptb_bookings';
+        $deleted = $wpdb->delete( $table_name, array( 'id' => $id ), array( '%d' ) );
+
+        if ( $deleted !== false ) {
+            wp_send_json_success( 'Reserva eliminada.' );
+        } else {
+            wp_send_json_error( 'Error en la base de datos al eliminar.' );
+        }
+    }
+
+    public function check_recent_backup() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error();
+        }
+
+        global $wpdb;
+        $table_backups = $wpdb->prefix . 'wptb_backups';
+        
+        // Verifica si la tabla existe, si no, lo dejamos pasar porque algo falló en la instalación
+        if ( $wpdb->get_var("SHOW TABLES LIKE '$table_backups'") != $table_backups ) {
+            wp_send_json_success();
+        }
+
+        // Check if there is an active backup generated in the last 12 hours
+        $recent = $wpdb->get_var("SELECT id FROM $table_backups WHERE status = 'active' AND created_at > DATE_SUB(NOW(), INTERVAL 12 HOUR)");
+        
+        if ( $recent ) {
+            wp_send_json_success();
+        } else {
+            wp_send_json_error();
+        }
+    }
+
+    public function delete_date_range_bookings() {
+        check_ajax_referer( 'wptb_delete_all_nonce', 'security' );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( array('message' => 'No tienes permisos suficientes.') );
+        }
+
+        $start = isset($_POST['start_date']) ? sanitize_text_field($_POST['start_date']) : '';
+        $end = isset($_POST['end_date']) ? sanitize_text_field($_POST['end_date']) : '';
+
+        if ( empty($start) || empty($end) ) {
+            wp_send_json_error( array('message' => 'Fechas inválidas.') );
+        }
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'wptb_bookings';
+        
+        $deleted = $wpdb->query( $wpdb->prepare(
+            "DELETE FROM $table_name WHERE booking_date >= %s AND booking_date <= %s",
+            $start, $end
+        ) );
+
+        if ( $deleted !== false ) {
+            wp_send_json_success( array('message' => sprintf('Se han eliminado %d reservas del periodo seleccionado.', $deleted)) );
+        } else {
+            wp_send_json_error( array('message' => 'Error en la base de datos al eliminar por fecha.') );
+        }
+    }
+
+    public function delete_backup_file() {
+        check_ajax_referer( 'wptb_delete_backup_nonce', 'security' );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( 'No tienes permisos suficientes.' );
+        }
+
+        $id = isset( $_POST['id'] ) ? intval( $_POST['id'] ) : 0;
+        if ( ! $id ) {
+            wp_send_json_error( 'ID inválido.' );
+        }
+
+        global $wpdb;
+        $table_backups = $wpdb->prefix . 'wptb_backups';
+        
+        $backup = $wpdb->get_row( $wpdb->prepare("SELECT * FROM $table_backups WHERE id = %d", $id) );
+        if ( ! $backup ) {
+            wp_send_json_error( 'Respaldo no encontrado.' );
+        }
+
+        // Eliminar archivo físico
+        if ( file_exists($backup->filepath) ) {
+            unlink($backup->filepath);
+        }
+
+        // Marcar como eliminado en base de datos
+        $wpdb->update( $table_backups, array('status' => 'deleted'), array('id' => $id), array('%s'), array('%d') );
+
+        wp_send_json_success( 'Archivo eliminado del servidor.' );
     }
 
     public function view_booking_receipt() {
@@ -487,6 +593,16 @@ class WPTB_Admin {
                     <button class="btn btn-secondary" onclick="window.close()">Cerrar</button>
                 </div>
             </div>
+
+            <?php if ( isset($_GET['auto_print']) && $_GET['auto_print'] == '1' ) : ?>
+            <script>
+                window.onload = function() {
+                    window.print();
+                    // Opcional: cerrar la pestaña después de imprimir si el navegador lo permite
+                    setTimeout(function() { window.close(); }, 1000);
+                };
+            </script>
+            <?php endif; ?>
         </body>
         </html>
         <?php
@@ -586,9 +702,17 @@ class WPTB_Admin {
                                 </td>
                                 <td>
                                     <div style="display:flex; flex-direction:column; gap:5px;">
-                                        <a href="<?php echo admin_url('admin-post.php?action=wptb_view_receipt&id='.$booking->id); ?>" target="_blank" class="button button-small" title="Ver Recibo / PDF">
-                                            <span class="dashicons dashicons-media-document"></span> Recibo
-                                        </a>
+                                        <div style="display:flex; gap:5px;">
+                                            <a href="<?php echo admin_url('admin-post.php?action=wptb_view_receipt&id='.$booking->id); ?>" target="_blank" class="button button-small" title="Ver Recibo" style="flex:1; text-align:center;">
+                                                <span class="dashicons dashicons-media-document"></span> Recibo
+                                            </a>
+                                            <a href="<?php echo admin_url('admin-post.php?action=wptb_view_receipt&id='.$booking->id.'&auto_print=1'); ?>" target="_blank" class="button button-small" title="Descargar PDF" style="padding: 0 6px;">
+                                                <span class="dashicons dashicons-download" style="margin-top:3px; color:#1e7e34;"></span>
+                                            </a>
+                                            <button type="button" class="button button-small wptb-delete-single-booking" data-id="<?php echo $booking->id; ?>" title="Borrar Reserva" style="padding: 0 6px; color: #dc3232; border-color: #dc3232;">
+                                                <span class="dashicons dashicons-trash" style="margin-top:3px;"></span>
+                                            </button>
+                                        </div>
                                         <button type="button" class="button button-small wptb-resend-email" data-id="<?php echo $booking->id; ?>" title="Reenviar Notificación">
                                             <span class="dashicons dashicons-email-alt" style="margin-right:4px;"></span> Enviar Notificación
                                         </button>
@@ -663,6 +787,32 @@ class WPTB_Admin {
                         alert('✅ Notificación enviada correctamente.');
                     } else {
                         alert('❌ Error: ' + (response.data || 'Error desconocido'));
+                    }
+                }).fail(function() {
+                    $btn.prop('disabled', false).css('opacity', '1');
+                    alert('Error de conexión');
+                });
+            });
+
+            // Single Delete Handler
+            $('.wptb-delete-single-booking').on('click', function(e) {
+                e.preventDefault();
+                if(!confirm('⚠️ ¿Estás seguro de que quieres BORRAR definitivamente esta reserva?\n\nEsta acción eliminará el registro y actualizará las estadísticas (ingresos, kilómetros).')) return;
+                
+                var $btn = $(this);
+                $btn.prop('disabled', true).css('opacity', '0.6');
+                
+                $.post(ajaxurl, {
+                    action: 'wptb_delete_single_booking',
+                    id: $btn.data('id'),
+                    security: '<?php echo wp_create_nonce("wptb_delete_single_nonce"); ?>'
+                }, function(response) {
+                    if(response.success) {
+                        alert('✅ Reserva eliminada correctamente.');
+                        location.reload();
+                    } else {
+                        alert('❌ Error: ' + (response.data || 'Error desconocido'));
+                        $btn.prop('disabled', false).css('opacity', '1');
                     }
                 }).fail(function() {
                     $btn.prop('disabled', false).css('opacity', '1');
@@ -764,48 +914,6 @@ class WPTB_Admin {
                     </tr>
                 </table>
                 
-                <h2 style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd;">💳 Stripe Payment Gateway</h2>
-                <table class="form-table">
-                    <tr valign="top">
-                        <th scope="row">Modo de Stripe</th>
-                        <td>
-                            <select name="wptb_stripe_mode">
-                                <option value="test" <?php selected( get_option('wptb_stripe_mode', 'test'), 'test' ); ?>>Modo Test (Pruebas)</option>
-                                <option value="live" <?php selected( get_option('wptb_stripe_mode', 'test'), 'live' ); ?>>Modo Live (Producción)</option>
-                            </select>
-                            <p class="description">
-                                Usa "Test" para pruebas y "Live" cuando estés listo para recibir pagos reales.
-                            </p>
-                        </td>
-                    </tr>
-                    
-                    <tr valign="top">
-                        <th scope="row">Publishable Key (Clave Pública)</th>
-                        <td>
-                            <input type="text" name="wptb_stripe_publishable_key" 
-                                   value="<?php echo esc_attr( get_option('wptb_stripe_publishable_key', 'pk_test_51SdJRHE1acnhagHqAbtCkNnHWdNMj5I8DmTliLsHZvtVKfD2BmHhk9GLF1Im81VrKaM2VjlbiuoV21F4bWDB9Vam00VTHrYMqx') ); ?>" 
-                                   class="regular-text" 
-                                   placeholder="pk_test_..." />
-                            <p class="description">
-                                Tu clave pública de Stripe (comienza con <code>pk_test_</code> o <code>pk_live_</code>)
-                            </p>
-                        </td>
-                    </tr>
-                    
-                    <tr valign="top">
-                        <th scope="row">Secret Key (Clave Secreta)</th>
-                        <td>
-                            <input type="password" name="wptb_stripe_secret_key" 
-                                   value="<?php echo esc_attr( get_option('wptb_stripe_secret_key', 'sk_test_YOUR_TEST_SECRET_KEY') ); ?>" 
-                                   class="regular-text" 
-                                   placeholder="sk_test_..." />
-                            <p class="description">
-                                Tu clave secreta de Stripe (comienza con <code>sk_test_</code> o <code>sk_live_</code>). <strong>¡Nunca la compartas!</strong>
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-                
                 <h2 style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd;">🔔 Notificaciones (Admin)</h2>
                 <table class="form-table">
                     <tr valign="top">
@@ -848,7 +956,223 @@ class WPTB_Admin {
 
                 <?php submit_button('Guardar Cambios'); ?>
             </form>
+
+            <h2 style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd;">📊 Exportar Datos</h2>
+            <p>Descarga un archivo de Excel (.xlsx) profesional con el historial completo de todas las reservas de traslados y un directorio de clientes.</p>
+            <a href="<?php echo esc_url( admin_url( 'admin-post.php?action=wptb_export_excel' ) ); ?>" class="button button-secondary" style="background: #1e7e34; color: white; border-color: #155724; padding: 5px 15px; text-decoration: none;">
+                <span class="dashicons dashicons-media-spreadsheet" style="margin-top: 3px;"></span> Exportar Todas las Reservas (Excel)
+            </a>
+
+            <h2 style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #dc3232;">⚠️ Peligro: Borrado Masivo</h2>
+            <p><strong>REQUISITO OBLIGATORIO:</strong> Antes de poder borrar cualquier dato, debes haber descargado un respaldo (Excel) recientemente.</p>
+            
+            <div style="display: flex; gap: 40px; margin-top: 20px;">
+                <!-- Delete Date Range -->
+                <div style="background: #fff; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; flex: 1;">
+                    <h3 style="margin-top: 0;">Borrar por Fecha</h3>
+                    <p class="description">Elimina las reservas de un periodo específico.</p>
+                    <div style="margin-bottom: 10px;">
+                        <label style="display:block; font-weight:bold;">Desde:</label>
+                        <input type="date" id="wptb-delete-start-date">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold;">Hasta:</label>
+                        <input type="date" id="wptb-delete-end-date">
+                    </div>
+                    <button type="button" id="wptb-delete-range-btn" class="button button-primary" style="background:#dc3232; color:#fff; border-color:#b22222; font-weight:bold;">
+                        🗑️ Borrar Periodo
+                    </button>
+                </div>
+
+                <!-- Delete All -->
+                <div style="background: #fff; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; flex: 1;">
+                    <h3 style="margin-top: 0; color: #dc3232;">Borrar TODO</h3>
+                    <p class="description">Esta acción eliminará <strong>permanentemente</strong> todas las reservas de la base de datos y reiniciará la numeración de los pedidos (IDs) a 10000.</p>
+                    <br><br>
+                    <button type="button" id="wptb-delete-all-bookings-settings-btn" class="button button-primary" style="background:#dc3232; color:#fff; border-color:#b22222; font-weight:bold;">
+                        🗑️ Borrar TODAS las Reservas
+                    </button>
+                </div>
+            </div>
+
+            <?php $this->display_backups_table(); ?>
         </div>
+
+        <script>
+        jQuery(document).ready(function($) {
+            
+            function check_backup_and_execute(callback) {
+                // Verificar si hay un backup reciente antes de permitir borrar
+                $.post(ajaxurl, {
+                    action: 'wptb_check_recent_backup',
+                    security: '<?php echo wp_create_nonce("wptb_delete_single_nonce"); ?>' // Reusing nonce for simplicity
+                }, function(response) {
+                    if(response.success) {
+                        callback();
+                    } else {
+                        alert('⚠️ ACCIÓN BLOQUEADA:\n\nDebes descargar un respaldo (Exportar Todas las Reservas a Excel) antes de poder borrar datos. Por favor, genera un respaldo primero.');
+                    }
+                }).fail(function() {
+                    alert('Error de conexión al verificar respaldos.');
+                });
+            }
+
+            $('#wptb-delete-range-btn').on('click', function() {
+                const start = $('#wptb-delete-start-date').val();
+                const end = $('#wptb-delete-end-date').val();
+                if (!start || !end) {
+                    alert('Por favor selecciona ambas fechas.');
+                    return;
+                }
+
+                check_backup_and_execute(function() {
+                    if (!confirm(`⚠️ ¿Estás SEGURO de que quieres borrar las reservas entre ${start} y ${end}?\n\nEsta acción no se puede deshacer.`)) {
+                        return;
+                    }
+                    const keyword = prompt('Para confirmar, escribe exactamente: BORRAR');
+                    if (keyword !== 'BORRAR') {
+                        alert('Acción cancelada.');
+                        return;
+                    }
+
+                    const $btn = $('#wptb-delete-range-btn');
+                    $btn.prop('disabled', true).text('Borrando...');
+
+                    $.post(ajaxurl, {
+                        action: 'wptb_delete_date_range_bookings',
+                        start_date: start,
+                        end_date: end,
+                        security: '<?php echo wp_create_nonce("wptb_delete_all_nonce"); ?>'
+                    }, function(response) {
+                        if (response.success) {
+                            alert('✅ ' + response.data.message);
+                            location.reload();
+                        } else {
+                            alert('❌ Error: ' + response.data.message);
+                            $btn.prop('disabled', false).text('🗑️ Borrar Periodo');
+                        }
+                    }).fail(function() {
+                        alert('Error de conexión.');
+                        $btn.prop('disabled', false).text('🗑️ Borrar Periodo');
+                    });
+                });
+            });
+
+            $('#wptb-delete-all-bookings-settings-btn').on('click', function() {
+                check_backup_and_execute(function() {
+                    // Primera confirmación
+                    if (!confirm('⚠️ ¿Estás SEGURO de que quieres borrar TODAS las reservas?\n\nEsta acción no se puede deshacer.')) {
+                        return;
+                    }
+                    // Segunda confirmación: escribir la palabra clave
+                    const keyword = prompt('Para confirmar, escribe exactamente: BORRAR');
+                    if (keyword !== 'BORRAR') {
+                        alert('Acción cancelada.');
+                        return;
+                    }
+
+                    const $btn = $('#wptb-delete-all-bookings-settings-btn');
+                    $btn.prop('disabled', true).text('Borrando...');
+
+                    $.ajax({
+                        url: ajaxurl,
+                        type: 'POST',
+                        data: {
+                            action: 'wptb_delete_all_bookings',
+                            nonce: '<?php echo wp_create_nonce("wptb_delete_all_nonce"); ?>'
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                alert('✅ ' + response.data.message);
+                                location.reload();
+                            } else {
+                                alert('❌ Error: ' + response.data.message);
+                                $btn.prop('disabled', false).text('🗑️ Borrar TODAS las Reservas');
+                            }
+                        },
+                        error: function() {
+                            alert('❌ Error de conexión al intentar borrar.');
+                            $btn.prop('disabled', false).text('🗑️ Borrar TODAS las Reservas');
+                        }
+                    });
+                });
+            });
+        });
+        </script>
+        <?php
+    }
+
+    private function display_backups_table() {
+        global $wpdb;
+        $table_backups = $wpdb->prefix . 'wptb_backups';
+        
+        // Verificar si la tabla existe (por si acaso no se ha ejecutado el dbDelta)
+        if ( $wpdb->get_var("SHOW TABLES LIKE '$table_backups'") != $table_backups ) {
+            return;
+        }
+        
+        $backups = $wpdb->get_results("SELECT * FROM $table_backups ORDER BY created_at DESC LIMIT 50");
+        ?>
+        <h2 style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd;">📂 Historial de Respaldos Generados</h2>
+        <p>Aquí queda registrado cada Excel que se ha descargado. Puedes eliminar el archivo del servidor para ahorrar espacio, pero el registro se mantendrá como evidencia.</p>
+        <table class="wp-list-table widefat fixed striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha y Hora</th>
+                    <th>Archivo</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if(empty($backups)): ?>
+                    <tr><td colspan="5">No hay respaldos generados aún.</td></tr>
+                <?php else: ?>
+                    <?php foreach($backups as $b): ?>
+                        <tr>
+                            <td>#<?php echo $b->id; ?></td>
+                            <td><?php echo date('d/m/Y H:i', strtotime($b->created_at)); ?></td>
+                            <td><?php echo esc_html($b->filename); ?></td>
+                            <td>
+                                <?php if($b->status === 'deleted'): ?>
+                                    <span style="color:#dc3232; font-weight:bold;">ELIMINADO DEL SERVIDOR</span>
+                                <?php else: ?>
+                                    <span style="color:#28a745; font-weight:bold;">DISPONIBLE EN SERVIDOR</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php if($b->status !== 'deleted'): ?>
+                                    <button class="button button-small wptb-delete-backup" data-id="<?php echo $b->id; ?>" style="color:#dc3232; border-color:#dc3232;">🗑️ Borrar Archivo</button>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+        <script>
+        jQuery(document).ready(function($) {
+            $('.wptb-delete-backup').on('click', function(e) {
+                e.preventDefault();
+                if(!confirm('¿Seguro que quieres borrar el archivo físico del servidor? El registro quedará como "Eliminado".')) return;
+                var $btn = $(this);
+                $btn.prop('disabled', true).text('Borrando...');
+                $.post(ajaxurl, {
+                    action: 'wptb_delete_backup_file',
+                    id: $btn.data('id'),
+                    security: '<?php echo wp_create_nonce("wptb_delete_backup_nonce"); ?>'
+                }, function(response) {
+                    if(response.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + response.data);
+                        $btn.prop('disabled', false).text('🗑️ Borrar Archivo');
+                    }
+                });
+            });
+        });
+        </script>
         <?php
     }
 
@@ -932,5 +1256,281 @@ class WPTB_Admin {
             </div>
         </div>
         <?php
+    }
+
+    public function export_bookings_excel() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'No tienes permisos suficientes.' );
+        }
+
+        if ( ! class_exists( 'XLSXWriter' ) ) {
+            require_once plugin_dir_path( __FILE__ ) . 'xlsxwriter.class.php';
+        }
+
+        global $wpdb;
+        $table_bookings = $wpdb->prefix . 'wptb_bookings';
+
+        // Obtener TODAS las reservas
+        $all_bookings = $wpdb->get_results( "SELECT * FROM $table_bookings ORDER BY created_at DESC", ARRAY_A );
+
+        $filename = 'reservas_metransfers_' . date( 'Y-m-d_H-i-s' ) . '.xlsx';
+
+        header( 'Content-disposition: attachment; filename="' . XLSXWriter::sanitize_filename( $filename ) . '"' );
+        header( 'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' );
+        header( 'Content-Transfer-Encoding: binary' );
+        header( 'Cache-Control: must-revalidate' );
+        header( 'Pragma: public' );
+
+        $writer = new XLSXWriter();
+
+        // ── Cabeceras comunes a todas las pestañas de reservas ──
+        $booking_headers = array(
+            'Nº Ref (ID)'        => 'integer',
+            'Hora de Registro'   => 'string',
+            'Estado'             => 'string',
+            'Nombre del Cliente' => 'string',
+            'Email'              => 'string',
+            'Teléfono'           => 'string',
+            'Precio (€)'         => 'price',
+            'Distancia (km)'     => 'string',
+            'Origen'             => 'string',
+            'Destino'            => 'string',
+            'Fecha Traslado'     => 'string',
+            'Hora Traslado'      => 'string',
+            'Vehículo'           => 'string',
+            'Pasajeros'          => 'integer',
+            'Equipaje'           => 'string',
+            'Nº Vuelo'           => 'string',
+            'Notas Adicionales'  => 'string',
+            'Token Hotel'        => 'string',
+            'Origen/Fuente'      => 'string',
+        );
+        $col_widths = array( 'widths' => array( 8, 18, 17, 25, 28, 15, 12, 14, 42, 42, 14, 10, 22, 10, 22, 14, 35, 15, 12 ) );
+
+        // ── Estilos de cabecera por estado (color visual por pestaña) ──
+        $tab_configs = array(
+            array( 'sheet' => 'Todas las Reservas', 'status' => null,              'fill' => '#e3f2fd', 'color' => '#0d47a1' ),
+            array( 'sheet' => 'HOTELES',             'status' => null, 'only_hotels' => true, 'fill' => '#e0f7fa', 'color' => '#006064' ),
+            array( 'sheet' => 'Confirmados',         'status' => 'confirmed',       'fill' => '#e8f5e9', 'color' => '#1b5e20' ),
+            array( 'sheet' => 'Pago Pendiente',      'status' => 'pending_payment', 'fill' => '#fff3e0', 'color' => '#e65100' ),
+            array( 'sheet' => 'Pendientes',          'status' => 'pending',         'fill' => '#fffde7', 'color' => '#f57f17' ),
+            array( 'sheet' => 'Cancelados',          'status' => 'cancelled',       'fill' => '#fce4ec', 'color' => '#880e4f' ),
+            array( 'sheet' => 'Completados',         'status' => 'completed',       'fill' => '#e8eaf6', 'color' => '#1a237e' ),
+        );
+
+        $row_styles = array( 'halign' => 'left', 'valign' => 'center' );
+
+        // Etiquetas legibles de estado
+        $status_labels = array(
+            'confirmed'       => 'Confirmado',
+            'pending'         => 'Pendiente',
+            'pending_payment' => 'Pago Pendiente',
+            'cancelled'       => 'Cancelado',
+            'completed'       => 'Completado',
+        );
+
+        // Caché de vehículos para evitar N+1 queries
+        $vehicle_cache = array();
+
+        // ── Escribir cada pestaña de reservas ──
+        foreach ( $tab_configs as $tab ) {
+            $sheet_name    = $tab['sheet'];
+            $filter_status = $tab['status'];
+
+            // Cabecera con color propio
+            $header_style = array_merge( array(
+                'font-style' => 'bold',
+                'font-size'  => 11,
+                'fill'       => $tab['fill'],
+                'color'      => $tab['color'],
+                'halign'     => 'center',
+                'border'     => 'left,right,top,bottom',
+            ), $col_widths );
+
+            $writer->writeSheetHeader( $sheet_name, $booking_headers, $header_style );
+
+            if ( $all_bookings ) {
+                foreach ( $all_bookings as $row ) {
+                    // Filtrar por estado si aplica
+                    if ( $filter_status !== null && $row['status'] !== $filter_status ) {
+                        continue;
+                    }
+                    
+                    // Filtrar solo hoteles si aplica
+                    if ( !empty($tab['only_hotels']) && empty($row['hotel_token']) ) {
+                        continue;
+                    }
+
+                    // Resolver vehículo (con caché)
+                    $vid = (int) $row['vehicle_id'];
+                    if ( ! isset( $vehicle_cache[ $vid ] ) ) {
+                        $v_name = 'ID: ' . $vid;
+                        if ( class_exists( 'WPTB_Vehicle_Manager' ) ) {
+                            $v = WPTB_Vehicle_Manager::get_vehicle( $vid );
+                            if ( $v ) $v_name = $v->name;
+                        }
+                        $vehicle_cache[ $vid ] = $v_name;
+                    }
+
+                    // Equipaje
+                    $equipaje = $row['suitcases'] . ' Maletas, ' . $row['carry_ons'] . ' Mochilas';
+                    if ( $row['suitcases'] == 0 && $row['carry_ons'] == 0 ) {
+                        $equipaje = '0';
+                    }
+
+                    // Estado legible
+                    $estado = isset( $status_labels[ $row['status'] ] )
+                        ? $status_labels[ $row['status'] ]
+                        : strtoupper( $row['status'] );
+
+                    $writer->writeSheetRow( $sheet_name, array(
+                        (int)   $row['id'],
+                                $row['created_at'],
+                                $estado,
+                                $row['customer_name'],
+                                $row['customer_email'],
+                                $row['customer_phone'],
+                        (float) $row['price'],
+                                $row['distance_km'] . ' km',
+                                $row['origin'],
+                                $row['destination'],
+                                $row['booking_date'],
+                                $row['booking_time'],
+                                $vehicle_cache[ $vid ],
+                        (int)   $row['passengers'],
+                                $equipaje,
+                                $row['flight_number'],
+                                $row['notes'],
+                                $row['hotel_token'],
+                                $row['source'],
+                    ), $row_styles );
+                }
+            }
+        }
+
+        // ── Pestaña: Resumen por Estado ──
+        $sheet_resumen = 'Resumen';
+        $writer->writeSheetHeader( $sheet_resumen, array(
+            'Estado'               => 'string',
+            'Total Reservas'       => 'integer',
+            'Ingresos Totales (€)' => 'price',
+        ), array(
+            'font-style' => 'bold',
+            'font-size'  => 12,
+            'fill'       => '#37474f',
+            'color'      => '#ffffff',
+            'halign'     => 'center',
+            'border'     => 'left,right,top,bottom',
+            'widths'     => array( 25, 18, 22 ),
+        ));
+
+        $resumen_rows = array(
+            array( 'label' => 'Todas',          'status' => null,              'fill' => '#cfd8dc' ),
+            array( 'label' => 'Confirmadas',    'status' => 'confirmed',       'fill' => '#a5d6a7' ),
+            array( 'label' => 'Pago Pendiente', 'status' => 'pending_payment', 'fill' => '#ffcc80' ),
+            array( 'label' => 'Pendientes',     'status' => 'pending',         'fill' => '#fff176' ),
+            array( 'label' => 'Canceladas',     'status' => 'cancelled',       'fill' => '#ef9a9a' ),
+            array( 'label' => 'Completadas',    'status' => 'completed',       'fill' => '#9fa8da' ),
+        );
+
+        foreach ( $resumen_rows as $r ) {
+            if ( $r['status'] === null ) {
+                $filtered = $all_bookings ?: array();
+            } else {
+                $filtered = $all_bookings
+                    ? array_filter( $all_bookings, function( $b ) use ( $r ) { return $b['status'] === $r['status']; } )
+                    : array();
+            }
+            $count    = count( $filtered );
+            $ingresos = array_sum( array_column( $filtered, 'price' ) );
+
+            $writer->writeSheetRow( $sheet_resumen, array(
+                $r['label'],
+                $count,
+                (float) $ingresos,
+            ), array(
+                'halign' => 'center',
+                'fill'   => $r['fill'],
+                'color'  => '#212121',
+                'border' => 'left,right,top,bottom',
+            ));
+        }
+
+        // ── Pestaña: Directorio de Clientes ──
+        $sheet_clientes = 'Directorio Clientes';
+        $writer->writeSheetHeader( $sheet_clientes, array(
+            'Nombre del Cliente' => 'string',
+            'Email'              => 'string',
+            'Teléfono'           => 'string',
+            'Nº Reservas'        => 'integer',
+            'Gasto Total (€)'    => 'price',
+            'Última Reserva'     => 'string',
+        ), array(
+            'font-style' => 'bold',
+            'font-size'  => 11,
+            'fill'       => '#e8eaf6',
+            'color'      => '#1a237e',
+            'halign'     => 'center',
+            'border'     => 'left,right,top,bottom',
+            'widths'     => array( 30, 35, 18, 14, 18, 20 ),
+        ));
+
+        $clientes = array();
+        if ( $all_bookings ) {
+            foreach ( $all_bookings as $row ) {
+                $email = strtolower( trim( $row['customer_email'] ) );
+                if ( empty( $email ) ) continue;
+                if ( ! isset( $clientes[ $email ] ) ) {
+                    $clientes[ $email ] = array(
+                        'name'      => $row['customer_name'],
+                        'email'     => $row['customer_email'],
+                        'phone'     => $row['customer_phone'],
+                        'count'     => 0,
+                        'total'     => 0.0,
+                        'last_date' => '',
+                    );
+                }
+                $clientes[ $email ]['count']++;
+                $clientes[ $email ]['total'] += (float) $row['price'];
+                if ( $row['created_at'] > $clientes[ $email ]['last_date'] ) {
+                    $clientes[ $email ]['last_date'] = $row['created_at'];
+                }
+            }
+            usort( $clientes, function( $a, $b ) { return $b['count'] - $a['count']; } );
+            foreach ( $clientes as $c ) {
+                $writer->writeSheetRow( $sheet_clientes, array(
+                    $c['name'],
+                    $c['email'],
+                    $c['phone'],
+                    $c['count'],
+                    (float) $c['total'],
+                    $c['last_date'],
+                ), $row_styles );
+            }
+        }
+
+        $upload_dir = wp_upload_dir();
+        $backup_dir = $upload_dir['basedir'] . '/wptb-backups';
+        if ( ! file_exists( $backup_dir ) ) {
+            wp_mkdir_p( $backup_dir );
+            file_put_contents($backup_dir . '/index.php', '<?php // Silence is golden');
+            file_put_contents($backup_dir . '/.htaccess', 'Options -Indexes');
+        }
+
+        $filepath = $backup_dir . '/' . XLSXWriter::sanitize_filename( $filename );
+        $writer->writeToFile( $filepath );
+
+        // Registrar en base de datos
+        $table_backups = $wpdb->prefix . 'wptb_backups';
+        $wpdb->insert( $table_backups, array(
+            'filename' => $filename,
+            'filepath' => $filepath,
+            'type'     => 'full_export',
+            'status'   => 'active'
+        ) );
+
+        // Enviar al navegador
+        readfile( $filepath );
+        exit;
     }
 }

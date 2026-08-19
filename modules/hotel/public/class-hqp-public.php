@@ -233,12 +233,29 @@ class HQP_Public {
         $origin = sanitize_text_field( $data['origin'] );
         $destination = sanitize_text_field( $data['destination'] );
         
+        // --- ADD DISTANCE CALCULATION FOR HOTELS ---
+        $distance_km = 0;
+        $api_key = get_option( 'wptb_google_maps_api_key' );
+        if ( ! empty( $api_key ) && ! empty( $origin ) && ! empty( $destination ) ) {
+            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins=' . urlencode($origin) . '&destinations=' . urlencode($destination) . '&key=' . $api_key . '&units=metric';
+            $response = wp_remote_get( $url );
+            if ( ! is_wp_error( $response ) ) {
+                $body = wp_remote_retrieve_body( $response );
+                $json = json_decode( $body, true );
+                if ( isset( $json['rows'][0]['elements'][0]['status'] ) && $json['rows'][0]['elements'][0]['status'] === 'OK' ) {
+                    $meters = $json['rows'][0]['elements'][0]['distance']['value'];
+                    $distance_km = round( $meters / 1000, 1 );
+                }
+            }
+        }
+        // -------------------------------------------
+        
         $booking_data = array(
             'booking_date'   => $date,
             'booking_time'   => $time,
             'origin'         => $origin,
             'destination'    => $destination,
-            'distance_km'    => 0,
+            'distance_km'    => $distance_km,
             'duration_minutes' => 0,
             'price'          => $price,
             'customer_name'  => sanitize_text_field( $data['customer_name'] ),
@@ -265,7 +282,8 @@ class HQP_Public {
             return;
         }
         
-        $order_id = str_pad( $booking_id + 60, 12, '0', STR_PAD_LEFT ); 
+        // Order ID para Getnet/Redsys: el booking_id ya es >= 10000 gracias al AUTO_INCREMENT.
+        $order_id = str_pad( $booking_id, 12, '0', STR_PAD_LEFT );
         
         $wpdb->update( 
             $table_name, 

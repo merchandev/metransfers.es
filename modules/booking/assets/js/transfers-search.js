@@ -687,3 +687,21 @@ document.addEventListener("DOMContentLoaded", () => {
         jQuery('#pts-modal-step-1').fadeIn();
     });
 });
+
+jQuery(document).ready(function($) {
+    // Asegurar que al hacer clic en el label o hacer foco en el input, se abra el selector nativo
+    $("input[type='date'], input[type='time']").on("focus click", function() {
+        if (typeof this.showPicker === "function") {
+            try { this.showPicker(); } catch(e) {}
+        }
+    });
+    
+    // Si se hace clic en la etiqueta, disparar el click o focus en el input correspondiente
+    $(".floating-label label").on("click", function() {
+        var forAttr = $(this).attr("for");
+        if(forAttr) {
+            $("#" + forAttr).trigger("focus");
+        }
+    });
+});
+

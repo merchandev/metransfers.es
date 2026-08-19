@@ -9,6 +9,7 @@ class WPTB_Bookings_Admin {
     public function __construct() {
         add_action('admin_menu', array($this, 'add_menu_page'));
         add_action('wp_ajax_wptb_update_booking_status', array($this, 'ajax_update_booking_status'));
+        add_action('wp_ajax_wptb_delete_all_bookings', array($this, 'ajax_delete_all_bookings'));
     }
 
     /**
@@ -51,6 +52,15 @@ class WPTB_Bookings_Admin {
         ?>
         <div class="wrap">
             <h1 class="wp-heading-inline">Gestión de Reservas</h1>
+
+            <!-- Botón Borrar todas las reservas -->
+            <button
+                id="wptb-delete-all-bookings-btn"
+                class="page-title-action"
+                style="background:#dc3232;color:#fff;border-color:#b22222;margin-left:10px;padding:5px 14px;font-weight:700;cursor:pointer;"
+            >
+                🗑️ Borrar TODAS las Reservas
+            </button>
             <hr class="wp-header-end">
 
             <!-- Status Tabs -->
@@ -167,13 +177,13 @@ class WPTB_Bookings_Admin {
 
         <script>
         jQuery(document).ready(function($) {
+            // ── Cambio de estado individual ──
             $('.wptb-status-select').on('change', function() {
                 const $select = $(this);
                 const bookingId = $select.data('booking-id');
                 const newStatus = $select.val();
                 
                 if (!confirm('¿Cambiar el estado de esta reserva?')) {
-                    // Revert select
                     $select.val($select.data('original-status'));
                     return;
                 }
@@ -203,6 +213,45 @@ class WPTB_Bookings_Admin {
             // Store original status
             $('.wptb-status-select').each(function() {
                 $(this).data('original-status', $(this).val());
+            });
+
+            // ── Borrar TODAS las reservas ──
+            $('#wptb-delete-all-bookings-btn').on('click', function() {
+                // Primera confirmación
+                if (!confirm('⚠️ ¿Estás SEGURO de que quieres borrar TODAS las reservas?\n\nEsta acción no se puede deshacer.')) {
+                    return;
+                }
+                // Segunda confirmación: escribir la palabra clave
+                const keyword = prompt('Para confirmar, escribe exactamente: BORRAR');
+                if (keyword !== 'BORRAR') {
+                    alert('Acción cancelada. No se ha borrado nada.');
+                    return;
+                }
+
+                const $btn = $(this);
+                $btn.prop('disabled', true).text('Borrando...');
+
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'wptb_delete_all_bookings',
+                        nonce: '<?php echo wp_create_nonce('wptb_delete_all_nonce'); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('✅ ' + response.data.message);
+                            location.reload();
+                        } else {
+                            alert('❌ Error: ' + response.data.message);
+                            $btn.prop('disabled', false).text('🗑️ Borrar TODAS las Reservas');
+                        }
+                    },
+                    error: function() {
+                        alert('❌ Error de conexión al intentar borrar.');
+                        $btn.prop('disabled', false).text('🗑️ Borrar TODAS las Reservas');
+                    }
+                });
             });
         });
         </script>
@@ -262,6 +311,39 @@ class WPTB_Bookings_Admin {
         } else {
             wp_send_json_error(array('message' => 'Error al actualizar.'));
         }
+    }
+
+    /**
+     * AJAX: Delete ALL bookings and reset AUTO_INCREMENT to 10000
+     */
+    public function ajax_delete_all_bookings() {
+        check_ajax_referer( 'wptb_delete_all_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( array( 'message' => 'No tienes permisos para realizar esta acción.' ) );
+            return;
+        }
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'wptb_bookings';
+
+        // Contar reservas antes de borrar
+        $total = (int) $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
+
+        // Truncar la tabla (borra todo y resetea auto_increment a 1)
+        $result = $wpdb->query( "TRUNCATE TABLE $table_name" );
+
+        if ( $result === false ) {
+            wp_send_json_error( array( 'message' => 'Error al borrar las reservas: ' . $wpdb->last_error ) );
+            return;
+        }
+
+        // Establecer el AUTO_INCREMENT en 10000 para que el próximo ID sea 10000
+        $wpdb->query( "ALTER TABLE $table_name AUTO_INCREMENT = 10000" );
+
+        wp_send_json_success( array(
+            'message' => "Se han borrado $total reservas. El próximo ID de reserva será 10000."
+        ) );
     }
 }
 

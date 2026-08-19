@@ -48,7 +48,26 @@ class WPTB_Activator {
             KEY hotel_token (hotel_token)
         ) $charset_collate;";
         dbDelta( $sql_bookings );
-        
+
+        // Asegurar que el AUTO_INCREMENT inicia en 10000 (IDs para Getnet siempre >= 10000)
+        $max_id = (int) $wpdb->get_var( "SELECT MAX(id) FROM $table_bookings" );
+        if ( $max_id < 10000 ) {
+            $wpdb->query( "ALTER TABLE $table_bookings AUTO_INCREMENT = 10000" );
+        }
+
+        // Table 1.5: Backups History
+        $table_backups = $wpdb->prefix . 'wptb_backups';
+        $sql_backups = "CREATE TABLE $table_backups (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            filename varchar(255) NOT NULL,
+            filepath text NOT NULL,
+            type varchar(50) DEFAULT 'manual',
+            status varchar(20) DEFAULT 'active',
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY  (id)
+        ) $charset_collate;";
+        dbDelta( $sql_backups );
+
         // Table 2: Vehicle Types
         $table_types = $wpdb->prefix . 'wptb_vehicle_types';
         $sql_types = "CREATE TABLE $table_types (

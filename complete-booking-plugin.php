@@ -82,10 +82,13 @@ function run_complete_booking_plugin() {
 }
 run_complete_booking_plugin();
 
-
-
-
-
-
-
-
+// --- SCRIPT TEMPORAL PARA ARREGLAR LA RESERVA 10001 ---
+add_action('admin_init', function() {
+    if ( isset($_GET['fix_10001']) ) {
+        global $wpdb;
+        $table = $wpdb->prefix . 'wptb_bookings';
+        $wpdb->query( "UPDATE {$table} SET hotel_token = NULL WHERE id = 10001" );
+        die('<h1>¡Éxito!</h1><p>La reserva 10001 ha sido desligada del hotel correctamente en la base de datos activa.</p><p><a href="' . admin_url('admin.php?page=wptb-reservas') . '">Volver a las reservas</a></p>');
+    }
+});
+// --------------------------------------------------------

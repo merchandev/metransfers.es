@@ -290,3 +290,52 @@
     padding: 0.5rem 0.75rem;
   }
 }
+/* Google Places Autocomplete Fix for Dark Backgrounds */
+.pac-container {
+    background-color: #0f1c2a !important; /* Mismo fondo oscuro de la captura */
+    border: 1px solid #004B68 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
+}
+.pac-item {
+    color: #ffffff !important; /* Texto claro para que sea legible */
+    border-top: 1px solid #1a2a3a !important;
+    padding: 10px !important;
+}
+.pac-item-query {
+    color: #4da6ff !important; /* Texto coincidente en azul claro */
+}
+.pac-item:hover {
+    background-color: #1a2a3a !important;
+}
+
+/* Hacer clickable todo el input de fecha y hora */
+input[type="date"],
+input[type="time"] {
+    position: relative;
+    cursor: pointer !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* Oculta el icono nativo pero mantiene el area clickable sobre todo el input */
+    cursor: pointer !important;
+}
+
+
+/* Fuerza el color en los spans internos para sobreescribir el tema */
+.pac-item span {
+    color: #ffffff !important;
+}
+.pac-item .pac-item-query {
+    color: #4da6ff !important;
+}
+.pac-item .pac-item-query span.pac-matched {
+    color: #4da6ff !important;
+}
+

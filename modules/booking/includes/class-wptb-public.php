@@ -588,8 +588,8 @@ class WPTB_Public {
             $existing_id = isset($_POST['existing_booking_id']) ? intval($_POST['existing_booking_id']) : 0;
             $booking_id = 0;
 
-            // Get hotel token from cookie if set
-            $hotel_token = isset($_COOKIE['hqp_hotel_token']) ? sanitize_text_field($_COOKIE['hqp_hotel_token']) : null;
+            // Get hotel token from cookie if set (DESHABILITADO PARA NO MEZCLAR CON RESERVAS NORMALES)
+            // $hotel_token = isset($_COOKIE['hqp_hotel_token']) ? sanitize_text_field($_COOKIE['hqp_hotel_token']) : null;
             
             $data_db = array(
                 'booking_date' => $booking_data['date'],
@@ -617,7 +617,7 @@ class WPTB_Public {
             if ( !empty( $booking_data['return_time'] ) ) $data_db['return_time'] = sanitize_text_field( $booking_data['return_time'] );
             if ( !empty( $booking_data['return_origin'] ) ) $data_db['return_pickup_address'] = sanitize_text_field( $booking_data['return_origin'] );
             if ( !empty( $booking_data['return_destination'] ) ) $data_db['return_dropoff_address'] = sanitize_text_field( $booking_data['return_destination'] );
-            if ( !empty( $hotel_token ) ) $data_db['hotel_token'] = $hotel_token;
+            // if ( !empty( $hotel_token ) ) $data_db['hotel_token'] = $hotel_token; // DESHABILITADO
 
             $format_db = array();
             foreach ( $data_db as $key => $val ) {
@@ -630,10 +630,10 @@ class WPTB_Public {
                 }
             }
 
-            // Forzar que el AUTO_INCREMENT inicie en 1000 para que coincida con el requerimiento de Redsys Transfer
+            // Asegurar que los IDs de reserva empiezan en 10000 (para Getnet/Redsys)
             $max_id = $wpdb->get_var("SELECT MAX(id) FROM $table_name");
-            if ( ! $max_id || $max_id < 1000 ) {
-                $wpdb->query("ALTER TABLE $table_name AUTO_INCREMENT = 1000");
+            if ( ! $max_id || (int) $max_id < 10000 ) {
+                $wpdb->query("ALTER TABLE $table_name AUTO_INCREMENT = 10000");
             }
 
             if ( $existing_id > 0 ) {
@@ -672,8 +672,9 @@ class WPTB_Public {
             
             $amount = intval( $booking_data['price'] * 100 ); // Cents
             
-            // Order ID: 4 nums + 8 alphanumeric.
-            $order_id = str_pad( $booking_id, 12, '0', STR_PAD_LEFT ); 
+            // Order ID para Getnet/Redsys: 12 dígitos rellenos con ceros a la izquierda.
+            // El booking_id ya es >= 10000 gracias al AUTO_INCREMENT configurado en el activador.
+            $order_id = str_pad( $booking_id, 12, '0', STR_PAD_LEFT );
             
             // Save Order ID to DB
             $wpdb->update( 

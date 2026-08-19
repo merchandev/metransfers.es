@@ -6,23 +6,18 @@ class Unified_Integration {
         // 1. Cookie & Token Logic (from Hotel Plugin)
         add_action( 'init', array( $this, 'check_url_token' ) );
         
-        // 2. Frontend Assets
-        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+        // 2. Frontend Assets - DESHABILITADO PARA NO MEZCLAR CON RESERVAS NORMALES
+        // add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
         
-        // 3. AJAX Override (Priority 0 to run BEFORE Hotel Plugin and Original)
-        // Checks validation with discount logic, then kills script to stop others.
-        add_action( 'wp_ajax_wptb_save_booking', array( $this, 'intercept_save_booking' ), 0 );
-        add_action( 'wp_ajax_nopriv_wptb_save_booking', array( $this, 'intercept_save_booking' ), 0 );
+        // 3. AJAX Override - DESHABILITADO
+        // add_action( 'wp_ajax_wptb_save_booking', array( $this, 'intercept_save_booking' ), 0 );
+        // add_action( 'wp_ajax_nopriv_wptb_save_booking', array( $this, 'intercept_save_booking' ), 0 );
 
-        // 4. Server-Side Stripe Price Adjustment (Optional/Safety)
-        // REMOVED 'wptb_booking_price' filter to avoid double-discounting 
-        // since we are overriding the payment intent creation directly.
-        
-        // 5. Payment Intent Override
-        add_action( 'wp_ajax_wptb_create_payment_intent', array( $this, 'intercept_create_payment_intent' ), 0 );
-        add_action( 'wp_ajax_nopriv_wptb_create_payment_intent', array( $this, 'intercept_create_payment_intent' ), 0 );
+        // 5. Payment Intent Override - DESHABILITADO
+        // add_action( 'wp_ajax_wptb_create_payment_intent', array( $this, 'intercept_create_payment_intent' ), 0 );
+        // add_action( 'wp_ajax_nopriv_wptb_create_payment_intent', array( $this, 'intercept_create_payment_intent' ), 0 );
 
-        // 6. Confirm Payment Intercept (To clear cookies)
+        // 6. Confirm Payment Intercept
         add_action( 'wp_ajax_wptb_confirm_payment', array( $this, 'intercept_confirm_payment' ), 0 );
         add_action( 'wp_ajax_nopriv_wptb_confirm_payment', array( $this, 'intercept_confirm_payment' ), 0 );
     }
