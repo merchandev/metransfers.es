@@ -667,8 +667,6 @@ class WPTB_Public {
 
             // 2. Prepare Redsys Params
             // ---------------------------------------------------------
-            $redsys = new WPTB_Redsys_API();
-            
             $amount = intval( $data_db['price'] * 100 ); // Cents
             
             // Order ID para Getnet/Redsys: 12 dÃ­gitos rellenos con ceros a la izquierda.
@@ -723,8 +721,6 @@ class WPTB_Public {
         if ( isset( $_GET['wptb_redsys_ipn'] ) && isset( $_POST['Ds_MerchantParameters'] ) ) {
             
             $key = '6N2lZu0nf+j7MnyFKGWyOxdzZau5sAAE';
-            $redsys = new WPTB_Redsys_API();
-            
             $version = $_POST['Ds_SignatureVersion'];
             $params = $_POST['Ds_MerchantParameters'];
             $signature_recv = $_POST['Ds_Signature'];

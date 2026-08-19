@@ -317,8 +317,6 @@ class HQP_Public {
             $currency = '978'; // EUR
             $trans_type = '0'; // Autorización
             
-            $redsys = new WPTB_Redsys_API();
-            
             $amount = intval( $price * 100 ); // Cents
             
             $url_notification = home_url( '/?wptb_redsys_ipn=1' );
