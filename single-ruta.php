@@ -183,7 +183,7 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                     </div>
                     <div class="ruta-feature__body">
                         <h3>Meet &amp; Greet</h3>
-                        <p>Tu conductor espera en la terminal de llegadas con un cartel con tu nombre. Cero esperas innecesarias.</p>
+                        <p><?php echo mt_translate("Tu conductor espera en la terminal de llegadas con un cartel con tu nombre. Cero esperas innecesarias."); ?></p>
                     </div>
                 </div>
                 <div class="ruta-feature">
@@ -191,8 +191,8 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3.055 11H5a2 2 0 0 1 2 2v1a2 2 0 0 0 2 2 2 2 0 0 1 2 2v2.945"/><path d="M8 3.935V5.5A2.5 2.5 0 0 0 10.5 8h.5a2 2 0 0 1 2 2 2 2 0 0 0 4 0 2 2 0 0 1 2-2h1.064"/><path d="M15 3.516V5a2 2 0 0 0 2 2h2.484"/><circle cx="12" cy="12" r="10"/></svg>
                     </div>
                     <div class="ruta-feature__body">
-                        <h3>Seguimiento de Vuelo</h3>
-                        <p>Monitorizamos tu vuelo cuando facilitas correctamente el número de vuelo y adaptamos la coordinación de la recogida a la hora real de llegada. Los tiempos de espera incluidos dependen de las condiciones de tu reserva.</p>
+                        <h3><?php echo mt_translate("Seguimiento de Vuelo"); ?></h3>
+                        <p><?php echo mt_translate("Monitorizamos tu vuelo cuando facilitas correctamente el número de vuelo y adaptamos la coordinación de la recogida a la hora real de llegada. Los tiempos de espera incluidos dependen de las condiciones de tu reserva."); ?></p>
                     </div>
                 </div>
                 <div class="ruta-feature">
@@ -200,8 +200,8 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     </div>
                     <div class="ruta-feature__body">
-                        <h3>Precio Cerrado</h3>
-                        <p>El precio que aceptas en tu reserva es el que pagas. Sin taxímetros, sin tarifas dinámicas.</p>
+                        <h3><?php echo mt_translate("Precio Cerrado"); ?></h3>
+                        <p><?php echo mt_translate("El precio que aceptas en tu reserva es el que pagas. Sin taxímetros, sin tarifas dinámicas."); ?></p>
                     </div>
                 </div>
                 <div class="ruta-feature">
@@ -209,8 +209,8 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
                     </div>
                     <div class="ruta-feature__body">
-                        <h3>Puerta a Puerta</h3>
-                        <p>Recogida y entrega en el punto exacto que indiques. Hotel, apartamento, crucero o estación.</p>
+                        <h3><?php echo mt_translate("Puerta a Puerta"); ?></h3>
+                        <p><?php echo mt_translate("Recogida y entrega en el punto exacto que indiques. Hotel, apartamento, crucero o estación."); ?></p>
                     </div>
                 </div>
                 <div class="ruta-feature">
@@ -218,8 +218,8 @@ $hero_bg = get_the_post_thumbnail_url( $ruta_id, 'full' );
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
                     </div>
                     <div class="ruta-feature__body">
-                        <h3>Equipaje Incluido</h3>
-                        <p>Maletero amplio para toda tu equipaje sin cargos extra. Informamos de límites si los hay.</p>
+                        <h3><?php echo mt_translate("Equipaje Incluido"); ?></h3>
+                        <p><?php echo mt_translate("Maletero amplio para toda tu equipaje sin cargos extra. Informamos de límites si los hay."); ?></p>
                     </div>
                 </div>
                 <div class="ruta-feature">
