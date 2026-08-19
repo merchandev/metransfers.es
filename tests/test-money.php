@@ -38,11 +38,12 @@ assert_money( 12345 === Money::fromBooking( $new_booking )->cents(), 'price_cent
 assert_money( 12345 === Money::fromBooking( $legacy_booking )->cents(), 'Legacy rows must remain readable during migration.' );
 
 $root = dirname( __DIR__ );
-$activator = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-activator.php' );
+$schema = file_get_contents( $root . '/app/Core/Schema.php' );
+$data_migrations = file_get_contents( $root . '/app/Core/DataMigrations.php' );
 assert_money(
-    false !== strpos( $activator, 'price_cents bigint(20) unsigned DEFAULT NULL' )
-        && false !== strpos( $activator, 'WHERE price_cents IS NULL' )
-        && false !== strpos( $activator, 'ROUND(price * 100)' ),
+    false !== strpos( $schema, 'price_cents bigint(20) unsigned DEFAULT NULL' )
+        && false !== strpos( $data_migrations, 'WHERE price_cents IS NULL' )
+        && false !== strpos( $data_migrations, 'ROUND(price * 100)' ),
     'The additive schema and idempotent DECIMAL backfill must be migration-managed.'
 );
 

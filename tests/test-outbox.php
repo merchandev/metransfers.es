@@ -128,11 +128,11 @@ assert_outbox(
     'The IPN must acknowledge only after the outbox insert.'
 );
 
-$activator = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-activator.php' );
+$schema = file_get_contents( $root . '/app/Core/Schema.php' );
 assert_outbox(
-    false !== strpos( $activator, 'mt_outbox' )
-        && false !== strpos( $activator, 'UNIQUE KEY event_key' )
-        && false !== strpos( $activator, 'status_available' ),
+    false !== strpos( $schema, 'mt_outbox' )
+        && false !== strpos( $schema, 'UNIQUE KEY event_key' )
+        && false !== strpos( $schema, 'status_available' ),
     'The durable outbox schema and indexes must be migration-managed.'
 );
 

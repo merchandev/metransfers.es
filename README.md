@@ -136,6 +136,8 @@ El recibo del cliente es HTML imprimible y se reconstruye desde una reserva paga
 
 El panel MeTransfers usa capacidades de mínimo privilegio y dispone del rol **MeTransfers Operaciones**, sin acceso a integraciones ni secretos. Los reenvíos de email y WhatsApp son acciones separadas y auditadas; las exportaciones exigen permiso propio y un rango máximo de 366 días.
 
+Las migraciones de base de datos son discretas y reanudables: usan un lock por sitio, un journal por paso y solo avanzan la versión al completar el lote. Las definiciones de schema, los backfills y los seeds de contenido tienen responsables separados; el activador legacy se conserva únicamente como fachada compatible.
+
 Los eventos disponibles en `dataLayer` son `booking_start`, `route_search`, `vehicle_select`, `begin_checkout`, `add_payment_info`, `generate_lead`, `purchase`, `click_whatsapp`, `click_phone`, `booking_error` y `payment_error`. Teléfono y WhatsApp se capturan globalmente mediante un script mínimo. No se envía PII a `dataLayer`. Con `MT_GA4_MEASUREMENT_ID` y `MT_GA4_API_SECRET`, el worker despacha `analytics.purchase:{booking_id}` desde el outbox genérico. La tabla analítica anterior se mantiene únicamente para drenar eventos creados antes de la versión 6.1.0.
 
 ## Validación de staging

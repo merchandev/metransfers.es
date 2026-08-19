@@ -176,11 +176,11 @@ $database->drafts[ $expired_id ]['expires_at'] = gmdate( 'Y-m-d H:i:s', time() -
 assert_booking_draft( null === $service->get( $expired_token ), 'Expired drafts must not be readable.' );
 
 $root = dirname( __DIR__ );
-$activator = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-activator.php' );
+$schema = file_get_contents( $root . '/app/Core/Schema.php' );
 assert_booking_draft(
-    false !== strpos( $activator, 'mt_booking_drafts' )
-        && false !== strpos( $activator, 'UNIQUE KEY payment_idempotency_key' )
-        && false !== strpos( $activator, 'UNIQUE KEY token_hash' ),
+    false !== strpos( $schema, 'mt_booking_drafts' )
+        && false !== strpos( $schema, 'UNIQUE KEY payment_idempotency_key' )
+        && false !== strpos( $schema, 'UNIQUE KEY token_hash' ),
     'Draft and booking idempotency constraints must be migration-managed.'
 );
 

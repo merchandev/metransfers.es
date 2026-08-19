@@ -81,7 +81,7 @@ $settings = file_get_contents( $root . '/app/Core/Settings.php' );
 $notifications = file_get_contents( $root . '/app/Notifications/NotificationService.php' );
 $admin = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-admin.php' );
 $hotel_admin = file_get_contents( $root . '/app/Legacy/Hotel/admin/class-hqp-admin.php' );
-$activator = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-activator.php' );
+$schema = file_get_contents( $root . '/app/Core/Schema.php' );
 
 foreach ( array( 'MANAGE_BOOKINGS', 'MANAGE_VEHICLES', 'MANAGE_HOTELS', 'VIEW_STATS', 'EXPORT_BOOKINGS', 'MANAGE_INTEGRATIONS', 'MANAGE_NOTIFICATIONS' ) as $constant ) {
     assert_admin_security( false !== strpos( $menu . $capabilities, $constant ), "Admin capability $constant is not wired." );
@@ -131,8 +131,8 @@ assert_admin_security(
     'Hotel tokens must be immutable, high entropy, masked and protected by object authorization.'
 );
 assert_admin_security(
-    false !== strpos( $activator, 'mt_admin_audit' )
-        && false !== strpos( $activator, 'action_created' )
+    false !== strpos( $schema, 'mt_admin_audit' )
+        && false !== strpos( $schema, 'action_created' )
         && false === strpos( file_get_contents( $root . '/app/Admin/AuditLog.php' ), "'customer_email'" ),
     'The append-only audit schema must exist without storing booking PII.'
 );
