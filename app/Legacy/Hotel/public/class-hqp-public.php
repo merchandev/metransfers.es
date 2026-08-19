@@ -182,11 +182,16 @@ class HQP_Public {
 
                 // Si no hay precio fijo establecido para este vehículo en este hotel, no se ofrece.
 
-                if ( ! empty( $fixed_price ) && floatval( $fixed_price ) > 0 ) {
+                if ( ! empty( $fixed_price ) ) {
                     $discount_percent = (int) get_post_meta( $hotel_id, '_hqp_discount_percent', true );
-                    $final_price = floatval( $fixed_price );
-                    if ( $discount_percent > 0 && $discount_percent <= 100 ) {
-                        $final_price = $final_price - ( $final_price * ( $discount_percent / 100 ) );
+                    try {
+                        $price_money = $this->discounted_money( $fixed_price, $discount_percent );
+                    } catch ( \InvalidArgumentException $exception ) {
+                        error_log( "WPTB HOTEL VEHICLE EXCLUDED: ID $vehicle_id - Invalid fixed price." );
+                        continue;
+                    }
+                    if ( $price_money->cents() <= 0 ) {
+                        continue;
                     }
                     
                     $vehicles[] = array(
@@ -194,7 +199,8 @@ class HQP_Public {
                         'name'        => $v->name,
                         'description' => isset($v->description) ? $v->description : '',
                         'capacity'    => $v->capacity,
-                        'price'       => number_format( $final_price, 2, '.', '' )
+                        'price'       => $price_money->decimal(),
+                        'price_cents' => $price_money->cents(),
                     );
                 } else {
                     error_log("WPTB HOTEL VEHICLE EXCLUDED: ID $vehicle_id - Fixed Price: $fixed_price");
@@ -247,18 +253,23 @@ class HQP_Public {
 
         $price = get_post_meta( $hotel_id, '_hqp_price_vehicle_' . $vehicle_id, true );
 
-        if ( ! $price || floatval( $price ) <= 0 ) {
+        $discount_percent = (int) get_post_meta( $hotel_id, '_hqp_discount_percent', true );
+        try {
+            $price_money = $this->discounted_money( $price, $discount_percent );
+        } catch ( \InvalidArgumentException $exception ) {
             wp_send_json_error( array( 'message' => 'Precio no válido para este vehículo.' ) );
+            return;
+        }
+        if ( $price_money->cents() <= 0 ) {
+            wp_send_json_error( array( 'message' => 'Precio no válido para este vehículo.' ) );
+            return;
         }
 
-        $discount_percent = (int) get_post_meta( $hotel_id, '_hqp_discount_percent', true );
-        if ( $discount_percent > 0 && $discount_percent <= 100 ) {
-            $price_val = floatval( $price );
-            $price = $price_val - ( $price_val * ( $discount_percent / 100 ) );
-        }
+        $price = $price_money->decimalFloat();
+        $price_cents = $price_money->cents();
 
         $gateway = null;
-        if ( (float) $price > 0 ) {
+        if ( $price_cents > 0 ) {
             $gateway = new \MeTransfers\Payments\Redsys\Gateway();
             if ( ! $gateway->is_configured() ) {
                 wp_send_json_error( array( 'message' => 'El pago no está configurado. Contacta con soporte.' ) );
@@ -300,6 +311,7 @@ class HQP_Public {
             'distance_km'    => $distance_km,
             'duration_minutes' => $duration_minutes,
             'price'          => $price,
+            'price_cents'    => $price_cents,
             'customer_name'  => sanitize_text_field( $data['customer_name'] ),
             'customer_email' => sanitize_email( $data['customer_email'] ),
             'customer_phone' => sanitize_text_field( $data['customer_phone'] ),
@@ -315,7 +327,7 @@ class HQP_Public {
             'hotel_token'    => get_post_meta( $hotel_id, '_hqp_token', true ),
         );
 
-        $format_db = array( '%s', '%s', '%s', '%s', '%f', '%d', '%f', '%s', '%s', '%s', '%d', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s' );
+        $format_db = array( '%s', '%s', '%s', '%s', '%f', '%d', '%f', '%d', '%s', '%s', '%s', '%d', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s' );
 
         $result = $wpdb->insert( $table_name, $booking_data, $format_db );
         $booking_id = $wpdb->insert_id;
@@ -337,7 +349,7 @@ class HQP_Public {
 
         $url_ok = \MeTransfers\Payments\Redsys\Gateway::confirmation_url( $order_id );
 
-        if ( $price <= 0 ) {
+        if ( $price_cents <= 0 ) {
             $wpdb->update(
                 $table_name,
                 array(
@@ -350,12 +362,9 @@ class HQP_Public {
                 array( '%d' )
             );
 
-            if ( class_exists( 'WPTB_Public' ) ) {
-                $booking_obj = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking_id ) );
-                if ( $booking_obj ) {
-                    $wptb_public = new WPTB_Public();
-                    $wptb_public->process_booking_notifications( $booking_id, $booking_obj );
-                }
+            if ( ! \MeTransfers\Booking\BookingEvents::paid( $booking_id ) ) {
+                wp_send_json_error( array( 'message' => 'La reserva se guardó, pero no se pudo programar su confirmación.' ) );
+                return;
             }
 
             wp_send_json_success( array( 'redirect' => $url_ok ) );
@@ -365,18 +374,15 @@ class HQP_Public {
         try {
             $payment = $gateway->generate_payment_form(
                 $booking_id,
-                (int) round( $price * 100 ),
+                $price_cents,
                 $order_id,
                 $booking_data['customer_name']
             );
 
-            // Notify only after a valid payment form has been generated.
-            if ( class_exists( 'WPTB_Public' ) ) {
-                $booking_obj = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking_id ) );
-                if ( $booking_obj ) {
-                    $wptb_public = new WPTB_Public();
-                    $wptb_public->process_booking_notifications( $booking_id, $booking_obj, 'pending' );
-                }
+            // Persist the pending event only after a valid payment form exists.
+            if ( ! \MeTransfers\Booking\BookingEvents::pending( $booking_id ) ) {
+                wp_send_json_error( array( 'message' => 'No se pudo programar la notificación de la reserva.' ) );
+                return;
             }
 
             wp_send_json_success( array(
@@ -436,6 +442,17 @@ class HQP_Public {
         return $query->have_posts() ? absint( $query->posts[0] ) : 0;
     }
 
+    private function discounted_money( $price, $discount_percent ) {
+        $money = \MeTransfers\Pricing\Money::fromDecimal( $price );
+        $discount_percent = (int) $discount_percent;
+        if ( $discount_percent <= 0 || $discount_percent > 100 ) {
+            return $money;
+        }
+
+        $discounted_cents = intdiv( ( $money->cents() * ( 100 - $discount_percent ) ) + 50, 100 );
+        return new \MeTransfers\Pricing\Money( $discounted_cents );
+    }
+
     public function apply_booking_discount( $price ) {
         $token = '';
         if ( isset( $_COOKIE['hqp_hotel_token'] ) ) {
@@ -448,11 +465,11 @@ class HQP_Public {
             return $price;
         }
         
-        $original_price = floatval( $price );
-        $discount_amount = ( $original_price * $discount_percent ) / 100;
-        $final_price = $original_price - $discount_amount;
-        
-        return number_format( $final_price, 2, '.', '' );
+        try {
+            return $this->discounted_money( $price, $discount_percent )->decimal();
+        } catch ( \InvalidArgumentException $exception ) {
+            return $price;
+        }
     }
 
     public function intercept_booking_submission() {
@@ -466,11 +483,11 @@ class HQP_Public {
         $discount_percent = $this->get_discount_from_token( $token );
         
         if ( $discount_percent > 0 ) {
-            $original_price = floatval( $_POST['price'] );
-            $discount_amount = ( $original_price * $discount_percent ) / 100;
-            $final_price = $original_price - $discount_amount;
-            
-            $_POST['price'] = number_format( $final_price, 2, '.', '' );
+            try {
+                $_POST['price'] = $this->discounted_money( wp_unslash( $_POST['price'] ), $discount_percent )->decimal();
+            } catch ( \InvalidArgumentException $exception ) {
+                return;
+            }
             $_POST['hotel_token'] = $token;
         }
     }

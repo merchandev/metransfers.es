@@ -11,10 +11,10 @@ class Application {
         self::$booted = true;
 
         if (!defined('MT_PLATFORM_VERSION')) {
-            define('MT_PLATFORM_VERSION', '6.0.0');
+            define('MT_PLATFORM_VERSION', '6.9.0');
         }
         if (!defined('MT_PLATFORM_DB_VERSION')) {
-            define('MT_PLATFORM_DB_VERSION', '6.0.0');
+            define('MT_PLATFORM_DB_VERSION', '6.5.0');
         }
         if (!defined('MT_TERMS_VERSION')) {
             define('MT_TERMS_VERSION', '2026-08-18');
@@ -43,6 +43,12 @@ class Application {
         self::loadLegacyModules();
 
         // Boot modern components
+        $capabilities = new \MeTransfers\Admin\Capabilities();
+        $capabilities->register();
+
+        $settings = new \MeTransfers\Core\Settings();
+        $settings->register();
+
         $postTypes = new \MeTransfers\Core\PostTypes();
         add_action('init', [$postTypes, 'register'], 5);
         $shortcodes = new \MeTransfers\Booking\Shortcodes();
@@ -53,6 +59,18 @@ class Application {
 
         $migrations = new \MeTransfers\Core\Migrations();
         $migrations->register();
+
+        $seeds = new \MeTransfers\Core\Seeds();
+        $seeds->register();
+
+        $outbox = new \MeTransfers\Core\Outbox();
+        $outbox->register();
+
+        $drafts = new \MeTransfers\Booking\BookingDraftService();
+        $drafts->register();
+
+        $receipts = new \MeTransfers\Booking\ReceiptController();
+        $receipts->register();
 
         $analytics = new \MeTransfers\Analytics\PurchaseOutbox();
         $analytics->register();

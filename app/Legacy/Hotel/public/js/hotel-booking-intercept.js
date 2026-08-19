@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
         const observer = new MutationObserver(function(mutationsList) {
             for(let mutation of mutationsList) {
                 if (mutation.type === 'attributes' && $(mutation.target).is(':visible')) {
-                    updatePriceDisplay();
+                    applyDiscountVisuals();
                 }
             }
         });

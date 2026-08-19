@@ -22,7 +22,7 @@ class WPTB_Vehicles_Admin {
             'wptb-bookings',
             'Vehículos',
             'Vehículos',
-            'manage_options',
+            \MeTransfers\Admin\Capabilities::MANAGE_VEHICLES,
             'wptb-vehicles',
             array( $this, 'display_vehicles_page' )
         );
@@ -32,6 +32,9 @@ class WPTB_Vehicles_Admin {
      * Display vehicles page
      */
     public function display_vehicles_page() {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_VEHICLES ) ) {
+            wp_die( 'Sin permisos.' );
+        }
         $action = isset( $_GET['action'] ) ? sanitize_text_field( $_GET['action'] ) : 'list';
         $vehicle_id = isset( $_GET['vehicle_id'] ) ? absint( $_GET['vehicle_id'] ) : 0;
 
@@ -422,7 +425,7 @@ class WPTB_Vehicles_Admin {
     public function ajax_save_vehicle() {
         check_ajax_referer( 'wptb_vehicle_nonce', 'nonce' );
         
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_VEHICLES ) ) {
             wp_send_json_error( 'No tienes permisos' );
         }
         
@@ -431,6 +434,7 @@ class WPTB_Vehicles_Admin {
         $vehicle_id = WPTB_Vehicle_Manager::save_vehicle( $data );
         
         if ( $vehicle_id ) {
+            \MeTransfers\Admin\AuditLog::record( 'vehicle.saved', 'vehicle', $vehicle_id );
             wp_send_json_success( array( 'vehicle_id' => $vehicle_id ) );
         } else {
             wp_send_json_error( 'Error al guardar vehículo' );
@@ -443,13 +447,14 @@ class WPTB_Vehicles_Admin {
     public function ajax_delete_vehicle() {
         check_ajax_referer( 'wptb_vehicle_nonce', 'nonce' );
         
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_VEHICLES ) ) {
             wp_send_json_error( 'No tienes permisos' );
         }
         
         $vehicle_id = absint( $_POST['vehicle_id'] );
         
         if ( WPTB_Vehicle_Manager::delete_vehicle( $vehicle_id ) ) {
+            \MeTransfers\Admin\AuditLog::record( 'vehicle.deleted', 'vehicle', $vehicle_id );
             wp_send_json_success();
         } else {
             wp_send_json_error( 'Error al eliminar' );
@@ -462,7 +467,7 @@ class WPTB_Vehicles_Admin {
     public function ajax_upload_image() {
         check_ajax_referer( 'wptb_vehicle_nonce', 'nonce' );
         
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_VEHICLES ) ) {
             wp_send_json_error( 'No tienes permisos' );
         }
         
@@ -483,6 +488,8 @@ class WPTB_Vehicles_Admin {
         $is_primary = empty( $images );
         
         WPTB_Vehicle_Manager::add_vehicle_image( $vehicle_id, $uploaded['url'], $is_primary );
+
+        \MeTransfers\Admin\AuditLog::record( 'vehicle.image_uploaded', 'vehicle', $vehicle_id );
         
         wp_send_json_success( array( 'url' => $uploaded['url'] ) );
     }
@@ -493,13 +500,14 @@ class WPTB_Vehicles_Admin {
     public function ajax_delete_image() {
         check_ajax_referer( 'wptb_vehicle_nonce', 'nonce' );
         
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_VEHICLES ) ) {
             wp_send_json_error( 'No tienes permisos' );
         }
         
         $image_id = absint( $_POST['image_id'] );
         
         if ( WPTB_Vehicle_Manager::delete_vehicle_image( $image_id ) ) {
+            \MeTransfers\Admin\AuditLog::record( 'vehicle.image_deleted', 'vehicle_image', $image_id );
             wp_send_json_success();
         } else {
             wp_send_json_error( 'Error al eliminar' );

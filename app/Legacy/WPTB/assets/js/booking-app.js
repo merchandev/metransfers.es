@@ -43,7 +43,6 @@ jQuery(document).ready(function ($) {
     })();
 
     // ===== GLOBAL STATE =====
-    let originAutocomplete, destinationAutocomplete;
     let map, directionsService, directionsRenderer;
     let bookingData = {
         date: '',
@@ -56,8 +55,41 @@ jQuery(document).ready(function ($) {
         vehicle_id: 0,
         vehicle_name: '',
         trip_type: 'one_way',
-        price: 0
+        price: 0,
+        price_cents: 0
     };
+
+    function vehicleQuoteRequest(data) {
+        return {
+            language: (typeof wptb_vars !== 'undefined' && wptb_vars.language) ? wptb_vars.language : 'es',
+            date: data.date || '',
+            time: data.time || '',
+            origin: data.origin || '',
+            destination: data.destination || '',
+            trip_type: data.trip_type || 'one_way',
+            return_date: data.return_date || '',
+            return_time: data.return_time || '',
+            return_origin: data.return_origin || '',
+            return_destination: data.return_destination || '',
+            passengers: data.passengers || 1,
+            suitcases: data.suitcases || 0,
+            carry_ons: data.carry_ons || 0
+        };
+    }
+
+    function applyServerRoute(route, target) {
+        if (!route || !target) return;
+        target.distance_km = Number.parseFloat(route.total_distance_km || route.distance_km || 0);
+        target.duration_minutes = Number.parseInt(route.duration_minutes || 0, 10);
+        target.duration_text = target.duration_minutes > 0 ? target.duration_minutes + ' min' : '';
+        target.quote_verified = true;
+    }
+
+    function vehicleQuotesFromResponse(response) {
+        if (!response || !response.success || !response.data) return [];
+        applyServerRoute(response.data.route, bookingData);
+        return Array.isArray(response.data.vehicles) ? response.data.vehicles : [];
+    }
 
     // ===== ORIGIN & DESTINATION RESTRICTIONS =====
     const DESTINATION_COUNTRIES = ['ES', 'PT', 'FR', 'CH', 'BE', 'DE', 'IT', 'NL', 'AT', 'HR', 'SI', 'PL', 'LU', 'AD'];
@@ -92,7 +124,7 @@ jQuery(document).ready(function ($) {
             bookingData.vehicle = vehicle; // Guardar el objeto completo para validaciones
             bookingData.vehicle_id = vehicle.id;
             bookingData.vehicle_name = vehicle.name;
-            calculatePrice(vehicle);
+            useServerVehiclePrice(vehicle);
         } else {
             console.error('Vehicle data not found for ID:', id);
         }
@@ -334,16 +366,14 @@ jQuery(document).ready(function ($) {
         $.ajax({
             url: wptb_vars.ajax_url,
             type: 'POST',
-            data: {
+            data: Object.assign({
                 action: 'wptb_get_vehicles',
-                security: wptb_vars.nonce,
-                distance_km: bookingData.distance_km,
-                trip_type: bookingData.trip_type,
-                language: wptb_vars.language || 'es'
-            },
+                security: wptb_vars.nonce
+            }, vehicleQuoteRequest(bookingData)),
             success: function (response) {
-                if (response.success && response.data && response.data.length > 0) {
-                    displayVehiclesInModal(response.data);
+                const vehicles = vehicleQuotesFromResponse(response);
+                if (vehicles.length > 0) {
+                    displayVehiclesInModal(vehicles);
                 } else {
                     track('booking_error', { error_type: 'no_vehicles' });
                     $('#wptb-modal-vehicles-grid').html('<p class="mt-inline-notice">' + escapeHtml(t('no_vehicles', 'No se encontraron vehículos disponibles.')) + '</p>');
@@ -372,7 +402,7 @@ jQuery(document).ready(function ($) {
                     <div class="vehicle-info-compact">
                         <strong>${vehicleName}</strong>
                         <span class="vehicle-capacity">👥 ${vehicle.capacity} pax</span>
-                        <span class="vehicle-price-compact">${escapeHtml(t('from_price', 'Desde'))} €${vehicle.pricing.min_oneway}</span>
+                        <span class="vehicle-price-compact">${escapeHtml(t('price', 'Precio'))} €${Number.parseFloat(vehicle.price).toFixed(2)}</span>
                     </div>
                 </div>
             `;
@@ -385,7 +415,7 @@ jQuery(document).ready(function ($) {
         vehicles.forEach(v => window.modalVehicleMap[v.id] = v);
 
         // Handle vehicle selection in modal
-        $(document).on('click', '.wptb-modal-vehicle-btn', function () {
+        $(document).off('click', '.wptb-modal-vehicle-btn').on('click', '.wptb-modal-vehicle-btn', function () {
             const id = $(this).data('vehicle-id');
             const vehicle = window.modalVehicleMap[id];
 
@@ -393,30 +423,12 @@ jQuery(document).ready(function ($) {
                 $('.wptb-modal-vehicle-btn').removeClass('selected');
                 $(this).addClass('selected');
 
-                // Calculate price and redirect
+                // Use the authoritative price returned by the server.
                 bookingData.vehicle = vehicle; // Guardar el objeto entero
                 bookingData.vehicle_id = vehicle.id;
                 bookingData.vehicle_name = vehicle.name;
-
-                const distance = parseFloat(bookingData.distance_km);
-                const pricing = vehicle.pricing;
-                let price = 0;
-
-                if (bookingData.trip_type === 'one_way') {
-                    price = Math.max(
-                        distance * pricing.price_per_km_oneway,
-                        pricing.min_oneway,
-                        pricing.min_transfer
-                    );
-                } else {
-                    price = Math.max(
-                        distance * pricing.price_per_km_roundtrip,
-                        pricing.min_roundtrip,
-                        pricing.min_transfer
-                    );
-                }
-
-                bookingData.price = parseFloat(price.toFixed(2));
+                bookingData.price = Number.parseFloat(vehicle.price);
+                bookingData.price_cents = Number.parseInt(vehicle.price_cents, 10);
 
                 track('vehicle_select', {
                     vehicle_id: vehicle.id,
@@ -572,7 +584,7 @@ jQuery(document).ready(function ($) {
     });
 
     // Handle Route Calculation
-    function calculateRoute(suffix) {
+    function calculateRoute() {
         processCalculation();
     }
 
@@ -657,19 +669,17 @@ jQuery(document).ready(function ($) {
         $.ajax({
             url: wptb_vars.ajax_url,
             type: 'POST',
-            data: {
+            data: Object.assign({
                 action: 'wptb_get_vehicles',
-                security: wptb_vars.nonce,
-                distance_km: bookingData.distance_km,
-                trip_type: bookingData.trip_type,
-                language: wptb_vars.language || 'es'
-            },
+                security: wptb_vars.nonce
+            }, vehicleQuoteRequest(bookingData)),
             success: function (response) {
                 hideBTTLoader(); // Always reveal page once we have a response
-                if (response.success && response.data && response.data.length > 0) {
-                    displayVehicles(response.data);
+                const vehicles = vehicleQuotesFromResponse(response);
+                if (vehicles.length > 0) {
+                    displayVehicles(vehicles);
                 } else {
-                    displayNoVehicles(response);
+                    displayNoVehicles();
                 }
             },
             error: function (xhr, status, error) {
@@ -681,7 +691,7 @@ jQuery(document).ready(function ($) {
         });
     }
 
-    function displayNoVehicles(response) {
+    function displayNoVehicles() {
         track('booking_error', { error_type: 'no_vehicles' });
         const $message = $('<div>', { class: 'mt-empty-state' });
         $message.append('<span class="dashicons dashicons-warning mt-empty-state__icon"></span>');
@@ -691,29 +701,9 @@ jQuery(document).ready(function ($) {
 
     function displayVehicles(vehicles) {
         let html = '';
-        const distance = parseFloat(bookingData.distance_km || 0);
 
         vehicles.forEach(function (vehicle) {
-            // Calculate Price for Display
-            const pricing = vehicle.pricing;
-            let displayPrice = 0;
-
-            if (bookingData.trip_type === 'round_trip') {
-                const effectiveDistance = distance * 2;
-                displayPrice = Math.max(
-                    effectiveDistance * parseFloat(pricing.price_per_km_roundtrip),
-                    parseFloat(pricing.min_roundtrip),
-                    parseFloat(pricing.min_transfer)
-                );
-            } else {
-                displayPrice = Math.max(
-                    distance * parseFloat(pricing.price_per_km_oneway),
-                    parseFloat(pricing.min_oneway),
-                    parseFloat(pricing.min_transfer)
-                );
-            }
-
-            // Format Price (Standard integer for clean look if no decimals, or fixed if needed)
+            const displayPrice = Number.parseFloat(vehicle.price || 0);
             const formattedPrice = Number.isInteger(displayPrice) ? displayPrice : displayPrice.toFixed(2);
 
             html += `
@@ -735,7 +725,7 @@ jQuery(document).ready(function ($) {
 
                         <div class="mt-vehicle-card__footer">
                             <div class="vehicle-price-preview">
-                                <span class="price-label">${escapeHtml(t('from_price', 'Desde'))}</span>
+                                <span class="price-label">${escapeHtml(t('price', 'Precio'))}</span>
                                 <span class="price-value">€${formattedPrice}</span>
                             </div>
 
@@ -772,69 +762,19 @@ jQuery(document).ready(function ($) {
         e.stopPropagation(); // Prevent bubbling to card onclick
         const $card = $(this).closest('.vehicle-card');
         const id = $card.data('vehicle-id');
-        selectVehicle(id);
+        window.selectVehicle(id);
     });
 
-    function calculatePrice(vehicle) {
-
-        const distance = parseFloat(bookingData.distance_km);
-        const pricing = vehicle.pricing;
-        let price = 0;
-
-        if (bookingData.trip_type === 'one_way') {
-            price = Math.max(
-                distance * pricing.price_per_km_oneway,
-                pricing.min_oneway,
-                pricing.min_transfer
-            );
-        } else {
-            const effectiveDistance = distance * 2;
-            price = Math.max(
-                effectiveDistance * pricing.price_per_km_roundtrip,
-                pricing.min_roundtrip,
-                pricing.min_transfer
-            );
-        }
-
-        bookingData.price = parseFloat(price.toFixed(2));
-
-        if (bookingData.trip_type === 'one_way' && typeof wptb_vars !== 'undefined') {
-            $.ajax({
-                url: wptb_vars.ajax_url,
-                method: 'POST',
-                dataType: 'json',
-                data: {
-                    action: 'wptb_get_quote',
-                    security: wptb_vars.nonce,
-                    language: wptb_vars.language || 'es',
-                    date: bookingData.date,
-                    time: bookingData.time,
-                    origin: bookingData.origin,
-                    destination: bookingData.destination,
-                    vehicle_id: vehicle.id,
-                    trip_type: 'one_way'
-                }
-            }).done(function (response) {
-                if (!response.success || !response.data || !response.data.valid) {
-                    const message = response.data && response.data.message
-                        ? response.data.message
-                        : t('invalid_server_price', 'No se pudo calcular un precio válido para la reserva.');
-                    track('booking_error', {error_type: 'invalid_quote'});
-                    alert(message);
-                    return;
-                }
-                bookingData.price = Number.parseFloat(response.data.price);
-                bookingData.distance_km = Number.parseFloat(response.data.total_distance_km);
-                bookingData.duration_minutes = Number.parseInt(response.data.duration_minutes, 10);
-                bookingData.quote_verified = true;
-                completeVehicleSelection(vehicle);
-            }).fail(function () {
-                track('booking_error', {error_type: 'quote_connection'});
-                alert(t('connection_error', 'Error de conexión.'));
-            });
+    function useServerVehiclePrice(vehicle) {
+        const price = Number.parseFloat(vehicle.price);
+        if (!Number.isFinite(price) || price <= 0) {
+            track('booking_error', {error_type: 'invalid_server_price'});
+            alert(t('invalid_server_price', 'No se pudo calcular un precio válido para la reserva.'));
             return;
         }
 
+        bookingData.price = price;
+        bookingData.price_cents = Number.parseInt(vehicle.price_cents, 10);
         completeVehicleSelection(vehicle);
     }
 
@@ -1016,10 +956,12 @@ jQuery(document).ready(function ($) {
                     : t('invalid_server_price', 'No se pudo calcular un precio válido para la reserva.');
                 track('booking_error', { error_type: 'invalid_quote' });
                 alert(message);
+                $confirmButton.prop('disabled', false);
                 return;
             }
 
             bookingData.price = Number.parseFloat(response.data.price);
+            bookingData.price_cents = Number.parseInt(response.data.price_cents, 10);
             bookingData.distance_km = Number.parseFloat(response.data.total_distance_km);
             bookingData.duration_minutes = Number.parseInt(response.data.duration_minutes, 10);
             bookingData.language = response.data.booking_locale || wptb_vars.language || 'es';
@@ -1032,17 +974,46 @@ jQuery(document).ready(function ($) {
                 trip_type: bookingData.trip_type
             });
 
-            sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
-            if (wptb_vars.payment_url) {
-                window.location.href = wptb_vars.payment_url;
-            } else {
-                track('booking_error', { error_type: 'payment_url_missing' });
-                alert(t('configuration_error', 'Error de configuración. Contacta con soporte.'));
-            }
+            $.ajax({
+                url: wptb_vars.ajax_url,
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'wptb_create_booking_draft',
+                    booking_data: JSON.stringify(bookingData),
+                    security: wptb_vars.nonce
+                }
+            }).done(function (draftResponse) {
+                const draftToken = draftResponse && draftResponse.success && draftResponse.data
+                    ? draftResponse.data.draft_token
+                    : '';
+                if (!/^[a-f0-9]{64}$/.test(draftToken)) {
+                    const message = draftResponse && draftResponse.data && draftResponse.data.message
+                        ? draftResponse.data.message
+                        : t('invalid_booking_data', 'No hay datos de reserva válidos. Inicia una nueva reserva.');
+                    track('booking_error', { error_type: 'draft_creation' });
+                    alert(message);
+                    return;
+                }
+
+                // The opaque token is the only booking value persisted after
+                // PII has been collected. The full payload lives server-side.
+                sessionStorage.setItem('wptb_booking_data', JSON.stringify({ draft_token: draftToken }));
+                if (wptb_vars.payment_url) {
+                    window.location.href = wptb_vars.payment_url;
+                } else {
+                    track('booking_error', { error_type: 'payment_url_missing' });
+                    alert(t('configuration_error', 'Error de configuración. Contacta con soporte.'));
+                }
+            }).fail(function () {
+                track('booking_error', { error_type: 'draft_connection' });
+                alert(t('connection_error', 'Error de conexión.'));
+            }).always(function () {
+                $confirmButton.prop('disabled', false);
+            });
         }).fail(function () {
             track('booking_error', { error_type: 'quote_connection' });
             alert(t('connection_error', 'Error de conexión.'));
-        }).always(function () {
             $confirmButton.prop('disabled', false);
         });
     });
@@ -1070,6 +1041,7 @@ jQuery(document).ready(function ($) {
                 vehicle_name: '',
                 trip_type: 'one_way',
                 price: 0,
+                price_cents: 0,
                 source: source || ''
             };
         }
@@ -1163,12 +1135,12 @@ jQuery(document).ready(function ($) {
                         loadVehicles();
                     },
                     function (errMsg) {
-                        console.error('❌ Distance Matrix error:', errMsg);
-                        // Still load vehicles without distance filter as fallback
-                        urlData.distance_km = 50; // safe default
-                        bookingData = urlData;
-                        sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
-                        loadVehicles();
+                        const message = errMsg || t('route_error', 'No se pudo calcular la ruta. Verifica el origen y el destino.');
+                        $('#vehicles-grid').html(
+                            '<div class="mt-alert mt-alert--error mt-empty-state" role="alert">' +
+                            escapeHtml(message) +
+                            '</div>'
+                        );
                     }
                 );
                 return;
@@ -1192,6 +1164,7 @@ jQuery(document).ready(function ($) {
             bookingData.vehicle_id = 0;
             bookingData.vehicle_name = '';
             bookingData.price = 0;
+            bookingData.price_cents = 0;
             sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
 
             // Show search summary (route info at top)
@@ -1239,24 +1212,14 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
-                // Lógica personalizada de equipaje (basada en el límite de pasajeros)
-                let maxSuit = 4; // Sedan (hasta 4 pax)
-                if (maxPax > 4) {
-                    maxSuit = 9; // Van (más de 4 pax)
-                }
-                
-                $('#wptb-suitcases').attr('max', maxSuit);
-                $('#wptb-suitcases').on('input', function () {
-                    if (parseInt($(this).val()) > maxSuit) {
-                        $(this).val(maxSuit);
-                    }
-                });
-
-                const maxCarry = 1; // Siempre 1 maleta de mano
-                $('#wptb-carryOns').attr('max', maxCarry);
-                $('#wptb-carryOns').on('input', function () {
-                    if (parseInt($(this).val()) > maxCarry) {
-                        $(this).val(maxCarry);
+                const maxLuggage = Math.max(0, parseInt(bookingData.vehicle.luggage_capacity, 10) || 0);
+                const $luggageFields = $('#wptb-suitcases, #wptb-carryOns').attr('max', maxLuggage);
+                $luggageFields.on('input', function () {
+                    const otherId = this.id === 'wptb-suitcases' ? '#wptb-carryOns' : '#wptb-suitcases';
+                    const otherCount = Math.max(0, parseInt($(otherId).val(), 10) || 0);
+                    const currentCount = Math.max(0, parseInt($(this).val(), 10) || 0);
+                    if (currentCount + otherCount > maxLuggage) {
+                        $(this).val(Math.max(0, maxLuggage - otherCount));
                     }
                 });
             }

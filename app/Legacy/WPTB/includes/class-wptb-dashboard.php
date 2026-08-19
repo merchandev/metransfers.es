@@ -107,7 +107,7 @@ class WPTB_Dashboard {
                 echo '<td><a href="' . $link . '">#' . $booking->id . '</a></td>';
                 echo '<td>' . date('d/m', strtotime($booking->booking_date)) . '</td>';
                 echo '<td>' . esc_html($booking->customer_name) . '</td>';
-                echo '<td>' . esc_html($booking->hotel_token) . '</td>';
+                echo '<td>' . esc_html( \MeTransfers\Admin\Capabilities::maskSecret( $booking->hotel_token ) ) . '</td>';
                 echo '<td><span style="color:' . $status_color . '; font-weight:bold;">' . $status_label . '</span></td>';
                 echo '</tr>';
             }

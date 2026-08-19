@@ -19,15 +19,14 @@ Estos endpoints manejan la busqueda de vehiculos, el calculo de precios y la cre
   - `security` (string): Nonce (debe coincidir con `wptb_vars.nonce`)
 - **Respuesta esperada:** JSON con array de vehiculos y `price` calculado por el servidor.
 
-### 1.2 `wptb_calculate_price`
-**Descripcion:** Recalcula el precio (similar a get_vehicles, posiblemente usado en otros flujos).
-- **Acceso:** Privado y publico
-
-### 1.2.1 `wptb_get_quote`
+### 1.2 `wptb_get_quote`
 **Descripcion:** Devuelve el presupuesto autoritativo que también consume el pago.
 - **Acceso:** Privado y publico, protegido por `wptb_vars.nonce`.
 - **Validaciones:** área de servicio, fecha/antelación, vuelta posterior, rutas reales, vehículo y reglas completas de pricing.
+- **Protección antiabuso:** límite global por cliente antes de geocodificar o consultar rutas; devuelve HTTP `429` cuando se supera.
 - **Respuesta:** precio, distancia total y por trayecto, duración, desglose, vehículo y `booking_locale`.
+
+El endpoint heredado `wptb_calculate_price`, que aceptaba distancia y duración del navegador, fue retirado. Ningún consumidor debe utilizarlo.
 
 ### 1.3 `wptb_save_booking`
 **Descripcion:** Guarda los datos de la reserva en base de datos.
@@ -54,6 +53,8 @@ Los nombres legacy `wptb_create_booking` y `wptb_get_pricing` no forman parte de
 - **Hook:** `init`
 - **Condicion de disparo:** Parámetro GET `?wptb_redsys_ipn=1`
 - **Parametros esperados:** Form-data firmado de Redsys. Verifica version, firma HMAC, orden e importe antes de confirmar de forma idempotente.
+- **ACK:** Tras el cambio atómico de estado inserta `booking.paid:{booking_id}` con clave única y responde HTTP 200. Email, WhatsApp y GA4 se ejecutan después en el worker del outbox.
+- **Reintentos:** Un IPN duplicado vuelve a intentar el `INSERT IGNORE`; no duplica eventos y puede reparar un callback previo que confirmara DB sin dejar evento.
 
 ---
 

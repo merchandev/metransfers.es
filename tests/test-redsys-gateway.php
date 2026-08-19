@@ -84,6 +84,29 @@ if ( ! \MeTransfers\Payments\Redsys\Gateway::verify_confirmation_token( '0000000
     exit( 1 );
 }
 
+$valid_ko_return = \MeTransfers\Payments\Redsys\Gateway::validate_confirmation_request(
+    'ko',
+    '000000000123',
+    $confirmation_token
+);
+$invalid_ko_return = \MeTransfers\Payments\Redsys\Gateway::validate_confirmation_request(
+    'ko',
+    '000000000123',
+    str_repeat( '0', 64 )
+);
+$malformed_ok_return = \MeTransfers\Payments\Redsys\Gateway::validate_confirmation_request(
+    'ok',
+    '000000000123<script>',
+    $confirmation_token
+);
+if ( empty( $valid_ko_return['valid'] )
+    || 'ko' !== $valid_ko_return['result']
+    || ! empty( $invalid_ko_return['valid'] )
+    || ! empty( $malformed_ok_return['valid'] ) ) {
+    fwrite( STDERR, "FAILED: browser payment returns must validate result, order and HMAC for both OK and KO.\n" );
+    exit( 1 );
+}
+
 $notification_parameters = base64_encode( json_encode( array(
     'Ds_Order'    => '000000000123',
     'Ds_Response' => '0000',

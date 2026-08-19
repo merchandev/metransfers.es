@@ -34,6 +34,8 @@ class PostTypes {
             'query_var'          => true,
             'rewrite'            => array( 'slug' => 'wptb_destination' ),
             'capability_type'    => 'post',
+            'map_meta_cap'       => false,
+            'capabilities'       => $this->singleCapabilityMap( \MeTransfers\Admin\Capabilities::MANAGE_VEHICLES ),
             'has_archive'        => false,
             'hierarchical'       => false,
             'menu_position'      => null,
@@ -65,10 +67,31 @@ class PostTypes {
             'show_ui'            => true,
             'show_in_menu'       => false, // Handled by custom menu in Hotel Admin
             'capability_type'    => 'post',
+            'map_meta_cap'       => false,
+            'capabilities'       => $this->singleCapabilityMap( \MeTransfers\Admin\Capabilities::MANAGE_HOTELS ),
             'hierarchical'       => false,
             'supports'           => array( 'title', 'custom-fields' ),
         );
 
         register_post_type( 'hotel_partner', $args );
+    }
+
+    private function singleCapabilityMap( $capability ) {
+        return array(
+            'edit_post'              => $capability,
+            'read_post'              => $capability,
+            'delete_post'            => $capability,
+            'edit_posts'             => $capability,
+            'edit_others_posts'      => $capability,
+            'publish_posts'          => $capability,
+            'read_private_posts'     => $capability,
+            'delete_posts'           => $capability,
+            'delete_private_posts'   => $capability,
+            'delete_published_posts' => $capability,
+            'delete_others_posts'    => $capability,
+            'edit_private_posts'     => $capability,
+            'edit_published_posts'   => $capability,
+            'create_posts'           => $capability,
+        );
     }
 }

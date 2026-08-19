@@ -36,6 +36,7 @@ WPTB_Vehicle_Manager::$vehicle = (object) array(
     'price_per_hour'           => 60,
 );
 
+require_once __DIR__ . '/../app/Pricing/Money.php';
 require_once __DIR__ . '/../app/Pricing/Calculator.php';
 
 $invalid = \MeTransfers\Pricing\Calculator::calculate( 0, 10 );
@@ -55,5 +56,9 @@ assert_price( 70, \MeTransfers\Pricing\Calculator::calculate( 7, 30 )['price'], 
 assert_price( 100, \MeTransfers\Pricing\Calculator::calculate( 7, 30, 'round_trip' )['price'], 'round-trip distance and minimum' );
 assert_price( 120, \MeTransfers\Pricing\Calculator::calculate( 7, 30, 'one_way', 120 )['price'], 'hourly price override' );
 assert_price( 71, \MeTransfers\Pricing\Calculator::calculate( 7, '30,5' )['price'], 'decimal comma normalization' );
+if ( 7100 !== \MeTransfers\Pricing\Calculator::calculate( 7, '30,5' )['price_cents'] ) {
+    fwrite( STDERR, "FAILED: calculator must expose exact integer cents.\n" );
+    exit( 1 );
+}
 
 echo "Pricing tests passed.\n";

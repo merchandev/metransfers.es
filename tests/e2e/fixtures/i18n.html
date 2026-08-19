@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MeTransfers language switcher contract</title>
+  <link rel="stylesheet" href="/assets/css/i18n-switcher.css">
+  <script defer src="/assets/js/i18n-switcher.js"></script>
+</head>
+<body>
+  <div class="mt-lang-switcher" id="mt-lang-switcher">
+    <button type="button" class="mt-lang-trigger" aria-label="Cambiar idioma" aria-expanded="false" aria-controls="mt-lang-menu">
+      <span>EN</span>
+    </button>
+    <nav class="mt-lang-menu" id="mt-lang-menu" aria-label="Selector de idioma">
+      <button type="button" class="mt-lang-close" aria-label="Cerrar selector de idioma">Close</button>
+      <ul>
+        <li><a href="/">Español</a></li>
+        <li class="active"><a href="/en/" aria-current="page">English</a></li>
+      </ul>
+    </nav>
+  </div>
+</body>
+</html>

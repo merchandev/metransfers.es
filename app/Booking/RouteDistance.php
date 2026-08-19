@@ -26,11 +26,9 @@ class RouteDistance {
             return array( 'error' => 'Demasiadas consultas de ruta. Inténtalo de nuevo en un minuto.' );
         }
 
-        $api_key = (string) Settings::get( 'google_maps_server_api_key', '' );
-        if ( '' === $api_key ) {
-            $api_key = (string) Settings::get( 'google_maps_api_key', '' );
-        }
-        if ( '' === $api_key ) {
+        try {
+            $api_key = Settings::requireServerMapsKey();
+        } catch ( \RuntimeException $exception ) {
             return array( 'error' => 'El cálculo de rutas del servidor no está configurado.' );
         }
 

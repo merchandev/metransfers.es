@@ -76,7 +76,31 @@
 
 ### wp_mt_analytics_outbox
 
-Outbox duradero de eventos financieros con consentimiento analítico. `event_key` es único (`purchase:{booking_id}`), de modo que callbacks duplicados no duplican compras. Mantiene payload, intentos, bloqueo de worker, estado, último error y fecha de envío.
+Tabla de compatibilidad para eventos analíticos creados antes de 6.1.0. Ya no recibe compras nuevas. El worker legado conserva retry exponencial, `available_at`, bloqueo recuperable y estado `failed` para drenar su backlog sin perder datos.
+
+---
+
+### wp_mt_outbox
+
+Outbox genérico de trabajo posterior a la petición. El IPN inserta `booking.paid:{booking_id}` y responde antes de contactar proveedores remotos. El worker genera eventos independientes como `email.customer.paid:{booking_id}`, `email.admin.paid:{booking_id}`, `email.hotel.paid:{booking_id}`, `whatsapp.admin.paid:{booking_id}` y `analytics.purchase:{booking_id}`.
+
+| Columna | Tipo | Regla |
+|---|---|---|
+| id | bigint unsigned | PK autoincremental |
+| event_key | varchar(191) | UNIQUE; idempotencia por canal |
+| event_type | varchar(80) | Contrato de handler |
+| aggregate_id | bigint unsigned | ID de reserva |
+| payload | longtext | JSON mínimo; actualmente `booking_id` |
+| status | varchar(20) | pending / processing / processed / failed |
+| attempts | smallint unsigned | Máximo 8 intentos |
+| available_at | datetime | Próximo intento según backoff |
+| locked_at | datetime | Claim del worker, recuperable tras 15 minutos |
+| last_error | text | Código de error saneado, sin payload remoto |
+| created_at | datetime | Creación UTC |
+| processed_at | datetime | Finalización correcta |
+| failed_at | datetime | Entrada en dead-letter |
+
+Índices: `UNIQUE event_key` y `status_available (status, available_at)`.
 
 ---
 

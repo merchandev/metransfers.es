@@ -16,11 +16,15 @@ $tracking = file_get_contents( $root . '/assets/js/booking-tracking.js' );
 $site_tracking = file_get_contents( $root . '/assets/js/site-tracking.js' );
 $checkout = file_get_contents( $root . '/app/Legacy/WPTB/templates/checkout.php' );
 $i18n_runtime = file_get_contents( $root . '/includes/i18n.php' );
+$i18n_translation = file_get_contents( $root . '/app/I18n/Translation.php' );
 $functions = file_get_contents( $root . '/functions.php' );
 $notification_service = file_get_contents( $root . '/app/Notifications/NotificationService.php' );
 $outbox = file_get_contents( $root . '/app/Analytics/PurchaseOutbox.php' );
+$generic_outbox = file_get_contents( $root . '/app/Core/Outbox.php' );
+$booking_events = file_get_contents( $root . '/app/Booking/BookingEvents.php' );
 $release_gate = file_get_contents( $root . '/app/Core/ReleaseGate.php' );
 $readme = file_get_contents( $root . '/README.md' );
+$loader = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-loader.php' );
 
 assert_readiness( false === strpos( $booking_form, 'payment_result' ), 'The search form must not interpret payment return parameters.' );
 assert_readiness( false === strpos( $booking_form, 'payment_intent_id' ), 'The search form must not query bookings by predictable payment references.' );
@@ -28,11 +32,16 @@ assert_readiness( false === strpos( $booking_form, '$wpdb' ), 'The search form m
 
 assert_readiness( false !== strpos( $booking_details, "'paid' === \$wptb_payment_booking->payment_status" ), 'Confirmation must require a paid database state.' );
 assert_readiness( false !== strpos( $booking_details, "array( 'confirmed', 'completed' )" ), 'Confirmation must require a final booking state.' );
-assert_readiness( false !== strpos( $booking_details, 'verify_confirmation_token' ), 'Confirmation lookup must require an order-bound HMAC token.' );
+assert_readiness( false !== strpos( $booking_details, 'validate_confirmation_request' ), 'Both OK and KO returns must validate their order-bound HMAC token.' );
 assert_readiness( false !== strpos( $booking_details, 'data-payment-state' ), 'The server-confirmed state must be available to the tracking layer.' );
 
-assert_readiness( false === strpos( $public_controller, 'wp_ajax_wptb_create_booking' ), 'The orphan create-booking hook must stay removed.' );
+assert_readiness(
+    false === strpos( $public_controller, "'wp_ajax_wptb_create_booking'," )
+        && false === strpos( $public_controller, "'wp_ajax_nopriv_wptb_create_booking'," ),
+    'The orphan create-booking hook must stay removed.'
+);
 assert_readiness( false === strpos( $public_controller, 'wp_ajax_wptb_get_pricing' ), 'The orphan pricing hook must stay removed.' );
+assert_readiness( false === strpos( $loader, 'wptb_calculate_price' ) && false === strpos( $public_controller, 'function ajax_calculate_price' ), 'The legacy browser-supplied pricing endpoint must stay removed.' );
 assert_readiness( false === strpos( $public_controller, 'debug_info' ), 'Public AJAX responses must not expose debug payloads.' );
 assert_readiness( false === strpos( $public_controller, 'total_vehicles_in_db' ), 'Public AJAX responses must not expose database counts.' );
 assert_readiness( false === strpos( $public_controller, 'wptb-debug' ), 'The frontend must not enqueue the legacy debug helper.' );
@@ -40,8 +49,8 @@ assert_readiness( ! file_exists( $root . '/app/Legacy/WPTB/assets/js/debug-helpe
 assert_readiness( ! file_exists( $root . '/app/Legacy/WPTB/templates/stripe-checkout.php' ), 'The unused legacy Stripe checkout template must not ship.' );
 
 assert_readiness( false !== strpos( $assets, "return 'confirmation';" ), 'Assets must distinguish the confirmation phase.' );
-assert_readiness( false === strpos( $public_controller, "wp_enqueue_script( 'jspdf'" ), 'jsPDF must not be part of the initial booking payload.' );
-assert_readiness( false !== strpos( $public_controller, "'pdf_library_url'" ), 'The receipt library must be available for lazy loading.' );
+assert_readiness( false === stripos( $public_controller, 'jspdf' ), 'The public controller must not expose a browser PDF library.' );
+assert_readiness( false === strpos( $public_controller, "'pdf_library_url'" ), 'The confirmation must not depend on a remote receipt library.' );
 assert_readiness( false !== strpos( $tracking, "container.dataset.paymentState !== 'confirmed'" ), 'Purchase tracking must require a server-confirmed state.' );
 
 foreach ( array( 'booking_start', 'route_search', 'vehicle_select', 'begin_checkout', 'add_payment_info', 'purchase', 'generate_lead', 'booking_error', 'payment_error' ) as $event ) {
@@ -54,14 +63,20 @@ assert_readiness( false === strpos( $booking_details, 'style=' ) && false === st
 assert_readiness( false !== strpos( $public_controller, 'QuoteService::create' ), 'Payment must use the authoritative server quote.' );
 assert_readiness( false !== strpos( $public_controller, 'terms_accepted_at' ), 'Terms acceptance must be persisted server-side.' );
 assert_readiness( false !== strpos( $public_controller, 'booking_locale' ), 'The booking locale must be persisted.' );
-assert_readiness( false !== strpos( $i18n_runtime, 'Public rendering is cache-only' ), 'Public translations must be cache-only.' );
+$i18n_cache_start = strpos( $i18n_translation, 'public static function translate(' );
+$i18n_remote_start = strpos( $i18n_translation, 'public static function remoteBatch(' );
+$i18n_public_cache = substr( $i18n_translation, $i18n_cache_start, $i18n_remote_start - $i18n_cache_start );
+assert_readiness( false === strpos( $i18n_public_cache, 'wp_remote_' ), 'Remote translation must remain isolated from public cache reads.' );
+assert_readiness( false === strpos( $i18n_runtime, '<style' ) && false === strpos( $i18n_runtime, '<script' ), 'The i18n facade must not emit inline assets.' );
 assert_readiness( 1 === substr_count( $public_controller, 'function send_whatsapp_alert(' ), 'Only the deprecated WhatsApp facade may remain in the legacy controller.' );
 assert_readiness( false === strpos( $public_controller, 'reservas@barcelonatours.email' ), 'Notification senders must not be hardcoded.' );
 assert_readiness( false !== strpos( $notification_service, "Settings::get( 'smtp_from'" ), 'Notification sender must come from platform settings.' );
 assert_readiness( false !== strpos( $functions, 'mt_is_transactional_page' ) && false !== strpos( $functions, "'noindex' => true" ), 'Transactional pages must be noindex.' );
 assert_readiness( false !== strpos( $assets, "'mt-site-tracking'" ), 'Phone and WhatsApp tracking must be enqueued globally.' );
 assert_readiness( false === strpos( $public_controller, "wp_enqueue_style( 'wptb-main-style'" ), 'Legacy funnel CSS must not be enqueued.' );
-assert_readiness( false !== strpos( $outbox, "'purchase:'" ) && false !== strpos( $outbox, 'INSERT IGNORE' ), 'Financial purchase tracking must use a durable idempotent outbox.' );
+assert_readiness( false !== strpos( $outbox, "'analytics.purchase'" ) && false !== strpos( $outbox, 'Outbox::enqueue' ), 'Financial purchase tracking must use the generic durable outbox.' );
+assert_readiness( false !== strpos( $generic_outbox, 'INSERT IGNORE' ) && false !== strpos( $generic_outbox, "'failed'" ) && false !== strpos( $generic_outbox, 'backoffSeconds' ), 'The generic outbox must provide idempotency, retry backoff and dead-letter state.' );
+assert_readiness( false !== strpos( $booking_events, "'booking.paid:'" ) && false !== strpos( $booking_events, "'whatsapp.admin'" ), 'Paid booking work must expand into idempotent per-channel events.' );
 assert_readiness( false !== strpos( $release_gate, 'redsys_sandbox_verified_at' ) && false !== strpos( $release_gate, 'maps_credentials_rotated_at' ), 'Live payments must be gated by external security attestations.' );
 
 foreach ( array(

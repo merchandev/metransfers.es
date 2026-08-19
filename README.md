@@ -13,9 +13,9 @@ Plataforma WordPress integrada para la web, reservas de traslados, pricing, pago
 ```text
 app/
 ├── Admin/                 Menú administrativo unificado
-├── Analytics/             Outbox idempotente para conversiones financieras
+├── Analytics/             Adaptador GA4 y drenaje del outbox analítico legado
 ├── Booking/               Shortcodes, rutas, i18n y flujo de reserva
-├── Core/                  Bootstrap, assets, settings y migraciones
+├── Core/                  Bootstrap, assets, settings, migraciones y outbox genérico
 ├── Payments/Redsys/       Generación y verificación de pagos
 ├── Pricing/               Cálculo de tarifas
 └── Legacy/
@@ -23,7 +23,7 @@ app/
     └── Hotel/            Adaptador de Hotel QR
 assets/                    Design system y tracking del booking
 docs/integration/          Contratos, inventarios y guías de staging
-tests/                     Pruebas smoke/unitarias sin WordPress completo
+tests/                     PHPUnit, regresión legacy, integración WordPress y Playwright
 tools/                     Utilidades operativas mantenidas
 ```
 
@@ -31,9 +31,10 @@ tools/                     Utilidades operativas mantenidas
 
 ## Requisitos
 
-- WordPress 6.x y PHP 8.2 recomendado.
+- WordPress 6.8.6 o 7.0.2 y PHP 8.2 (matriz verificada en CI).
 - MySQL/MariaDB compatible con `dbDelta()`.
-- Node.js para validar sintaxis JavaScript.
+- Composer 2 para PHPUnit, PHPStan, WPCS y auditoría de dependencias.
+- Node.js 24 y npm para ESLint, auditoría y Playwright.
 - WooCommerce solo para el flujo legacy que crea pedidos/carrito.
 - Google Maps JavaScript API para autocompletado/mapas.
 - Google Distance Matrix API accesible desde el servidor para autorizar distancia y precio.
@@ -70,6 +71,8 @@ define( 'MT_MAPS_CREDENTIALS_ROTATED_AT', '2026-08-19T12:00:00+02:00' );
 define( 'MT_REDSYS_SANDBOX_VERIFIED_AT', '2026-08-19T12:00:00+02:00' );
 ```
 
+`MT_GOOGLE_MAPS_API_KEY` se utiliza únicamente en el navegador y debe restringirse por dominio/referrer. `MT_GOOGLE_MAPS_SERVER_API_KEY` es obligatoria para geocodificar y cotizar en el servidor, debe restringirse por IP y APIs, y nunca utiliza la clave pública como fallback.
+
 La clave Maps pública debe restringirse por dominio. La clave de servidor debe restringirse por IP y por API. Las credenciales Redsys/SMTP deben rotarse antes de producción si estuvieron presentes en commits antiguos.
 El gateway bloquea el endpoint Live mientras falte cualquiera de las cuatro attestaciones anteriores; las fechas son evidencia operativa y no deben inventarse.
 
@@ -77,27 +80,45 @@ El gateway bloquea el endpoint Live mientras falte cualquiera de las cuatro atte
 
 1. Desplegar el contenido como el tema activo de staging.
 2. Crear las constantes en `wp-config.php` o configurar sus opciones desde **MeTransfers → Ajustes generales**.
-3. La migración versionada se ejecuta automáticamente en `init` y `admin_init`; comprobar sus logs tras el primer request.
+3. La migración versionada se ejecuta automáticamente en `init` y `admin_init`; comprobar el journal tras el primer request.
 4. Revisar `wp_options.mt_platform_db_version`; la versión esperada está definida por `MT_PLATFORM_DB_VERSION`.
 5. Verificar el estado con `php tools/migration-status.php` dentro de un entorno WordPress cargado.
 
-La migración actual también aprovisiona contenido inicial por compatibilidad. Debe probarse primero sobre una copia reciente de la base de datos.
+Los cambios de schema, backfills y seeds están separados. Las migraciones deben probarse primero sobre una copia reciente de la base de datos.
 
 ## Pruebas locales
 
 ```bash
-find . -path ./vendor -prune -o -type f -name "*.php" -print0 | xargs -0 -n1 php -l
+composer install
+composer validate --strict
+composer audit --locked
+composer quality
+npm ci
+npm audit --audit-level=high
+npm run lint:js
+npx playwright install chromium
+npm run test:e2e
+
+# Regresión compatible mantenida durante la transición legacy:
 php tests/test-legacy-load.php
 php tests/test-pricing.php
 php tests/test-route-distance.php
 php tests/test-booking-policies.php
 php tests/test-redsys-gateway.php
+php tests/test-hardening-phase1.php
+php tests/test-outbox.php
+php tests/test-booking-drafts.php
+php tests/test-server-vehicle-quotes.php
+php tests/test-money.php
+php tests/test-authoritative-receipt.php
+php tests/test-admin-security.php
+php tests/test-migrations.php
 php tests/test-i18n.php
+php tests/test-i18n-routing.php
 php tests/test-production-readiness.php
-find . -path ./node_modules -prune -o -path ./vendor -prune -o -type f -name "*.js" -print0 | xargs -0 -n1 node --check
 ```
 
-GitHub Actions repite estas verificaciones y añade controles de BOM/mojibake, patrones de credenciales y Gitleaks.
+GitHub Actions ejecuta gates independientes de PHP, JavaScript/Chromium, Gitleaks y arranque WordPress real sobre MariaDB para WordPress 6.8.6 y 7.0.2. El smoke de WordPress verifica migraciones, tablas, CPT, shortcodes, capacidades, cron y rewrite rules. Playwright cubre contratos de selector de idioma, tracking de compra confirmado/no confirmado, idempotencia, limpieza de datos de sesión y eventos de contacto; el funnel completo continúa siendo un gate de staging.
 
 ## Flujo de reservas y pagos
 
@@ -108,8 +129,9 @@ GitHub Actions repite estas verificaciones y añade controles de BOM/mojibake, p
 5. Redsys recibe un importe derivado exclusivamente del servidor.
 6. La Return URL exige un token HMAC ligado a la orden y solo presenta el estado; nunca confirma el pago.
 7. El IPN valida firma, comercio, terminal, moneda, orden e importe antes de marcar la reserva como pagada.
-8. Un único `NotificationService` envía email localizado y una sola alerta WhatsApp.
-9. El IPN registra `purchase` en un outbox único por reserva; el navegador conserva el evento de confirmación como señal complementaria.
+8. Después del `UPDATE`, el IPN inserta de forma idempotente `booking.paid:{booking_id}` y responde HTTP 200 sin esperar a SMTP, WhatsApp ni GA4.
+9. El worker expande el evento en claves únicas por canal: cliente, administración, hotel, WhatsApp y analytics. Cada canal tiene retry exponencial y dead-letter independiente.
+10. Un único `NotificationService` genera los mensajes localizados; el reenvío manual de email nunca reenvía WhatsApp.
 
 ## Assets, idiomas y analítica
 
@@ -119,12 +141,18 @@ Los assets se cargan por fase:
 - vehículos: booking;
 - detalles: booking y Maps;
 - pago: Redsys y Maps;
-- confirmación: estilos de estado y Redsys; jsPDF se descarga solo al solicitar el recibo;
+- confirmación: estilos de estado, tracking seguro y script mínimo de limpieza; el recibo se renderiza en servidor;
 - Hotel/Transfers Premium: solo en su contexto.
 
-El booking incluye catálogo español e inglés sin dependencia externa. En los demás idiomas, el frontend lee exclusivamente traducciones pre-generadas desde caché/DB. La llamada remota solo se permite desde **Ajustes → Traducción MT → Pre-generar catálogo booking**. Las URLs internas conservan el prefijo de idioma y los idiomas fuera de `MT_SEO_LANGS` usan `noindex,follow`.
+El booking incluye catálogo español e inglés sin dependencia externa. En los demás idiomas, el frontend lee exclusivamente traducciones pre-generadas desde caché/DB. La llamada remota solo se permite desde **Ajustes → Traducción MT → Pre-generar catálogo booking**; la API key es write-only y viaja en header. Router, caché, selector, administración y SEO/Yoast están separados, y el selector usa CSS/JS versionados sin bloques inline. Las URLs internas conservan el prefijo de idioma y los idiomas fuera de `MT_SEO_LANGS` usan `noindex,follow`.
 
-Los eventos disponibles en `dataLayer` son `booking_start`, `route_search`, `vehicle_select`, `begin_checkout`, `add_payment_info`, `generate_lead`, `purchase`, `click_whatsapp`, `click_phone`, `booking_error` y `payment_error`. Teléfono y WhatsApp se capturan globalmente mediante un script mínimo. No se envía PII. Con `MT_GA4_MEASUREMENT_ID` y `MT_GA4_API_SECRET`, el cron despacha conversiones financieras desde el outbox de servidor.
+El recibo del cliente es HTML imprimible y se reconstruye desde una reserva pagada mediante referencia + HMAC. No usa datos de sesión ni librerías PDF externas; el navegador puede imprimirlo o guardarlo como PDF.
+
+El panel MeTransfers usa capacidades de mínimo privilegio y dispone del rol **MeTransfers Operaciones**, sin acceso a integraciones ni secretos. Los reenvíos de email y WhatsApp son acciones separadas y auditadas; las exportaciones exigen permiso propio y un rango máximo de 366 días.
+
+Las migraciones de base de datos son discretas y reanudables: usan un lock por sitio, un journal por paso y solo avanzan la versión al completar el lote. Las definiciones de schema, los backfills y los seeds de contenido tienen responsables separados; el activador legacy se conserva únicamente como fachada compatible.
+
+Los eventos disponibles en `dataLayer` son `booking_start`, `route_search`, `vehicle_select`, `begin_checkout`, `add_payment_info`, `generate_lead`, `purchase`, `click_whatsapp`, `click_phone`, `booking_error` y `payment_error`. Teléfono y WhatsApp se capturan globalmente mediante un script mínimo. No se envía PII a `dataLayer`. Con `MT_GA4_MEASUREMENT_ID` y `MT_GA4_API_SECRET`, el worker despacha `analytics.purchase:{booking_id}` desde el outbox genérico. La tabla analítica anterior se mantiene únicamente para drenar eventos creados antes de la versión 6.1.0.
 
 ## Validación de staging
 

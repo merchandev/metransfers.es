@@ -3,7 +3,7 @@
 class HQP_Vehicles_Admin {
 
     public function display_vehicles_page() {
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_VEHICLES ) ) {
             wp_die( esc_html__( 'No tienes permisos para gestionar los vehículos.', 'wptb' ) );
         }
 
@@ -25,6 +25,7 @@ class HQP_Vehicles_Admin {
         if ( $action === 'delete' && $vehicle_id > 0 ) {
             check_admin_referer( 'hqp_delete_hotel_vehicle_' . $vehicle_id );
             $wpdb->delete( $table_name, array( 'id' => $vehicle_id ), array( '%d' ) );
+            \MeTransfers\Admin\AuditLog::record( 'hotel_vehicle.deleted', 'hotel_vehicle', $vehicle_id );
             echo '<div class="notice notice-success is-dismissible"><p>Vehículo eliminado.</p></div>';
             $action = 'list';
         }
@@ -202,8 +203,10 @@ class HQP_Vehicles_Admin {
         
         if ( $id > 0 ) {
             $wpdb->update( $table_name, $data, array( 'id' => $id ), array( '%s', '%s', '%d', '%s', '%d', '%d' ), array( '%d' ) );
+            \MeTransfers\Admin\AuditLog::record( 'hotel_vehicle.saved', 'hotel_vehicle', $id );
         } else {
             $wpdb->insert( $table_name, $data, array( '%s', '%s', '%d', '%s', '%d', '%d' ) );
+            \MeTransfers\Admin\AuditLog::record( 'hotel_vehicle.saved', 'hotel_vehicle', (int) $wpdb->insert_id );
         }
     }
 }
