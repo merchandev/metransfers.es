@@ -67,9 +67,9 @@ mt_wp_integration_assert( 5 === $succeeded, 'All five discrete migrations must b
 mt_wp_integration_assert( has_action( \MeTransfers\Core\Outbox::CRON_HOOK ), 'The durable outbox worker must be registered.' );
 mt_wp_integration_assert( false !== wp_next_scheduled( \MeTransfers\Core\Outbox::CRON_HOOK ), 'The durable outbox worker must be scheduled.' );
 
-global $wp;
-mt_wp_integration_assert( in_array( 'mt_lang', $wp->public_query_vars, true ), 'The language query variable must be public.' );
-mt_wp_integration_assert( in_array( 'mt_page', $wp->public_query_vars, true ), 'The translated page query variable must be public.' );
+$public_query_vars = apply_filters( 'query_vars', array() );
+mt_wp_integration_assert( in_array( 'mt_lang', $public_query_vars, true ), 'The language query variable must be public.' );
+mt_wp_integration_assert( in_array( 'mt_page', $public_query_vars, true ), 'The translated page query variable must be public.' );
 
 $rules = get_option( 'rewrite_rules', array() );
 $translated_rule = false;
