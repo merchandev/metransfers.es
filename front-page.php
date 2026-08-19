@@ -621,33 +621,33 @@ a.contact__val:hover{color:var(--blue);}
       <div class="srv__item">
         <span class="srv__num">01</span>
         <div class="srv__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-        <h3>Transfer Aeropuerto de Barcelona: llegadas y salidas</h3>
-        <p>Te recogemos en El Prat para llevarte al centro de Barcelona, tu hotel, el puerto o cualquier otro destino. También coordinamos traslados desde Barcelona hacia el aeropuerto, adaptando la recogida al horario de tu vuelo.</p>
-        <a href="<?php echo esc_url( mt_localized_url( 'traslados-aeropuerto' ) ); ?>" class="btn-link">Ver traslados al aeropuerto <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <h3><?php echo mt_translate("Transfer Aeropuerto de Barcelona: llegadas y salidas"); ?></h3>
+        <p><?php echo mt_translate("Te recogemos en El Prat para llevarte al centro de Barcelona, tu hotel, el puerto o cualquier otro destino. También coordinamos traslados desde Barcelona hacia el aeropuerto, adaptando la recogida al horario de tu vuelo."); ?></p>
+        <a href="<?php echo esc_url( mt_localized_url( 'traslados-aeropuerto' ) ); ?>" class="btn-link"><?php echo mt_translate("Ver traslados al aeropuerto"); ?> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
       <div class="srv__item">
         <span class="srv__num">02</span>
         <div class="srv__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
-        <h3>Traslados al Puerto desde Barcelona</h3>
-        <p>Conectamos tu hotel o dirección en Barcelona con todas las terminales de cruceros. Tu chófer te recoge puntual y ayuda con el equipaje.</p>
-        <a href="<?php echo esc_url( mt_localized_url( 'traslados-puerto' ) ); ?>" class="btn-link">Ver traslados al puerto <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <h3><?php echo mt_translate("Traslados al Puerto desde Barcelona"); ?></h3>
+        <p><?php echo mt_translate("Conectamos tu hotel o dirección en Barcelona con todas las terminales de cruceros. Tu chófer te recoge puntual y ayuda con el equipaje."); ?></p>
+        <a href="<?php echo esc_url( mt_localized_url( 'traslados-puerto' ) ); ?>" class="btn-link"><?php echo mt_translate("Ver traslados al puerto"); ?> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
       <div class="srv__item">
         <span class="srv__num">03</span>
         <div class="srv__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-        <h3>Chófer privado por horas</h3>
-        <p>Dispón de un vehículo con conductor durante el tiempo contratado. Ideal para reuniones, compras, cenas o agendas con varias paradas.</p>
-        <a href="<?php echo esc_url( mt_localized_url( 'chofer-por-horas' ) ); ?>" class="btn-link">Ver servicio por horas <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <h3><?php echo mt_translate("Chófer privado por horas"); ?></h3>
+        <p><?php echo mt_translate("Dispón de un vehículo con conductor durante el tiempo contratado. Ideal para reuniones, compras, cenas o agendas con varias paradas."); ?></p>
+        <a href="<?php echo esc_url( mt_localized_url( 'chofer-por-horas' ) ); ?>" class="btn-link"><?php echo mt_translate("Ver servicio por horas"); ?> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
       <div class="srv__item">
         <span class="srv__num">04</span>
         <div class="srv__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-        <h3>Empresas y Grupos</h3>
-        <p>Coordinamos la movilidad de directivos, invitados y familias numerosas. Vehículos MINI VAN «V» Class disponibles para hasta 7 pasajeros con equipaje.</p>
-        <a href="<?php echo esc_url( mt_localized_url( 'grupos' ) ); ?>" class="btn-link">Consultar para empresas y grupos <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <h3><?php echo mt_translate("Empresas y Grupos"); ?></h3>
+        <p><?php echo mt_translate("Coordinamos la movilidad de directivos, invitados y familias numerosas. Vehículos MINI VAN «V» Class disponibles para hasta 7 pasajeros con equipaje."); ?></p>
+        <a href="<?php echo esc_url( mt_localized_url( 'grupos' ) ); ?>" class="btn-link"><?php echo mt_translate("Consultar para empresas y grupos"); ?> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
     </div>
@@ -660,38 +660,38 @@ a.contact__val:hover{color:var(--blue);}
   <div class="wrap">
     <div class="how__grid">
       <div>
-        <p class="tag">Reserva fácil</p>
-        <h2>Reserva en pocos minutos y viaja sin complicaciones</h2>
-        <p class="lead" style="margin-top:20px;">El proceso está diseñado para que conozcas la ruta, el vehículo, las opciones y las condiciones antes de confirmar tu reserva.</p>
-        <a href="#panel" class="btn btn-solid" style="margin-top:32px;">Iniciar reserva</a>
+        <p class="tag"><?php echo mt_translate("Reserva fácil"); ?></p>
+        <h2><?php echo mt_translate("Reserva en pocos minutos y viaja sin complicaciones"); ?></h2>
+        <p class="lead" style="margin-top:20px;"><?php echo mt_translate("El proceso está diseñado para que conozcas la ruta, el vehículo, las opciones y las condiciones antes de confirmar tu reserva."); ?></p>
+        <a href="#panel" class="btn btn-solid" style="margin-top:32px;"><?php echo mt_translate("Iniciar reserva"); ?></a>
       </div>
       <div class="how__steps">
         <div class="how__step">
           <div class="how__n">1</div>
           <div class="how__text">
-            <h3>Indica tu trayecto</h3>
-            <p>Añade el punto de recogida, el destino, la fecha y la hora de salida.</p>
+            <h3><?php echo mt_translate("Indica tu trayecto"); ?></h3>
+            <p><?php echo mt_translate("Añade el punto de recogida, el destino, la fecha y la hora de salida."); ?></p>
           </div>
         </div>
         <div class="how__step">
           <div class="how__n">2</div>
           <div class="how__text">
-            <h3>Elige tu vehículo</h3>
-            <p>Selecciona la opción que mejor encaje con los pasajeros, el equipaje y el nivel de confort.</p>
+            <h3><?php echo mt_translate("Elige tu vehículo"); ?></h3>
+            <p><?php echo mt_translate("Selecciona la opción que mejor encaje con los pasajeros, el equipaje y el nivel de confort."); ?></p>
           </div>
         </div>
         <div class="how__step">
           <div class="how__n">3</div>
           <div class="how__text">
-            <h3>Confirma la reserva</h3>
-            <p>Revisa las opciones y datos, completa la información y realiza el pago de forma segura.</p>
+            <h3><?php echo mt_translate("Confirma la reserva"); ?></h3>
+            <p><?php echo mt_translate("Revisa las opciones y datos, completa la información y realiza el pago de forma segura."); ?></p>
           </div>
         </div>
         <div class="how__step">
           <div class="how__n">4</div>
           <div class="how__text">
-            <h3>Encuentra a tu chófer</h3>
-            <p>El conductor te espera en el punto acordado con cartel identificativo y te ayuda con el equipaje.</p>
+            <h3><?php echo mt_translate("Encuentra a tu chófer"); ?></h3>
+            <p><?php echo mt_translate("El conductor te espera en el punto acordado con cartel identificativo y te ayuda con el equipaje."); ?></p>
           </div>
         </div>
       </div>
@@ -708,18 +708,18 @@ a.contact__val:hover{color:var(--blue);}
         <img src="<?php echo $bdi; ?>/airport-transfer.webp" alt="Traslado privado al aeropuerto de Barcelona" class="vent__img" loading="lazy" decoding="async">
       </div>
       <div>
-        <p class="tag">La experiencia MeTransfers</p>
-        <h2>Puntualidad, comodidad y atención en cada trayecto</h2>
-        <p class="lead" style="margin-top:20px;">No solo te llevamos de un punto a otro. Coordinamos cada detalle para que disfrutes de una recogida clara, un viaje cómodo y asistencia cuando la necesites.</p>
+        <p class="tag"><?php echo mt_translate("La experiencia MeTransfers"); ?></p>
+        <h2><?php echo mt_translate("Puntualidad, comodidad y atención en cada trayecto"); ?></h2>
+        <p class="lead" style="margin-top:20px;"><?php echo mt_translate("No solo te llevamos de un punto a otro. Coordinamos cada detalle para que disfrutes de una recogida clara, un viaje cómodo y asistencia cuando la necesites."); ?></p>
         <ul class="vent__list">
-          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Presupuesto a medida y condiciones visibles antes de confirmar</li>
-          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Seguimiento del vuelo y recogida en la terminal</li>
-          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Chóferes profesionales, discretos y bilingües</li>
-          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos premium seleccionados para cada servicio</li>
-          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Cancelación sujeta a condiciones</li>
-          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Atención 24/7 bajo reserva por teléfono, email y WhatsApp</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate("Presupuesto a medida y condiciones visibles antes de confirmar"); ?></li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate("Seguimiento del vuelo y recogida en la terminal"); ?></li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate("Chóferes profesionales, discretos y bilingües"); ?></li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate("Vehículos premium seleccionados para cada servicio"); ?></li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate("Cancelación sujeta a condiciones"); ?></li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate("Atención 24/7 bajo reserva por teléfono, email y WhatsApp"); ?></li>
         </ul>
-        <p class="vent__note">Puedes solicitar sillas infantiles, paradas adicionales o transporte de equipaje especial durante la reserva. La disponibilidad se confirma para cada servicio.</p>
+        <p class="vent__note"><?php echo mt_translate("Puedes solicitar sillas infantiles, paradas adicionales o transporte de equipaje especial durante la reserva. La disponibilidad se confirma para cada servicio."); ?></p>
       </div>
     </div>
   </div>
@@ -729,9 +729,9 @@ a.contact__val:hover{color:var(--blue);}
 <!-- ══════════════════════════ 5. FLOTA ══════════════════════════ -->
 <section class="sp bg-warm" id="flota">
   <div class="wrap">
-    <p class="tag tc" style="justify-content:center;">Flota premium</p>
-    <h2 class="tc">El espacio y el confort adecuados para cada reserva</h2>
-    <p class="lead tc" style="margin:20px auto 0;">Asignamos el vehículo según el número de pasajeros, el equipaje y el tipo de viaje. Todos los modelos se mantienen bajo estándares de limpieza y seguridad.</p>
+    <p class="tag tc" style="justify-content:center;"><?php echo mt_translate("Flota premium"); ?></p>
+    <h2 class="tc"><?php echo mt_translate("El espacio y el confort adecuados para cada reserva"); ?></h2>
+    <p class="lead tc" style="margin:20px auto 0;"><?php echo mt_translate("Asignamos el vehículo según el número de pasajeros, el equipaje y el tipo de viaje. Todos los modelos se mantienen bajo estándares de limpieza y seguridad."); ?></p>
 
     <div class="fleet__grid">
 
@@ -741,12 +741,12 @@ a.contact__val:hover{color:var(--blue);}
           <span class="fleet__badge">Hasta 3 pasajeros</span>
         </div>
         <div class="fleet__body">
-          <span class="fleet__cat">Berlina ejecutiva</span>
+          <span class="fleet__cat"><?php echo mt_translate("Berlina ejecutiva"); ?></span>
           <h3>ECONOMIC CLASS</h3>
-          <p>Cómoda y elegante para traslados de aeropuerto, hoteles, reuniones y recorridos urbanos.</p>
+          <p><?php echo mt_translate("Cómoda y elegante para traslados de aeropuerto, hoteles, reuniones y recorridos urbanos."); ?></p>
           <div class="fleet__specs">
-            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> Hasta 3 pasajeros</span>
-            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Equipaje según configuración</span>
+            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> <?php echo mt_translate("Hasta 3 pasajeros"); ?></span>
+            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> <?php echo mt_translate("Equipaje según configuración"); ?></span>
           </div>
           <a href="#panel" class="btn btn-ghost" style="text-align:center;justify-content:center;">Reservar berlina ejecutiva</a>
         </div>
@@ -758,11 +758,11 @@ a.contact__val:hover{color:var(--blue);}
           <span class="fleet__badge" style="background:var(--blue);">VIP / Premium</span>
         </div>
         <div class="fleet__body">
-          <span class="fleet__cat">Servicio premium</span>
+          <span class="fleet__cat"><?php echo mt_translate("Servicio premium"); ?></span>
           <h3>BUSINESS CLASS</h3>
-          <p>Máxima privacidad y confort para clientes VIP, directivos, ocasiones especiales y servicios de representación.</p>
+          <p><?php echo mt_translate("Máxima privacidad y confort para clientes VIP, directivos, ocasiones especiales y servicios de representación."); ?></p>
           <div class="fleet__specs">
-            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Hasta 2 pasajeros</span>
+            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> <?php echo mt_translate("Hasta 2 pasajeros"); ?></span>
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Servicio de alta gama</span>
           </div>
           <a href="#panel" class="btn btn-ghost" style="text-align:center;justify-content:center;">Consultar servicio premium</a>
@@ -775,11 +775,11 @@ a.contact__val:hover{color:var(--blue);}
           <span class="fleet__badge">Hasta 7 pasajeros</span>
         </div>
         <div class="fleet__body">
-          <span class="fleet__cat">Minivan premium</span>
+          <span class="fleet__cat"><?php echo mt_translate("Minivan premium"); ?></span>
           <h3>MINI VAN «V» Class</h3>
-          <p>Espacio amplio para familias, grupos, equipos de trabajo, tours privados y pasajeros con mayor volumen de equipaje.</p>
+          <p><?php echo mt_translate("Espacio amplio para familias, grupos, equipos de trabajo, tours privados y pasajeros con mayor volumen de equipaje."); ?></p>
           <div class="fleet__specs">
-            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> Hasta 7 pasajeros</span>
+            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> <?php echo mt_translate("Hasta 7 pasajeros"); ?></span>
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Capacidad máxima de equipaje</span>
           </div>
           <a href="#panel" class="btn btn-ghost" style="text-align:center;justify-content:center;">Reservar vehículo para grupos</a>
@@ -792,11 +792,11 @@ a.contact__val:hover{color:var(--blue);}
           <span class="fleet__badge">Hasta 7 pasajeros</span>
         </div>
         <div class="fleet__body">
-          <span class="fleet__cat">Minivan</span>
+          <span class="fleet__cat"><?php echo mt_translate("Minivan"); ?></span>
           <h3>MINI VAN ECONOMIC</h3>
-          <p>Opción económica y espaciosa para familias o grupos de hasta 7 pasajeros que buscan comodidad al mejor precio.</p>
+          <p><?php echo mt_translate("Opción económica y espaciosa para familias o grupos de hasta 7 pasajeros que buscan comodidad al mejor precio."); ?></p>
           <div class="fleet__specs">
-            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> Hasta 7 pasajeros</span>
+            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> <?php echo mt_translate("Hasta 7 pasajeros"); ?></span>
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Capacidad estándar de equipaje</span>
           </div>
           <a href="#panel" class="btn btn-ghost" style="text-align:center;justify-content:center;">Reservar vehículo para grupos</a>
@@ -835,18 +835,18 @@ a.contact__val:hover{color:var(--blue);}
         style="text-decoration:none;color:inherit;"
       >
         <div class="route__info">
-          <h3>Aeropuerto de Barcelona ↔ centro</h3>
-          <p>Recogida privada con seguimiento del vuelo y traslado puerta a puerta.</p>
+          <h3><?php echo mt_translate("Aeropuerto de Barcelona — centro"); ?></h3>
+          <p><?php echo mt_translate("Recogida privada con seguimiento del vuelo y traslado puerta a puerta."); ?></p>
         </div>
-        <span class="route__time">25–40 min</span>
+        <span class="route__time"><?php echo mt_translate("25–40 min"); ?></span>
       </a>
 
       <div class="route__item">
         <div class="route__info">
-          <h3>Aeropuerto de Barcelona ↔ Puerto</h3>
-          <p>Conexión privada con las terminales de cruceros.</p>
+          <h3><?php echo mt_translate("Aeropuerto de Barcelona — Puerto"); ?></h3>
+          <p><?php echo mt_translate("Conexión privada con las terminales de cruceros."); ?></p>
         </div>
-        <span class="route__time">Según tráfico</span>
+        <span class="route__time"><?php echo mt_translate("Según tráfico"); ?></span>
       </div>
 
       <a
@@ -869,10 +869,10 @@ a.contact__val:hover{color:var(--blue);}
         style="text-decoration:none;color:inherit;"
       >
         <div class="route__info">
-          <h3>Barcelona ↔ Costa Brava</h3>
-          <p>Traslados privados a localidades de la Costa Brava.</p>
+          <h3><?php echo mt_translate("Barcelona — Costa Brava"); ?></h3>
+          <p><?php echo mt_translate("Traslados privados a localidades de la Costa Brava."); ?></p>
         </div>
-        <span class="route__time">Según destino</span>
+        <span class="route__time"><?php echo mt_translate("Según destino"); ?></span>
       </a>
 
       <a
@@ -909,8 +909,8 @@ a.contact__val:hover{color:var(--blue);}
         style="text-decoration:none;color:inherit;"
       >
         <div class="route__info">
-          <h3>Barcelona ↔ Girona</h3>
-          <p>Traslado directo a la ciudad o al aeropuerto de Girona.</p>
+          <h3><?php echo mt_translate("Barcelona — Girona"); ?></h3>
+          <p><?php echo mt_translate("Traslado directo a la ciudad o al aeropuerto de Girona."); ?></p>
         </div>
         <span class="route__time">
             <?php echo esc_html( mt_get_route_duration( 'barcelona-girona' ) ?: 'Según tráfico' ); ?>
@@ -971,34 +971,34 @@ a.contact__val:hover{color:var(--blue);}
       <div class="tour__card">
         <div class="tour__img" style="background-image:url('<?php echo $arts; ?>/la-mejor-opcion-de-que-ver-en-montserrat-3789.jpg');"></div>
         <div class="tour__content">
-          <h3>Montserrat</h3>
-          <p>Monasterio y montaña mágica desde Barcelona con recogida puerta a puerta.</p>
-          <a href="<?php echo esc_url( mt_localized_url( 'tour-a-montserrat' ) . '#tour-booking' ); ?>" class="tour__cta-btn">Más información</a>
+          <h3><?php echo mt_translate("Montserrat"); ?></h3>
+          <p><?php echo mt_translate("Monasterio y montaña mágica desde Barcelona con recogida puerta a puerta."); ?></p>
+          <a href="<?php echo esc_url( mt_localized_url( 'tour-a-montserrat' ) . '#tour-booking' ); ?>" class="tour__cta-btn"><?php echo mt_translate("Más información"); ?></a>
         </div>
       </div>
 
       <div class="tour__card">
         <div class="tour__img" style="background-image:url('<?php echo $arts; ?>/todo-lo-que-debes-saber-sobre-ruta-por-el-penedes-visita-las-bodegas-con-un-chofer-privado-y-disfruta-sin-preocuparte-por-conducir-2990.jpg');"></div>
         <div class="tour__content">
-          <h3>Ruta por el Penedès</h3>
-          <p>Visita las bodegas con un chófer privado y disfruta sin preocuparte por conducir.</p>
-          <a href="<?php echo esc_url( mt_localized_url( 'tours-privados' ) . '#tour-booking' ); ?>" class="tour__cta-btn">Más información</a>
+          <h3><?php echo mt_translate("Ruta por el Penedès"); ?></h3>
+          <p><?php echo mt_translate("Visita las bodegas con un chófer privado y disfruta sin preocuparte por conducir."); ?></p>
+          <a href="<?php echo esc_url( mt_localized_url( 'tours-privados' ) . '#tour-booking' ); ?>" class="tour__cta-btn"><?php echo mt_translate("Más información"); ?></a>
         </div>
       </div>
 
       <div class="tour__card">
         <div class="tour__img" style="background-image:url('<?php echo $arts; ?>/la-mejor-opcion-de-ruta-en-coche-de-1-dia-por-la-costa-brava-tu-eliges-los-pueblos-nosotros-conducimos-1787.jpg');"></div>
         <div class="tour__content">
-          <h3>Costa Brava</h3>
-          <p>Pueblos costeros, calas y paisajes mediterráneos exclusivos con itinerario personalizado.</p>
-          <a href="<?php echo esc_url( mt_localized_url( 'tour-costa-brava' ) . '#tour-booking' ); ?>" class="tour__cta-btn">Más información</a>
+          <h3><?php echo mt_translate("Costa Brava"); ?></h3>
+          <p><?php echo mt_translate("Pueblos costeros, calas y paisajes mediterráneos exclusivos con itinerario personalizado."); ?></p>
+          <a href="<?php echo esc_url( mt_localized_url( 'tour-costa-brava' ) . '#tour-booking' ); ?>" class="tour__cta-btn"><?php echo mt_translate("Más información"); ?></a>
         </div>
       </div>
 
     </div>
 
     <div class="tc" style="margin-top:40px;">
-      <a href="<?php echo esc_url( mt_localized_url( 'tours-privados' ) ); ?>" class="btn btn-ghost-inv">Ver todos los tours</a>
+      <a href="<?php echo esc_url( mt_localized_url( 'tours-privados' ) ); ?>" class="btn btn-ghost-inv"><?php echo mt_translate("Ver todos los tours"); ?></a>
     </div>
   </div>
 </section>
@@ -1007,9 +1007,9 @@ a.contact__val:hover{color:var(--blue);}
 <!-- ══════════════════════════ 8. OPINIONES ══════════════════════════ -->
 <section class="sp bg-warm" id="opiniones">
   <div class="wrap">
-    <p class="tag tc" style="justify-content:center;">Opiniones de viajeros</p>
-    <h2 class="tc">La confianza se gana en cada recogida</h2>
-    <p class="lead tc" style="margin:20px auto 0;">Algunas experiencias de clientes que han reservado traslados y tours privados con MeTransfers.</p>
+    <p class="tag tc" style="justify-content:center;"><?php echo mt_translate("Opiniones de viajeros"); ?></p>
+    <h2 class="tc"><?php echo mt_translate("La confianza se gana en cada recogida"); ?></h2>
+    <p class="lead tc" style="margin:20px auto 0;"><?php echo mt_translate("Algunas experiencias de clientes que han reservado traslados y tours privados con MeTransfers."); ?></p>
 
     <div class="tc">
       <a href="https://www.getyourguide.com/es-es/metransfers-s12737/" target="_blank" rel="noopener noreferrer" class="gyg-badge" style="text-decoration:none;display:inline-flex;">
@@ -1021,21 +1021,21 @@ a.contact__val:hover{color:var(--blue);}
     <div class="rev__grid">
       <div class="rev__card">
         <div class="rev__stars">★★★★★</div>
-        <p class="rev__quote">"El chófer fue muy puntual y nos ayudó con todo el equipaje. El vehículo estaba impecable y el viaje desde el aeropuerto al hotel fue muy cómodo tras un vuelo largo. Sin duda repetiremos."</p>
+        <p class="rev__quote"><?php echo mt_translate("\"El chófer fue muy puntual y nos ayudó con todo el equipaje. El vehículo estaba impecable y el viaje desde el aeropuerto al hotel fue muy cómodo tras un vuelo largo. Sin duda repetiremos.\""); ?></p>
         <span class="rev__author">James S.</span>
-        <span class="rev__meta">Reino Unido · Agosto 2024 · Traslado aeropuerto</span>
+        <span class="rev__meta"><?php echo mt_translate("Reino Unido · Agosto 2024 · Traslado aeropuerto"); ?></span>
       </div>
       <div class="rev__card">
         <div class="rev__stars">★★★★★</div>
-        <p class="rev__quote">"Reservamos un traslado al puerto de cruceros para nuestra familia. Espacio de sobra en la MINI VAN «V» Class y una atención al cliente perfecta por WhatsApp para confirmar los detalles."</p>
+        <p class="rev__quote"><?php echo mt_translate("\"Reservamos un traslado al puerto de cruceros para nuestra familia. Espacio de sobra en la MINI VAN «V» Class y una atención al cliente perfecta por WhatsApp para confirmar los detalles.\""); ?></p>
         <span class="rev__author">María R.</span>
-        <span class="rev__meta">España · Septiembre 2024 · Traslado puerto cruceros</span>
+        <span class="rev__meta"><?php echo mt_translate("España · Septiembre 2024 · Traslado puerto cruceros"); ?></span>
       </div>
       <div class="rev__card">
         <div class="rev__stars">★★★★★</div>
-        <p class="rev__quote">"Hicimos el tour a Montserrat y fue espectacular. El conductor conocía perfectamente la ruta, nos dio consejos útiles y adaptó los tiempos a nuestro ritmo. Un servicio de 10."</p>
+        <p class="rev__quote"><?php echo mt_translate("\"Hicimos el tour a Montserrat y fue espectacular. El conductor conocía perfectamente la ruta, nos dio consejos útiles y adaptó los tiempos a nuestro ritmo. Un servicio de 10.\""); ?></p>
         <span class="rev__author">Anna J.</span>
-        <span class="rev__meta">Estados Unidos · Octubre 2024 · Tour Montserrat</span>
+        <span class="rev__meta"><?php echo mt_translate("Estados Unidos · Octubre 2024 · Tour Montserrat"); ?></span>
       </div>
     </div>
   </div>
@@ -1045,80 +1045,90 @@ a.contact__val:hover{color:var(--blue);}
 <!-- ══════════════════════════ 9. FAQ ══════════════════════════ -->
 <section class="sp bg-white" id="faq">
   <div class="wrap">
-    <p class="tag tc" style="justify-content:center;">Preguntas frecuentes</p>
-    <h2 class="tc">Todo lo que necesitas saber antes de reservar</h2>
-    <p class="lead tc" style="margin:20px auto 0;">Condiciones principales de nuestros traslados privados, chófer por horas y tours con salida desde Barcelona.</p>
+    <p class="tag tc" style="justify-content:center;"><?php echo mt_translate("Preguntas frecuentes"); ?></p>
+    <h2 class="tc"><?php echo mt_translate("Todo lo que necesitas saber antes de reservar"); ?></h2>
+    <p class="lead tc" style="margin:20px auto 0;"><?php echo mt_translate("Condiciones principales de nuestros traslados privados, chófer por horas y tours con salida desde Barcelona."); ?></p>
 
     <div class="faq__wrap">
       <div class="faq__item">
         <button type="button" class="faq__q" id="faq-q-1" aria-expanded="false" aria-controls="faq-a-1">
-          ¿Desde dónde podéis recogerme en Barcelona?
+          <?php echo mt_translate("¿Desde dónde podéis recogerme en Barcelona?"); ?>
+          
           <span class="faq__icon" aria-hidden="true"></span>
         </button>
-        <div class="faq__a" id="faq-a-1" role="region" aria-labelledby="faq-q-1" hidden>Te recogemos en cualquier punto de Barcelona: hotel, apartamento, oficina, Aeropuerto El Prat, Puerto de Cruceros o estación de tren. Solo indícanos la dirección exacta y la hora al hacer la reserva.</div>
+        <div class="faq__a" id="faq-a-1" role="region" aria-labelledby="faq-q-1" hidden><?php echo mt_translate("Te recogemos en cualquier punto de Barcelona: hotel, apartamento, oficina, Aeropuerto El Prat, Puerto de Cruceros o estación de tren. Solo indícanos la dirección exacta y la hora al hacer la reserva."); ?></div>
       </div>
       <div class="faq__item">
         <button type="button" class="faq__q" id="faq-q-2" aria-expanded="false" aria-controls="faq-a-2">
-          ¿Podéis llevarme desde Barcelona al Aeropuerto de El Prat?
+          <?php echo mt_translate("¿Podéis llevarme desde Barcelona al Aeropuerto de El Prat?"); ?>
+          
           <span class="faq__icon" aria-hidden="true"></span>
         </button>
-        <div class="faq__a" id="faq-a-2" role="region" aria-labelledby="faq-q-2" hidden>Sí. Puedes reservar traslados privados desde Barcelona al Aeropuerto Josep Tarradellas Barcelona-El Prat. Al confirmar la reserva, indica la hora de salida de tu vuelo para que calculemos la hora de recogida óptima.</div>
+        <div class="faq__a" id="faq-a-2" role="region" aria-labelledby="faq-q-2" hidden><?php echo mt_translate("Sí. Puedes reservar traslados privados desde Barcelona al Aeropuerto Josep Tarradellas Barcelona-El Prat. Al confirmar la reserva, indica la hora de salida de tu vuelo para que calculemos la hora de recogida óptima."); ?></div>
       </div>
       <div class="faq__item">
         <button type="button" class="faq__q" id="faq-q-3" aria-expanded="false" aria-controls="faq-a-3">
-          ¿Qué ocurre si mi vuelo se retrasa?
+          <?php echo mt_translate("¿Qué ocurre si mi vuelo se retrasa?"); ?>
+          
           <span class="faq__icon" aria-hidden="true"></span>
         </button>
-        <div class="faq__a" id="faq-a-3" role="region" aria-labelledby="faq-q-3" hidden>Monitorizamos el estado del vuelo con el número facilitado en la reserva. Si se produce un retraso, ajustamos la hora de recogida para que el chófer te espere en función de la llegada real.</div>
+        <div class="faq__a" id="faq-a-3" role="region" aria-labelledby="faq-q-3" hidden><?php echo mt_translate("Monitorizamos el estado del vuelo con el número facilitado en la reserva. Si se produce un retraso, ajustamos la hora de recogida para que el chófer te espere en función de la llegada real."); ?></div>
       </div>
       <div class="faq__item">
         <button type="button" class="faq__q" id="faq-q-4" aria-expanded="false" aria-controls="faq-a-4">
-          ¿Dónde me espera el conductor?
+          <?php echo mt_translate("¿Dónde me espera el conductor?"); ?>
+          
           <span class="faq__icon" aria-hidden="true"></span>
         </button>
-        <div class="faq__a" id="faq-a-4" role="region" aria-labelledby="faq-q-4" hidden>En el aeropuerto, el chófer te espera en la zona de llegadas con un cartel identificativo. En hoteles, viviendas, puertos y otros puntos, la ubicación exacta se confirma en los datos de la reserva.</div>
+        <div class="faq__a" id="faq-a-4" role="region" aria-labelledby="faq-q-4" hidden><?php echo mt_translate("En el aeropuerto, el chófer te espera en la zona de llegadas con un cartel identificativo. En hoteles, viviendas, puertos y otros puntos, la ubicación exacta se confirma en los datos de la reserva."); ?></div>
       </div>
       <div class="faq__item">
         <button type="button" class="faq__q" id="faq-q-5" aria-expanded="false" aria-controls="faq-a-5">
-          ¿Puedo solicitar un presupuesto a medida?
+          <?php echo mt_translate("¿Puedo solicitar un presupuesto a medida?"); ?>
+          
           <span class="faq__icon" aria-hidden="true"></span>
         </button>
-        <div class="faq__a" id="faq-a-5" role="region" aria-labelledby="faq-q-5" hidden>El presupuesto y las condiciones principales se muestran antes de confirmar el pago. Cualquier cambio posterior de ruta, horario, pasajeros o equipaje que modifique el servicio deberá revisarse y confirmarse de nuevo.</div>
+        <div class="faq__a" id="faq-a-5" role="region" aria-labelledby="faq-q-5" hidden><?php echo mt_translate("El presupuesto y las condiciones principales se muestran antes de confirmar el pago. Cualquier cambio posterior de ruta, horario, pasajeros o equipaje que modifique el servicio deberá revisarse y confirmarse de nuevo."); ?></div>
       </div>
       <div class="faq__item">
         <button type="button" class="faq__q" id="faq-q-6" aria-expanded="false" aria-controls="faq-a-6">
-          ¿Puedo cancelar mi reserva?
+          <?php echo mt_translate("¿Puedo cancelar mi reserva?"); ?>
+          
           <span class="faq__icon" aria-hidden="true"></span>
         </button>
-        <div class="faq__a" id="faq-a-6" role="region" aria-labelledby="faq-q-6" hidden>MeTransfers ofrece cancelación gratuita hasta 24 horas antes del servicio, salvo condiciones diferentes indicadas en reservas especiales.</div>
+        <div class="faq__a" id="faq-a-6" role="region" aria-labelledby="faq-q-6" hidden><?php echo mt_translate("MeTransfers ofrece cancelación gratuita hasta 24 horas antes del servicio, salvo condiciones diferentes indicadas en reservas especiales."); ?></div>
       </div>
       <div class="faq__item">
         <button type="button" class="faq__q" id="faq-q-7" aria-expanded="false" aria-controls="faq-a-7">
-          ¿Puedo solicitar una silla infantil?
+          <?php echo mt_translate("¿Puedo solicitar una silla infantil?"); ?>
+          
           <span class="faq__icon" aria-hidden="true"></span>
         </button>
-        <div class="faq__a" id="faq-a-7" role="region" aria-labelledby="faq-q-7" hidden>Sí. Puedes solicitar sillas infantiles o elevadores al realizar la reserva. Indica la edad y el peso aproximado del menor para confirmar la opción adecuada y su disponibilidad.</div>
+        <div class="faq__a" id="faq-a-7" role="region" aria-labelledby="faq-q-7" hidden><?php echo mt_translate("Sí. Puedes solicitar sillas infantiles o elevadores al realizar la reserva. Indica la edad y el peso aproximado del menor para confirmar la opción adecuada y su disponibilidad."); ?></div>
       </div>
       <div class="faq__item">
         <button type="button" class="faq__q" id="faq-q-8" aria-expanded="false" aria-controls="faq-a-8">
-          ¿Tenéis vehículos para grupos y equipaje voluminoso?
+          <?php echo mt_translate("¿Tenéis vehículos para grupos y equipaje voluminoso?"); ?>
+          
           <span class="faq__icon" aria-hidden="true"></span>
         </button>
-        <div class="faq__a" id="faq-a-8" role="region" aria-labelledby="faq-q-8" hidden>Sí. La MINI VAN «V» Class permite viajar hasta siete pasajeros, dependiendo del equipaje. Para maletas especiales o material deportivo, indícalo antes de confirmar para asignar el vehículo correcto.</div>
+        <div class="faq__a" id="faq-a-8" role="region" aria-labelledby="faq-q-8" hidden><?php echo mt_translate("Sí. La MINI VAN «V» Class permite viajar hasta siete pasajeros, dependiendo del equipaje. Para maletas especiales o material deportivo, indícalo antes de confirmar para asignar el vehículo correcto."); ?></div>
       </div>
       <div class="faq__item">
         <button type="button" class="faq__q" id="faq-q-9" aria-expanded="false" aria-controls="faq-a-9">
-          ¿Puedo contratar un coche con chófer por horas?
+          <?php echo mt_translate("¿Puedo contratar un coche con chófer por horas?"); ?>
+          
           <span class="faq__icon" aria-hidden="true"></span>
         </button>
-        <div class="faq__a" id="faq-a-9" role="region" aria-labelledby="faq-q-9" hidden>Sí. El servicio por horas es ideal para reuniones, cenas, compras, eventos o agendas con varias paradas. Envíanos el horario aproximado y el recorrido para preparar una propuesta.</div>
+        <div class="faq__a" id="faq-a-9" role="region" aria-labelledby="faq-q-9" hidden><?php echo mt_translate("Sí. El servicio por horas es ideal para reuniones, cenas, compras, eventos o agendas con varias paradas. Envíanos el horario aproximado y el recorrido para preparar una propuesta."); ?></div>
       </div>
       <div class="faq__item">
         <button type="button" class="faq__q" id="faq-q-10" aria-expanded="false" aria-controls="faq-a-10">
-          ¿Qué formas de pago están disponibles?
+          <?php echo mt_translate("¿Qué formas de pago están disponibles?"); ?>
+          
           <span class="faq__icon" aria-hidden="true"></span>
         </button>
-        <div class="faq__a" id="faq-a-10" role="region" aria-labelledby="faq-q-10" hidden>Las formas de pago disponibles se muestran durante el proceso de reserva antes de confirmar. El pago online se realiza a través de una pasarela segura.</div>
+        <div class="faq__a" id="faq-a-10" role="region" aria-labelledby="faq-q-10" hidden><?php echo mt_translate("Las formas de pago disponibles se muestran durante el proceso de reserva antes de confirmar. El pago online se realiza a través de una pasarela segura."); ?></div>
       </div>
     </div>
   </div>
