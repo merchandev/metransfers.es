@@ -80,11 +80,15 @@ class WPTB_Public {
             wp_enqueue_script( 'wptb-booking-js', WPTB_PLUGIN_URL . 'assets/js/booking-app.js', $deps, WPTB_VERSION, true );
         }
 
-        // 4. PAYMENTS (payment and server-confirmed return only)
-        $payment_enqueued = in_array( $phase, array( 'payment', 'confirmation' ), true );
+        // 4. Payment start only. Confirmation and receipts are rendered from
+        // authoritative server state and do not need the checkout bundle.
+        $payment_enqueued = 'payment' === $phase;
         if ( $payment_enqueued ) {
             $payment_deps = array( 'jquery', 'mt-booking-tracking' );
             wp_enqueue_script( 'wptb-redsys-payment', WPTB_PLUGIN_URL . 'assets/js/redsys-payment.js', $payment_deps, WPTB_VERSION, true );
+        }
+        if ( 'confirmation' === $phase ) {
+            wp_enqueue_script( 'wptb-booking-confirmation', WPTB_PLUGIN_URL . 'assets/js/booking-confirmation.js', array(), WPTB_VERSION, true );
         }
 
         // 5. LOCALIZATION & DATA PASSING
@@ -106,7 +110,6 @@ class WPTB_Public {
             'language' => \MeTransfers\Booking\I18n::language(),
             'terms_version' => MT_TERMS_VERSION,
             'strings' => \MeTransfers\Booking\I18n::strings(),
-            'pdf_library_url' => 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
         );
 
         if ( $booking_enqueued ) {

@@ -1,0 +1,163 @@
+:root {
+    color-scheme: light;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: #132d3a;
+    background: #edf3f5;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 32px 16px;
+}
+
+.mt-receipt {
+    width: min(760px, 100%);
+    margin: 0 auto;
+    padding: 40px;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 18px 50px rgba(14, 52, 68, 0.12);
+}
+
+.mt-receipt__header {
+    padding-bottom: 24px;
+    border-bottom: 4px solid #ff7100;
+}
+
+.mt-receipt__brand {
+    margin: 0 0 8px;
+    color: #00526d;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.mt-receipt h1 {
+    margin: 0 0 10px;
+    font-size: clamp(28px, 5vw, 42px);
+}
+
+.mt-receipt__section {
+    padding: 24px 0;
+}
+
+.mt-receipt__details {
+    margin: 0;
+}
+
+.mt-receipt__details > div {
+    display: grid;
+    grid-template-columns: minmax(150px, 0.7fr) minmax(0, 1.3fr);
+    gap: 20px;
+    padding: 12px 0;
+    border-bottom: 1px solid #dfe9ed;
+}
+
+.mt-receipt dt {
+    color: #506a76;
+    font-weight: 700;
+}
+
+.mt-receipt dd {
+    margin: 0;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.mt-receipt__details .mt-receipt__total {
+    margin-top: 18px;
+    padding: 18px;
+    border: 0;
+    border-radius: 12px;
+    color: #fff;
+    background: #00526d;
+    font-size: 20px;
+}
+
+.mt-receipt__total dt {
+    color: inherit;
+}
+
+.mt-receipt__confirmed {
+    font-weight: 700;
+    color: #166534;
+}
+
+.mt-receipt__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.mt-receipt__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 12px 20px;
+    border: 0;
+    border-radius: 999px;
+    color: #fff;
+    background: #ff7100;
+    font: inherit;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.mt-receipt__button--secondary {
+    background: #00526d;
+}
+
+.mt-receipt--unavailable {
+    text-align: center;
+}
+
+@media (max-width: 560px) {
+    body {
+        padding: 0;
+    }
+
+    .mt-receipt {
+        min-height: 100vh;
+        padding: 28px 20px;
+        border-radius: 0;
+    }
+
+    .mt-receipt__details > div {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .mt-receipt dd {
+        text-align: left;
+    }
+}
+
+@media print {
+    :root,
+    body {
+        background: #fff;
+    }
+
+    body {
+        padding: 0;
+    }
+
+    .mt-receipt {
+        width: 100%;
+        padding: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .mt-receipt__actions {
+        display: none;
+    }
+}

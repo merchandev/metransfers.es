@@ -11,7 +11,7 @@ class Application {
         self::$booted = true;
 
         if (!defined('MT_PLATFORM_VERSION')) {
-            define('MT_PLATFORM_VERSION', '6.4.0');
+            define('MT_PLATFORM_VERSION', '6.5.0');
         }
         if (!defined('MT_PLATFORM_DB_VERSION')) {
             define('MT_PLATFORM_DB_VERSION', '6.3.0');
@@ -59,6 +59,9 @@ class Application {
 
         $drafts = new \MeTransfers\Booking\BookingDraftService();
         $drafts->register();
+
+        $receipts = new \MeTransfers\Booking\ReceiptController();
+        $receipts->register();
 
         $analytics = new \MeTransfers\Analytics\PurchaseOutbox();
         $analytics->register();

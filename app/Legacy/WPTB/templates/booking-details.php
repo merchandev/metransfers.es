@@ -5,6 +5,8 @@
 $wptb_payment_state = 'none';
 $wptb_payment_order_id = '';
 $wptb_payment_booking = null;
+$wptb_payment_value = '';
+$wptb_payment_receipt_url = '';
 $wptb_i18n = \MeTransfers\Booking\I18n::strings();
 
 if ( isset( $_GET['payment_result'] ) ) {
@@ -20,27 +22,33 @@ if ( isset( $_GET['payment_result'] ) ) {
 
     if ( empty( $return_request['valid'] ) ) {
         $wptb_payment_state = 'invalid';
-    } elseif ( 'ko' === $return_request['result'] ) {
-        $wptb_payment_order_id = $return_request['order_id'];
-        $wptb_payment_state = 'failed';
     } else {
         $wptb_payment_order_id = $return_request['order_id'];
         global $wpdb;
         $table = $wpdb->prefix . 'wptb_bookings';
         $wptb_payment_booking = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT id, status, payment_status, price, booking_locale FROM $table WHERE payment_intent_id = %s",
+                "SELECT id, status, payment_status, price, price_cents, booking_locale FROM $table WHERE payment_intent_id = %s",
                 $wptb_payment_order_id
             )
         );
         if ( $wptb_payment_booking && ! empty( $wptb_payment_booking->booking_locale ) ) {
             $wptb_i18n = \MeTransfers\Booking\I18n::strings( $wptb_payment_booking->booking_locale );
         }
-        $wptb_payment_state = $wptb_payment_booking
+        $is_paid = $wptb_payment_booking
             && 'paid' === $wptb_payment_booking->payment_status
-            && in_array( $wptb_payment_booking->status, array( 'confirmed', 'completed' ), true )
-                ? 'confirmed'
-                : 'pending';
+            && in_array( $wptb_payment_booking->status, array( 'confirmed', 'completed' ), true );
+
+        if ( $is_paid ) {
+            $wptb_payment_state = 'confirmed';
+            $wptb_payment_value = \MeTransfers\Pricing\Money::fromBooking( $wptb_payment_booking )->decimal();
+            $wptb_payment_receipt_url = \MeTransfers\Booking\ReceiptService::url(
+                $wptb_payment_order_id,
+                $wptb_payment_booking->booking_locale
+            );
+        } else {
+            $wptb_payment_state = 'ko' === $return_request['result'] ? 'failed' : 'pending';
+        }
     }
 }
 
@@ -52,7 +60,7 @@ $wptb_state_class = static function ( $state ) use ( $wptb_payment_state ) {
     data-payment-state="<?php echo esc_attr( $wptb_payment_state ); ?>"
     <?php if ( 'confirmed' === $wptb_payment_state && $wptb_payment_booking ) : ?>
         data-booking-id="<?php echo esc_attr( $wptb_payment_booking->id ); ?>"
-        data-payment-value="<?php echo esc_attr( $wptb_payment_booking->price ); ?>"
+        data-payment-value="<?php echo esc_attr( $wptb_payment_value ); ?>"
         data-payment-currency="EUR"
     <?php endif; ?>>
 
@@ -112,7 +120,7 @@ $wptb_state_class = static function ( $state ) use ( $wptb_payment_state ) {
         <p><?php echo esc_html( $wptb_i18n['confirmation_email'] ); ?></p>
         <p><strong><?php echo esc_html( $wptb_i18n['reference'] ); ?>:</strong> <span id="success-order-id">#<?php echo esc_html( $wptb_payment_order_id ?: '...' ); ?></span></p>
         <div class="mt-actions">
-            <button type="button" id="btn-download-pdf" class="mt-button mt-button--secondary"><?php echo esc_html( $wptb_i18n['download_receipt'] ); ?></button>
+            <a id="btn-download-receipt" class="mt-button mt-button--secondary" href="<?php echo esc_url( $wptb_payment_receipt_url ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $wptb_i18n['download_receipt'] ); ?></a>
             <a href="<?php echo esc_url( \MeTransfers\Booking\I18n::url( '/' ) ); ?>" class="mt-button mt-button--primary"><?php echo esc_html( $wptb_i18n['back_home'] ); ?></a>
         </div>
     </section>

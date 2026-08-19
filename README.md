@@ -127,10 +127,12 @@ Los assets se cargan por fase:
 - vehículos: booking;
 - detalles: booking y Maps;
 - pago: Redsys y Maps;
-- confirmación: estilos de estado y Redsys; jsPDF se descarga solo al solicitar el recibo;
+- confirmación: estilos de estado, tracking seguro y script mínimo de limpieza; el recibo se renderiza en servidor;
 - Hotel/Transfers Premium: solo en su contexto.
 
 El booking incluye catálogo español e inglés sin dependencia externa. En los demás idiomas, el frontend lee exclusivamente traducciones pre-generadas desde caché/DB. La llamada remota solo se permite desde **Ajustes → Traducción MT → Pre-generar catálogo booking**. Las URLs internas conservan el prefijo de idioma y los idiomas fuera de `MT_SEO_LANGS` usan `noindex,follow`.
+
+El recibo del cliente es HTML imprimible y se reconstruye desde una reserva pagada mediante referencia + HMAC. No usa datos de sesión ni librerías PDF externas; el navegador puede imprimirlo o guardarlo como PDF.
 
 Los eventos disponibles en `dataLayer` son `booking_start`, `route_search`, `vehicle_select`, `begin_checkout`, `add_payment_info`, `generate_lead`, `purchase`, `click_whatsapp`, `click_phone`, `booking_error` y `payment_error`. Teléfono y WhatsApp se capturan globalmente mediante un script mínimo. No se envía PII a `dataLayer`. Con `MT_GA4_MEASUREMENT_ID` y `MT_GA4_API_SECRET`, el worker despacha `analytics.purchase:{booking_id}` desde el outbox genérico. La tabla analítica anterior se mantiene únicamente para drenar eventos creados antes de la versión 6.1.0.
 

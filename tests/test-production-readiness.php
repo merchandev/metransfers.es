@@ -48,8 +48,8 @@ assert_readiness( ! file_exists( $root . '/app/Legacy/WPTB/assets/js/debug-helpe
 assert_readiness( ! file_exists( $root . '/app/Legacy/WPTB/templates/stripe-checkout.php' ), 'The unused legacy Stripe checkout template must not ship.' );
 
 assert_readiness( false !== strpos( $assets, "return 'confirmation';" ), 'Assets must distinguish the confirmation phase.' );
-assert_readiness( false === strpos( $public_controller, "wp_enqueue_script( 'jspdf'" ), 'jsPDF must not be part of the initial booking payload.' );
-assert_readiness( false !== strpos( $public_controller, "'pdf_library_url'" ), 'The receipt library must be available for lazy loading.' );
+assert_readiness( false === stripos( $public_controller, 'jspdf' ), 'The public controller must not expose a browser PDF library.' );
+assert_readiness( false === strpos( $public_controller, "'pdf_library_url'" ), 'The confirmation must not depend on a remote receipt library.' );
 assert_readiness( false !== strpos( $tracking, "container.dataset.paymentState !== 'confirmed'" ), 'Purchase tracking must require a server-confirmed state.' );
 
 foreach ( array( 'booking_start', 'route_search', 'vehicle_select', 'begin_checkout', 'add_payment_info', 'purchase', 'generate_lead', 'booking_error', 'payment_error' ) as $event ) {

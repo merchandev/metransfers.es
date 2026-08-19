@@ -76,6 +76,8 @@ try {
         'MeTransfers\\Booking\\VehicleCapacityPolicy',
         'MeTransfers\\Booking\\BookingDraftService',
         'MeTransfers\\Booking\\BookingEvents',
+        'MeTransfers\\Booking\\ReceiptService',
+        'MeTransfers\\Booking\\ReceiptController',
         'MeTransfers\\Pricing\\Money',
         'MeTransfers\\Notifications\\NotificationService',
         'MeTransfers\\Analytics\\PurchaseOutbox',
