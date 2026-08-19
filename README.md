@@ -100,6 +100,7 @@ php tests/test-booking-drafts.php
 php tests/test-server-vehicle-quotes.php
 php tests/test-money.php
 php tests/test-i18n.php
+php tests/test-i18n-routing.php
 php tests/test-production-readiness.php
 find . -path ./node_modules -prune -o -path ./vendor -prune -o -type f -name "*.js" -print0 | xargs -0 -n1 node --check
 ```
@@ -130,7 +131,7 @@ Los assets se cargan por fase:
 - confirmación: estilos de estado, tracking seguro y script mínimo de limpieza; el recibo se renderiza en servidor;
 - Hotel/Transfers Premium: solo en su contexto.
 
-El booking incluye catálogo español e inglés sin dependencia externa. En los demás idiomas, el frontend lee exclusivamente traducciones pre-generadas desde caché/DB. La llamada remota solo se permite desde **Ajustes → Traducción MT → Pre-generar catálogo booking**. Las URLs internas conservan el prefijo de idioma y los idiomas fuera de `MT_SEO_LANGS` usan `noindex,follow`.
+El booking incluye catálogo español e inglés sin dependencia externa. En los demás idiomas, el frontend lee exclusivamente traducciones pre-generadas desde caché/DB. La llamada remota solo se permite desde **Ajustes → Traducción MT → Pre-generar catálogo booking**; la API key es write-only y viaja en header. Router, caché, selector, administración y SEO/Yoast están separados, y el selector usa CSS/JS versionados sin bloques inline. Las URLs internas conservan el prefijo de idioma y los idiomas fuera de `MT_SEO_LANGS` usan `noindex,follow`.
 
 El recibo del cliente es HTML imprimible y se reconstruye desde una reserva pagada mediante referencia + HMAC. No usa datos de sesión ni librerías PDF externas; el navegador puede imprimirlo o guardarlo como PDF.
 

@@ -78,6 +78,10 @@ class Settings {
             'constants' => array( 'MT_WHATSAPP_ADMIN_PHONE' ),
             'options'   => array( 'wptb_admin_phone_notifications' ),
         ),
+        'translation_api_key' => array(
+            'constants' => array( 'MT_TRANSLATION_API_KEY' ),
+            'options'   => array( 'mt_google_api_key' ),
+        ),
         'redsys_credentials_rotated_at' => array(
             'constants' => array( 'MT_REDSYS_CREDENTIALS_ROTATED_AT' ),
             'options'   => array( 'mt_redsys_credentials_rotated_at' ),
@@ -103,6 +107,7 @@ class Settings {
         'wptb_smtp_password',
         'mt_ga4_api_secret',
         'wptb_whatsapp_apikey',
+        'mt_google_api_key',
     );
 
     public function register() {

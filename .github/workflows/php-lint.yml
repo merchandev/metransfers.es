@@ -50,6 +50,7 @@ jobs:
           php tests/test-admin-security.php
           php tests/test-migrations.php
           php tests/test-i18n.php
+          php tests/test-i18n-routing.php
           php tests/test-production-readiness.php
 
       - name: Check JavaScript syntax

@@ -11,7 +11,7 @@ class Application {
         self::$booted = true;
 
         if (!defined('MT_PLATFORM_VERSION')) {
-            define('MT_PLATFORM_VERSION', '6.7.0');
+            define('MT_PLATFORM_VERSION', '6.8.0');
         }
         if (!defined('MT_PLATFORM_DB_VERSION')) {
             define('MT_PLATFORM_DB_VERSION', '6.5.0');
