@@ -170,6 +170,9 @@ add_action( 'template_redirect', function() {
         if ( $post_id ) {
             $is_valid = true;
             $original_post = get_post( $post_id );
+            if ( is_array( $original_post ) ) {
+                $original_post = new WP_Post( (object) $original_post );
+            }
             
             $tpl = get_page_template_slug( $post_id );
             if ( $tpl && file_exists( get_template_directory() . '/' . $tpl ) ) {
@@ -207,7 +210,9 @@ add_action( 'template_redirect', function() {
             setup_postdata( $post );
         } elseif ( in_array( $template_file, ['template-servicio.php', 'template-tours.php', 'template-flota.php'] ) ) {
             $fallback = get_page_by_path( $page );
-            if ( is_array( $fallback ) ) $fallback = (object) $fallback;
+              if ( is_array( $fallback ) ) {
+                  $fallback = new WP_Post( (object) $fallback );
+              }
             if ( $fallback ) {
                 global $post, $wp_query;
                 $post = $fallback;
