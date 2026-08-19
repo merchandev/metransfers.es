@@ -10,9 +10,18 @@ function wptb_premium_transfers_search_shortcode() {
 }
 add_action('init', 'wptb_premium_transfers_search_shortcode');
 
+function wptb_is_transfers_search_context() {
+    if ( is_page_template( 'template-madre.php' ) ) {
+        return true;
+    }
+
+    $post = get_post();
+    return $post && is_string( $post->post_content ) && has_shortcode( $post->post_content, 'premium_transfers_search' );
+}
+
 // Include PTS Modal in footer
 function wptb_include_pts_modal() {
-    if ( \MeTransfers\Core\Assets::is_booking_context() ) {
+    if ( wptb_is_transfers_search_context() ) {
         include WPTB_PLUGIN_DIR . 'templates/pts-booking-modal.php';
     }
 }
@@ -20,7 +29,7 @@ add_action('wp_footer', 'wptb_include_pts_modal');
 
 // Enqueue Assets for Shortcode
 function wptb_enqueue_transfers_search_assets() {
-    if ( \MeTransfers\Core\Assets::is_booking_context() ) {
+    if ( wptb_is_transfers_search_context() ) {
         // Google Fonts
         wp_enqueue_style(
             'wptb-inter-font',
@@ -96,8 +105,9 @@ function wptb_enqueue_transfers_search_assets() {
         wp_localize_script('wptb-transfers-search', 'ptsData', array(
             'destinations' => $destinations,
             'google_maps_api_key' => $maps_api_key,
-            'google_maps_language' => 'es',
-            'google_maps_region' => 'ES'
+            'google_maps_language' => \MeTransfers\Booking\I18n::maps_language(),
+            'google_maps_region' => 'ES',
+            'strings' => \MeTransfers\Booking\I18n::strings(),
         ));
     }
 }
@@ -105,6 +115,7 @@ add_action('wp_enqueue_scripts', 'wptb_enqueue_transfers_search_assets');
 
 // Render Shortcode
 function wptb_render_transfers_search() {
+    $wptb_i18n = \MeTransfers\Booking\I18n::strings();
     ob_start();
     ?>
     <div id="pts-module-wrapper">
@@ -119,26 +130,26 @@ function wptb_render_transfers_search() {
                         type="text" 
                         id="ptsSearchInput" 
                         class="pts-search-input" 
-                        placeholder="Buscar destino..."
+                        placeholder="<?php echo esc_attr( $wptb_i18n['search_destination'] ); ?>"
                         autocomplete="off"
                     />
                 </div>
 
                 <div class="pts-filters">
                     <button class="pts-filter-btn active" data-category="all">
-                        <span>Todos</span>
+                        <span><?php echo esc_html( $wptb_i18n['all_destinations'] ); ?></span>
                     </button>
                     <button class="pts-filter-btn" data-category="ciudad">
-                        <span>Ciudades</span>
+                        <span><?php echo esc_html( $wptb_i18n['cities'] ); ?></span>
                     </button>
                     <button class="pts-filter-btn" data-category="playa">
-                        <span>Playas</span>
+                        <span><?php echo esc_html( $wptb_i18n['beaches'] ); ?></span>
                     </button>
                     <button class="pts-filter-btn" data-category="aeropuerto">
-                        <span>Aeropuertos</span>
+                        <span><?php echo esc_html( $wptb_i18n['airports'] ); ?></span>
                     </button>
                     <button class="pts-filter-btn" data-category="montana">
-                        <span>Montaña</span>
+                        <span><?php echo esc_html( $wptb_i18n['mountains'] ); ?></span>
                     </button>
                 </div>
             </div>
@@ -152,8 +163,8 @@ function wptb_render_transfers_search() {
                     <circle cx="32" cy="32" r="32" fill="#F3F4F6"/>
                     <path d="M28 26a4 4 0 1 1 8 0 4 4 0 0 1-8 0zM26 40c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"/>
                 </svg>
-                <h3>No se encontraron destinos</h3>
-                <p>Intenta con otro término de búsqueda</p>
+                <h3><?php echo esc_html( $wptb_i18n['no_destinations'] ); ?></h3>
+                <p><?php echo esc_html( $wptb_i18n['try_other_search'] ); ?></p>
             </div>
         </div>
     </div>

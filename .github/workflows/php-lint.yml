@@ -1,17 +1,24 @@
 name: PHP Linting
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main", "master" ]
   pull_request:
     branches: [ "main", "master" ]
+
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   php-lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -33,6 +40,8 @@ jobs:
           php tests/test-pricing.php
           php tests/test-route-distance.php
           php tests/test-redsys-gateway.php
+          php tests/test-i18n.php
+          php tests/test-production-readiness.php
 
       - name: Check JavaScript syntax
         shell: bash
@@ -83,3 +92,8 @@ jobs:
             echo "ERROR: possible committed credential detected."
             exit 1
           fi
+
+      - name: Scan Git history and changes with Gitleaks
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

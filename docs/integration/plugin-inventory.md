@@ -89,8 +89,6 @@ complete-booking-plugin/
 | wptb_save_booking | WPTB_Public::save_booking |
 | wptb_get_vehicles | WPTB_Public::ajax_get_vehicles |
 | wptb_calculate_price | WPTB_Public::ajax_calculate_price |
-| wptb_create_booking | WPTB_Public::ajax_create_booking |
-| wptb_get_pricing | WPTB_Public::ajax_get_pricing |
 | wptb_initiate_redsys | WPTB_Public::initiate_redsys_payment |
 | wptb_create_payment_intent | WPTB_Public (condicional) |
 | wptb_confirm_payment | WPTB_Public (condicional) |
@@ -100,6 +98,8 @@ complete-booking-plugin/
 | wptb_delete_vehicle_image | WPTB_Vehicles_Admin (admin-only) |
 | hqp_get_fixed_pricing | HQP_Public |
 | hqp_create_booking | HQP_Public |
+
+Los hooks legacy `wptb_create_booking` y `wptb_get_pricing` fueron retirados: apuntaban a métodos inexistentes y no tienen consumidores en los assets actuales.
 
 ## 5. TABLAS DE BASE DE DATOS
 

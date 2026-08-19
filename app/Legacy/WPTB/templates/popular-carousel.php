@@ -1,6 +1,7 @@
 <?php
 // Popular Destinations Carousel Template
 // Uses 'wptb_destination' CPT with fallback to legacy array if empty.
+$wptb_i18n = \MeTransfers\Booking\I18n::strings();
 
 $args = array(
     'post_type'      => 'wptb_destination',
@@ -53,10 +54,10 @@ if(count($slides) < 10) {
     <!-- Direction Toggle -->
     <div class="mtfs-direction-toggle">
         <button type="button" class="mtfs-direction-btn active" data-direction="from-barcelona">
-            Desde Barcelona
+            <?php echo esc_html( $wptb_i18n['from_barcelona'] ); ?>
         </button>
         <button type="button" class="mtfs-direction-btn" data-direction="to-barcelona">
-            Hacia Barcelona
+            <?php echo esc_html( $wptb_i18n['to_barcelona'] ); ?>
         </button>
     </div>
 
@@ -78,7 +79,7 @@ if(count($slides) < 10) {
                         
                         <div class="mtfs-slide-content">
                             <h3><?php echo esc_html($slide['title']); ?></h3>
-                            <div class="mtfs-slide-direction">Desde Barcelona</div>
+                            <div class="mtfs-slide-direction"><?php echo esc_html( $wptb_i18n['from_barcelona'] ); ?></div>
                         </div>
                     </div>
                 <?php endforeach; ?>

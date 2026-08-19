@@ -5,11 +5,24 @@
     $(document).ready(function () {
         console.log('🔐 Redsys Payment v1.2 - Initialized (Scoped)');
 
+        const paymentStrings = (typeof wptb_vars !== 'undefined' && wptb_vars.strings) ? wptb_vars.strings : {};
+
+        function t(key, fallback) {
+            return paymentStrings[key] || fallback;
+        }
+
+        function track(eventName, parameters) {
+            if (typeof window.mtBookingTrack === 'function') {
+                window.mtBookingTrack(eventName, parameters || {});
+            }
+        }
+
         // Check for Return from Redsys (Success/Error)
         const urlParams = new URLSearchParams(window.location.search);
         const paymentResult = urlParams.get('payment_result');
         const paymentOID = urlParams.get('oid');
-        const isRedsysReturn = (paymentResult === 'ok');
+        const isRedsysReturn = paymentResult === 'ok' || paymentResult === 'ko';
+        const isSuccessfulReturn = paymentResult === 'ok';
         const serverPaymentState = $('#wptb-plugin-container').attr('data-payment-state') || 'none';
 
         // Only run on payment page OR if returning from Redsys
@@ -17,7 +30,7 @@
             return;
         }
 
-        if (isRedsysReturn) {
+        if (isSuccessfulReturn) {
             // Force hide other steps if we are on the main booking form
             console.log('✅ Redsys Return Detected: Showing Success Screen');
             $('.booking-form, .booking-vehicle-selection, #wptb-step-1, #wptb-step-2, #wptb-step-3').hide();
@@ -26,7 +39,8 @@
         // ===== STEP 1: VALIDATE CONFIGURATION =====
         if (typeof wptb_vars === 'undefined') {
             console.error('❌ FATAL: wptb_vars not defined');
-            showError('Error de configuración. Contacta al administrador.');
+            track('payment_error', { error_type: 'configuration' });
+            showError(t('configuration_error', 'Error de configuración. Contacta con soporte.'));
             return;
         }
 
@@ -40,7 +54,8 @@
             }
             return;
         } else if (paymentResult === 'ko') {
-            showError('El pago ha sido cancelado o rechazado por el banco.');
+            track('payment_error', { error_type: 'cancelled_or_declined' });
+            showError(t('payment_cancelled', 'El pago ha sido cancelado o rechazado por el banco.'));
         }
 
         if (!bookingData) {
@@ -73,17 +88,21 @@
         function loadBookingData() {
             const saved = sessionStorage.getItem('wptb_booking_data');
             if (!saved) {
-                if (window.location.search.includes('payment_result=ok')) return null;
+                if (isRedsysReturn) return null;
 
-                showError('No hay datos de reserva. Por favor inicia una nueva reserva.');
-                setTimeout(() => { window.location.href = '/'; }, 3000);
+                track('payment_error', { error_type: 'booking_data_missing' });
+                showError(t('invalid_booking_data', 'No hay datos de reserva válidos. Inicia una nueva reserva.'));
+                setTimeout(() => {
+                    window.location.href = (typeof wptb_vars !== 'undefined' && wptb_vars.home_url) ? wptb_vars.home_url : '/';
+                }, 3000);
                 return null;
             }
 
             try {
                 return JSON.parse(saved);
             } catch (error) {
-                showError('Datos de reserva corruptos.');
+                track('payment_error', { error_type: 'booking_data_corrupt' });
+                showError(t('corrupt_booking_data', 'Los datos de la reserva están dañados.'));
                 return null;
             }
         }
@@ -92,8 +111,12 @@
             if (!data) return;
             $('#payment-vehicle').text(data.vehicle_name || '-');
 
-            const tripLabels = { 'one_way': 'Solo Ida', 'round_trip': 'Ida y Vuelta', 'return': 'Vuelta' };
-            $('#payment-trip-type').text(tripLabels[data.trip_type] || 'Solo Ida');
+            const tripLabels = {
+                'one_way': t('one_way', 'Solo ida'),
+                'round_trip': t('round_trip', 'Ida y vuelta'),
+                'return': t('return_details', 'Vuelta')
+            };
+            $('#payment-trip-type').text(tripLabels[data.trip_type] || t('one_way', 'Solo ida'));
 
             $('#payment-origin').text(data.origin || '-');
             $('#payment-destination').text(data.destination || '-');
@@ -173,7 +196,23 @@
 
         function initiateRedsysPayment(bookingData) {
             console.log('🔄 Initiating Redsys Payment...');
+
+            const $terms = $('#wptb-accept-terms');
+            if ($terms.length && !$terms.is(':checked')) {
+                $('#wptb-terms-error').show();
+                track('payment_error', { error_type: 'terms_not_accepted' });
+                return;
+            }
+            $('#wptb-terms-error').hide();
             setLoading(true);
+
+            bookingData.language = (typeof wptb_vars !== 'undefined' && wptb_vars.language) ? wptb_vars.language : 'es';
+            track('add_payment_info', {
+                payment_type: 'redsys',
+                vehicle_id: bookingData.vehicle_id,
+                value: Number.parseFloat(bookingData.price || 0),
+                currency: 'EUR'
+            });
 
             $.ajax({
                 url: wptb_vars.ajax_url,
@@ -188,22 +227,31 @@
                     console.log('📥 Redsys Response:', response);
 
                     if (!response.success) {
+                        const errorCode = response.data && response.data.code ? response.data.code : 'gateway_initialization';
+                        track('payment_error', { error_type: errorCode });
                         if (response.data && response.data.code === 'price_changed') {
                             bookingData.price = parseFloat(response.data.server_price);
                             sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
                             populateSummary(bookingData);
                         }
-                        showError(response.data.message || 'Error al conectar con el banco.');
+                        showError((response.data && response.data.message) || t('bank_connection_error', 'No se pudo conectar con el banco.'));
                         setLoading(false);
                         return;
                     }
+
+                    track('generate_lead', {
+                        booking_id: response.data.booking_id,
+                        value: Number.parseFloat(bookingData.price || 0),
+                        currency: 'EUR'
+                    });
 
                     // Submit Form to Redsys
                     submitToRedsys(response.data);
                 },
                 error: function (xhr, status, error) {
                     console.error('❌ AJAX Error:', error);
-                    showError('Error de conexión.');
+                    track('payment_error', { error_type: 'network' });
+                    showError(t('connection_error', 'Error de conexión.'));
                     setLoading(false);
                 }
             });
@@ -255,11 +303,11 @@
             const btn = $('#submit-payment');
             if (isLoading) {
                 btn.prop('disabled', true);
-                $('#button-text').text('PROCESANDO...');
+                $('#button-text').text(t('processing', 'Procesando...'));
                 $('#payment-spinner').show();
             } else {
                 btn.prop('disabled', false);
-                $('#button-text').text('PAGAR');
+                $('#button-text').text(t('pay', 'Pagar'));
                 $('#payment-spinner').hide();
             }
         }
@@ -267,12 +315,45 @@
         // PDF Generation
         $('#btn-download-pdf').on('click', function (e) {
             e.preventDefault();
-            generatePDF();
+            loadPdfLibrary()
+                .then(generatePDF)
+                .catch(function () {
+                    alert(t('pdf_unavailable', 'La librería PDF no está disponible.'));
+                });
         });
+
+        function loadPdfLibrary() {
+            if (window.jspdf) {
+                return Promise.resolve();
+            }
+
+            return new Promise(function (resolve, reject) {
+                const source = (typeof wptb_vars !== 'undefined' && wptb_vars.pdf_library_url) ? wptb_vars.pdf_library_url : '';
+                if (!source) {
+                    reject(new Error('Missing PDF library URL.'));
+                    return;
+                }
+
+                const existing = document.querySelector('script[data-mt-jspdf="1"]');
+                if (existing) {
+                    existing.addEventListener('load', resolve, { once: true });
+                    existing.addEventListener('error', reject, { once: true });
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.src = source;
+                script.async = true;
+                script.dataset.mtJspdf = '1';
+                script.addEventListener('load', resolve, { once: true });
+                script.addEventListener('error', reject, { once: true });
+                document.head.appendChild(script);
+            });
+        }
 
         function generatePDF() {
             if (!window.jspdf) {
-                alert('Librería PDF no cargada.');
+                alert(t('pdf_unavailable', 'La librería PDF no está disponible.'));
                 return;
             }
 
@@ -308,7 +389,7 @@
 
             doc.setTextColor(...white);
             doc.setFontSize(22);
-            doc.text("Recibo de Reserva", 20, 25);
+            doc.text(t('receipt_title', 'Recibo de reserva'), 20, 25);
 
             // Logo (Right aligned in header)
             if (logoImg) {
@@ -333,36 +414,40 @@
             const lineHeight = 10;
 
             // Trip Type Label
-            const tripLabels = { 'one_way': 'Solo Ida', 'round_trip': 'Ida y Vuelta', 'return': 'Vuelta' };
-            const tripType = tripLabels[data.trip_type] || 'Solo Ida';
+            const tripLabels = {
+                'one_way': t('one_way', 'Solo ida'),
+                'round_trip': t('round_trip', 'Ida y vuelta'),
+                'return': t('return_details', 'Vuelta')
+            };
+            const tripType = tripLabels[data.trip_type] || t('one_way', 'Solo ida');
 
             // Details
             doc.setFont(undefined, 'bold');
-            doc.text("Referencia:", 20, y);
+            doc.text(t('reference', 'Referencia') + ':', 20, y);
             doc.setFont(undefined, 'normal');
             doc.text("#" + (data.id || (window.lastBookingData ? window.lastBookingData.id : '---')), 60, y);
             y += lineHeight;
 
             doc.setFont(undefined, 'bold');
-            doc.text("Fecha:", 20, y);
+            doc.text(t('date', 'Fecha') + ':', 20, y);
             doc.setFont(undefined, 'normal');
             doc.text(data.date + " " + (data.time || ''), 60, y);
             y += lineHeight;
 
             doc.setFont(undefined, 'bold');
-            doc.text("Tipo de Viaje:", 20, y);
+            doc.text(t('trip_type', 'Tipo de viaje') + ':', 20, y);
             doc.setFont(undefined, 'normal');
             doc.text(tripType, 60, y);
             y += lineHeight;
 
             doc.setFont(undefined, 'bold');
-            doc.text("Vehículo:", 20, y);
+            doc.text(t('vehicle', 'Vehículo') + ':', 20, y);
             doc.setFont(undefined, 'normal');
             doc.text(data.vehicle_name || '-', 60, y);
             y += lineHeight;
 
             doc.setFont(undefined, 'bold');
-            doc.text("Origen:", 20, y);
+            doc.text(t('origin', 'Origen') + ':', 20, y);
             doc.setFont(undefined, 'normal');
             // Split text if too long
             const splitOrigin = doc.splitTextToSize(data.origin || '-', 130);
@@ -370,7 +455,7 @@
             y += (splitOrigin.length * 6) + 4;
 
             doc.setFont(undefined, 'bold');
-            doc.text("Destino:", 20, y);
+            doc.text(t('destination', 'Destino') + ':', 20, y);
             doc.setFont(undefined, 'normal');
             const splitDest = doc.splitTextToSize(data.destination || '-', 130);
             doc.text(splitDest, 60, y);
@@ -382,7 +467,7 @@
             doc.setTextColor(...white);
             doc.setFontSize(14);
             doc.setFont(undefined, 'bold');
-            doc.text("Total Pagado:", 30, y + 10);
+            doc.text(t('total_paid', 'Total pagado') + ':', 30, y + 10);
             doc.text("€" + (data.price ? parseFloat(data.price).toFixed(2) : '-'), 150, y + 10);
 
             doc.save("reserva-metransfers.pdf");

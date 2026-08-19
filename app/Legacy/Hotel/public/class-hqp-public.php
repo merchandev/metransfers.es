@@ -67,7 +67,7 @@ class HQP_Public {
     }
 
     public function enqueue_scripts() {
-        if ( ! \MeTransfers\Core\Assets::is_booking_context() ) {
+        if ( 'hotel' !== \MeTransfers\Core\Assets::booking_phase() ) {
             return;
         }
 
@@ -322,7 +322,7 @@ class HQP_Public {
             array( 'id' => $booking_id ) 
         );
 
-        $url_ok = home_url( '/reservas-metransfers/?payment_result=ok&oid=' . $order_id );
+        $url_ok = \MeTransfers\Payments\Redsys\Gateway::confirmation_url( $order_id );
 
         if ( $price <= 0 ) {
             $wpdb->update(

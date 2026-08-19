@@ -21,6 +21,10 @@ function home_url( $path = '' ) {
     return 'https://example.test' . $path;
 }
 
+function wp_salt( $scheme = 'auth' ) {
+    return 'test-auth-salt-' . $scheme;
+}
+
 class WPTB_Redsys_API {
     private $parameters = array();
 
@@ -61,6 +65,21 @@ if ( 'https://sis-t.redsys.es:25443/sis/realizarPago' !== $form['url'] ) {
 $created_parameters = json_decode( base64_decode( $form['params'] ), true );
 if ( '5025' !== $created_parameters['DS_MERCHANT_AMOUNT'] || '999008881' !== $created_parameters['DS_MERCHANT_MERCHANTCODE'] ) {
     fwrite( STDERR, "FAILED: generated merchant parameters are incorrect.\n" );
+    exit( 1 );
+}
+
+$english_form = $gateway->generate_payment_form( 123, 5025, '000000000123', 'Test Customer', 'en' );
+$english_parameters = json_decode( base64_decode( $english_form['params'] ), true );
+if ( 0 !== strpos( $english_parameters['DS_MERCHANT_URLOK'], 'https://example.test/en/reservas-metransfers/?payment_result=ok&oid=000000000123&token=' ) ) {
+    fwrite( STDERR, "FAILED: translated checkout must return to the matching language URL.\n" );
+    exit( 1 );
+}
+
+$confirmation_token = \MeTransfers\Payments\Redsys\Gateway::confirmation_token( '000000000123' );
+if ( ! \MeTransfers\Payments\Redsys\Gateway::verify_confirmation_token( '000000000123', $confirmation_token )
+    || \MeTransfers\Payments\Redsys\Gateway::verify_confirmation_token( '000000000124', $confirmation_token )
+    || \MeTransfers\Payments\Redsys\Gateway::verify_confirmation_token( '', $confirmation_token ) ) {
+    fwrite( STDERR, "FAILED: confirmation tokens must be bound to one order.\n" );
     exit( 1 );
 }
 

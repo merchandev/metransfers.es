@@ -13,7 +13,21 @@
 - IPN Redsys valida firma e importe y confirma con una transicion idempotente.
 - Cookies Hotel usan `Secure` cuando corresponde, `HttpOnly` y `SameSite=Lax`.
 - Scripts temporales de diagnostico/configuracion con tokens incrustados fueron eliminados del artefacto.
+- La confirmacion duplicada de `booking-form.php` fue eliminada; `booking-details.php` exige un token HMAC ligado a la orden y solo presenta un pago confirmado despues de comprobar `paid` y `confirmed/completed` en DB.
+- Los endpoints AJAX publicos ya no devuelven nombre de tabla, errores SQL ni conteos internos.
+- Gitleaks revisa cambios e historial disponible en CI, complementando el escaneo rapido de patrones.
 - **Pendiente fuera del repositorio:** rotar las credenciales que estuvieron expuestas y revisar el historial Git; no se ha reescrito el historial.
+
+### Verificacion Gitleaks redactada
+
+El 2026-08-19, Gitleaks 8.30.1 no encontro filtraciones en el arbol actual, pero detecto seis hallazgos historicos en el commit `ef04a308a6affe219638379d5a2b6979d50c34a5`. Los metadatos redactados apuntan a las antiguas integraciones de Google Maps, Redsys y Stripe en:
+
+- `app/Legacy/Hotel/admin/class-hqp-admin.php`;
+- `app/Legacy/Hotel/public/class-hqp-public.php`;
+- `app/Legacy/WPTB/includes/class-wptb-public.php`;
+- `app/Legacy/WPTB/update-stripe-keys.php`.
+
+No se documentan los valores. Antes de Live se deben rotar Google Maps y Redsys, confirmar la rotacion de SMTP indicada en el diagnostico original y revisar/renovar las credenciales Stripe si esa integracion continua activa. Reescribir el historial es una operacion separada y coordinada; no sustituye la rotacion.
 
 Los apartados siguientes se conservan como registro del diagnostico original.
 

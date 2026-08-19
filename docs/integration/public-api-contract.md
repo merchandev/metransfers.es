@@ -23,13 +23,15 @@ Estos endpoints manejan la busqueda de vehiculos, el calculo de precios y la cre
 **Descripcion:** Recalcula el precio (similar a get_vehicles, posiblemente usado en otros flujos).
 - **Acceso:** Privado y publico
 
-### 1.3 `wptb_create_booking` / `wptb_save_booking`
+### 1.3 `wptb_save_booking`
 **Descripcion:** Guarda los datos de la reserva en base de datos.
 - **Acceso:** Privado y publico
 - **Parametros esperados (basado en el JS y BD):**
   - Datos de origen, destino, fechas, horas, cliente (nombre, email, telefono), vehiculo y trip_type.
   - `security` (nonce).
 - **Garantia:** Precio, distancia y duracion enviados por el navegador se ignoran; la ruta y el precio se recalculan en servidor. El flujo Hotel ya no intercepta este endpoint.
+
+Los nombres legacy `wptb_create_booking` y `wptb_get_pricing` no forman parte del contrato vigente: no tenían implementación ni consumidores activos y sus hooks fueron eliminados.
 
 ### 1.4 `wptb_initiate_redsys`
 **Descripcion:** Inicia el proceso de pago con Redsys. Construye los parametros HMAC-SHA256 para el formulario de redireccion.
@@ -101,7 +103,7 @@ El shim `Unified_Integration` y sus endpoints Stripe incompletos fueron retirado
 
 Durante la integracion y el movimiento del codigo del plugin hacia el tema (`app/Legacy/WPTB/`):
 
-1. Los hooks `wp_ajax_` listados arriba **NO deben cambiar de nombre**.
+1. Los hooks `wp_ajax_` vigentes listados arriba **NO deben cambiar de nombre**.
 2. Las respuestas JSON deben mantener la **misma estructura** (claves) que espera el JS actual (por ejemplo, `booking-app.js` y `redsys-payment.js`).
 3. Los **nonces** deben generarse bajo las mismas claves (`wptb_vars.nonce`, `mt_lead_nonce`).
 4. **Vulnerabilidad a corregir:** El endpoint `wptb_initiate_redsys` **DEBE** modificarse internamente para ignorar el `precio` enviado en el parametro `booking_data` por el cliente, y recalcularlo usando la distancia, vehiculo, tipo de viaje y tarifas minimas, asegurando que la orden de Redsys se genere con un precio autorizado por el servidor.

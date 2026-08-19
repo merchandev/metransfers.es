@@ -2,11 +2,28 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Use data from PHP
     const destinations = ptsData.destinations;
+    const ptsStrings = (ptsData && ptsData.strings) || {};
     let currentFilter = "all";
     let currentSearch = "";
     const PTS_ALLOWED_COUNTRIES = ['es', 'fr', 'de', 'pt', 'ad'];
     const PTS_MAPS_TIMEOUT_MS = 12000;
     const PTS_MAPS_POLL_MS = 250;
+
+    function t(key, fallback) {
+        return ptsStrings[key] || fallback;
+    }
+
+    function escapeHtml(value) {
+        const node = document.createElement('div');
+        node.textContent = value || '';
+        return node.innerHTML;
+    }
+
+    function track(eventName, parameters) {
+        if (typeof window.mtBookingTrack === 'function') {
+            window.mtBookingTrack(eventName, parameters || {});
+        }
+    }
 
     function getGoogleMapsConfig() {
         return {
@@ -219,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     (response, status) => {
                         if (status !== 'OK') {
                             if (typeof onError === 'function') {
-                                onError('No se pudo calcular la ruta.');
+                                onError(t('route_error', 'No se pudo calcular la ruta.'));
                             }
                             return;
                         }
@@ -234,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         if (!element || element.status !== 'OK' || !element.distance || !element.duration) {
                             if (typeof onError === 'function') {
-                                onError('No se pudo calcular la ruta.');
+                                onError(t('route_error', 'No se pudo calcular la ruta.'));
                             }
                             return;
                         }
@@ -251,7 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch((error) => {
                 if (typeof onError === 'function') {
-                    onError('Google Maps no esta disponible para calcular la ruta.');
+                    onError(t('route_error', 'No se pudo calcular la ruta.'));
                 }
                 console.error('[PTS] Distance matrix failed:', error);
             });
@@ -480,14 +497,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const destinationExact = document.getElementById('pts-destination-exact').value;
 
             if (!date || !time || !origin || !destinationDisplay || !destinationExact) {
-                alert('Por favor completa todos los campos.');
+                alert(t('complete_all_fields', 'Por favor completa todos los campos.'));
                 return;
             }
+
+            track('booking_start', { booking_flow: 'premium_transfers' });
+            track('route_search', { booking_flow: 'premium_transfers', trip_type: 'one_way' });
 
             const fullDestination = destinationExact + ', ' + destinationDisplay;
 
             if (typeof jQuery === 'undefined' || typeof google === 'undefined') {
-                alert('Sistema no disponible. Por favor recarga la pagina.');
+                track('booking_error', { error_type: 'maps_unavailable' });
+                alert(t('system_unavailable', 'El sistema no está disponible. Recarga la página.'));
                 return;
             }
 
@@ -504,13 +525,13 @@ document.addEventListener("DOMContentLoaded", () => {
             window.bookingData.destination = fullDestination;
             const $submitBtn = jQuery('#pts-submitBtn');
 
-            $submitBtn.prop('disabled', true).text('Calculando ruta...');
+            $submitBtn.prop('disabled', true).text(t('calculating', 'Calculando...'));
 
             calculateRouteMetrics(
                 origin,
                 fullDestination,
                 (metrics) => {
-                    $submitBtn.prop('disabled', false).text('Buscar Vehiculos');
+                    $submitBtn.prop('disabled', false).text(t('search_vehicles', 'Buscar vehículos'));
 
                     window.bookingData.distance_km = metrics.distanceKm;
                     window.bookingData.duration_minutes = metrics.durationMinutes;
@@ -524,8 +545,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     loadVehiclesIntoPTSModal();
                 },
                 () => {
-                    $submitBtn.prop('disabled', false).text('Buscar Vehiculos');
-                    alert('No se pudo calcular la ruta. Verifica las direcciones.');
+                    $submitBtn.prop('disabled', false).text(t('search_vehicles', 'Buscar vehículos'));
+                    track('booking_error', { error_type: 'route_calculation' });
+                    alert(t('route_error', 'No se pudo calcular la ruta. Verifica el origen y el destino.'));
                 }
             );
         });
@@ -534,10 +556,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Load vehicles
     function loadVehiclesIntoPTSModal() {
         const $ = jQuery;
-        $('#pts-modal-vehicles-grid').html('<div class="loading-spinner">Buscando vehiculos...</div>');
+        $('#pts-modal-vehicles-grid').html('<div class="loading-spinner">' + escapeHtml(t('loading_vehicles', 'Buscando vehículos...')) + '</div>');
 
         if (typeof wptb_vars === 'undefined') {
-            $('#pts-modal-vehicles-grid').html('<p style="color:red;">Error de configuracion</p>');
+            track('booking_error', { error_type: 'configuration' });
+            $('#pts-modal-vehicles-grid').html('<p style="color:red;">' + escapeHtml(t('configuration_error', 'Error de configuración. Contacta con soporte.')) + '</p>');
             return;
         }
 
@@ -549,7 +572,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 action: 'wptb_get_vehicles',
                 security: wptb_vars.nonce,
                 distance_km: window.bookingData.distance_km,
-                trip_type: window.bookingData.trip_type || 'one_way'
+                trip_type: window.bookingData.trip_type || 'one_way',
+                language: wptb_vars.language || 'es'
             },
             success: function (response, textStatus, xhr) {
                 const normalizedResponse = normalizeVehiclesResponse(response, xhr);
@@ -559,8 +583,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     displayVehiclesInPTSModal(vehicles);
                 } else {
                     const responseMessage = getVehiclesResponseMessage(normalizedResponse);
-                    const noVehiclesMessage = responseMessage || 'No hay vehiculos disponibles.';
-                    $('#pts-modal-vehicles-grid').html(`<p style="text-align:center;padding:20px;">${noVehiclesMessage}</p>`);
+                    const noVehiclesMessage = responseMessage || t('no_vehicles', 'No se encontraron vehículos disponibles.');
+                    track('booking_error', { error_type: 'no_vehicles' });
+                    $('#pts-modal-vehicles-grid').html(`<p style="text-align:center;padding:20px;">${escapeHtml(noVehiclesMessage)}</p>`);
                 }
             },
             error: function (xhr, status, error) {
@@ -576,10 +601,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 const responseMessage = getVehiclesResponseMessage(normalizedResponse);
                 const errorMessage = nonceExpired
                     ? 'La sesion expiro. Recarga la pagina e intenta de nuevo.'
-                    : (responseMessage || 'Error al cargar vehiculos.');
+                    : (responseMessage || t('vehicle_load_error', 'Error al cargar los vehículos.'));
 
                 console.error('[PTS] Error cargando vehiculos:', status, error, xhr ? xhr.responseText : '');
-                $('#pts-modal-vehicles-grid').html(`<p style="color:red;text-align:center;">${errorMessage}</p>`);
+                track('booking_error', { error_type: 'vehicle_request' });
+                $('#pts-modal-vehicles-grid').html(`<p style="color:red;text-align:center;">${escapeHtml(errorMessage)}</p>`);
             }
         });
     }
@@ -600,7 +626,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const capacity = parseInt(vehicle.capacity, 10);
             const capacityText = Number.isFinite(capacity) && capacity > 0
                 ? `${capacity} pax`
-                : 'Capacidad no disponible';
+                : t('capacity_unavailable', 'Capacidad no disponible');
             html += `
                 <div class="wptb-modal-vehicle-btn pts-vehicle-btn" data-vehicle-id="${vehicle.id}">
                     <div class="vehicle-icon">
@@ -609,7 +635,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="vehicle-info-compact">
                         <strong>${vehicle.name}</strong>
                         <span class="vehicle-capacity"><span class="material-symbols-outlined vehicle-inline-icon" aria-hidden="true">group</span>${capacityText}</span>
-                        <span class="vehicle-price-compact">Desde ${formatCurrencyLabel(minPrice)}</span>
+                        <span class="vehicle-price-compact">${escapeHtml(t('from_price', 'Desde'))} ${formatCurrencyLabel(minPrice)}</span>
                     </div>
                 </div>
             `;
@@ -659,6 +685,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 window.bookingData.price = parseFloat(calculatedPrice.toFixed(2));
+
+                track('vehicle_select', {
+                    vehicle_id: vehicle.id,
+                    vehicle_name: vehicle.name,
+                    value: window.bookingData.price,
+                    currency: 'EUR'
+                });
 
                 sessionStorage.setItem('wptb_booking_data', JSON.stringify(window.bookingData));
 

@@ -11,6 +11,10 @@ remove_*.php
 update_*.php
 split_page.php
 *.local.php
+/test-*.php
+/translate_*.php
+/wrap_*.php
+/mt-seo-importer.php
 
 # Log files
 *.log

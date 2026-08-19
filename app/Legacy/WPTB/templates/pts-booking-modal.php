@@ -1,8 +1,9 @@
+<?php $wptb_i18n = \MeTransfers\Booking\I18n::strings(); ?>
 <!-- Premium Transfers Modal - Mismo estilo que WPTB Modal -->
 <div id="pts-booking-modal" class="wptb-modal-overlay" style="display: none !important;">
     <div class="wptb-modal-content wptb-modal-large">
         <button type="button" id="pts-modal-close" class="wptb-modal-close">×</button>
-        <h2 class="wptb-modal-title">Reserva tu Traslado</h2>
+        <h2 class="wptb-modal-title"><?php echo esc_html( $wptb_i18n['book_transfer'] ); ?></h2>
         
         <div class="wptb-modal-body">
             <!-- Step 1: Search Form -->
@@ -12,37 +13,37 @@
                         <!-- Fecha -->
                         <div class="floating-label">
                             <input type="date" id="pts-date" name="transfer_date" required min="<?php echo date('Y-m-d'); ?>">
-                            <label for="pts-date">Fecha</label>
+                            <label for="pts-date"><?php echo esc_html( $wptb_i18n['date'] ); ?></label>
                         </div>
 
                         <!-- Hora -->
                         <div class="floating-label">
                             <input type="time" id="pts-time" name="transfer_time" required>
-                            <label for="pts-time">Hora</label>
+                            <label for="pts-time"><?php echo esc_html( $wptb_i18n['time'] ); ?></label>
                         </div>
 
                         <!-- Origen (siempre Barcelona) -->
                         <div class="floating-label wptb-origin-wrapper" style="position: relative;">
                             <input type="text" id="pts-origin" name="origin" placeholder=" " value="Barcelona, España" readonly autocomplete="off">
-                            <label for="pts-origin">Origen</label>
+                            <label for="pts-origin"><?php echo esc_html( $wptb_i18n['origin'] ); ?></label>
                         </div>
 
                         <!-- Destination Region (Read-only, pre-filled) -->
                         <div class="floating-label">
                             <input type="text" id="pts-destination-display" name="destination_display" placeholder=" " readonly style="cursor: not-allowed;">
-                            <label for="pts-destination-display">Destino (Región)</label>
+                            <label for="pts-destination-display"><?php echo esc_html( $wptb_i18n['destination_region'] ); ?></label>
                         </div>
 
                         <!-- Specific Address within Region -->
                         <div class="floating-label">
-                            <input type="text" id="pts-destination-exact" name="destination_exact" placeholder="Ej: Calle Principal 123, Tossa de Mar" required autocomplete="off">
-                            <label for="pts-destination-exact">Dirección Exacta en Destino</label>
+                            <input type="text" id="pts-destination-exact" name="destination_exact" placeholder="<?php echo esc_attr( $wptb_i18n['exact_address_placeholder'] ); ?>" required autocomplete="off">
+                            <label for="pts-destination-exact"><?php echo esc_html( $wptb_i18n['exact_address'] ); ?></label>
                         </div>
 
                         <!-- Hidden field to store region context for backend -->
                         <input type="hidden" id="pts-region-context" name="region_context" value="">
 
-                        <button type="submit" id="pts-submitBtn" onclick="event.preventDefault(); jQuery(this).closest('form').trigger('submit');" style="background: #004B68 !important; color: #fff !important; border: 2px solid #004B68 !important; border-radius: 24px !important; width: 100%; min-height: 55px; font-weight: 700; text-transform: uppercase;">Buscar Vehículos</button>
+                        <button type="submit" id="pts-submitBtn" onclick="event.preventDefault(); jQuery(this).closest('form').trigger('submit');" style="background: #004B68 !important; color: #fff !important; border: 2px solid #004B68 !important; border-radius: 24px !important; width: 100%; min-height: 55px; font-weight: 700; text-transform: uppercase;"><?php echo esc_html( $wptb_i18n['search_vehicles'] ); ?></button>
                     </form>
                 </div>
 
@@ -50,18 +51,18 @@
                 <div id="pts-step-2" class="booking-vehicle-selection" style="display:none;">
                     <div class="progress-bar">
                         <div class="step completed">1</div>
-                        <p>Búsqueda</p>
+                        <p><?php echo esc_html( $wptb_i18n['search'] ); ?></p>
                         <div class="step active">2</div>
-                        <p>Vehículo</p>
+                        <p><?php echo esc_html( $wptb_i18n['vehicle'] ); ?></p>
                         <div class="step">3</div>
-                        <p>Detalles</p>
+                        <p><?php echo esc_html( $wptb_i18n['details'] ); ?></p>
                         <div class="step">4</div>
-                        <p>Confirmación</p>
+                        <p><?php echo esc_html( $wptb_i18n['confirmation'] ); ?></p>
                     </div>
 
                     <div class="trip-type-selector">
-                        <button type="button" class="trip-type-btn active" data-type="one_way">Solo Ida</button>
-                        <button type="button" class="trip-type-btn" data-type="round_trip">Ida y Vuelta</button>
+                        <button type="button" class="trip-type-btn active" data-type="one_way"><?php echo esc_html( $wptb_i18n['one_way'] ); ?></button>
+                        <button type="button" class="trip-type-btn" data-type="round_trip"><?php echo esc_html( $wptb_i18n['round_trip'] ); ?></button>
                     </div>
 
                     <div id="pts-vehicles-grid" class="vehicles-grid">
@@ -70,7 +71,7 @@
 
                     <button type="button" id="pts-back-step2" class="secondary-btn" style="background: transparent !important; color: #004B68 !important; border: 2px solid #004B68 !important; border-radius: 24px !important; width: 100%; min-height: 55px; font-weight: 700; margin-top: 20px; text-transform: uppercase;">
                         <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
-                        Cambiar busqueda
+                        <?php echo esc_html( $wptb_i18n['change_search'] ); ?>
                     </button>
                 </div>
             </div>
@@ -80,14 +81,14 @@
                 <div class="wptb-modal-step-header">
                     <button type="button" id="pts-modal-back" class="wptb-back-btn" style="background: transparent !important; color: #004B68 !important; border: 2px solid #004B68 !important; border-radius: 24px !important; min-height: 55px; font-weight: 700; padding: 0 20px; text-transform: uppercase;">
                         <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
-                        Volver
+                        <?php echo esc_html( $wptb_i18n['back'] ); ?>
                     </button>
-                    <h3>Selecciona tu Vehículo</h3>
+                    <h3><?php echo esc_html( $wptb_i18n['select_vehicle'] ); ?></h3>
                 </div>
                 
                 <div class="trip-type-selector">
-                    <button type="button" class="trip-type-btn-pts active" data-type="one_way">Solo Ida</button>
-                    <button type="button" class="trip-type-btn-pts" data-type="round_trip">Ida y Vuelta</button>
+                    <button type="button" class="trip-type-btn-pts active" data-type="one_way"><?php echo esc_html( $wptb_i18n['one_way'] ); ?></button>
+                    <button type="button" class="trip-type-btn-pts" data-type="round_trip"><?php echo esc_html( $wptb_i18n['round_trip'] ); ?></button>
                 </div>
 
                 <div id="pts-modal-vehicles-grid" class="wptb-modal-vehicles-grid">

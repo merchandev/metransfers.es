@@ -64,6 +64,7 @@ try {
         'HQP_Public',
         'MeTransfers\\Core\\Assets',
         'MeTransfers\\Core\\Migrations',
+        'MeTransfers\\Booking\\I18n',
         'MeTransfers\\Booking\\RouteDistance',
         'MeTransfers\\Payments\\Redsys\\Gateway'
     ];

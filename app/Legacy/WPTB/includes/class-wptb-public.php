@@ -26,19 +26,7 @@ class WPTB_Public {
         add_action( 'wp_ajax_wptb_get_vehicles', array( $this, 'ajax_get_vehicles' ) );
         add_action( 'wp_ajax_nopriv_wptb_get_vehicles', array( $this, 'ajax_get_vehicles' ) );
 
-        // Create booking
-        add_action( 'wp_ajax_wptb_create_booking', array( $this, 'ajax_create_booking' ) );
-        add_action( 'wp_ajax_nopriv_wptb_create_booking', array( $this, 'ajax_create_booking' ) );
-
-        // Get pricing
-        add_action( 'wp_ajax_wptb_get_pricing', array( $this, 'ajax_get_pricing' ) );
-        add_action( 'wp_ajax_nopriv_wptb_get_pricing', array( $this, 'ajax_get_pricing' ) );
-
         add_action( 'wp_mail_failed', array( $this, 'capture_mail_error' ) );
-
-        // DB MIGRATION TRIGGER (AUTO-REMOVAL CANDIDATE)
-        if ( is_admin() ) {
-        }
     }
     
     public function capture_mail_error( $wp_error ) {
@@ -48,7 +36,8 @@ class WPTB_Public {
     }
 
     public function enqueue_scripts() {
-        if ( ! \MeTransfers\Core\Assets::is_booking_context() ) {
+        $phase = \MeTransfers\Core\Assets::booking_phase();
+        if ( 'none' === $phase ) {
             return;
         }
 
@@ -64,15 +53,14 @@ class WPTB_Public {
         
         // 2. GOOGLE MAPS API
         $api_key = \MeTransfers\Core\Settings::get( 'google_maps_api_key', '' );
-        
-        // If API key is present, load Google Maps
-        if ( ! empty( $api_key ) ) {
-            // Using 'libraries' param to load places and geometry
+        $maps_phases = array( 'search', 'details', 'payment', 'hotel' );
+
+        if ( ! empty( $api_key ) && in_array( $phase, $maps_phases, true ) ) {
             $maps_url = add_query_arg(
                 array(
                     'key'       => $api_key,
                     'libraries' => 'places,geometry',
-                    'language'  => 'es',
+                    'language'  => \MeTransfers\Booking\I18n::maps_language(),
                     'region'    => 'ES'
                 ),
                 'https://maps.googleapis.com/maps/api/js'
@@ -80,25 +68,24 @@ class WPTB_Public {
             wp_enqueue_script( 'google-maps', $maps_url, array(), null, true );
         }
 
-        // 3. BOOKING APP (Core Logic)
-        // Depends on Google Maps if available
-        $deps = array('jquery');
-        if ( ! empty( $api_key ) ) {
-            $deps[] = 'google-maps';
+        // 3. BOOKING APP (search, vehicle and details only)
+        $booking_phases = array( 'search', 'vehicle', 'details', 'hotel' );
+        $booking_enqueued = in_array( $phase, $booking_phases, true );
+        if ( $booking_enqueued ) {
+            $deps = array( 'jquery', 'mt-booking-tracking' );
+            if ( wp_script_is( 'google-maps', 'enqueued' ) ) {
+                $deps[] = 'google-maps';
+            }
+            wp_enqueue_script( 'wptb-booking-js', WPTB_PLUGIN_URL . 'assets/js/booking-app.js', $deps, WPTB_VERSION, true );
         }
-        // Bump version to 3.2.1 (Hotfix for selectVehicle)
-        // Bump version to 3.5.0 (Hotfix for Round Trip Pricing Calculation (x2))
-        wp_enqueue_script( 'wptb-booking-js', WPTB_PLUGIN_URL . 'assets/js/booking-app.js', $deps, WPTB_VERSION, true );
-        
-        // 4. PAYMENTS (Redsys)
-        // Redsys JS Handler
-        wp_enqueue_script( 'wptb-redsys-payment', WPTB_PLUGIN_URL . 'assets/js/redsys-payment.js', array('jquery', 'jspdf'), WPTB_VERSION, true );
-        
-        // PDF Library
-        wp_enqueue_script( 'jspdf', 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', array(), '2.5.1', true );
 
-        // PTS Tour scripts
-        wp_enqueue_script( 'wptb-transfers-search', WPTB_PLUGIN_URL . 'assets/js/transfers-search.js', array('jquery', 'wptb-places-js'), WPTB_VERSION, true );        
+        // 4. PAYMENTS (payment and server-confirmed return only)
+        $payment_enqueued = in_array( $phase, array( 'payment', 'confirmation' ), true );
+        if ( $payment_enqueued ) {
+            $payment_deps = array( 'jquery', 'mt-booking-tracking' );
+            wp_enqueue_script( 'wptb-redsys-payment', WPTB_PLUGIN_URL . 'assets/js/redsys-payment.js', $payment_deps, WPTB_VERSION, true );
+        }
+
         // 5. LOCALIZATION & DATA PASSING
         // Timezone: Spain (Madrid)
         $madrid_tz = new DateTimeZone('Europe/Madrid');
@@ -108,23 +95,25 @@ class WPTB_Public {
         $wptb_vars = array(
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'nonce' => wp_create_nonce( 'wptb-booking-nonce' ),
-            'vehicles_url' => site_url('/seleccionar-vehiculo/'),
-            'details_url' => site_url('/reservas-metransfers/'),
-            'payment_url' => site_url('/pago/'), // Generic URL
+            'vehicles_url' => \MeTransfers\Booking\I18n::url( '/seleccionar-vehiculo/' ),
+            'details_url' => \MeTransfers\Booking\I18n::url( '/reservas-metransfers/' ),
+            'payment_url' => \MeTransfers\Booking\I18n::url( '/pago/' ),
             'server_time' => $now_madrid->format('Y-m-d H:i:s'),
             'min_date' => $now_madrid->format('Y-m-d'),
             'google_maps_api_key' => $api_key,
-            'home_url' => home_url('/')
+            'home_url' => \MeTransfers\Booking\I18n::url( '/' ),
+            'language' => \MeTransfers\Booking\I18n::language(),
+            'strings' => \MeTransfers\Booking\I18n::strings(),
+            'pdf_library_url' => 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
         );
-        
-        // Pass data to scripts
-        wp_localize_script( 'wptb-booking-js', 'wptb_vars', $wptb_vars );
-        wp_localize_script( 'wptb-redsys-payment', 'wptb_vars', $wptb_vars );
-        
-        // 6. DEBUG HELPER
-        if (current_user_can('manage_options')) {
-            wp_enqueue_script( 'wptb-debug', WPTB_PLUGIN_URL . 'assets/js/debug-helper.js', array('jquery'), '2.0.1', true );
+
+        if ( $booking_enqueued ) {
+            wp_localize_script( 'wptb-booking-js', 'wptb_vars', $wptb_vars );
         }
+        if ( $payment_enqueued ) {
+            wp_localize_script( 'wptb-redsys-payment', 'wptb_vars', $wptb_vars );
+        }
+
     }
 
     public function register_shortcodes() {
@@ -521,15 +510,8 @@ class WPTB_Public {
      */
     public function ajax_get_vehicles() {
         check_ajax_referer( 'wptb-booking-nonce', 'security' ); // Security Check
-        global $wpdb;
-        
-        // Get vehicles (now getting ALL vehicles for debug)
+
         $vehicles = WPTB_Vehicle_Manager::get_active_vehicles();
-        
-        // Debug info
-        $table_vehicles = $wpdb->prefix . 'wptb_vehicles';
-        $total_in_db = $wpdb->get_var("SELECT COUNT(*) FROM $table_vehicles");
-        
         $response = array();
         
         if ( ! empty( $vehicles ) ) {
@@ -564,14 +546,9 @@ class WPTB_Public {
             }
             wp_send_json_success( $response );
         } else {
-            // Send error with debug info if no vehicles found
+            $language = isset( $_POST['language'] ) ? sanitize_key( wp_unslash( $_POST['language'] ) ) : 'es';
             wp_send_json_error( array(
-                'message' => 'No vehicles found in database',
-                'debug_info' => array(
-                    'total_vehicles_in_db' => $total_in_db,
-                    'table_name' => $table_vehicles,
-                    'last_error' => $wpdb->last_error
-                )
+                'message' => \MeTransfers\Booking\I18n::text( 'no_vehicles', $language ),
             ) );
         }
     }
@@ -602,10 +579,13 @@ class WPTB_Public {
 
             $booking_json = isset( $_POST['booking_data'] ) ? wp_unslash( $_POST['booking_data'] ) : '';
             $booking_data = json_decode( $booking_json, true );
+            $language = is_array( $booking_data ) && ! empty( $booking_data['language'] )
+                ? sanitize_key( $booking_data['language'] )
+                : 'es';
             $required_fields = array( 'date', 'time', 'origin', 'destination', 'vehicle_id', 'price', 'customer_name', 'customer_email', 'customer_phone' );
 
             if ( ! is_array( $booking_data ) || array_diff( $required_fields, array_keys( $booking_data ) ) ) {
-                wp_send_json_error( array( 'message' => 'Datos de reserva inválidos' ) );
+                wp_send_json_error( array( 'message' => \MeTransfers\Booking\I18n::text( 'invalid_booking_request', $language ) ) );
                 return;
             }
 
@@ -616,7 +596,7 @@ class WPTB_Public {
             $origin = sanitize_text_field( $booking_data['origin'] );
             $destination = sanitize_text_field( $booking_data['destination'] );
             if ( '' === $customer_name || '' === $customer_phone || '' === $origin || '' === $destination ) {
-                wp_send_json_error( array( 'message' => 'Faltan datos obligatorios de la reserva.' ) );
+                wp_send_json_error( array( 'message' => \MeTransfers\Booking\I18n::text( 'missing_booking_fields', $language ) ) );
                 return;
             }
             $route = \MeTransfers\Booking\RouteDistance::calculate( $origin, $destination );
@@ -636,7 +616,7 @@ class WPTB_Public {
                 $return_origin = ! empty( $booking_data['return_origin'] ) ? sanitize_text_field( $booking_data['return_origin'] ) : '';
                 $return_destination = ! empty( $booking_data['return_destination'] ) ? sanitize_text_field( $booking_data['return_destination'] ) : '';
                 if ( '' === $return_date || '' === $return_time || '' === $return_origin || '' === $return_destination ) {
-                    wp_send_json_error( array( 'message' => 'Debes completar todos los datos de la vuelta.' ) );
+                    wp_send_json_error( array( 'message' => \MeTransfers\Booking\I18n::text( 'return_fields_required', $language ) ) );
                     return;
                 }
 
@@ -653,7 +633,7 @@ class WPTB_Public {
             $pricing = \WPTB_Pricing::calculate_price( $vehicle_id, $distance_km, $trip_type, $duration_minutes );
 
             if ( isset( $pricing['error'] ) || empty( $pricing['price'] ) || (float) $pricing['price'] <= 0 ) {
-                wp_send_json_error( array( 'message' => 'No se pudo calcular un precio válido para la reserva.' ) );
+                wp_send_json_error( array( 'message' => \MeTransfers\Booking\I18n::text( 'invalid_server_price', $language ) ) );
                 return;
             }
 
@@ -662,7 +642,7 @@ class WPTB_Public {
             if ( abs( $server_price - $displayed_price ) > 0.01 ) {
                 wp_send_json_error( array(
                     'code' => 'price_changed',
-                    'message' => 'La ruta se ha verificado y el precio se actualizó. Revísalo y pulsa PAGAR de nuevo.',
+                    'message' => \MeTransfers\Booking\I18n::text( 'price_changed', $language ),
                     'server_price' => $server_price,
                 ) );
                 return;
@@ -673,7 +653,7 @@ class WPTB_Public {
             $suitcases = ! empty( $booking_data['suitcases'] ) ? absint( $booking_data['suitcases'] ) : 0;
             $carry_ons = ! empty( $booking_data['carry_ons'] ) ? absint( $booking_data['carry_ons'] ) : 0;
             if ( ! $vehicle || $passengers > (int) $vehicle->capacity || ( $suitcases + $carry_ons ) > (int) $vehicle->luggage_capacity ) {
-                wp_send_json_error( array( 'message' => 'El vehículo no tiene capacidad suficiente para los pasajeros o el equipaje.' ) );
+                wp_send_json_error( array( 'message' => \MeTransfers\Booking\I18n::text( 'vehicle_capacity_error', $language ) ) );
                 return;
             }
 
@@ -691,7 +671,7 @@ class WPTB_Public {
             $customer_email = ! empty( $booking_data['customer_email'] ) ? sanitize_email( $booking_data['customer_email'] ) : '';
 
             if ( ! is_email( $customer_email ) ) {
-                wp_send_json_error( array( 'message' => 'El email o el teléfono no son válidos.' ) );
+                wp_send_json_error( array( 'message' => \MeTransfers\Booking\I18n::text( 'invalid_contact', $language ) ) );
                 return;
             }
 
@@ -740,7 +720,7 @@ class WPTB_Public {
             $booking_id = $wpdb->insert_id;
 
             if ( $result === false || $booking_id <= 0 ) {
-                wp_send_json_error( array( 'message' => 'Error al guardar en la base de datos (Posible fallo de campos). Por favor, contacta con soporte.' ) );
+                wp_send_json_error( array( 'message' => \MeTransfers\Booking\I18n::text( 'booking_save_error', $language ) ) );
                 return;
             }
 
@@ -760,7 +740,7 @@ class WPTB_Public {
                 throw new \RuntimeException( 'No se pudo asociar la referencia de pago a la reserva.' );
             }
 
-            $payment = $gateway->generate_payment_form( $booking_id, $amount, $order_id, $data_db['customer_name'] );
+            $payment = $gateway->generate_payment_form( $booking_id, $amount, $order_id, $data_db['customer_name'], $language );
 
             $new_booking_obj = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking_id ) );
             if ( $new_booking_obj ) {
@@ -777,7 +757,8 @@ class WPTB_Public {
 
         } catch ( \Throwable $e ) {
             error_log( 'WPTB Redsys payment creation failed: ' . $e->getMessage() );
-            wp_send_json_error( array( 'message' => 'No se pudo iniciar el pago. Revisa la configuración de Redsys o contacta con soporte.' ) );
+            $error_language = isset( $language ) ? $language : 'es';
+            wp_send_json_error( array( 'message' => \MeTransfers\Booking\I18n::text( 'payment_start_error', $error_language ) ) );
         }
     }
     

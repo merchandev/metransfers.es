@@ -22,7 +22,7 @@ class Gateway {
         return !empty($this->merchant_code) && !empty($this->secret_key);
     }
     
-    public function generate_payment_form($booking_id, $amount_cents, $order_id, $customer_name) {
+    public function generate_payment_form($booking_id, $amount_cents, $order_id, $customer_name, $language = 'es') {
         if (!$this->is_configured()) {
             throw new \Exception('Redsys is not properly configured.');
         }
@@ -36,8 +36,8 @@ class Gateway {
         $redsys = $this->new_api();
         
         $url_notification = home_url( '/?wptb_redsys_ipn=1' );
-        $url_ok = home_url( '/reservas-metransfers/?payment_result=ok&oid=' . $order_id );
-        $url_ko = home_url( '/reservas-metransfers/?payment_result=ko&oid=' . $order_id );
+        $url_ok = self::confirmation_url( $order_id, 'ok', $language );
+        $url_ko = self::confirmation_url( $order_id, 'ko', $language );
 
         $redsys->setParameter("DS_MERCHANT_AMOUNT", $amount_cents);
         $redsys->setParameter("DS_MERCHANT_ORDER", $order_id);
@@ -104,6 +104,44 @@ class Gateway {
             'response'   => $response,
             'parameters' => $parameters,
         );
+    }
+
+    public static function confirmation_url( $order_id, $result = 'ok', $language = 'es' ) {
+        $order_id = preg_replace( '/[^0-9A-Za-z]/', '', (string) $order_id );
+        if ( '' === $order_id ) {
+            throw new \InvalidArgumentException( 'Invalid confirmation order identifier.' );
+        }
+
+        $result = 'ko' === $result ? 'ko' : 'ok';
+        $language = strtolower( preg_replace( '/[^a-z-]/i', '', (string) $language ) );
+        if ( ! preg_match( '/^[a-z]{2}$/', $language ) ) {
+            $language = 'es';
+        }
+
+        $language_prefix = 'es' !== $language ? $language . '/' : '';
+        $return_path = '/' . $language_prefix . 'reservas-metransfers/';
+        return home_url(
+            $return_path
+            . '?payment_result=' . $result
+            . '&oid=' . $order_id
+            . '&token=' . self::confirmation_token( $order_id )
+        );
+    }
+
+    public static function confirmation_token( $order_id ) {
+        $order_id = preg_replace( '/[^0-9A-Za-z]/', '', (string) $order_id );
+        if ( '' === $order_id ) {
+            throw new \InvalidArgumentException( 'Invalid confirmation order identifier.' );
+        }
+        return hash_hmac( 'sha256', $order_id, wp_salt( 'auth' ) );
+    }
+
+    public static function verify_confirmation_token( $order_id, $token ) {
+        $order_id = preg_replace( '/[^0-9A-Za-z]/', '', (string) $order_id );
+        $token = (string) $token;
+        return '' !== $order_id
+            && 64 === strlen( $token )
+            && hash_equals( self::confirmation_token( $order_id ), $token );
     }
 
     private function new_api() {

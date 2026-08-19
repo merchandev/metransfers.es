@@ -6,34 +6,58 @@
 $wptb_payment_state = 'none';
 $wptb_payment_order_id = '';
 $wptb_payment_booking = null;
+$wptb_i18n = \MeTransfers\Booking\I18n::strings();
 
 if ( isset( $_GET['payment_result'] ) ) {
     $wptb_payment_result = sanitize_key( wp_unslash( $_GET['payment_result'] ) );
-    $wptb_payment_order_id = isset( $_GET['oid'] )
+    $wptb_payment_order_raw = isset( $_GET['oid'] )
         ? sanitize_text_field( wp_unslash( $_GET['oid'] ) )
         : '';
+    $wptb_payment_order_id = preg_replace( '/[^0-9A-Za-z]/', '', $wptb_payment_order_raw );
 
     if ( 'ko' === $wptb_payment_result ) {
         $wptb_payment_state = 'failed';
-    } elseif ( 'ok' === $wptb_payment_result && '' !== $wptb_payment_order_id ) {
-        global $wpdb;
-        $wptb_bookings_table = $wpdb->prefix . 'wptb_bookings';
-        $wptb_payment_booking = $wpdb->get_row(
-            $wpdb->prepare(
-                "SELECT id, status, payment_status FROM $wptb_bookings_table WHERE payment_intent_id = %s",
-                $wptb_payment_order_id
-            )
-        );
+    } elseif ( 'ok' === $wptb_payment_result
+        && '' !== $wptb_payment_order_id
+        && $wptb_payment_order_id === $wptb_payment_order_raw ) {
+        $wptb_payment_token = isset( $_GET['token'] )
+            ? sanitize_text_field( wp_unslash( $_GET['token'] ) )
+            : '';
 
-        $wptb_payment_state = $wptb_payment_booking
-            && 'paid' === $wptb_payment_booking->payment_status
-            && in_array( $wptb_payment_booking->status, array( 'confirmed', 'completed' ), true )
-                ? 'confirmed'
-                : 'pending';
+        if ( ! \MeTransfers\Payments\Redsys\Gateway::verify_confirmation_token( $wptb_payment_order_id, $wptb_payment_token ) ) {
+            $wptb_payment_state = 'invalid';
+        } else {
+            global $wpdb;
+            $wptb_bookings_table = $wpdb->prefix . 'wptb_bookings';
+            $wptb_payment_booking = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT id, status, payment_status, price FROM $wptb_bookings_table WHERE payment_intent_id = %s",
+                    $wptb_payment_order_id
+                )
+            );
+
+            $wptb_payment_state = $wptb_payment_booking
+                && 'paid' === $wptb_payment_booking->payment_status
+                && in_array( $wptb_payment_booking->status, array( 'confirmed', 'completed' ), true )
+                    ? 'confirmed'
+                    : 'pending';
+        }
+    } else {
+        $wptb_payment_state = 'invalid';
     }
 }
 ?>
-<div id="wptb-plugin-container" class="wptb-iso" data-payment-state="<?php echo esc_attr( $wptb_payment_state ); ?>" style="margin-top: 28px;">
+<div
+    id="wptb-plugin-container"
+    class="wptb-iso"
+    data-payment-state="<?php echo esc_attr( $wptb_payment_state ); ?>"
+    <?php if ( 'confirmed' === $wptb_payment_state && $wptb_payment_booking ) : ?>
+        data-booking-id="<?php echo esc_attr( $wptb_payment_booking->id ); ?>"
+        data-payment-value="<?php echo esc_attr( $wptb_payment_booking->price ); ?>"
+        data-payment-currency="EUR"
+    <?php endif; ?>
+    style="margin-top: 28px;"
+>
     
     <!-- PROGRESS BAR -->
     <div class="progress-bar-container">
@@ -224,15 +248,15 @@ if ( isset( $_GET['payment_result'] ) ) {
         <div id="wptb-vehicle-selection-page" class="wptb-vehicle-page-shell" style="display: none;">
             <div id="wptb-step-2" class="booking-vehicle-selection wptb-vehicle-page-step wptb-panel wptb-vehicle-panel" style="background: transparent !important; padding: 0 !important; border: none !important;">
                 
-                <h2 style="color: #004B68 !important; margin-bottom: 20px; font-weight: 800;">Selecciona tu vehículo</h2>
+                <h2 style="color: #004B68 !important; margin-bottom: 20px; font-weight: 800;"><?php echo esc_html( $wptb_i18n['select_vehicle'] ); ?></h2>
 
                 <div class="trip-type-selector wptb-vehicle-trip-toggle">
-                    <button type="button" class="trip-type-btn active" data-type="one_way">Solo ida</button>
-                    <button type="button" class="trip-type-btn" data-type="round_trip">Ida y vuelta</button>
+                    <button type="button" class="trip-type-btn active" data-type="one_way"><?php echo esc_html( $wptb_i18n['one_way'] ); ?></button>
+                    <button type="button" class="trip-type-btn" data-type="round_trip"><?php echo esc_html( $wptb_i18n['round_trip'] ); ?></button>
                 </div>
 
                 <div id="vehicles-grid" class="vehicles-grid wptb-vehicle-grid">
-                    <div class="loading-spinner">Buscando vehículos...</div>
+                    <div class="loading-spinner"><?php echo esc_html( $wptb_i18n['loading_vehicles'] ); ?></div>
                 </div>
 
             </div>
@@ -240,7 +264,7 @@ if ( isset( $_GET['payment_result'] ) ) {
 
         <!-- STEP 3: DETAILS -->
         <div id="wptb-step-3" class="booking-step" style="display: <?php echo 'none' === $wptb_payment_state ? 'block' : 'none'; ?>; background: transparent !important; padding: 0 !important; border: none !important;">
-            <h2 style="color: #004B68 !important; margin-bottom: 20px; font-weight: 800;">Detalles de la Reserva</h2>
+            <h2 style="color: #004B68 !important; margin-bottom: 20px; font-weight: 800;"><?php echo esc_html( $wptb_i18n['booking_details'] ); ?></h2>
             
             <div class="booking-layout-wrapper" style="background: transparent !important;">
                 <!-- STICKY SUMMARY -->
@@ -249,14 +273,14 @@ if ( isset( $_GET['payment_result'] ) ) {
                         <!-- Google Maps (Moved to Top) -->
                         <div id="route-map" style="width:100%; height:240px; border-radius:12px; margin-bottom:20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);"></div>
 
-                        <h3 style="margin-top:0; color:#ffffff !important; text-transform: uppercase;">Resumen del Viaje</h3>
-                        <p style="color: #fff;"><strong>Vehículo:</strong> <span id="summary-vehicle" style="color: #FFD700;">-</span></p>
-                        <p style="color: #fff;"><strong>Tipo:</strong> <span id="summary-trip-type" style="color: #FFD700;">-</span></p>
-                        <p style="color: #fff;"><strong>Origen:</strong> <span id="summary-origin" style="color: #FFD700;">-</span></p>
-                        <p style="color: #fff;"><strong>Destino:</strong> <span id="summary-destination" style="color: #FFD700;">-</span></p>
-                        <p style="color: #fff;"><strong>Distancia:</strong> <span id="summary-distance" style="color: #FFD700;">-</span> km (<span id="summary-duration" style="color: #FFD700;">-</span>)</p>
+                        <h3 style="margin-top:0; color:#ffffff !important; text-transform: uppercase;"><?php echo esc_html( $wptb_i18n['trip_summary'] ); ?></h3>
+                        <p style="color: #fff;"><strong><?php echo esc_html( $wptb_i18n['vehicle'] ); ?>:</strong> <span id="summary-vehicle" style="color: #FFD700;">-</span></p>
+                        <p style="color: #fff;"><strong><?php echo esc_html( $wptb_i18n['type'] ); ?>:</strong> <span id="summary-trip-type" style="color: #FFD700;">-</span></p>
+                        <p style="color: #fff;"><strong><?php echo esc_html( $wptb_i18n['origin'] ); ?>:</strong> <span id="summary-origin" style="color: #FFD700;">-</span></p>
+                        <p style="color: #fff;"><strong><?php echo esc_html( $wptb_i18n['destination'] ); ?>:</strong> <span id="summary-destination" style="color: #FFD700;">-</span></p>
+                        <p style="color: #fff;"><strong><?php echo esc_html( $wptb_i18n['distance'] ); ?>:</strong> <span id="summary-distance" style="color: #FFD700;">-</span> km (<span id="summary-duration" style="color: #FFD700;">-</span>)</p>
                         <hr style="margin: 15px 0; border: none; border-top: 1px solid #004B68;">
-                        <h2 style="margin-bottom:0; margin-top:10px; color:#ffffff !important;">Total: <span id="summary-price" style="color:#FFD700;">EUR 0.00</span></h2>
+                        <h2 style="margin-bottom:0; margin-top:10px; color:#ffffff !important;"><?php echo esc_html( $wptb_i18n['total'] ); ?>: <span id="summary-price" style="color:#FFD700;">EUR 0.00</span></h2>
                     </div>
                 </div>
                 
@@ -267,71 +291,71 @@ if ( isset( $_GET['payment_result'] ) ) {
                             
                             <div class="floating-label">
                                 <input type="number" id="wptb-passengers" min="1" max="50" required placeholder=" ">
-                                <label>Número de Pasajeros</label>
+                                <label><?php echo esc_html( $wptb_i18n['passengers'] ); ?></label>
                             </div>
                             
                             <!-- Return Trip Details (Hidden by default) -->
                             <div id="wptb-return-details" style="display:none; width: 100%; grid-column: 1 / -1; background: #003f59; padding: 20px; border-radius: 12px; border: 1px solid #004B68; margin-bottom: 20px;">
-                                <h3 style="margin-top:0; font-size:16px; color:#004B68 !important; margin-bottom:15px;">Detalles de la Vuelta</h3>
+                                <h3 style="margin-top:0; font-size:16px; color:#004B68 !important; margin-bottom:15px;"><?php echo esc_html( $wptb_i18n['return_details'] ); ?></h3>
                                 <div class="wptb-bento-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                                     <div class="floating-label full-width" style="grid-column: 1 / -1;">
                                         <input type="date" id="wptb-return-date" placeholder=" ">
-                                        <label>Fecha de Vuelta</label>
+                                        <label><?php echo esc_html( $wptb_i18n['return_date'] ); ?></label>
                                     </div>
                                     <div class="floating-label full-width" style="grid-column: 1 / -1;">
                                         <input type="time" id="wptb-return-time" placeholder=" ">
-                                        <label>Hora de Vuelta</label>
+                                        <label><?php echo esc_html( $wptb_i18n['return_time'] ); ?></label>
                                     </div>
                                     <div class="floating-label full-width" style="grid-column: 1 / -1;">
                                         <input type="text" id="wptb-return-origin" placeholder=" ">
-                                        <label>Recogida Vuelta (Origen)</label>
+                                        <label><?php echo esc_html( $wptb_i18n['return_pickup'] ); ?></label>
                                     </div>
                                     <div class="floating-label full-width" style="grid-column: 1 / -1;">
                                         <input type="text" id="wptb-return-destination" placeholder=" ">
-                                        <label>Destino Vuelta</label>
+                                        <label><?php echo esc_html( $wptb_i18n['return_destination'] ); ?></label>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="floating-label">
                                 <input type="text" id="wptb-fullname" required placeholder=" ">
-                                <label>Nombre Completo</label>
+                                <label><?php echo esc_html( $wptb_i18n['full_name'] ); ?></label>
                             </div>
                             
                             <div class="floating-label">
                                 <input type="tel" id="wptb-phone" required placeholder=" ">
-                                <label>Teléfono</label>
+                                <label><?php echo esc_html( $wptb_i18n['phone'] ); ?></label>
                             </div>
                             
                             <div class="floating-label full-width">
                                 <input type="email" id="wptb-email" required placeholder=" ">
-                                <label>Email</label>
+                                <label><?php echo esc_html( $wptb_i18n['email'] ); ?></label>
                             </div>
                             
                             <div class="floating-label">
                                 <input type="number" id="wptb-suitcases" min="0" placeholder=" ">
-                                <label>Maletas Grandes</label>
+                                <label><?php echo esc_html( $wptb_i18n['large_suitcases'] ); ?></label>
                             </div>
                             
                             <div class="floating-label">
                                 <input type="number" id="wptb-carryOns" min="0" placeholder=" ">
-                                <label>Maletas de Mano</label>
+                                <label><?php echo esc_html( $wptb_i18n['carry_on'] ); ?></label>
                             </div>
 
                             <div class="floating-label full-width">
                                 <input type="text" id="wptb-flight" placeholder=" ">
-                                <label>Número de Vuelo (Opcional)</label>
+                                <label><?php echo esc_html( $wptb_i18n['flight_optional'] ); ?></label>
                             </div>
                             
                             <div class="floating-label full-width">
                                 <textarea id="wptb-notes" placeholder=" "></textarea>
-                                <label>Notas Adicionales</label>
+                                <label><?php echo esc_html( $wptb_i18n['additional_notes'] ); ?></label>
                             </div>
                         </div>
 
                         <div class="form-actions" style="background: transparent !important; margin-top: 30px;">
-                            <button type="button" class="btn-secondary" id="wptb-back-step3" style="background: transparent !important; color: #004B68 !important; border: 2px solid #004B68 !important; border-radius: 24px !important; min-height: 55px; font-weight: 700; cursor: pointer;">VOLVER</button>
-                            <button type="submit" class="btn-primary" id="wptb-confirm-btn" style="background: #004B68 !important; color: #fff !important; border: 2px solid #004B68 !important; border-radius: 24px !important; min-height: 55px; font-weight: 700; cursor: pointer;">CONFIRMAR RESERVA</button>
+                            <button type="button" class="btn-secondary" id="wptb-back-step3" style="background: transparent !important; color: #004B68 !important; border: 2px solid #004B68 !important; border-radius: 24px !important; min-height: 55px; font-weight: 700; cursor: pointer;"><?php echo esc_html( $wptb_i18n['back'] ); ?></button>
+                            <button type="submit" class="btn-primary" id="wptb-confirm-btn" style="background: #004B68 !important; color: #fff !important; border: 2px solid #004B68 !important; border-radius: 24px !important; min-height: 55px; font-weight: 700; cursor: pointer;"><?php echo esc_html( $wptb_i18n['confirm_booking'] ); ?></button>
                         </div>
                     </form>
                 </div>
@@ -343,28 +367,37 @@ if ( isset( $_GET['payment_result'] ) ) {
             <div class="success-icon">
                 <span class="dashicons dashicons-yes" style="color: #004B68 !important;"></span>
             </div>
-            <h2 style="color: #fff !important;">¡Reserva Confirmada!</h2>
-            <p style="color: #ccc !important;">Hemos enviado los detalles a tu correo electrónico.</p>
+            <h2 style="color: #fff !important;"><?php echo esc_html( $wptb_i18n['booking_confirmed'] ); ?></h2>
+            <p style="color: #ccc !important;"><?php echo esc_html( $wptb_i18n['confirmation_email'] ); ?></p>
             
             <div class="order-details-box" style="border: 1px solid #004B68 !important; padding: 20px; border-radius: 12px; margin: 20px 0;">
-                <p style="color: #fff;"><strong>Referencia:</strong> <span id="success-order-id" style="color: #fff;">#<?php echo $wptb_payment_order_id ? esc_html( $wptb_payment_order_id ) : '...'; ?></span></p>
+                <p style="color: #fff;"><strong><?php echo esc_html( $wptb_i18n['reference'] ); ?>:</strong> <span id="success-order-id" style="color: #fff;">#<?php echo $wptb_payment_order_id ? esc_html( $wptb_payment_order_id ) : '...'; ?></span></p>
             </div>
             
-            <a href="/" class="btn-primary" style="background: #004B68 !important; border-radius: 24px !important; padding: 15px 30px; display: inline-block; color: #fff; text-decoration: none; margin-top: 15px;">Volver al Inicio</a>
+            <button type="button" id="btn-download-pdf" class="btn-primary" style="background: #0056b3 !important; border-radius: 24px !important; padding: 15px 30px; color: #fff; border: 0; cursor: pointer;">
+                <?php echo esc_html( $wptb_i18n['download_receipt'] ); ?>
+            </button>
+            <a href="<?php echo esc_url( \MeTransfers\Booking\I18n::url( '/' ) ); ?>" class="btn-primary" style="background: #004B68 !important; border-radius: 24px !important; padding: 15px 30px; display: inline-block; color: #fff; text-decoration: none; margin-top: 15px;"><?php echo esc_html( $wptb_i18n['back_home'] ); ?></a>
         </div>
 
         <div id="wptb-payment-pending" class="booking-success" style="display: <?php echo 'pending' === $wptb_payment_state ? 'block' : 'none'; ?>; background-color: #003f59 !important; border-radius: 24px !important; border: 1px solid #004B68 !important; color: #fff !important;">
-            <h2 style="color: #fff !important;">Estamos verificando tu pago</h2>
-            <p style="color: #ccc !important;">La operación volvió correctamente desde Redsys, pero la confirmación segura aún no ha llegado. Actualiza esta página dentro de unos segundos.</p>
+            <h2 style="color: #fff !important;"><?php echo esc_html( $wptb_i18n['payment_pending_title'] ); ?></h2>
+            <p style="color: #ccc !important;"><?php echo esc_html( $wptb_i18n['payment_pending_text'] ); ?></p>
             <?php if ( $wptb_payment_order_id ) : ?>
-                <p style="color: #fff;"><strong>Referencia:</strong> #<?php echo esc_html( $wptb_payment_order_id ); ?></p>
+                <p style="color: #fff;"><strong><?php echo esc_html( $wptb_i18n['reference'] ); ?>:</strong> #<?php echo esc_html( $wptb_payment_order_id ); ?></p>
             <?php endif; ?>
         </div>
 
         <div id="wptb-payment-failed" class="booking-success" style="display: <?php echo 'failed' === $wptb_payment_state ? 'block' : 'none'; ?>; background-color: #003f59 !important; border-radius: 24px !important; border: 1px solid #004B68 !important; color: #fff !important;">
-            <h2 style="color: #fff !important;">El pago no se completó</h2>
-            <p style="color: #ccc !important;">No se ha confirmado ningún cargo. Puedes volver a iniciar la reserva o contactar con soporte si necesitas ayuda.</p>
-            <a href="/reservas-metransfers/" class="btn-primary" style="background: #004B68 !important; border-radius: 24px !important; padding: 15px 30px; display: inline-block; color: #fff; text-decoration: none; margin-top: 15px;">Intentarlo de nuevo</a>
+            <h2 style="color: #fff !important;"><?php echo esc_html( $wptb_i18n['payment_failed_title'] ); ?></h2>
+            <p style="color: #ccc !important;"><?php echo esc_html( $wptb_i18n['payment_failed_text'] ); ?></p>
+            <a href="<?php echo esc_url( \MeTransfers\Booking\I18n::url( '/reservas-metransfers/' ) ); ?>" class="btn-primary" style="background: #004B68 !important; border-radius: 24px !important; padding: 15px 30px; display: inline-block; color: #fff; text-decoration: none; margin-top: 15px;"><?php echo esc_html( $wptb_i18n['try_again'] ); ?></a>
+        </div>
+
+        <div id="wptb-payment-invalid" class="booking-success" style="display: <?php echo 'invalid' === $wptb_payment_state ? 'block' : 'none'; ?>; background-color: #003f59 !important; border-radius: 24px !important; border: 1px solid #004B68 !important; color: #fff !important;">
+            <h2 style="color: #fff !important;"><?php echo esc_html( $wptb_i18n['invalid_confirmation_title'] ); ?></h2>
+            <p style="color: #ccc !important;"><?php echo esc_html( $wptb_i18n['invalid_confirmation_text'] ); ?></p>
+            <a href="<?php echo esc_url( \MeTransfers\Booking\I18n::url( '/' ) ); ?>" class="btn-primary" style="background: #004B68 !important; border-radius: 24px !important; padding: 15px 30px; display: inline-block; color: #fff; text-decoration: none; margin-top: 15px;"><?php echo esc_html( $wptb_i18n['back_home'] ); ?></a>
         </div>
 
     </div>
