@@ -7,6 +7,17 @@ class Assets {
     }
 
     public function enqueue() {
+        $site_tracking_path = get_template_directory() . '/assets/js/site-tracking.js';
+        if ( file_exists( $site_tracking_path ) ) {
+            wp_enqueue_script(
+                'mt-site-tracking',
+                get_template_directory_uri() . '/assets/js/site-tracking.js',
+                array(),
+                (string) filemtime( $site_tracking_path ),
+                true
+            );
+        }
+
         if ( ! self::is_booking_context() ) {
             return;
         }
@@ -14,12 +25,17 @@ class Assets {
         $base_dir = get_template_directory() . '/assets/css/';
         $base_url = get_template_directory_uri() . '/assets/css/';
 
+        $phase = self::booking_phase();
         $styles = array(
             'mt-tokens'     => 'tokens.css',
             'mt-components' => 'components.css',
-            'mt-booking'    => 'booking.css',
-            'mt-checkout'   => 'checkout.css',
         );
+        if ( in_array( $phase, array( 'search', 'vehicle', 'details', 'confirmation', 'hotel' ), true ) ) {
+            $styles['mt-booking'] = 'booking.css';
+        }
+        if ( 'payment' === $phase ) {
+            $styles['mt-checkout'] = 'checkout.css';
+        }
 
         $dependency = array();
         foreach ( $styles as $handle => $filename ) {
@@ -37,7 +53,7 @@ class Assets {
             wp_enqueue_script(
                 'mt-booking-tracking',
                 get_template_directory_uri() . '/assets/js/booking-tracking.js',
-                array(),
+                wp_script_is( 'mt-site-tracking', 'enqueued' ) ? array( 'mt-site-tracking' ) : array(),
                 (string) filemtime( $tracking_path ),
                 true
             );

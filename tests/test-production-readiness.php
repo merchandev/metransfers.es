@@ -13,6 +13,13 @@ $booking_details = file_get_contents( $root . '/app/Legacy/WPTB/templates/bookin
 $public_controller = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-public.php' );
 $assets = file_get_contents( $root . '/app/Core/Assets.php' );
 $tracking = file_get_contents( $root . '/assets/js/booking-tracking.js' );
+$site_tracking = file_get_contents( $root . '/assets/js/site-tracking.js' );
+$checkout = file_get_contents( $root . '/app/Legacy/WPTB/templates/checkout.php' );
+$i18n_runtime = file_get_contents( $root . '/includes/i18n.php' );
+$functions = file_get_contents( $root . '/functions.php' );
+$notification_service = file_get_contents( $root . '/app/Notifications/NotificationService.php' );
+$outbox = file_get_contents( $root . '/app/Analytics/PurchaseOutbox.php' );
+$release_gate = file_get_contents( $root . '/app/Core/ReleaseGate.php' );
 $readme = file_get_contents( $root . '/README.md' );
 
 assert_readiness( false === strpos( $booking_form, 'payment_result' ), 'The search form must not interpret payment return parameters.' );
@@ -38,8 +45,24 @@ assert_readiness( false !== strpos( $public_controller, "'pdf_library_url'" ), '
 assert_readiness( false !== strpos( $tracking, "container.dataset.paymentState !== 'confirmed'" ), 'Purchase tracking must require a server-confirmed state.' );
 
 foreach ( array( 'booking_start', 'route_search', 'vehicle_select', 'begin_checkout', 'add_payment_info', 'purchase', 'generate_lead', 'booking_error', 'payment_error' ) as $event ) {
-    assert_readiness( false !== strpos( $tracking, "'$event'" ), "Tracking event $event is missing." );
+    assert_readiness( false !== strpos( $tracking . $site_tracking, "'$event'" ), "Tracking event $event is missing." );
 }
+
+assert_readiness( false === strpos( $checkout, 'wptb-payment-success' ), 'Checkout must not contain a premature success view.' );
+assert_readiness( false === strpos( $checkout, 'style=' ) && false === strpos( $checkout, '<style' ), 'Checkout must use the shared design system without inline CSS.' );
+assert_readiness( false === strpos( $booking_details, 'style=' ) && false === strpos( $booking_details, '<style' ), 'Booking details must use the shared design system without inline CSS.' );
+assert_readiness( false !== strpos( $public_controller, 'QuoteService::create' ), 'Payment must use the authoritative server quote.' );
+assert_readiness( false !== strpos( $public_controller, 'terms_accepted_at' ), 'Terms acceptance must be persisted server-side.' );
+assert_readiness( false !== strpos( $public_controller, 'booking_locale' ), 'The booking locale must be persisted.' );
+assert_readiness( false !== strpos( $i18n_runtime, 'Public rendering is cache-only' ), 'Public translations must be cache-only.' );
+assert_readiness( 1 === substr_count( $public_controller, 'function send_whatsapp_alert(' ), 'Only the deprecated WhatsApp facade may remain in the legacy controller.' );
+assert_readiness( false === strpos( $public_controller, 'reservas@barcelonatours.email' ), 'Notification senders must not be hardcoded.' );
+assert_readiness( false !== strpos( $notification_service, "Settings::get( 'smtp_from'" ), 'Notification sender must come from platform settings.' );
+assert_readiness( false !== strpos( $functions, 'mt_is_transactional_page' ) && false !== strpos( $functions, "'noindex' => true" ), 'Transactional pages must be noindex.' );
+assert_readiness( false !== strpos( $assets, "'mt-site-tracking'" ), 'Phone and WhatsApp tracking must be enqueued globally.' );
+assert_readiness( false === strpos( $public_controller, "wp_enqueue_style( 'wptb-main-style'" ), 'Legacy funnel CSS must not be enqueued.' );
+assert_readiness( false !== strpos( $outbox, "'purchase:'" ) && false !== strpos( $outbox, 'INSERT IGNORE' ), 'Financial purchase tracking must use a durable idempotent outbox.' );
+assert_readiness( false !== strpos( $release_gate, 'redsys_sandbox_verified_at' ) && false !== strpos( $release_gate, 'maps_credentials_rotated_at' ), 'Live payments must be gated by external security attestations.' );
 
 foreach ( array(
     'add_filters.php',

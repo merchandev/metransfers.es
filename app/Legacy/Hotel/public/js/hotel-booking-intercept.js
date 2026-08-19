@@ -74,7 +74,6 @@ jQuery(document).ready(function($) {
                     
                     // Only update if not already discounted or if price changed
                     if (parseFloat(data.price) !== parseFloat(discounted)) {
-                        console.log('HQP: Updating Price in SessionStorage', data.price, '->', discounted);
                         
                         data.original_price = priceVal;
                         data.discount_percent = discount;

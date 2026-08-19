@@ -9,7 +9,7 @@ $suffix = isset( $form_suffix ) ? $form_suffix : '';
 $wptb_i18n = \MeTransfers\Booking\I18n::strings();
 ?>
 
-<div id="wptb-plugin-container" class="wptb-iso">
+<div id="wptb-plugin-container" class="wptb-iso mt-booking mt-booking--search">
     <div id="wptb-step-1<?php echo esc_attr( $suffix ); ?>" class="booking-form active wptb-panel wptb-search-panel">
         <form id="wptb-search-form<?php echo esc_attr( $suffix ); ?>" class="wptb-main-search-form" autocomplete="off">
             <input type="hidden" id="wptb-booking-source<?php echo esc_attr( $suffix ); ?>" name="booking_source" value="<?php echo esc_attr( isset($booking_source) ? $booking_source : 'Metransfers' ); ?>">
@@ -33,13 +33,13 @@ $wptb_i18n = \MeTransfers\Booking\I18n::strings();
                 <label for="wptb-time<?php echo esc_attr( $suffix ); ?>"><?php echo esc_html( $wptb_i18n['time'] ); ?></label>
             </div>
 
-            <button type="submit" id="submitBtn<?php echo esc_attr( $suffix ); ?>" class="wptb-main-search-submit" style="background: #004B68 !important; color: #fff !important; border: 2px solid #004B68 !important; border-radius: 24px !important; width: 100%; min-height: 55px; font-weight: 700; text-transform: uppercase;">
+            <button type="submit" id="submitBtn<?php echo esc_attr( $suffix ); ?>" class="wptb-main-search-submit mt-button mt-button--primary">
                 <?php echo esc_html( $wptb_i18n['search_vehicles'] ); ?>
             </button>
         </form>
     </div>
 
-    <div id="wptb-step-2" class="booking-vehicle-selection wptb-panel wptb-vehicle-panel" style="display:none;">
+    <div id="wptb-step-2" class="booking-vehicle-selection wptb-panel wptb-vehicle-panel is-hidden">
         <div class="progress-bar wptb-progress">
             <div class="wptb-progress-line" aria-hidden="true"></div>
             <div class="progress-step"><div class="step completed">1</div></div>
@@ -57,7 +57,7 @@ $wptb_i18n = \MeTransfers\Booking\I18n::strings();
             <!-- Vehicles will be loaded via AJAX -->
         </div>
 
-        <button type="button" id="wptb-back-step2" class="secondary-btn wptb-back-search-btn" style="background: transparent !important; color: #004B68 !important; border: 2px solid #004B68 !important; border-radius: 24px !important; width: 100%; min-height: 55px; font-weight: 700; margin-top: 20px; text-transform: uppercase;"><?php echo esc_html( $wptb_i18n['change_search'] ); ?></button>
+        <button type="button" id="wptb-back-step2" class="secondary-btn wptb-back-search-btn mt-button mt-button--secondary"><?php echo esc_html( $wptb_i18n['change_search'] ); ?></button>
     </div>
 
 </div>

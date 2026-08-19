@@ -1,6 +1,5 @@
 jQuery(document).ready(function ($) {
     'use strict';
-    console.log('🚀 WPTB Booking App Initialized v3.1');
 
     const bookingStrings = (typeof wptb_vars !== 'undefined' && wptb_vars.strings) ? wptb_vars.strings : {};
 
@@ -38,7 +37,6 @@ jQuery(document).ready(function ($) {
                     : '/seleccionar-vehiculo/';
 
                 const targetUrl = vehiclesUrl + '?' + params.toString();
-                console.log('🔀 BTT redirect: routing to vehicle page with URL params:', targetUrl);
                 window.location.replace(targetUrl);
             }
         }
@@ -116,7 +114,6 @@ jQuery(document).ready(function ($) {
         // Initialize Autocomplete with Retry Logic
         function initAutocomplete() {
             if (typeof google !== 'undefined' && google.maps && google.maps.places) {
-                console.log('🗺️ Google Maps detected. Initializing inputs for:', suffix);
 
                 // ORIGIN: Restricted to Barcelona province bounds
                 const originOptions = {
@@ -191,31 +188,11 @@ jQuery(document).ready(function ($) {
         // Inject Geolocation Button
         const $originWrapper = $(originId).parent();
         if ($originWrapper.length && $('#' + locBtnId).length === 0) {
-            $originWrapper.addClass('wptb-origin-wrapper').css('position', 'relative');
+            $originWrapper.addClass('wptb-origin-wrapper');
 
             const locBtn = `
-                <button type="button" id="${locBtnId}" class="wptb-geolocation-btn" title="Usar mi ubicación actual"
-                    style="
-                        position: absolute !important;
-                        right: 15px !important;
-                        left: auto !important;
-                        top: 50% !important;
-                        transform: translateY(-50%) !important;
-                        display: flex !important;
-                        align-items: center !important;
-                        justify-content: center !important;
-                        background: none !important;
-                        border: none !important;
-                        padding: 0 !important;
-                        margin: 0 !important;
-                        width: auto !important;
-                        height: auto !important;
-                        min-width: 0 !important;
-                        z-index: 9999 !important;
-                        cursor: pointer !important;
-                        color: var(--wptb-primary) !important;
-                    ">
-                    <span class="dashicons dashicons-location" style="font-size:24px !important; width:24px !important; height:24px !important; margin:0 !important;"></span>
+                <button type="button" id="${locBtnId}" class="wptb-geolocation-btn" title="Usar mi ubicación actual">
+                    <span class="dashicons dashicons-location"></span>
                 </button>
             `;
             $originWrapper.append(locBtn);
@@ -347,7 +324,6 @@ jQuery(document).ready(function ($) {
 
     // Load vehicles into modal grid
     function loadVehiclesIntoModal() {
-        console.log('🚗 Cargando vehículos en modal...');
         $('#wptb-modal-vehicles-grid').html('<div class="loading-spinner">' + escapeHtml(t('loading_vehicles', 'Buscando vehículos...')) + '</div>');
 
         if (typeof wptb_vars === 'undefined') {
@@ -366,18 +342,17 @@ jQuery(document).ready(function ($) {
                 language: wptb_vars.language || 'es'
             },
             success: function (response) {
-                console.log('✅ Vehículos recibidos:', response);
                 if (response.success && response.data && response.data.length > 0) {
                     displayVehiclesInModal(response.data);
                 } else {
                     track('booking_error', { error_type: 'no_vehicles' });
-                    $('#wptb-modal-vehicles-grid').html('<p style="color:#999; text-align:center; padding:20px;">' + escapeHtml(t('no_vehicles', 'No se encontraron vehículos disponibles.')) + '</p>');
+                    $('#wptb-modal-vehicles-grid').html('<p class="mt-inline-notice">' + escapeHtml(t('no_vehicles', 'No se encontraron vehículos disponibles.')) + '</p>');
                 }
             },
             error: function (xhr, status, error) {
                 console.error('❌ Error AJAX:', error);
                 track('booking_error', { error_type: 'vehicle_request' });
-                $('#wptb-modal-vehicles-grid').html('<p style="color:red; text-align:center;">' + escapeHtml(t('vehicle_load_error', 'Error al cargar los vehículos.')) + '</p>');
+                $('#wptb-modal-vehicles-grid').html('<p class="mt-inline-notice mt-inline-notice--error">' + escapeHtml(t('vehicle_load_error', 'Error al cargar los vehículos.')) + '</p>');
             }
         });
     }
@@ -392,7 +367,7 @@ jQuery(document).ready(function ($) {
             html += `
                 <div class="wptb-modal-vehicle-btn" data-vehicle-id="${vehicle.id}">
                     <div class="vehicle-icon">
-                        ${imageUrl ? `<img src="${imageUrl}" alt="${vehicleName}">` : '<span style="font-size:32px;">🚗</span>'}
+                        ${imageUrl ? `<img src="${imageUrl}" alt="${vehicleName}">` : '<span class="mt-vehicle-placeholder">🚗</span>'}
                     </div>
                     <div class="vehicle-info-compact">
                         <strong>${vehicleName}</strong>
@@ -474,8 +449,7 @@ jQuery(document).ready(function ($) {
 
     // CRITICAL: Ensure modal is hidden on page load
     $(document).ready(function () {
-        $('#wptb-booking-modal').attr('style', 'display: none !important;');
-        console.log('Modal forced hidden on load (Force)');
+        $('#wptb-booking-modal').hide();
     });
 
     // ===== DIRECTION TOGGLE HANDLER =====
@@ -496,7 +470,6 @@ jQuery(document).ready(function ($) {
             $('.mtfs-slide-direction').text(t('to_barcelona', 'Hacia Barcelona'));
         }
 
-        console.log('🔄 Dirección cambiada a:', direction);
     });
 
     // Open Modal on Carousel Click
@@ -506,7 +479,6 @@ jQuery(document).ready(function ($) {
         e.stopPropagation();
         e.stopImmediatePropagation();
 
-        console.log('🖱️ Click en carrusel');
 
         const destinationName = $(this).data('destination');
         const tripDirection = $(this).data('direction'); // 'from-barcelona' or 'to-barcelona'
@@ -529,7 +501,6 @@ jQuery(document).ready(function ($) {
         // BIDIRECTIONAL LOGIC: Switch origin/destination based on direction
         if (tripDirection === 'to-barcelona') {
             // Trip TO Barcelona: Origin = Destination, Destination = Barcelona
-            console.log('🔵 Viaje HACIA Barcelona desde', destinationName);
             $originInput.val(destinationName);
             $originInput.prop('readonly', false);
 
@@ -541,7 +512,6 @@ jQuery(document).ready(function ($) {
             setTimeout(() => $specificInput.focus(), 500);
         } else {
             // Trip FROM Barcelona: Origin = Barcelona, Destination = Selected City
-            console.log('🟢 Viaje DESDE Barcelona hacia', destinationName);
             $originInput.val('Barcelona, España');
             $originInput.prop('readonly', false);
 
@@ -562,11 +532,9 @@ jQuery(document).ready(function ($) {
         $(document).on('click', '#wptb-modal-close', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('✖️ X button clicked');
 
             const $modal = $('#wptb-booking-modal');
-            $modal.removeAttr('style'); // Remove all inline styles
-            $modal.attr('style', 'display: none !important;'); // Force hide with !important
+            $modal.hide();
 
             $('#wptb-modal-step-2').hide();
             $('#wptb-modal-step-1').show();
@@ -575,11 +543,9 @@ jQuery(document).ready(function ($) {
         // Overlay click close - NUCLEAR APPROACH
         $(document).on('click', '#wptb-booking-modal', function (e) {
             if (e.target.id === 'wptb-booking-modal') {
-                console.log('📦 Overlay clicked');
 
                 const $modal = $(this);
-                $modal.removeAttr('style');
-                $modal.attr('style', 'display: none !important;');
+                $modal.hide();
 
                 $('#wptb-modal-step-2').hide();
                 $('#wptb-modal-step-1').show();
@@ -675,12 +641,10 @@ jQuery(document).ready(function ($) {
         if (page) {
             page.style.setProperty('display', 'block', 'important');
         }
-        console.log('🔓 BTT loader hidden, page shown.');
     }
 
     // Function to Load Vehicles (AJAX)
     function loadVehicles() {
-        console.log('🚗 Cargando vehículos...');
         $('#vehicles-grid').html('<div class="loading-spinner">' + escapeHtml(t('loading_vehicles', 'Buscando vehículos...')) + '</div>');
 
         // Check vars
@@ -701,7 +665,6 @@ jQuery(document).ready(function ($) {
                 language: wptb_vars.language || 'es'
             },
             success: function (response) {
-                console.log('✅ Respuesta recibida:', response);
                 hideBTTLoader(); // Always reveal page once we have a response
                 if (response.success && response.data && response.data.length > 0) {
                     displayVehicles(response.data);
@@ -713,16 +676,16 @@ jQuery(document).ready(function ($) {
                 console.error('❌ Error AJAX:', error);
                 hideBTTLoader();
                 track('booking_error', { error_type: 'vehicle_request' });
-                $('#vehicles-grid').html('<p style="color:red; text-align:center;">' + escapeHtml(t('vehicle_load_error', 'Error al cargar los vehículos.')) + '</p>');
+                $('#vehicles-grid').html('<p class="mt-inline-notice mt-inline-notice--error">' + escapeHtml(t('vehicle_load_error', 'Error al cargar los vehículos.')) + '</p>');
             }
         });
     }
 
     function displayNoVehicles(response) {
         track('booking_error', { error_type: 'no_vehicles' });
-        const $message = $('<div>', { style: 'text-align:center;padding:40px;' });
-        $message.append('<span class="dashicons dashicons-warning" style="font-size:40px;color:#f0ad4e;"></span>');
-        $message.append($('<p>', { style: 'margin-top:20px;' }).text(t('no_vehicles', 'No se encontraron vehículos disponibles.')));
+        const $message = $('<div>', { class: 'mt-empty-state' });
+        $message.append('<span class="dashicons dashicons-warning mt-empty-state__icon"></span>');
+        $message.append($('<p>').text(t('no_vehicles', 'No se encontraron vehículos disponibles.')));
         $('#vehicles-grid').empty().append($message);
     }
 
@@ -754,29 +717,29 @@ jQuery(document).ready(function ($) {
             const formattedPrice = Number.isInteger(displayPrice) ? displayPrice : displayPrice.toFixed(2);
 
             html += `
-                <div class="vehicle-card" data-vehicle-id="${vehicle.id}" onclick="selectVehicle(${vehicle.id})" style="cursor:pointer; background: #fff; border-radius: 24px; overflow: hidden; border: 2px solid #f0f0f0; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 100%; min-height: 450px;">
-                    <div class="vehicle-image" style="background: #f5f7fa; height: 200px; padding: 20px; display:flex; align-items:center; justify-content:center; flex-shrink: 0;">
-                        <img src="${vehicle.image}" alt="${vehicle.name}" style="max-height:100%; max-width:100%; width: auto; object-fit: contain;">
+                <div class="vehicle-card mt-vehicle-card" data-vehicle-id="${vehicle.id}">
+                    <div class="vehicle-image mt-vehicle-card__image">
+                        <img src="${escapeHtml(vehicle.image || '')}" alt="${escapeHtml(vehicle.name || '')}">
                     </div>
-                    <div class="vehicle-info" style="padding: 25px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="vehicle-info mt-vehicle-card__body">
                         <div>
-                            <h3 style="margin:0 0 10px; font-size:20px; color:#00033b; font-weight:800; line-height: 1.2;">${vehicle.name}</h3>
+                            <h3>${escapeHtml(vehicle.name || '')}</h3>
                             
-                            <div class="vehicle-features" style="font-size:14px; color:#666; margin-bottom:15px; display:flex; gap:15px; align-items: center;">
-                                <span style="display: flex; align-items: center; gap: 6px;">
-                                    <span class="dashicons dashicons-groups" style="color: #ff7100;"></span> 
+                            <div class="vehicle-features">
+                                <span>
+                                    <span class="dashicons dashicons-groups"></span>
                                     ${vehicle.capacity} pax
                                 </span>
                             </div>
                         </div>
 
-                        <div style="margin-top: auto;">
-                            <div class="vehicle-price-preview" style="background: #00033b; border-radius: 16px; padding: 15px; text-align: center; margin-bottom: 15px; border: 1px solid #ff7100;">
-                                <span class="price-label" style="display:block; font-size:11px; text-transform:uppercase; color:#fff; letter-spacing: 1px; margin-bottom: 4px;">${escapeHtml(t('final_price', 'Precio final'))}</span>
-                                <span class="price-value" style="display:block; font-size:26px; font-weight:800; color:#ff7100;">€${formattedPrice}</span>
+                        <div class="mt-vehicle-card__footer">
+                            <div class="vehicle-price-preview">
+                                <span class="price-label">${escapeHtml(t('from_price', 'Desde'))}</span>
+                                <span class="price-value">€${formattedPrice}</span>
                             </div>
 
-                            <button type="button" class="select-vehicle-btn" style="width:100%; border:none; background-color:#ff7100; color:#fff; padding:15px; border-radius: 50px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; font-size: 14px; transition: background 0.3s;">
+                            <button type="button" class="select-vehicle-btn mt-button mt-button--primary">
                                 ${escapeHtml(t('select', 'Seleccionar'))}
                             </button>
                         </div>
@@ -800,7 +763,6 @@ jQuery(document).ready(function ($) {
 
         if (bookingData.trip_type !== newTripType) {
             bookingData.trip_type = newTripType;
-            console.log('🔄 Trip type changed to:', newTripType);
             loadVehicles(); // Reload vehicles to update prices
         }
     });
@@ -814,7 +776,6 @@ jQuery(document).ready(function ($) {
     });
 
     function calculatePrice(vehicle) {
-        console.log('💰 Calculating price for vehicle:', vehicle);
 
         const distance = parseFloat(bookingData.distance_km);
         const pricing = vehicle.pricing;
@@ -837,6 +798,48 @@ jQuery(document).ready(function ($) {
 
         bookingData.price = parseFloat(price.toFixed(2));
 
+        if (bookingData.trip_type === 'one_way' && typeof wptb_vars !== 'undefined') {
+            $.ajax({
+                url: wptb_vars.ajax_url,
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'wptb_get_quote',
+                    security: wptb_vars.nonce,
+                    language: wptb_vars.language || 'es',
+                    date: bookingData.date,
+                    time: bookingData.time,
+                    origin: bookingData.origin,
+                    destination: bookingData.destination,
+                    vehicle_id: vehicle.id,
+                    trip_type: 'one_way'
+                }
+            }).done(function (response) {
+                if (!response.success || !response.data || !response.data.valid) {
+                    const message = response.data && response.data.message
+                        ? response.data.message
+                        : t('invalid_server_price', 'No se pudo calcular un precio válido para la reserva.');
+                    track('booking_error', {error_type: 'invalid_quote'});
+                    alert(message);
+                    return;
+                }
+                bookingData.price = Number.parseFloat(response.data.price);
+                bookingData.distance_km = Number.parseFloat(response.data.total_distance_km);
+                bookingData.duration_minutes = Number.parseInt(response.data.duration_minutes, 10);
+                bookingData.quote_verified = true;
+                completeVehicleSelection(vehicle);
+            }).fail(function () {
+                track('booking_error', {error_type: 'quote_connection'});
+                alert(t('connection_error', 'Error de conexión.'));
+            });
+            return;
+        }
+
+        completeVehicleSelection(vehicle);
+    }
+
+    function completeVehicleSelection(vehicle) {
+
         track('vehicle_select', {
             vehicle_id: vehicle.id,
             vehicle_name: vehicle.name,
@@ -847,7 +850,6 @@ jQuery(document).ready(function ($) {
         // Save to sessionStorage
         sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
 
-        console.log('💾 Booking data saved:', bookingData);
 
         // Redirect to details page with fallback
         let detailsUrl;
@@ -860,7 +862,6 @@ jQuery(document).ready(function ($) {
             console.warn('⚠️ wptb_vars not available, using fallback URL');
         }
 
-        console.log('🔄 Redirecting to details page:', detailsUrl);
 
         // Small delay to ensure sessionStorage is saved
         setTimeout(function () {
@@ -889,7 +890,6 @@ jQuery(document).ready(function ($) {
     // ===== GOOGLE MAPS ROUTE (SUMMARY) =====
     function initRouteMap() {
         if (typeof google === 'undefined') {
-            console.log('⚠️ Google Maps not ready for Route Map. Retrying in 500ms...');
             setTimeout(initRouteMap, 500);
             return;
         }
@@ -902,7 +902,6 @@ jQuery(document).ready(function ($) {
 
         // Ensure map and renderer exist
         if (!map) {
-            console.log('🗺️ Initializing Google Maps Instance...');
             map = new google.maps.Map(mapElement, {
                 zoom: 7,
                 center: { lat: 40.4168, lng: -3.7038 },
@@ -933,7 +932,6 @@ jQuery(document).ready(function ($) {
             },
             function (response, status) {
                 if (status === 'OK') {
-                    console.log('✅ Route Map Loaded Successfully');
                     directionsRenderer.setDirections(response);
                     // Double resize trigger: immediate + delayed for containers that were hidden
                     google.maps.event.trigger(map, 'resize');
@@ -1001,26 +999,52 @@ jQuery(document).ready(function ($) {
             return;
         }
 
-        track('begin_checkout', {
-            vehicle_id: bookingData.vehicle_id,
-            value: Number.parseFloat(bookingData.price || 0),
-            currency: 'EUR',
-            trip_type: bookingData.trip_type
+        const $confirmButton = $('#wptb-confirm-btn').prop('disabled', true);
+        $.ajax({
+            url: wptb_vars.ajax_url,
+            method: 'POST',
+            dataType: 'json',
+            data: Object.assign({}, bookingData, {
+                action: 'wptb_get_quote',
+                security: wptb_vars.nonce,
+                language: wptb_vars.language || 'es'
+            })
+        }).done(function (response) {
+            if (!response.success || !response.data || !response.data.valid) {
+                const message = response.data && response.data.message
+                    ? response.data.message
+                    : t('invalid_server_price', 'No se pudo calcular un precio válido para la reserva.');
+                track('booking_error', { error_type: 'invalid_quote' });
+                alert(message);
+                return;
+            }
+
+            bookingData.price = Number.parseFloat(response.data.price);
+            bookingData.distance_km = Number.parseFloat(response.data.total_distance_km);
+            bookingData.duration_minutes = Number.parseInt(response.data.duration_minutes, 10);
+            bookingData.language = response.data.booking_locale || wptb_vars.language || 'es';
+            bookingData.quote_verified = true;
+
+            track('begin_checkout', {
+                vehicle_id: bookingData.vehicle_id,
+                value: bookingData.price,
+                currency: 'EUR',
+                trip_type: bookingData.trip_type
+            });
+
+            sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
+            if (wptb_vars.payment_url) {
+                window.location.href = wptb_vars.payment_url;
+            } else {
+                track('booking_error', { error_type: 'payment_url_missing' });
+                alert(t('configuration_error', 'Error de configuración. Contacta con soporte.'));
+            }
+        }).fail(function () {
+            track('booking_error', { error_type: 'quote_connection' });
+            alert(t('connection_error', 'Error de conexión.'));
+        }).always(function () {
+            $confirmButton.prop('disabled', false);
         });
-
-        console.log('✅ Booking complete, redirecting to payment...');
-
-        // Save to sessionStorage
-        sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
-
-        // Redirect to payment page
-        if (wptb_vars && wptb_vars.payment_url) {
-            window.location.href = wptb_vars.payment_url;
-        } else {
-            console.error('Payment URL missing');
-            track('booking_error', { error_type: 'payment_url_missing' });
-            alert(t('configuration_error', 'Error de configuración. Contacta con soporte.'));
-        }
     });
 
     // ===== READ URL PARAMS (for cross-domain redirects from barcelonatourstransfers.com) =====
@@ -1034,7 +1058,6 @@ jQuery(document).ready(function ($) {
         const source = params.get('source');
 
         if (origin && destination && date && time) {
-            console.log('🔗 Booking data found in URL params (source: ' + (source || 'unknown') + ')');
             return {
                 origin: decodeURIComponent(origin),
                 destination: decodeURIComponent(destination),
@@ -1106,7 +1129,6 @@ jQuery(document).ready(function ($) {
 
         if (!isVehiclePage && !isDetailsPage) return; // Not a booking page
 
-        console.log('📄 Initializing booking page. isVehiclePage:', isVehiclePage, '| isDetailsPage:', isDetailsPage);
 
         let savedData = sessionStorage.getItem('wptb_booking_data');
 
@@ -1114,11 +1136,10 @@ jQuery(document).ready(function ($) {
         if (!savedData && isVehiclePage) {
             const urlData = getBookingDataFromUrl();
             if (urlData) {
-                console.log('🔗 Building booking data from URL params:', urlData);
 
                 // Show loading state
                 $('#wptb-step-2').show();
-                $('#vehicles-grid').html('<div class="loading-spinner" style="text-align:center;padding:40px;">' + escapeHtml(t('calculating', 'Calculando...')) + '</div>');
+                $('#vehicles-grid').html('<div class="loading-spinner mt-empty-state">' + escapeHtml(t('calculating', 'Calculando...')) + '</div>');
 
                 calculateDistanceAndLoadVehicles(
                     urlData.origin,
@@ -1131,7 +1152,6 @@ jQuery(document).ready(function ($) {
                         bookingData = urlData;
                         sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
 
-                        console.log('✅ Distance calculated from URL params:', metrics);
 
                         if ($('#wptb-vehicle-summary-route').length) {
                             $('#wptb-vehicle-summary-route').text(bookingData.origin + ' → ' + bookingData.destination + ' (' + bookingData.distance_km + ' km)');
@@ -1161,7 +1181,6 @@ jQuery(document).ready(function ($) {
         }
 
         bookingData = JSON.parse(savedData);
-        console.log('📂 Loaded Data:', bookingData);
 
         // ===== VEHICLE SELECTION PAGE (/seleccionar-vehiculo/) =====
         if (isVehiclePage) {
@@ -1169,7 +1188,6 @@ jQuery(document).ready(function ($) {
                 console.warn('⚠️ No distance_km in bookingData. Cannot load vehicles.');
                 return;
             }
-            console.log('🚗 Vehicle selection page: Loading vehicles...');
             // Always reset vehicle_id so the user can pick fresh
             bookingData.vehicle_id = 0;
             bookingData.vehicle_name = '';

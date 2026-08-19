@@ -1,331 +1,62 @@
 <?php
 /**
- * Template for Checkout
- * Loaded via [wptb_checkout] shortcode
+ * Authoritative Redsys checkout. Payment success is intentionally rendered
+ * only by booking-details.php after HMAC and database-state verification.
  */
 $wptb_i18n = \MeTransfers\Booking\I18n::strings();
 ?>
-<div id="wptb-plugin-container" class="wptb-iso">
-    
-    <!-- PROGRESS BAR -->
-    <div class="progress-bar-container">
-        <div class="progress-bar">
-            <div class="progress-step">
-                <div class="step completed">1</div>
-            </div>
-            <div class="progress-step">
-                <div class="step completed">2</div>
-            </div>
-            <div class="progress-step">
-                <div class="step completed">3</div>
-            </div>
-            <div class="progress-step">
-                <div class="step active">4</div>
-            </div>
-        </div>
-    </div>
+<div id="wptb-plugin-container" class="wptb-iso mt-checkout">
+    <ol class="mt-progress" aria-label="<?php echo esc_attr( $wptb_i18n['secure_payment'] ); ?>">
+        <li class="is-complete">1</li>
+        <li class="is-complete">2</li>
+        <li class="is-complete">3</li>
+        <li class="is-active" aria-current="step">4</li>
+    </ol>
 
-    <!-- Force Styles -->
-    <style>
-        #wptb-plugin-container .wptb-terms-text {
-            color: #333 !important;
-        }
+    <section id="wptb-payment-step" class="mt-checkout__step">
+        <h1 class="mt-checkout__title"><?php echo esc_html( $wptb_i18n['secure_payment'] ); ?></h1>
 
-        #wptb-plugin-container .wptb-terms-link {
-            color: #004B68 !important;
-        }
+        <div class="mt-checkout__layout">
+            <aside class="mt-checkout__summary" aria-label="<?php echo esc_attr( $wptb_i18n['booking_summary'] ); ?>">
+                <h2><?php echo esc_html( $wptb_i18n['booking_summary'] ); ?></h2>
+                <dl>
+                    <div><dt><?php echo esc_html( $wptb_i18n['vehicle'] ); ?></dt><dd id="payment-vehicle">-</dd></div>
+                    <div><dt><?php echo esc_html( $wptb_i18n['type'] ); ?></dt><dd id="payment-trip-type">-</dd></div>
+                    <div><dt><?php echo esc_html( $wptb_i18n['origin'] ); ?></dt><dd id="payment-origin">-</dd></div>
+                    <div><dt><?php echo esc_html( $wptb_i18n['destination'] ); ?></dt><dd id="payment-destination">-</dd></div>
+                    <div><dt><?php echo esc_html( $wptb_i18n['passengers'] ); ?></dt><dd id="payment-passengers">-</dd></div>
+                    <div><dt><?php echo esc_html( $wptb_i18n['date'] ); ?></dt><dd id="payment-date">-</dd></div>
+                    <div id="payment-original-row" class="mt-checkout__discount-row is-hidden"><dt><?php echo esc_html( $wptb_i18n['original_price'] ); ?></dt><dd id="payment-original-price">-</dd></div>
+                    <div id="payment-discount-row" class="mt-checkout__discount-row is-hidden"><dt><?php echo esc_html( $wptb_i18n['discount'] ); ?></dt><dd id="payment-discount-val">-</dd></div>
+                    <div class="mt-checkout__total"><dt><?php echo esc_html( $wptb_i18n['total'] ); ?></dt><dd id="payment-price">EUR 0.00</dd></div>
+                </dl>
+            </aside>
 
-        #wptb-plugin-container .wptb-required-star {
-            color: #FFD700 !important;
-        }
-    </style>
+            <div class="mt-checkout__form-card">
+                <div id="payment-message" class="mt-alert is-hidden" role="alert"></div>
+                <form id="payment-form" action="" method="post">
+                    <div id="map-canvas" class="mt-checkout__map" aria-label="<?php echo esc_attr( $wptb_i18n['trip_summary'] ); ?>"></div>
+                    <img class="mt-checkout__payment-methods" src="<?php echo esc_url( WPTB_PLUGIN_URL . 'assets/images/49alternativo.png' ); ?>" alt="<?php echo esc_attr( $wptb_i18n['payment_methods_alt'] ); ?>">
+                    <div id="payment-element" class="is-hidden"></div>
 
-    <div class="booking-details" style="display: block; width: 100% !important; max-width: 1240px !important; margin: 46px auto 0 !important;">
-        
-        <!-- PAYMENT STEP -->
-        <div id="wptb-payment-step" class="booking-step">
-            <h2 style="color: #004B68 !important; margin-bottom: 20px; font-weight: 800; text-transform: uppercase;">💳 <?php echo esc_html( $wptb_i18n['secure_payment'] ); ?></h2>
-            
-            <div class="booking-layout-wrapper">
-                <!-- SUMMARY SIDEBAR -->
-                <div class="summary-sidebar">
-                    <div class="contact-summary sticky-summary" style="background-color: #003f59 !important; border: 1px solid #004B68 !important; border-radius: 24px !important; padding: 25px !important;">
-                        <h3 style="margin-top:0; color:#ffffff !important; text-transform: uppercase;"><?php echo esc_html( $wptb_i18n['booking_summary'] ); ?></h3>
-                        <p style="color: #fff !important;"><strong><?php echo esc_html( $wptb_i18n['vehicle'] ); ?>:</strong> <span id="payment-vehicle" style="color: #FFD700;">-</span></p>
-                        <p style="color: #fff !important;"><strong><?php echo esc_html( $wptb_i18n['type'] ); ?>:</strong> <span id="payment-trip-type" style="color: #FFD700;">-</span></p>
-                        <p style="color: #fff !important;"><strong><?php echo esc_html( $wptb_i18n['origin'] ); ?>:</strong> <span id="payment-origin" style="color: #FFD700;">-</span></p>
-                        <p style="color: #fff !important;"><strong><?php echo esc_html( $wptb_i18n['destination'] ); ?>:</strong> <span id="payment-destination" style="color: #FFD700;">-</span></p>
-                        <p style="color: #fff !important;"><strong><?php echo esc_html( $wptb_i18n['passengers'] ); ?>:</strong> <span id="payment-passengers" style="color: #FFD700;">-</span></p>
-                        <p style="color: #fff !important;"><strong><?php echo esc_html( $wptb_i18n['date'] ); ?>:</strong> <span id="payment-date" style="color: #FFD700;">-</span></p>
-                        <p id="payment-original-row" style="display:none; color:#999 !important; text-decoration:line-through; font-size: 0.9em;"><strong><?php echo esc_html( $wptb_i18n['original_price'] ); ?>:</strong> <span id="payment-original-price">-</span></p>
-                        <p id="payment-discount-row" style="display:none; color:#27ae60 !important;"><strong><?php echo esc_html( $wptb_i18n['discount'] ); ?>:</strong> <span id="payment-discount-val">-</span></p>
-                        <hr style="margin: 15px 0; border: none; border-top: 1px solid #004B68;">
-                        <h2 style="margin-bottom:0; margin-top:10px; color:#ffffff !important;"><?php echo esc_html( $wptb_i18n['total'] ); ?>: <span id="payment-price" style="color:#FFD700;">EUR 0.00</span></h2>
+                    <div class="mt-terms" id="wptb-terms-wrapper">
+                        <label for="wptb-accept-terms">
+                            <input type="checkbox" id="wptb-accept-terms" name="accept_terms" value="1" required>
+                            <span><?php echo esc_html( $wptb_i18n['terms_prefix'] ); ?> <a href="<?php echo esc_url( \MeTransfers\Booking\I18n::url( '/terminos-y-condiciones/' ) ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $wptb_i18n['terms_link'] ); ?></a> <?php echo esc_html( $wptb_i18n['terms_suffix'] ); ?> *</span>
+                        </label>
+                        <p id="wptb-terms-error" class="mt-alert mt-alert--error is-hidden" role="alert"><?php echo esc_html( $wptb_i18n['terms_required'] ); ?></p>
                     </div>
-                </div>
-                
-                <!-- PAYMENT FORM -->
-                <div class="form-content">
-                    <div id="payment-message" class="payment-message" style="display:none;"></div>
-                    
-                    <form id="payment-form" action="javascript:void(0);" onsubmit="return false;">
-                        <!-- MAP CONTAINER -->
-                        <div id="map-canvas" style="width: 100%; height: 300px; background: #f0f0f0; margin-bottom: 25px; border-radius: 8px; border: 1px solid #ddd;"></div>
-                        
-                        <div style="text-align: center; margin-bottom: 20px;">
-                            <img src="<?php echo esc_url( WPTB_PLUGIN_URL . 'assets/images/49alternativo.png' ); ?>" alt="<?php echo esc_attr( $wptb_i18n['payment_methods_alt'] ); ?>" style="max-height: 50px;">
-                        </div>
 
-                        <div id="payment-element" style="display:none;"></div>
-
-                        <!-- TÉRMINOS Y CONDICIONES -->
-                        <div class="wptb-terms-wrapper" id="wptb-terms-wrapper">
-                            <label class="wptb-terms-label" for="wptb-accept-terms">
-                                <input type="checkbox" id="wptb-accept-terms" name="accept_terms">
-                                <span class="wptb-terms-checkmark"></span>
-                                <span class="wptb-terms-text">
-                                    <?php echo esc_html( $wptb_i18n['terms_prefix'] ); ?> <a href="<?php echo esc_url( \MeTransfers\Booking\I18n::url( '/terminos-y-condiciones/' ) ); ?>" target="_blank" rel="noopener noreferrer" class="wptb-terms-link"><?php echo esc_html( $wptb_i18n['terms_link'] ); ?></a> <?php echo esc_html( $wptb_i18n['terms_suffix'] ); ?> <span class="wptb-required-star">*</span>
-                                </span>
-                            </label>
-                            <p id="wptb-terms-error" class="wptb-terms-error" style="display:none;">⚠ <?php echo esc_html( $wptb_i18n['terms_required'] ); ?></p>
-                        </div>
-
-                        <div class="form-actions" style="background: transparent !important; margin-top: 30px; display: flex; gap: 20px; flex-direction: row !important;">
-                            <button type="button" class="btn-secondary" onclick="window.history.back()" style="background: transparent !important; color: #004B68 !important; border: 2px solid #004B68 !important; border-radius: 24px !important; flex: 1; min-height: 55px; font-weight: 700; text-transform: uppercase;">
-                                <span><?php echo esc_html( $wptb_i18n['back'] ); ?></span>
-                            </button>
-                            <button type="submit" id="submit-payment" class="btn-primary" style="background: #004B68 !important; color: #fff !important; border: 2px solid #004B68 !important; border-radius: 24px !important; flex: 1; min-height: 55px; font-weight: 700; text-transform: uppercase;">
-                                <span id="button-text"><?php echo esc_html( $wptb_i18n['pay'] ); ?></span>
-                                <div class="spinner" id="payment-spinner" style="display:none;"></div>
-                            </button>
-                        </div>
-
-                        <div id="payment-info-header" style="margin-top: 25px; text-align: center;">
-                            <h3 style="color: #FFD700; font-weight: bold; margin: 0; font-size: 13px;"><?php echo esc_html( $wptb_i18n['payment_redirect'] ); ?></h3>
-                        </div>
-                    </form>
-                </div>
+                    <div class="mt-actions">
+                        <button type="button" class="mt-button mt-button--secondary" id="wptb-payment-back"><?php echo esc_html( $wptb_i18n['back'] ); ?></button>
+                        <button type="submit" id="submit-payment" class="mt-button mt-button--primary">
+                            <span id="button-text"><?php echo esc_html( $wptb_i18n['pay'] ); ?></span>
+                            <span class="mt-spinner is-hidden" id="payment-spinner" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    <p id="payment-info-header" class="mt-checkout__redirect-note"><?php echo esc_html( $wptb_i18n['payment_redirect'] ); ?></p>
+                </form>
             </div>
         </div>
-
-        <!-- SUCCESS STEP -->
-        <div id="wptb-payment-success" class="booking-success-dark" style="display: none;">
-            <div class="success-card">
-                <div class="success-header">
-                    <div class="success-check-icon">
-                        <span class="dashicons dashicons-yes-alt"></span>
-                    </div>
-                    <h2><?php echo esc_html( $wptb_i18n['booking_confirmed'] ); ?></h2>
-                    <p class="success-subtitle"><?php echo esc_html( $wptb_i18n['payment_received'] ); ?></p>
-                </div>
-
-                <div class="success-details-grid">
-                    <div class="detail-row">
-                        <span class="d-label"><?php echo esc_html( $wptb_i18n['reference'] ); ?>:</span>
-                        <span class="d-value highlight" id="success-booking-id">#---</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="d-label"><?php echo esc_html( $wptb_i18n['payment_id'] ); ?>:</span>
-                        <span class="d-value small-code" id="success-payment-id">---</span>
-                    </div>
-                    <hr class="separator">
-                    <div class="detail-row">
-                        <span class="d-label"><?php echo esc_html( $wptb_i18n['vehicle'] ); ?>:</span>
-                        <span class="d-value" id="success-vehicle">---</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="d-label"><?php echo esc_html( $wptb_i18n['date'] ); ?>:</span>
-                        <span class="d-value" id="success-date">---</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="d-label"><?php echo esc_html( $wptb_i18n['origin'] ); ?>:</span>
-                        <span class="d-value" id="success-origin">---</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="d-label"><?php echo esc_html( $wptb_i18n['destination'] ); ?>:</span>
-                        <span class="d-value" id="success-destination">---</span>
-                    </div>
-                    <div class="detail-row total-row">
-                        <span class="d-label"><?php echo esc_html( $wptb_i18n['total_paid'] ); ?>:</span>
-                        <span class="d-value total-price" id="success-price">---</span>
-                    </div>
-                </div>
-
-                <div class="success-actions">
-                    <button id="btn-download-pdf" class="btn-pdf">
-                        <span class="dashicons dashicons-pdf"></span> <?php echo esc_html( $wptb_i18n['download_receipt'] ); ?>
-                    </button>
-                    <a href="<?php echo esc_url( \MeTransfers\Booking\I18n::url( '/' ) ); ?>" class="btn-home"><?php echo esc_html( $wptb_i18n['back_home'] ); ?></a>
-                </div>
-            </div>
-        </div>
-
-    </div>
+    </section>
 </div>
-
-<style>
-/* New Dark Success Theme */
-.booking-success-dark {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-    background: #1a1a1a; /* Dark Background */
-    border-radius: 12px;
-    color: #fff;
-    min-height: 400px;
-}
-
-.success-card {
-    background: #252525;
-    width: 100%;
-    max-width: 500px;
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    text-align: center;
-    border: 1px solid #333;
-}
-
-.success-header {
-    margin-bottom: 25px;
-}
-
-.success-check-icon {
-    width: 60px;
-    height: 60px;
-    background: #27ae60;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 15px;
-}
-
-.success-check-icon .dashicons {
-    color: #fff;
-    font-size: 36px;
-    width: 36px;
-    height: 36px;
-}
-
-.success-header h2 {
-    color: #fff;
-    font-size: 24px;
-    margin: 0 0 5px 0;
-}
-
-.success-subtitle {
-    color: #aaa;
-    font-size: 14px;
-    margin: 0;
-}
-
-.success-details-grid {
-    background: #1e1e1e;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 25px;
-    text-align: left;
-}
-
-.detail-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    font-size: 14px;
-}
-
-.detail-row:last-child {
-    margin-bottom: 0;
-}
-
-.d-label {
-    color: #888;
-}
-
-.d-value {
-    color: #fff;
-    font-weight: 500;
-}
-
-.d-value.highlight {
-    color: #FFD700;
-    font-weight: bold;
-}
-
-.d-value.small-code {
-    font-family: monospace;
-    color: #bbb;
-}
-
-.separator {
-    border: 0;
-    border-top: 1px solid #333;
-    margin: 15px 0;
-}
-
-.total-row {
-    font-size: 16px;
-    margin-top: 5px;
-}
-
-.total-row .d-value {
-    color: #27ae60;
-    font-weight: bold;
-    font-size: 18px;
-}
-
-.success-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.btn-pdf, .btn-home {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    text-align: center;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.btn-pdf {
-    background: #0056b3;
-    color: #fff;
-    border: none;
-}
-
-.btn-pdf:hover {
-    background: #004494;
-}
-
-.btn-home {
-    background: transparent;
-    color: #ccc;
-    border: 1px solid #555;
-}
-
-.btn-home:hover {
-    background: #333;
-    color: #fff;
-    text-decoration: none;
-}
-
-@media (max-width: 480px) {
-    .booking-success-dark {
-        padding: 20px 10px;
-    }
-    .success-card {
-        padding: 20px;
-    }
-}
-</style>

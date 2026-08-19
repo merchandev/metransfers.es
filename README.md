@@ -13,6 +13,7 @@ Plataforma WordPress integrada para la web, reservas de traslados, pricing, pago
 ```text
 app/
 ├── Admin/                 Menú administrativo unificado
+├── Analytics/             Outbox idempotente para conversiones financieras
 ├── Booking/               Shortcodes, rutas, i18n y flujo de reserva
 ├── Core/                  Bootstrap, assets, settings y migraciones
 ├── Payments/Redsys/       Generación y verificación de pagos
@@ -58,15 +59,25 @@ define( 'MT_SMTP_PORT', 587 );
 define( 'MT_SMTP_ENCRYPTION', 'tls' );
 define( 'MT_SMTP_FROM', '...' );
 define( 'MT_SMTP_FROM_NAME', 'MeTransfers' );
+
+define( 'MT_GA4_MEASUREMENT_ID', 'G-...' );
+define( 'MT_GA4_API_SECRET', '...' );
+
+// Solo después de completar y documentar cada acción externa:
+define( 'MT_REDSYS_CREDENTIALS_ROTATED_AT', '2026-08-19T12:00:00+02:00' );
+define( 'MT_SMTP_CREDENTIALS_ROTATED_AT', '2026-08-19T12:00:00+02:00' );
+define( 'MT_MAPS_CREDENTIALS_ROTATED_AT', '2026-08-19T12:00:00+02:00' );
+define( 'MT_REDSYS_SANDBOX_VERIFIED_AT', '2026-08-19T12:00:00+02:00' );
 ```
 
 La clave Maps pública debe restringirse por dominio. La clave de servidor debe restringirse por IP y por API. Las credenciales Redsys/SMTP deben rotarse antes de producción si estuvieron presentes en commits antiguos.
+El gateway bloquea el endpoint Live mientras falte cualquiera de las cuatro attestaciones anteriores; las fechas son evidencia operativa y no deben inventarse.
 
 ## Instalación y migraciones
 
 1. Desplegar el contenido como el tema activo de staging.
 2. Crear las constantes en `wp-config.php` o configurar sus opciones desde **MeTransfers → Ajustes generales**.
-3. Cargar una página administrativa una vez para ejecutar la migración versionada.
+3. La migración versionada se ejecuta automáticamente en `init` y `admin_init`; comprobar sus logs tras el primer request.
 4. Revisar `wp_options.mt_platform_db_version`; la versión esperada está definida por `MT_PLATFORM_DB_VERSION`.
 5. Verificar el estado con `php tools/migration-status.php` dentro de un entorno WordPress cargado.
 
@@ -79,6 +90,7 @@ find . -path ./vendor -prune -o -type f -name "*.php" -print0 | xargs -0 -n1 php
 php tests/test-legacy-load.php
 php tests/test-pricing.php
 php tests/test-route-distance.php
+php tests/test-booking-policies.php
 php tests/test-redsys-gateway.php
 php tests/test-i18n.php
 php tests/test-production-readiness.php
@@ -90,12 +102,14 @@ GitHub Actions repite estas verificaciones y añade controles de BOM/mojibake, p
 ## Flujo de reservas y pagos
 
 1. El navegador captura ruta, fecha y preferencias.
-2. El servidor recalcula distancia, duración, capacidad y precio.
-3. Redsys recibe un importe derivado exclusivamente del servidor.
-4. La Return URL exige un token HMAC ligado a la orden y solo presenta el estado; nunca confirma el pago.
-5. El IPN valida firma, comercio, terminal, moneda, orden e importe antes de marcar la reserva como pagada.
-6. Las notificaciones repetidas son idempotentes.
-7. El evento analítico `purchase` se emite únicamente cuando la plantilla confirma `paid` y `confirmed/completed` desde la base de datos.
+2. El servidor valida área operativa, fecha, antelación y orden cronológico de la vuelta.
+3. `/quote` calcula distancia, duración y precio autoritativos; el pago vuelve a validarlos.
+4. El servidor exige y persiste versión y fecha de aceptación de los términos.
+5. Redsys recibe un importe derivado exclusivamente del servidor.
+6. La Return URL exige un token HMAC ligado a la orden y solo presenta el estado; nunca confirma el pago.
+7. El IPN valida firma, comercio, terminal, moneda, orden e importe antes de marcar la reserva como pagada.
+8. Un único `NotificationService` envía email localizado y una sola alerta WhatsApp.
+9. El IPN registra `purchase` en un outbox único por reserva; el navegador conserva el evento de confirmación como señal complementaria.
 
 ## Assets, idiomas y analítica
 
@@ -105,12 +119,12 @@ Los assets se cargan por fase:
 - vehículos: booking;
 - detalles: booking y Maps;
 - pago: Redsys y Maps;
-- confirmación: Redsys; jsPDF se descarga solo al solicitar el recibo;
+- confirmación: estilos de estado y Redsys; jsPDF se descarga solo al solicitar el recibo;
 - Hotel/Transfers Premium: solo en su contexto.
 
-El booking incluye catálogo español e inglés sin dependencia externa. Los demás idiomas utilizan `mt_translate_batch()` cuando Google Cloud Translation está configurado. Las URLs internas conservan el prefijo de idioma.
+El booking incluye catálogo español e inglés sin dependencia externa. En los demás idiomas, el frontend lee exclusivamente traducciones pre-generadas desde caché/DB. La llamada remota solo se permite desde **Ajustes → Traducción MT → Pre-generar catálogo booking**. Las URLs internas conservan el prefijo de idioma y los idiomas fuera de `MT_SEO_LANGS` usan `noindex,follow`.
 
-Los eventos disponibles en `dataLayer` son `booking_start`, `route_search`, `vehicle_select`, `begin_checkout`, `add_payment_info`, `generate_lead`, `purchase`, `click_whatsapp`, `click_phone`, `booking_error` y `payment_error`. No se envía PII en estos eventos.
+Los eventos disponibles en `dataLayer` son `booking_start`, `route_search`, `vehicle_select`, `begin_checkout`, `add_payment_info`, `generate_lead`, `purchase`, `click_whatsapp`, `click_phone`, `booking_error` y `payment_error`. Teléfono y WhatsApp se capturan globalmente mediante un script mínimo. No se envía PII. Con `MT_GA4_MEASUREMENT_ID` y `MT_GA4_API_SECRET`, el cron despacha conversiones financieras desde el outbox de servidor.
 
 ## Validación de staging
 

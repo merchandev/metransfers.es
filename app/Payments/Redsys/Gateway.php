@@ -2,6 +2,7 @@
 namespace MeTransfers\Payments\Redsys;
 
 use MeTransfers\Core\Settings;
+use MeTransfers\Core\ReleaseGate;
 
 class Gateway {
     private $merchant_code;
@@ -19,7 +20,14 @@ class Gateway {
     }
 
     public function is_configured() {
-        return !empty($this->merchant_code) && !empty($this->secret_key);
+        $credentials = ! empty( $this->merchant_code ) && ! empty( $this->secret_key );
+        if ( ! $credentials ) {
+            return false;
+        }
+        if ( in_array( $this->environment, array( 'live', 'production' ), true ) ) {
+            return ReleaseGate::redsysLiveReady();
+        }
+        return true;
     }
     
     public function generate_payment_form($booking_id, $amount_cents, $order_id, $customer_name, $language = 'es') {

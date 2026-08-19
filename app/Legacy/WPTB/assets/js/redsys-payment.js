@@ -3,7 +3,6 @@
     'use strict';
 
     $(document).ready(function () {
-        console.log('🔐 Redsys Payment v1.2 - Initialized (Scoped)');
 
         const paymentStrings = (typeof wptb_vars !== 'undefined' && wptb_vars.strings) ? wptb_vars.strings : {};
 
@@ -32,7 +31,6 @@
 
         if (isSuccessfulReturn) {
             // Force hide other steps if we are on the main booking form
-            console.log('✅ Redsys Return Detected: Showing Success Screen');
             $('.booking-form, .booking-vehicle-selection, #wptb-step-1, #wptb-step-2, #wptb-step-3').hide();
         }
 
@@ -72,15 +70,17 @@
         // Explicitly handle click to avoid form submit issues
         $('#submit-payment').off('click').on('click', function (e) {
             e.preventDefault();
-            console.log('👆 Payment button clicked');
             initiateRedsysPayment(bookingData);
         });
 
         // Also bind form submit just in case
         $('#payment-form').off('submit').on('submit', function (e) {
             e.preventDefault();
-            console.log('📝 Payment form submitted');
             initiateRedsysPayment(bookingData);
+        });
+
+        $('#wptb-payment-back').off('click').on('click', function () {
+            window.history.back();
         });
 
         // ===== FUNCTIONS =====
@@ -161,7 +161,6 @@
                 return;
             }
 
-            console.log('🗺️ Rendering Map for:', data.origin, '->', data.destination);
 
             const mapElement = document.getElementById('map-canvas');
             const mapOptions = {
@@ -195,7 +194,6 @@
         }
 
         function initiateRedsysPayment(bookingData) {
-            console.log('🔄 Initiating Redsys Payment...');
 
             const $terms = $('#wptb-accept-terms');
             if ($terms.length && !$terms.is(':checked')) {
@@ -207,6 +205,9 @@
             setLoading(true);
 
             bookingData.language = (typeof wptb_vars !== 'undefined' && wptb_vars.language) ? wptb_vars.language : 'es';
+            bookingData.terms_accepted = true;
+            bookingData.terms_version = wptb_vars.terms_version || '';
+            bookingData.analytics_client_id = typeof window.mtAnalyticsClientId === 'function' ? window.mtAnalyticsClientId() : '';
             track('add_payment_info', {
                 payment_type: 'redsys',
                 vehicle_id: bookingData.vehicle_id,
@@ -224,7 +225,6 @@
                     security: wptb_vars.nonce
                 },
                 success: function (response) {
-                    console.log('📥 Redsys Response:', response);
 
                     if (!response.success) {
                         const errorCode = response.data && response.data.code ? response.data.code : 'gateway_initialization';
@@ -271,7 +271,6 @@
 
             $('body').append(form);
 
-            console.log('🚀 Submitting form to Redsys...');
             form.submit();
         }
 

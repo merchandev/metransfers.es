@@ -40,13 +40,13 @@ $wptb_i18n = \MeTransfers\Booking\I18n::strings();
 
         <input type="hidden" id="wptb-region-context<?php echo esc_attr( $suffix ); ?>" name="region_context" value="">
 
-        <button type="submit" id="submitBtn<?php echo esc_attr( $suffix ); ?>" onclick="event.preventDefault(); jQuery(this).closest('form').trigger('submit');" class="wptb-main-search-submit" style="background: #004B68 !important; color: #fff !important; border: 2px solid #004B68 !important; border-radius: 24px !important; width: 100%; min-height: 55px; font-weight: 700; text-transform: uppercase;">
+        <button type="submit" id="submitBtn<?php echo esc_attr( $suffix ); ?>" class="wptb-main-search-submit mt-button mt-button--primary">
             <?php echo esc_html( $wptb_i18n['search_vehicles'] ); ?>
         </button>
     </form>
 </div>
 
-<div id="wptb-step-2" class="booking-vehicle-selection wptb-panel wptb-vehicle-panel" style="display:none;">
+<div id="wptb-step-2" class="booking-vehicle-selection wptb-panel wptb-vehicle-panel is-hidden">
     <div class="progress-bar wptb-progress">
         <div class="wptb-progress-line" aria-hidden="true"></div>
         <div class="progress-step"><div class="step completed">1</div></div>
@@ -64,5 +64,5 @@ $wptb_i18n = \MeTransfers\Booking\I18n::strings();
         <!-- Vehicles will be loaded via AJAX -->
     </div>
 
-    <button type="button" id="wptb-back-step2<?php echo esc_attr( $suffix ); ?>" class="secondary-btn wptb-back-search-btn" style="background: transparent !important; color: #004B68 !important; border: 2px solid #004B68 !important; border-radius: 24px !important; width: 100%; min-height: 55px; font-weight: 700; margin-top: 20px; text-transform: uppercase;"><?php echo esc_html( $wptb_i18n['change_search'] ); ?></button>
+    <button type="button" id="wptb-back-step2<?php echo esc_attr( $suffix ); ?>" class="secondary-btn wptb-back-search-btn mt-button mt-button--secondary"><?php echo esc_html( $wptb_i18n['change_search'] ); ?></button>
 </div>

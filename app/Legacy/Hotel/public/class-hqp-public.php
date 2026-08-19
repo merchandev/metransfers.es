@@ -271,6 +271,18 @@ class HQP_Public {
         
         $origin = sanitize_text_field( $data['origin'] );
         $destination = sanitize_text_field( $data['destination'] );
+
+        $language = \MeTransfers\Booking\I18n::language();
+        $date_policy = \MeTransfers\Booking\BookingDatePolicy::validate( $date, $time );
+        if ( empty( $date_policy['valid'] ) ) {
+            wp_send_json_error( array( 'message' => $date_policy['error'] ) );
+            return;
+        }
+        $area_policy = \MeTransfers\Booking\ServiceAreaPolicy::validateRoute( $origin, $destination );
+        if ( empty( $area_policy['valid'] ) ) {
+            wp_send_json_error( array( 'message' => $area_policy['error'] ) );
+            return;
+        }
         
         $distance_km = 0;
         $duration_minutes = 0;
@@ -298,11 +310,12 @@ class HQP_Public {
             'trip_type'      => 'one_way',
             'status'         => 'pending_payment',
             'payment_method' => 'redsys',
+            'booking_locale' => $language,
             'created_at'     => current_time( 'mysql' ),
             'hotel_token'    => get_post_meta( $hotel_id, '_hqp_token', true ),
         );
 
-        $format_db = array( '%s', '%s', '%s', '%s', '%f', '%d', '%f', '%s', '%s', '%s', '%d', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s' );
+        $format_db = array( '%s', '%s', '%s', '%s', '%f', '%d', '%f', '%s', '%s', '%s', '%d', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s' );
 
         $result = $wpdb->insert( $table_name, $booking_data, $format_db );
         $booking_id = $wpdb->insert_id;
@@ -342,7 +355,6 @@ class HQP_Public {
                 if ( $booking_obj ) {
                     $wptb_public = new WPTB_Public();
                     $wptb_public->process_booking_notifications( $booking_id, $booking_obj );
-                    $wptb_public->send_whatsapp_alert( $booking_id, $booking_obj );
                 }
             }
 

@@ -37,6 +37,10 @@ class WPTB_Activator {
             payment_method varchar(50),
             payment_intent_id varchar(255),
             payment_status varchar(20) DEFAULT 'pending',
+            booking_locale varchar(10) DEFAULT 'es',
+            terms_accepted_at datetime DEFAULT NULL,
+            terms_version varchar(50) DEFAULT NULL,
+            analytics_client_id varchar(100) DEFAULT NULL,
             hotel_token varchar(255),
             source varchar(50) DEFAULT 'Metransfers',
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
@@ -44,12 +48,35 @@ class WPTB_Activator {
             KEY vehicle_id (vehicle_id),
             KEY booking_date (booking_date),
             KEY status (status),
+            KEY status_booking_date (status, booking_date),
+            KEY payment_status_created_at (payment_status, created_at),
+            KEY vehicle_booking_date (vehicle_id, booking_date),
             KEY payment_intent_id (payment_intent_id),
             KEY hotel_token (hotel_token),
             KEY origin (origin(50)),
             KEY destination (destination(50))
         ) $charset_collate;";
         dbDelta( $sql_bookings );
+
+        // Durable analytics outbox. Financial conversions are recorded by the
+        // payment callback even when the customer never returns to the browser.
+        $table_analytics = $wpdb->prefix . 'mt_analytics_outbox';
+        $sql_analytics = "CREATE TABLE $table_analytics (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            event_name varchar(50) NOT NULL,
+            event_key varchar(191) NOT NULL,
+            payload longtext NOT NULL,
+            attempts smallint unsigned NOT NULL DEFAULT 0,
+            status varchar(20) NOT NULL DEFAULT 'pending',
+            last_error text,
+            locked_at datetime DEFAULT NULL,
+            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            sent_at datetime DEFAULT NULL,
+            PRIMARY KEY  (id),
+            UNIQUE KEY event_key (event_key),
+            KEY status_created_at (status, created_at)
+        ) $charset_collate;";
+        dbDelta( $sql_analytics );
 
         // Asegurar que el AUTO_INCREMENT inicia en 10000 (IDs para Getnet siempre >= 10000)
         $max_id = (int) $wpdb->get_var( "SELECT MAX(id) FROM $table_bookings" );

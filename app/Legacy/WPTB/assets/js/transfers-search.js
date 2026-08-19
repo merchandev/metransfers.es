@@ -395,7 +395,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     destinationInput.dataset.wptbAutocompleteInitialized = '1';
                 }
 
-                console.log('[PTS] Google Maps + Autocomplete listos para inputs');
             })
             .catch((error) => {
                 console.error('[PTS] Google Maps bootstrap is not available:', error.message);
@@ -449,7 +448,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         document.getElementById('pts-destination-exact').focus();
                     }, 300);
 
-                    console.log(`[PTS] Modal opened for: ${name}`);
                 }
             }
         });

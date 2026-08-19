@@ -1,6 +1,6 @@
 <?php $wptb_i18n = \MeTransfers\Booking\I18n::strings(); ?>
 <!-- Premium Transfers Modal - Mismo estilo que WPTB Modal -->
-<div id="pts-booking-modal" class="wptb-modal-overlay" style="display: none !important;">
+<div id="pts-booking-modal" class="wptb-modal-overlay is-hidden">
     <div class="wptb-modal-content wptb-modal-large">
         <button type="button" id="pts-modal-close" class="wptb-modal-close">×</button>
         <h2 class="wptb-modal-title"><?php echo esc_html( $wptb_i18n['book_transfer'] ); ?></h2>
@@ -23,14 +23,14 @@
                         </div>
 
                         <!-- Origen (siempre Barcelona) -->
-                        <div class="floating-label wptb-origin-wrapper" style="position: relative;">
+                        <div class="floating-label wptb-origin-wrapper">
                             <input type="text" id="pts-origin" name="origin" placeholder=" " value="Barcelona, España" readonly autocomplete="off">
                             <label for="pts-origin"><?php echo esc_html( $wptb_i18n['origin'] ); ?></label>
                         </div>
 
                         <!-- Destination Region (Read-only, pre-filled) -->
                         <div class="floating-label">
-                            <input type="text" id="pts-destination-display" name="destination_display" placeholder=" " readonly style="cursor: not-allowed;">
+                            <input type="text" id="pts-destination-display" class="is-readonly" name="destination_display" placeholder=" " readonly>
                             <label for="pts-destination-display"><?php echo esc_html( $wptb_i18n['destination_region'] ); ?></label>
                         </div>
 
@@ -43,12 +43,12 @@
                         <!-- Hidden field to store region context for backend -->
                         <input type="hidden" id="pts-region-context" name="region_context" value="">
 
-                        <button type="submit" id="pts-submitBtn" onclick="event.preventDefault(); jQuery(this).closest('form').trigger('submit');" style="background: #004B68 !important; color: #fff !important; border: 2px solid #004B68 !important; border-radius: 24px !important; width: 100%; min-height: 55px; font-weight: 700; text-transform: uppercase;"><?php echo esc_html( $wptb_i18n['search_vehicles'] ); ?></button>
+                        <button type="submit" id="pts-submitBtn" class="mt-button mt-button--primary"><?php echo esc_html( $wptb_i18n['search_vehicles'] ); ?></button>
                     </form>
                 </div>
 
                 <!-- Step 2: Vehicle Selection (para futuro) -->
-                <div id="pts-step-2" class="booking-vehicle-selection" style="display:none;">
+                <div id="pts-step-2" class="booking-vehicle-selection is-hidden">
                     <div class="progress-bar">
                         <div class="step completed">1</div>
                         <p><?php echo esc_html( $wptb_i18n['search'] ); ?></p>
@@ -69,7 +69,7 @@
                         <!-- Vehicles will be loaded via AJAX -->
                     </div>
 
-                    <button type="button" id="pts-back-step2" class="secondary-btn" style="background: transparent !important; color: #004B68 !important; border: 2px solid #004B68 !important; border-radius: 24px !important; width: 100%; min-height: 55px; font-weight: 700; margin-top: 20px; text-transform: uppercase;">
+                    <button type="button" id="pts-back-step2" class="secondary-btn mt-button mt-button--secondary">
                         <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
                         <?php echo esc_html( $wptb_i18n['change_search'] ); ?>
                     </button>
@@ -77,9 +77,9 @@
             </div>
 
             <!-- Step 2: Vehicle Selection (Inside Modal) -->
-            <div id="pts-modal-step-2" class="wptb-modal-step" style="display:none;">
+            <div id="pts-modal-step-2" class="wptb-modal-step is-hidden">
                 <div class="wptb-modal-step-header">
-                    <button type="button" id="pts-modal-back" class="wptb-back-btn" style="background: transparent !important; color: #004B68 !important; border: 2px solid #004B68 !important; border-radius: 24px !important; min-height: 55px; font-weight: 700; padding: 0 20px; text-transform: uppercase;">
+                    <button type="button" id="pts-modal-back" class="wptb-back-btn mt-button mt-button--secondary">
                         <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
                         <?php echo esc_html( $wptb_i18n['back'] ); ?>
                     </button>
