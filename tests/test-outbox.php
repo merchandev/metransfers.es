@@ -138,10 +138,14 @@ assert_outbox(
 
 $admin_controller = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-admin.php' );
 $resend_start = strpos( $admin_controller, 'public function resend_booking_email()' );
-$resend_end = strpos( $admin_controller, 'public function delete_single_booking', $resend_start );
+$resend_end = strpos( $admin_controller, 'public function resend_booking_whatsapp', $resend_start );
 $resend = substr( $admin_controller, $resend_start, $resend_end - $resend_start );
 assert_outbox( false !== strpos( $resend, 'NotificationService::sendEmails' ), 'Manual email resend must call the email-only API.' );
 assert_outbox( false === strpos( $resend, 'process_booking_notifications' ), 'Manual email resend must not call the multi-channel facade.' );
 assert_outbox( false === strpos( $resend, 'sendWhatsapp' ), 'Manual email resend must not resend WhatsApp.' );
+$whatsapp_end = strpos( $admin_controller, 'public function delete_single_booking', $resend_end );
+$whatsapp_resend = substr( $admin_controller, $resend_end, $whatsapp_end - $resend_end );
+assert_outbox( false !== strpos( $whatsapp_resend, 'NotificationService::sendWhatsapp' ), 'Manual WhatsApp resend must use the channel-only API.' );
+assert_outbox( false === strpos( $whatsapp_resend, 'sendEmails' ), 'Manual WhatsApp resend must not resend email.' );
 
 echo "Generic outbox tests passed.\n";

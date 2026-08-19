@@ -15,11 +15,11 @@ final class NotificationService {
     }
 
     public static function sendWhatsapp( $booking_id, $booking ) {
-        $api_key = (string) get_option( 'wptb_whatsapp_apikey', '' );
+        $api_key = (string) Settings::get( 'whatsapp_api_key', '' );
         if ( '' === $api_key ) {
             return true;
         }
-        $phone = preg_replace( '/\s+/', '', (string) get_option( 'wptb_admin_phone_notifications', '' ) );
+        $phone = preg_replace( '/\s+/', '', (string) Settings::get( 'whatsapp_admin_phone', '' ) );
         if ( '' === $phone ) {
             return false;
         }

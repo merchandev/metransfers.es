@@ -6,6 +6,7 @@ class WPTB_Admin {
         // Handle AJAX status updates
         add_action( 'wp_ajax_wptb_update_status', array( $this, 'update_booking_status' ) );
         add_action( 'wp_ajax_wptb_resend_email', array( $this, 'resend_booking_email' ) );
+        add_action( 'wp_ajax_wptb_resend_whatsapp', array( $this, 'resend_booking_whatsapp' ) );
         add_action( 'wp_ajax_wptb_delete_single_booking', array( $this, 'delete_single_booking' ) );
         add_action( 'wp_ajax_wptb_delete_date_range_bookings', array( $this, 'delete_date_range_bookings' ) );
         add_action( 'wp_ajax_wptb_delete_backup_file', array( $this, 'delete_backup_file' ) );
@@ -13,6 +14,7 @@ class WPTB_Admin {
         
         add_action( 'admin_post_wptb_view_receipt', array( $this, 'view_booking_receipt' ) );
         add_action( 'admin_post_wptb_export_excel', array( $this, 'export_bookings_excel' ) );
+        add_filter( 'option_page_capability_wptb_settings_group', array( $this, 'settings_capability' ) );
         
         // Highlight Main Menu Item (Green Darker)
         add_action('admin_head', function() {
@@ -37,7 +39,7 @@ class WPTB_Admin {
         add_menu_page(
             'Metransfers', 
             'Metransfers', 
-            'manage_options', 
+            \MeTransfers\Admin\Capabilities::MANAGE_BOOKINGS,
             'wptb-reservas',  // Changed to point to reservas
             array( $this, 'display_bookings_page' ), 
             'dashicons-car', 
@@ -49,7 +51,7 @@ class WPTB_Admin {
             'wptb-reservas',
             'Reservas',
             'Reservas',
-            'manage_options',
+            \MeTransfers\Admin\Capabilities::MANAGE_BOOKINGS,
             'wptb-reservas',  // Same slug as parent
             array( $this, 'display_bookings_page' )
         );
@@ -59,7 +61,7 @@ class WPTB_Admin {
             'wptb-reservas',
             'Todos los Destinos',
             'Todos los Destinos',
-            'manage_options',
+            \MeTransfers\Admin\Capabilities::MANAGE_VEHICLES,
             'edit.php?post_type=wptb_destination'  // Link to CPT
         );
 
@@ -68,7 +70,7 @@ class WPTB_Admin {
             'wptb-reservas',
             'Vehículos',
             'Vehículos',
-            'manage_options',
+            \MeTransfers\Admin\Capabilities::MANAGE_VEHICLES,
             'wptb-vehicles',
             array( $this, 'display_vehicles_page' )
         );
@@ -78,7 +80,7 @@ class WPTB_Admin {
             'wptb-reservas',
             'Configuración',
             'Configuración',
-            'manage_options',
+            \MeTransfers\Admin\Capabilities::MANAGE_INTEGRATIONS,
             'wptb-settings',
             array( $this, 'display_settings_page' )
         );
@@ -88,7 +90,7 @@ class WPTB_Admin {
             'wptb-reservas',
             'Progreso',
             'Progreso',
-            'manage_options',
+            \MeTransfers\Admin\Capabilities::VIEW_STATS,
             'wptb-stats',
             array( $this, 'display_stats_page' )
         );
@@ -117,7 +119,7 @@ class WPTB_Admin {
         // Notifications
         register_setting( 'wptb_settings_group', 'wptb_admin_email_notifications', array( 'sanitize_callback' => 'sanitize_email' ) );
         register_setting( 'wptb_settings_group', 'wptb_admin_phone_notifications', array( 'sanitize_callback' => 'sanitize_text_field' ) );
-        register_setting( 'wptb_settings_group', 'wptb_whatsapp_apikey', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+        register_setting( 'wptb_settings_group', 'wptb_whatsapp_apikey', array( 'sanitize_callback' => array( $this, 'sanitize_whatsapp_api_key' ) ) );
         // Removed: price_per_km and base_price - now configured per vehicle
     }
 
@@ -136,6 +138,15 @@ class WPTB_Admin {
         return '' !== $value ? $value : get_option( 'wptb_smtp_password', '' );
     }
 
+    public function sanitize_whatsapp_api_key( $value ) {
+        $value = sanitize_text_field( $value );
+        return '' !== $value ? $value : get_option( 'wptb_whatsapp_apikey', '' );
+    }
+
+    public function settings_capability() {
+        return \MeTransfers\Admin\Capabilities::MANAGE_INTEGRATIONS;
+    }
+
     public function sanitize_redsys_environment( $value ) {
         return 'live' === $value ? 'live' : 'test';
     }
@@ -147,7 +158,7 @@ class WPTB_Admin {
     public function update_booking_status() {
         check_ajax_referer( 'wptb_status_nonce', 'security' );
 
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_BOOKINGS ) ) {
             wp_send_json_error( 'No tienes permisos.' );
         }
 
@@ -169,6 +180,7 @@ class WPTB_Admin {
         );
 
         if ( $updated !== false ) {
+            \MeTransfers\Admin\AuditLog::record( 'booking.status_updated', 'booking', $id, array( 'status' => $status ) );
             wp_send_json_success( 'Estado actualizado.' );
         } else {
             wp_send_json_error( 'Error al actualizar.' );
@@ -177,7 +189,7 @@ class WPTB_Admin {
 
     public function resend_booking_email() {
         check_ajax_referer( 'wptb_status_nonce', 'security' );
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_NOTIFICATIONS ) ) {
             wp_send_json_error( 'Sin permisos.' );
         }
 
@@ -198,20 +210,52 @@ class WPTB_Admin {
             $result = \MeTransfers\Notifications\NotificationService::sendEmails( $id, $booking, $notification_status );
             
             if ( $result === true ) {
+                \MeTransfers\Admin\AuditLog::record( 'notification.email_resent', 'booking', $id, array( 'channel' => 'email', 'status' => $notification_status ) );
                 wp_send_json_success( 'Emails reenviados. WhatsApp no se ha reenviado.' );
             } else {
-                // Return exact error from SMTP
-                $error_msg = is_string($result) ? $result : 'Error desconocido';
-                wp_send_json_error( "SMTP Error: $error_msg" );
+                \MeTransfers\Admin\AuditLog::record( 'notification.email_failed', 'booking', $id, array( 'channel' => 'email', 'status' => $notification_status ) );
+                wp_send_json_error( 'No se pudieron reenviar los emails. Revisa la configuración y el registro de auditoría.' );
             }
-        } catch ( Exception $e ) {
-            wp_send_json_error( $e->getMessage() );
+        } catch ( Throwable $e ) {
+            \MeTransfers\Admin\AuditLog::record( 'notification.email_failed', 'booking', $id, array( 'channel' => 'email', 'status' => $notification_status ) );
+            wp_send_json_error( 'No se pudieron reenviar los emails.' );
         }
+    }
+
+    public function resend_booking_whatsapp() {
+        check_ajax_referer( 'wptb_status_nonce', 'security' );
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_NOTIFICATIONS ) ) {
+            wp_send_json_error( 'Sin permisos.' );
+        }
+
+        $id = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'wptb_bookings';
+        $booking = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $id ) );
+        if ( ! $booking ) {
+            wp_send_json_error( 'Reserva no encontrada.' );
+        }
+        if ( 'paid' !== (string) $booking->payment_status
+            || ! in_array( (string) $booking->status, array( 'confirmed', 'completed' ), true ) ) {
+            wp_send_json_error( 'WhatsApp solo puede reenviarse para una reserva pagada y confirmada.' );
+        }
+
+        $sent = \MeTransfers\Notifications\NotificationService::sendWhatsapp( $id, $booking );
+        \MeTransfers\Admin\AuditLog::record(
+            $sent ? 'notification.whatsapp_resent' : 'notification.whatsapp_failed',
+            'booking',
+            $id,
+            array( 'channel' => 'whatsapp', 'result' => $sent ? 'sent' : 'failed' )
+        );
+        if ( $sent ) {
+            wp_send_json_success( 'WhatsApp reenviado.' );
+        }
+        wp_send_json_error( 'No se pudo reenviar WhatsApp.' );
     }
 
     public function delete_single_booking() {
         check_ajax_referer( 'wptb_delete_single_nonce', 'security' );
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_BOOKINGS ) ) {
             wp_send_json_error( 'No tienes permisos suficientes.' );
         }
 
@@ -225,6 +269,7 @@ class WPTB_Admin {
         $deleted = $wpdb->delete( $table_name, array( 'id' => $id ), array( '%d' ) );
 
         if ( $deleted !== false ) {
+            \MeTransfers\Admin\AuditLog::record( 'booking.deleted', 'booking', $id );
             wp_send_json_success( 'Reserva eliminada.' );
         } else {
             wp_send_json_error( 'Error en la base de datos al eliminar.' );
@@ -234,7 +279,7 @@ class WPTB_Admin {
     public function check_recent_backup() {
         check_ajax_referer( 'wptb_delete_single_nonce', 'security' );
 
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_BOOKINGS ) ) {
             wp_send_json_error();
         }
 
@@ -258,7 +303,7 @@ class WPTB_Admin {
 
     public function delete_date_range_bookings() {
         check_ajax_referer( 'wptb_delete_all_nonce', 'security' );
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_BOOKINGS ) ) {
             wp_send_json_error( array('message' => 'No tienes permisos suficientes.') );
         }
 
@@ -278,6 +323,7 @@ class WPTB_Admin {
         ) );
 
         if ( $deleted !== false ) {
+            \MeTransfers\Admin\AuditLog::record( 'booking.range_deleted', 'booking', 0, array( 'start_date' => $start, 'end_date' => $end, 'count' => (int) $deleted ) );
             wp_send_json_success( array('message' => sprintf('Se han eliminado %d reservas del periodo seleccionado.', $deleted)) );
         } else {
             wp_send_json_error( array('message' => 'Error en la base de datos al eliminar por fecha.') );
@@ -286,7 +332,7 @@ class WPTB_Admin {
 
     public function delete_backup_file() {
         check_ajax_referer( 'wptb_delete_backup_nonce', 'security' );
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::EXPORT_BOOKINGS ) ) {
             wp_send_json_error( 'No tienes permisos suficientes.' );
         }
 
@@ -327,15 +373,18 @@ class WPTB_Admin {
         // Marcar como eliminado en base de datos
         $wpdb->update( $table_backups, array('status' => 'deleted'), array('id' => $id), array('%s'), array('%d') );
 
+        \MeTransfers\Admin\AuditLog::record( 'export.backup_deleted', 'backup', $id );
+
         wp_send_json_success( 'Archivo eliminado del servidor.' );
     }
 
     public function view_booking_receipt() {
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_BOOKINGS ) ) {
             wp_die( 'Sin permisos.' );
         }
 
-        $id = intval( $_GET['id'] );
+        $id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+        check_admin_referer( 'wptb_view_receipt_' . $id );
         global $wpdb;
         $table_name = $wpdb->prefix . 'wptb_bookings';
         $booking = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $id ) );
@@ -571,7 +620,7 @@ class WPTB_Admin {
                         <div class="row"><div class="label">Email:</div><div class="value"><?php echo esc_html($booking->customer_email); ?></div></div>
                         <div class="row"><div class="label">Teléfono:</div><div class="value"><?php echo esc_html($booking->customer_phone); ?></div></div>
                         <?php if ( !empty($booking->hotel_token) ): ?>
-                        <div class="row"><div class="label">Hotel Token:</div><div class="value" style="color:#004B68;">🏨 <?php echo esc_html($booking->hotel_token); ?></div></div>
+                        <div class="row"><div class="label">Hotel Token:</div><div class="value" style="color:#004B68;">🏨 <?php echo esc_html( \MeTransfers\Admin\Capabilities::maskSecret( $booking->hotel_token ) ); ?></div></div>
                         <?php endif; ?>
                     </div>
                     
@@ -656,12 +705,24 @@ class WPTB_Admin {
     }
 
     public function display_bookings_page() {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_BOOKINGS ) ) {
+            wp_die( 'Sin permisos.' );
+        }
         global $wpdb;
         $table_name = $wpdb->prefix . 'wptb_bookings';
         $bookings = $wpdb->get_results( "SELECT * FROM $table_name ORDER BY created_at DESC" );
         ?>
         <div class="wrap">
             <h1 class="wp-heading-inline">Reservas de Traslados</h1>
+            <?php if ( current_user_can( \MeTransfers\Admin\Capabilities::EXPORT_BOOKINGS ) ) : ?>
+                <form method="get" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="wptb-export-form">
+                    <input type="hidden" name="action" value="wptb_export_excel">
+                    <?php wp_nonce_field( 'wptb_export_excel' ); ?>
+                    <label>Exportar desde <input type="date" name="start_date" value="<?php echo esc_attr( gmdate( 'Y-m-d', strtotime( '-90 days' ) ) ); ?>" required></label>
+                    <label>hasta <input type="date" name="end_date" value="<?php echo esc_attr( gmdate( 'Y-m-d' ) ); ?>" required></label>
+                    <button type="submit" class="button button-secondary">Exportar Excel (máx. 366 días)</button>
+                </form>
+            <?php endif; ?>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
@@ -719,7 +780,7 @@ class WPTB_Admin {
                                     <strong><?php echo esc_html( $booking->customer_name ); ?></strong><br>
                                     <a href="mailto:<?php echo esc_attr( $booking->customer_email ); ?>"><?php echo esc_html( $booking->customer_email ); ?></a><br>
                                     <a href="tel:<?php echo esc_attr( $booking->customer_phone ); ?>"><?php echo esc_html( $booking->customer_phone ); ?></a>
-                                    <?php if ( !empty($booking->hotel_token) ) { echo '<br><small style="color:#004B68; font-weight:bold;">🏨 Hotel Token: ' . esc_html( $booking->hotel_token ) . '</small>'; } ?>
+                                    <?php if ( !empty($booking->hotel_token) ) { echo '<br><small style="color:#004B68; font-weight:bold;">🏨 Hotel Token: ' . esc_html( \MeTransfers\Admin\Capabilities::maskSecret( $booking->hotel_token ) ) . '</small>'; } ?>
                                 </td>
                                 <td>
                                     <span class="dashicons dashicons-groups"></span> <?php echo esc_html( $booking->passengers ); ?><br>
@@ -755,19 +816,26 @@ class WPTB_Admin {
                                 <td>
                                     <div style="display:flex; flex-direction:column; gap:5px;">
                                         <div style="display:flex; gap:5px;">
-                                            <a href="<?php echo esc_url( admin_url( 'admin-post.php?action=wptb_view_receipt&id=' . absint( $booking->id ) ) ); ?>" target="_blank" class="button button-small" title="Ver Recibo" style="flex:1; text-align:center;">
+                                            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=wptb_view_receipt&id=' . absint( $booking->id ) ), 'wptb_view_receipt_' . absint( $booking->id ) ) ); ?>" target="_blank" class="button button-small" title="Ver Recibo" style="flex:1; text-align:center;">
                                                 <span class="dashicons dashicons-media-document"></span> Recibo
                                             </a>
-                                            <a href="<?php echo esc_url( admin_url( 'admin-post.php?action=wptb_view_receipt&id=' . absint( $booking->id ) . '&auto_print=1' ) ); ?>" target="_blank" class="button button-small" title="Descargar PDF" style="padding: 0 6px;">
+                                            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=wptb_view_receipt&id=' . absint( $booking->id ) . '&auto_print=1' ), 'wptb_view_receipt_' . absint( $booking->id ) ) ); ?>" target="_blank" class="button button-small" title="Descargar PDF" style="padding: 0 6px;">
                                                 <span class="dashicons dashicons-download" style="margin-top:3px; color:#1e7e34;"></span>
                                             </a>
                                             <button type="button" class="button button-small wptb-delete-single-booking" data-id="<?php echo $booking->id; ?>" title="Borrar Reserva" style="padding: 0 6px; color: #dc3232; border-color: #dc3232;">
                                                 <span class="dashicons dashicons-trash" style="margin-top:3px;"></span>
                                             </button>
                                         </div>
-                                        <button type="button" class="button button-small wptb-resend-email" data-id="<?php echo $booking->id; ?>" title="Reenviar Notificación">
-                                            <span class="dashicons dashicons-email-alt" style="margin-right:4px;"></span> Enviar Notificación
-                                        </button>
+                                        <?php if ( current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_NOTIFICATIONS ) ) : ?>
+                                            <button type="button" class="button button-small wptb-resend-email" data-id="<?php echo absint( $booking->id ); ?>" title="Reenviar solo emails">
+                                                <span class="dashicons dashicons-email-alt" style="margin-right:4px;"></span> Reenviar emails
+                                            </button>
+                                            <?php if ( 'paid' === (string) $booking->payment_status && in_array( (string) $booking->status, array( 'confirmed', 'completed' ), true ) ) : ?>
+                                                <button type="button" class="button button-small wptb-resend-whatsapp" data-id="<?php echo absint( $booking->id ); ?>" title="Reenviar solo WhatsApp">
+                                                    <span class="dashicons dashicons-whatsapp" style="margin-right:4px;"></span> Reenviar WhatsApp
+                                                </button>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>
@@ -846,6 +914,25 @@ class WPTB_Admin {
                 });
             });
 
+            $('.wptb-resend-whatsapp').on('click', function(e) {
+                e.preventDefault();
+                if(!confirm('¿Reenviar únicamente la alerta de WhatsApp? No se enviarán emails.')) return;
+
+                var $btn = $(this);
+                $btn.prop('disabled', true).css('opacity', '0.6');
+                $.post(ajaxurl, {
+                    action: 'wptb_resend_whatsapp',
+                    id: $btn.data('id'),
+                    security: '<?php echo wp_create_nonce("wptb_status_nonce"); ?>'
+                }, function(response) {
+                    $btn.prop('disabled', false).css('opacity', '1');
+                    alert(response.success ? '✅ WhatsApp reenviado correctamente.' : '❌ Error: ' + (response.data || 'Error desconocido'));
+                }).fail(function() {
+                    $btn.prop('disabled', false).css('opacity', '1');
+                    alert('Error de conexión');
+                });
+            });
+
             // Single Delete Handler
             $('.wptb-delete-single-booking').on('click', function(e) {
                 e.preventDefault();
@@ -874,7 +961,7 @@ class WPTB_Admin {
         });
         </script>
         <style>
-            .button.wptb-resend-email, .button.button-small {
+            .button.wptb-resend-email, .button.wptb-resend-whatsapp, .button.button-small {
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
@@ -938,6 +1025,9 @@ class WPTB_Admin {
     }
 
     public function display_settings_page() {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_INTEGRATIONS ) ) {
+            wp_die( 'Sin permisos.' );
+        }
         ?>
         <div class="wrap">
             <h1>Configuración del Plugin de Reservas</h1>
@@ -1071,12 +1161,11 @@ class WPTB_Admin {
                     <tr valign="top">
                         <th scope="row">WhatsApp API Key (CallMeBot)</th>
                         <td>
-                            <input type="text" name="wptb_whatsapp_apikey" 
-                                   value="<?php echo esc_attr( get_option('wptb_whatsapp_apikey', '') ); ?>" 
-                                   class="regular-text" />
+                            <input type="password" name="wptb_whatsapp_apikey" value="" class="regular-text" autocomplete="new-password" placeholder="Dejar vacío para conservar la actual" />
                             <p class="description">
                                 API Key de <a href="https://www.callmebot.com/" target="_blank">CallMeBot</a> para recibir mensajes gratis.
                                 <br>Se usa para enviar alertas al número configurado arriba.
+                                <?php echo \MeTransfers\Core\Settings::get( 'whatsapp_api_key', '' ) ? ' Hay una clave configurada.' : ' No hay una clave configurada.'; ?>
                             </p>
                         </td>
                     </tr>
@@ -1084,12 +1173,6 @@ class WPTB_Admin {
 
                 <?php submit_button('Guardar Cambios'); ?>
             </form>
-
-            <h2 style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd;">📊 Exportar Datos</h2>
-            <p>Descarga un archivo de Excel (.xlsx) profesional con el historial completo de todas las reservas de traslados y un directorio de clientes.</p>
-            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=wptb_export_excel' ), 'wptb_export_excel' ) ); ?>" class="button button-secondary" style="background: #1e7e34; color: white; border-color: #155724; padding: 5px 15px; text-decoration: none;">
-                <span class="dashicons dashicons-media-spreadsheet" style="margin-top: 3px;"></span> Exportar Todas las Reservas (Excel)
-            </a>
 
             <h2 style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #dc3232;">⚠️ Peligro: Borrado Masivo</h2>
             <p><strong>REQUISITO OBLIGATORIO:</strong> Antes de poder borrar cualquier dato, debes haber descargado un respaldo (Excel) recientemente.</p>
@@ -1305,6 +1388,9 @@ class WPTB_Admin {
     }
 
     public function display_stats_page() {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::VIEW_STATS ) ) {
+            wp_die( 'Sin permisos.' );
+        }
         global $wpdb;
         $table_name = $wpdb->prefix . 'wptb_bookings';
 
@@ -1387,10 +1473,22 @@ class WPTB_Admin {
     }
 
     public function export_bookings_excel() {
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::EXPORT_BOOKINGS ) ) {
             wp_die( 'No tienes permisos suficientes.' );
         }
         check_admin_referer( 'wptb_export_excel' );
+
+        $start_date = isset( $_GET['start_date'] ) ? sanitize_text_field( wp_unslash( $_GET['start_date'] ) ) : '';
+        $end_date = isset( $_GET['end_date'] ) ? sanitize_text_field( wp_unslash( $_GET['end_date'] ) ) : '';
+        $start = \DateTimeImmutable::createFromFormat( '!Y-m-d', $start_date, new \DateTimeZone( 'UTC' ) );
+        $end = \DateTimeImmutable::createFromFormat( '!Y-m-d', $end_date, new \DateTimeZone( 'UTC' ) );
+        if ( ! $start || ! $end
+            || $start->format( 'Y-m-d' ) !== $start_date
+            || $end->format( 'Y-m-d' ) !== $end_date
+            || $start > $end
+            || $start->diff( $end )->days > 366 ) {
+            wp_die( 'El rango de exportación debe ser válido y no superar 366 días.' );
+        }
 
         if ( ! class_exists( 'XLSXWriter' ) ) {
             require_once plugin_dir_path( __FILE__ ) . 'xlsxwriter.class.php';
@@ -1399,16 +1497,23 @@ class WPTB_Admin {
         global $wpdb;
         $table_bookings = $wpdb->prefix . 'wptb_bookings';
 
-        // Obtener TODAS las reservas
-        $all_bookings = $wpdb->get_results( "SELECT * FROM $table_bookings ORDER BY created_at DESC", ARRAY_A );
+        $all_bookings = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT * FROM $table_bookings WHERE booking_date BETWEEN %s AND %s ORDER BY created_at DESC",
+                $start_date,
+                $end_date
+            ),
+            ARRAY_A
+        );
 
-        $filename = 'reservas_metransfers_' . date( 'Y-m-d_H-i-s' ) . '.xlsx';
+        $filename = 'reservas_metransfers_' . $start_date . '_' . $end_date . '.xlsx';
 
         header( 'Content-disposition: attachment; filename="' . XLSXWriter::sanitize_filename( $filename ) . '"' );
         header( 'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' );
         header( 'Content-Transfer-Encoding: binary' );
-        header( 'Cache-Control: must-revalidate' );
-        header( 'Pragma: public' );
+        header( 'Cache-Control: no-store, no-cache, must-revalidate, max-age=0' );
+        header( 'Pragma: no-cache' );
+        header( 'X-Content-Type-Options: nosniff' );
 
         $writer = new XLSXWriter();
 
@@ -1431,10 +1536,9 @@ class WPTB_Admin {
             'Equipaje'           => 'string',
             'Nº Vuelo'           => 'string',
             'Notas Adicionales'  => 'string',
-            'Token Hotel'        => 'string',
             'Origen/Fuente'      => 'string',
         );
-        $col_widths = array( 'widths' => array( 8, 18, 17, 25, 28, 15, 12, 14, 42, 42, 14, 10, 22, 10, 22, 14, 35, 15, 12 ) );
+        $col_widths = array( 'widths' => array( 8, 18, 17, 25, 28, 15, 12, 14, 42, 42, 14, 10, 22, 10, 22, 14, 35, 12 ) );
 
         // ── Estilos de cabecera por estado (color visual por pestaña) ──
         $tab_configs = array(
@@ -1530,7 +1634,6 @@ class WPTB_Admin {
                                 $equipaje,
                                 $row['flight_number'],
                                 $row['notes'],
-                                $row['hotel_token'],
                                 $row['source'],
                     ), $row_styles );
                 }
@@ -1657,6 +1760,13 @@ class WPTB_Admin {
             'type'     => 'full_export',
             'status'   => 'active'
         ) );
+
+        \MeTransfers\Admin\AuditLog::record(
+            'booking.exported',
+            'booking_export',
+            0,
+            array( 'start_date' => $start_date, 'end_date' => $end_date, 'count' => count( $all_bookings ) )
+        );
 
         // Enviar al navegador
         readfile( $filepath );

@@ -75,13 +75,9 @@ class HQP_Admin {
             case 'hqp_qr':
                 $token = get_post_meta( $post_id, '_hqp_token', true );
                 if ( $token ) {
-          // Generate URL
-        $url = home_url( '/reservas-hotel/?promo=' . $token );
-        
-        // QR API
-        $qr_api = 'https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=' . urlencode( $url );
-                    echo '<img src="' . esc_url( $qr_api ) . '" alt="QR" style="width: 50px; height: 50px;" />';
-                    echo '<br><a href="' . esc_url( $url ) . '" target="_blank" style="font-size:10px;">Ver Enlace</a>';
+                    $download_url = admin_url( 'admin-post.php?action=hqp_download_qr&post_id=' . $post_id . '&inline=1&nonce=' . wp_create_nonce( 'hqp_download_qr_' . $post_id ) );
+                    echo '<img src="' . esc_url( $download_url ) . '" alt="QR" style="width: 50px; height: 50px;" />';
+                    echo '<br><span style="font-size:10px;">' . esc_html( \MeTransfers\Admin\Capabilities::maskSecret( $token ) ) . '</span>';
                 } else {
                     echo 'Guarda para generar.';
                 }
@@ -116,11 +112,6 @@ class HQP_Admin {
         global $wpdb;
         $vehicles = $wpdb->get_results("SELECT id, name, capacity FROM {$wpdb->prefix}wptb_hotel_vehicles WHERE is_active = 1 ORDER BY display_order ASC");
 
-        // If no token, generate one (temp, will be saved on save_post if checking empty, but better here for display)
-        if ( empty( $token ) ) {
-            $token = 'HOTEL-' . strtoupper( wp_generate_password( 8, false ) );
-        }
-
         wp_nonce_field( 'hqp_save_hotel_details', 'hqp_nonce' );
         ?>
         <p>
@@ -130,7 +121,7 @@ class HQP_Admin {
         </p>
         <p>
             <label for="hqp_token"><strong>Token Único (Año):</strong></label>
-            <input type="text" id="hqp_token" name="hqp_token" value="<?php echo esc_attr( $token ); ?>" readonly style="width: 250px; background: #f0f0f0;">
+            <input type="text" id="hqp_token" value="<?php echo esc_attr( $token ? \MeTransfers\Admin\Capabilities::maskSecret( $token ) : 'Se generará al guardar' ); ?>" readonly style="width: 250px; background: #f0f0f0;">
         </p>
         
         <hr style="margin: 20px 0;">
@@ -177,18 +168,16 @@ class HQP_Admin {
         <?php if ( $post->ID && $token ) : 
             // Point to the dedicated hotel booking page
             $url = home_url( '/reservas-hotel/?promo=' . $token );
-            $qr_api = 'https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=' . urlencode( $url );
-            
             $download_url = admin_url( 'admin-post.php?action=hqp_download_qr&post_id=' . $post->ID . '&nonce=' . wp_create_nonce('hqp_download_qr_' . $post->ID) );
             $flyer_url = admin_url( 'admin-post.php?action=hqp_download_flyer&post_id=' . $post->ID . '&nonce=' . wp_create_nonce('hqp_download_flyer_' . $post->ID) );
         ?>
             <hr style="margin: 20px 0;">
             <h4>Código QR Permanente</h4>
             <div style="display: flex; align-items: flex-start; gap: 20px;">
-                <img src="<?php echo esc_url( $qr_api ); ?>" alt="QR Code" style="border: 1px solid #ccc; padding: 5px; max-width: 200px; height: auto;">
+                <img src="<?php echo esc_url( add_query_arg( 'inline', '1', $download_url ) ); ?>" alt="QR Code" style="border: 1px solid #ccc; padding: 5px; max-width: 200px; height: auto;">
                 <div>
                     <p>Este código QR dirige a:</p>
-                    <code><?php echo esc_url( $url ); ?></code>
+                    <code><?php echo esc_html( '/reservas-hotel/?promo=' . \MeTransfers\Admin\Capabilities::maskSecret( $token ) ); ?></code>
                     <p>Imprime este QR y colócalo en la recepción del hotel. No caduca.</p>
                     <div style="display: flex; gap: 10px;">
                         <a href="<?php echo esc_url( $download_url ); ?>" class="button button-secondary">Descargar Imagen QR</a>
@@ -288,14 +277,14 @@ class HQP_Admin {
             return;
         }
         
-        if ( ! current_user_can( 'edit_posts' ) ) return;
+        if ( ! current_user_can( 'edit_post', $post_id ) ) return;
 
         if ( isset( $_POST['hqp_discount_percent'] ) ) {
              update_post_meta( $post_id, '_hqp_discount_percent', intval( $_POST['hqp_discount_percent'] ) );
         }
 
-        if ( isset( $_POST['hqp_token'] ) ) {
-            update_post_meta( $post_id, '_hqp_token', sanitize_text_field( $_POST['hqp_token'] ) );
+        if ( '' === (string) get_post_meta( $post_id, '_hqp_token', true ) ) {
+            update_post_meta( $post_id, '_hqp_token', 'HOTEL-' . strtoupper( bin2hex( random_bytes( 16 ) ) ) );
         }
         
         if ( isset( $_POST['hqp_hotel_address'] ) ) {
@@ -325,6 +314,7 @@ class HQP_Admin {
                 }
             }
         }
+        \MeTransfers\Admin\AuditLog::record( 'hotel.saved', 'hotel', $post_id );
     }
 
     public function download_qr_code() {
@@ -337,7 +327,7 @@ class HQP_Admin {
             wp_die( 'Enlace caducado o inválido.' );
         }
 
-        if ( ! current_user_can( 'edit_posts' ) ) {
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
             wp_die( 'Permisos insuficientes.' );
         }
 
@@ -354,12 +344,21 @@ class HQP_Admin {
         }
 
         $image_data = wp_remote_retrieve_body( $response );
-        $filename = 'qr-hotel-' . get_the_title( $post_id ) . '.png';
+        $response_code = (int) wp_remote_retrieve_response_code( $response );
+        $content_type = (string) wp_remote_retrieve_header( $response, 'content-type' );
+        if ( 200 !== $response_code || 0 !== strpos( strtolower( $content_type ), 'image/png' ) || '' === $image_data ) {
+            wp_die( 'El proveedor de QR devolvió una respuesta inválida.' );
+        }
+        $filename = sanitize_file_name( 'qr-hotel-' . get_the_title( $post_id ) . '.png' );
 
-        // Headers to force download
+        $inline = isset( $_GET['inline'] ) && '1' === (string) wp_unslash( $_GET['inline'] );
+        if ( ! $inline ) {
+            \MeTransfers\Admin\AuditLog::record( 'hotel.qr_downloaded', 'hotel', $post_id );
+        }
+
         header( 'Content-Description: File Transfer' );
         header( 'Content-Type: image/png' );
-        header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+        header( 'Content-Disposition: ' . ( $inline ? 'inline' : 'attachment' ) . '; filename="' . $filename . '"' );
         header( 'Expires: 0' );
         header( 'Cache-Control: must-revalidate' );
         header( 'Pragma: public' );
@@ -382,7 +381,7 @@ class HQP_Admin {
             wp_die( 'Enlace caducado o inválido.' );
         }
 
-        if ( ! current_user_can( 'edit_posts' ) ) {
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
             wp_die( 'Permisos insuficientes.' );
         }
 
@@ -391,9 +390,11 @@ class HQP_Admin {
 
         // Buscar imagen flyer hotel
         $bg_name = 'HABLADOR - METRANSFERS.png';
-        $bg_image_path = defined( 'CBP_PLUGIN_DIR' ) ? CBP_PLUGIN_DIR . $bg_name : '';
+        $plugin_dir = defined( 'CBP_PLUGIN_DIR' ) ? CBP_PLUGIN_DIR : '';
+        $hotel_module_dir = defined( 'HQP_PLUGIN_DIR' ) ? HQP_PLUGIN_DIR . 'assets/' : '';
+        $bg_image_path = $plugin_dir ? $plugin_dir . $bg_name : '';
         if ( empty( $bg_image_path ) || ! file_exists( $bg_image_path ) ) {
-            $bg_image_path = HQP_PLUGIN_DIR . 'assets/' . $bg_name;
+            $bg_image_path = $hotel_module_dir . $bg_name;
         }
         if ( ! file_exists( $bg_image_path ) ) {
             wp_die(
@@ -411,8 +412,16 @@ class HQP_Admin {
         if ( is_wp_error( $qr_response ) ) {
             wp_die( 'Error al descargar QR: ' . $qr_response->get_error_message() );
         }
-        $tmp_qr = sys_get_temp_dir() . '/hqp_qr_' . $post_id . '.png';
-        file_put_contents( $tmp_qr, wp_remote_retrieve_body( $qr_response ) );
+        $qr_body = wp_remote_retrieve_body( $qr_response );
+        if ( 200 !== (int) wp_remote_retrieve_response_code( $qr_response )
+            || '' === $qr_body
+            || 0 !== strpos( strtolower( (string) wp_remote_retrieve_header( $qr_response, 'content-type' ) ), 'image/png' ) ) {
+            wp_die( 'El proveedor de QR devolvió una respuesta inválida.' );
+        }
+        $tmp_qr = wp_tempnam( 'hqp_qr_' . $post_id . '.png' );
+        if ( ! $tmp_qr || false === file_put_contents( $tmp_qr, $qr_body ) ) {
+            wp_die( 'No se pudo preparar temporalmente el código QR.' );
+        }
 
         if ( ! class_exists( 'FPDF' ) ) {
             require_once HQP_PLUGIN_DIR . 'includes/fpdf.php';
@@ -439,9 +448,10 @@ class HQP_Admin {
             $pdf->Image( $tmp_qr, $qr_x, $qr_y, $qr_size, $qr_size, 'PNG' );
         }
 
-        @unlink( $tmp_qr );
+        wp_delete_file( $tmp_qr );
 
         $filename = 'Flyer-Hotel-' . sanitize_title( get_the_title( $post_id ) ) . '.pdf';
+        \MeTransfers\Admin\AuditLog::record( 'hotel.flyer_generated', 'hotel', $post_id );
         $pdf->Output( 'D', $filename );
         exit;
     }
@@ -454,7 +464,7 @@ class HQP_Admin {
             'edit.php?post_type=hotel_partner',
             'Reservas por QR',
             'Reservas por QR',
-            'manage_options',
+            \MeTransfers\Admin\Capabilities::MANAGE_HOTELS,
             'hotel-qr-reservations',
             array( $this, 'display_hotel_reservations_page' )
         );
@@ -464,7 +474,7 @@ class HQP_Admin {
             'edit.php?post_type=hotel_partner',
             'Vehículos',
             'Vehículos',
-            'manage_options',
+            \MeTransfers\Admin\Capabilities::MANAGE_VEHICLES,
             'hotel-vehicles',
             array( $vehicles_admin, 'display_vehicles_page' )
         );
@@ -474,6 +484,9 @@ class HQP_Admin {
      * Display Hotel Reservations Page
      */
     public function display_hotel_reservations_page() {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_HOTELS ) ) {
+            wp_die( 'Sin permisos.' );
+        }
         global $wpdb;
         
         $bookings_table = $wpdb->prefix . 'wptb_bookings';
@@ -656,7 +669,7 @@ class HQP_Admin {
                     </thead>
                     <tbody>
                         <?php foreach ($bookings as $booking) : 
-                            $hotel_info = isset($hotel_map[$token]) ? $hotel_map[$token] : null;
+                            $hotel_info = isset($hotel_map[$booking->hotel_token]) ? $hotel_map[$booking->hotel_token] : null;
                         ?>
                             <tr>
                                 <td>#<?php echo $booking->id; ?></td>
@@ -668,7 +681,7 @@ class HQP_Admin {
                                         <?php endif; ?>
                                     <?php else : ?>
                                         <em>Hotel no encontrado</em><br>
-                                        <small class="description"><?php echo esc_html(substr($booking->hotel_token, 0, 8)); ?>...</small>
+                                        <small class="description"><?php echo esc_html( \MeTransfers\Admin\Capabilities::maskSecret( $booking->hotel_token ) ); ?></small>
                                     <?php endif; ?>
                                 </td>
                                 <td>

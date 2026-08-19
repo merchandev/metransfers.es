@@ -47,6 +47,7 @@ jobs:
           php tests/test-server-vehicle-quotes.php
           php tests/test-money.php
           php tests/test-authoritative-receipt.php
+          php tests/test-admin-security.php
           php tests/test-i18n.php
           php tests/test-production-readiness.php
 

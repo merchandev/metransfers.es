@@ -63,6 +63,8 @@ try {
         'WPTB_Pricing',
         'HQP_Public',
         'MeTransfers\\Core\\Assets',
+        'MeTransfers\\Admin\\Capabilities',
+        'MeTransfers\\Admin\\AuditLog',
         'MeTransfers\\Core\\Migrations',
         'MeTransfers\\Core\\ReleaseGate',
         'MeTransfers\\Core\\Outbox',

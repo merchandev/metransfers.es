@@ -135,6 +135,22 @@ class WPTB_Activator {
         ) $charset_collate;";
         dbDelta( $sql_drafts );
 
+        // Append-only admin audit without PII or secrets.
+        $table_admin_audit = $wpdb->prefix . 'mt_admin_audit';
+        $sql_admin_audit = "CREATE TABLE $table_admin_audit (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            actor_user_id bigint(20) unsigned NOT NULL DEFAULT 0,
+            action_name varchar(80) NOT NULL,
+            object_type varchar(50) NOT NULL DEFAULT '',
+            object_id bigint(20) unsigned NOT NULL DEFAULT 0,
+            context_json longtext NOT NULL,
+            created_at datetime NOT NULL,
+            PRIMARY KEY  (id),
+            KEY action_created (action_name, created_at),
+            KEY actor_created (actor_user_id, created_at)
+        ) $charset_collate;";
+        dbDelta( $sql_admin_audit );
+
         // Asegurar que el AUTO_INCREMENT inicia en 10000 (IDs para Getnet siempre >= 10000)
         $max_id = (int) $wpdb->get_var( "SELECT MAX(id) FROM $table_bookings" );
         if ( $max_id < 10000 ) {

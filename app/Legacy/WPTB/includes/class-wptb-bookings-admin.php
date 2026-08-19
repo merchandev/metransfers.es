@@ -282,7 +282,7 @@ class WPTB_Bookings_Admin {
     public function ajax_update_booking_status() {
         check_ajax_referer('wptb_admin_nonce', 'nonce');
         
-        if (!current_user_can('manage_options')) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_BOOKINGS ) ) {
             wp_send_json_error(array('message' => 'No tienes permisos.'));
         }
         
@@ -307,6 +307,7 @@ class WPTB_Bookings_Admin {
         );
         
         if ($updated !== false) {
+            \MeTransfers\Admin\AuditLog::record( 'booking.status_updated', 'booking', $booking_id, array( 'status' => $status ) );
             wp_send_json_success(array('message' => 'Estado actualizado.'));
         } else {
             wp_send_json_error(array('message' => 'Error al actualizar.'));
@@ -319,7 +320,7 @@ class WPTB_Bookings_Admin {
     public function ajax_delete_all_bookings() {
         check_ajax_referer( 'wptb_delete_all_nonce', 'nonce' );
 
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( \MeTransfers\Admin\Capabilities::MANAGE_BOOKINGS ) ) {
             wp_send_json_error( array( 'message' => 'No tienes permisos para realizar esta acción.' ) );
             return;
         }
@@ -340,6 +341,8 @@ class WPTB_Bookings_Admin {
 
         // Establecer el AUTO_INCREMENT en 10000 para que el próximo ID sea 10000
         $wpdb->query( "ALTER TABLE $table_name AUTO_INCREMENT = 10000" );
+
+        \MeTransfers\Admin\AuditLog::record( 'booking.all_deleted', 'booking', 0, array( 'count' => $total ) );
 
         wp_send_json_success( array(
             'message' => "Se han borrado $total reservas. El próximo ID de reserva será 10000."
