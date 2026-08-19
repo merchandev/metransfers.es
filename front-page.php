@@ -554,9 +554,7 @@ a.contact__val:hover{color:var(--blue);}
       <div>
         <p class="tag" style="color: #FFB547;"><?php echo mt_translate('Transfer aeropuerto Barcelona · Traslados privados · Tours'); ?></p>
         <h1 class="hero__h1">
-    <?php echo mt_translate(
-        '<?php echo mt_translate("Traslados privados desde y hacia Barcelona"); ?>'
-    ); ?>
+    <?php echo mt_translate('Traslados privados desde y hacia Barcelona'); ?>
 </h1>
         <p class="hero__lead"><?php echo mt_translate('Te recogemos en el Aeropuerto de Barcelona, hotel, puerto, estación o cualquier dirección y te llevamos directamente a tu destino. Servicio privado con chófer, precio cerrado y atención personalizada 24/7.'); ?></p>
         <div class="hero__checks">
