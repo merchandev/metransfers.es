@@ -17,8 +17,7 @@ class HQP_Loader {
     private function define_admin_hooks() {
         $plugin_admin = new HQP_Admin();
         
-        // CPT & Meta Boxes
-        add_action( 'init', array( $plugin_admin, 'register_hotel_cpt' ) );
+        // CPT registration is centralized in MeTransfers\Core\PostTypes.
         add_action( 'add_meta_boxes', array( $plugin_admin, 'add_hotel_meta_boxes' ) );
         add_action( 'save_post', array( $plugin_admin, 'save_hotel_meta' ) );
         
@@ -45,7 +44,6 @@ class HQP_Loader {
         
         // Shortcodes and Content
         add_action( 'init', array( $plugin_public, 'register_shortcodes' ) );
-        add_action( 'template_redirect', array( $plugin_public, 'check_url_token' ) );
 
         // Specialized HQP Booking AJAX
         add_action( 'wp_ajax_hqp_get_fixed_pricing', array( $plugin_public, 'ajax_get_fixed_pricing' ) );
@@ -62,11 +60,6 @@ class HQP_Loader {
         // STRATEGY: We will hook into the same action with High Priority (1) to validate/modify $_POST 
         // before the main plugin sees it? 
         // $_POST is global, so yes.
-        add_action( 'wp_ajax_wptb_save_booking', array( $plugin_public, 'intercept_booking_submission' ), 1 );
-        add_action( 'wp_ajax_nopriv_wptb_save_booking', array( $plugin_public, 'intercept_booking_submission' ), 1 );
-
-        // NEW: Filter for server-side price calculation in Stripe intent
-        add_filter( 'wptb_booking_price', array( $plugin_public, 'apply_booking_discount' ) );
+        // Hotel pricing is handled only by the dedicated hqp_* endpoints.
     }
 }
-

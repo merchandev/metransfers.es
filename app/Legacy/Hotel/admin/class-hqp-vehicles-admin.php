@@ -3,15 +3,19 @@
 class HQP_Vehicles_Admin {
 
     public function display_vehicles_page() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'No tienes permisos para gestionar los vehículos.', 'wptb' ) );
+        }
+
         global $wpdb;
         $table_name = $wpdb->prefix . 'wptb_hotel_vehicles';
         
         // Handle actions
-        $action = isset( $_GET['action'] ) ? sanitize_text_field( $_GET['action'] ) : 'list';
+        $action = isset( $_GET['action'] ) ? sanitize_key( wp_unslash( $_GET['action'] ) ) : 'list';
         $vehicle_id = isset( $_GET['vehicle_id'] ) ? absint( $_GET['vehicle_id'] ) : 0;
         
-        if ( $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hqp_hotel_vehicle_nonce']) ) {
-            if ( wp_verify_nonce( $_POST['hqp_hotel_vehicle_nonce'], 'save_hotel_vehicle' ) ) {
+        if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['hqp_hotel_vehicle_nonce'] ) ) {
+            if ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['hqp_hotel_vehicle_nonce'] ) ), 'save_hotel_vehicle' ) ) {
                 $this->save_vehicle();
                 $action = 'list';
                 echo '<div class="notice notice-success is-dismissible"><p>Vehículo guardado correctamente.</p></div>';
@@ -19,6 +23,7 @@ class HQP_Vehicles_Admin {
         }
         
         if ( $action === 'delete' && $vehicle_id > 0 ) {
+            check_admin_referer( 'hqp_delete_hotel_vehicle_' . $vehicle_id );
             $wpdb->delete( $table_name, array( 'id' => $vehicle_id ), array( '%d' ) );
             echo '<div class="notice notice-success is-dismissible"><p>Vehículo eliminado.</p></div>';
             $action = 'list';
@@ -38,7 +43,7 @@ class HQP_Vehicles_Admin {
         ?>
         <div class="wrap">
             <h1 class="wp-heading-inline">Vehículos para Hoteles</h1>
-            <a href="?post_type=hotel_partner&page=hotel-vehicles&action=new" class="page-title-action">Añadir Nuevo</a>
+            <a href="<?php echo esc_url( admin_url( 'admin.php?page=hotel-vehicles&action=new' ) ); ?>" class="page-title-action">Añadir Nuevo</a>
             <hr class="wp-header-end">
             
             <table class="wp-list-table widefat fixed striped">
@@ -78,8 +83,8 @@ class HQP_Vehicles_Admin {
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <a href="?post_type=hotel_partner&page=hotel-vehicles&action=edit&vehicle_id=<?php echo $v->id; ?>" class="button button-small">Editar</a>
-                                    <a href="?post_type=hotel_partner&page=hotel-vehicles&action=delete&vehicle_id=<?php echo $v->id; ?>" class="button button-small" style="color: #a00;" onclick="return confirm('¿Estás seguro de eliminar este vehículo?');">Eliminar</a>
+                                    <a href="<?php echo esc_url( admin_url( 'admin.php?page=hotel-vehicles&action=edit&vehicle_id=' . absint( $v->id ) ) ); ?>" class="button button-small">Editar</a>
+                                    <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?page=hotel-vehicles&action=delete&vehicle_id=' . absint( $v->id ) ), 'hqp_delete_hotel_vehicle_' . absint( $v->id ) ) ); ?>" class="button button-small" style="color: #a00;" onclick="return confirm('¿Estás seguro de eliminar este vehículo?');">Eliminar</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

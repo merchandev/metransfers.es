@@ -8,9 +8,15 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'HQP_VERSION', '1.0.0' );
-define( 'HQP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'HQP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+if ( ! defined( 'HQP_VERSION' ) ) {
+    define( 'HQP_VERSION', '1.0.0' );
+}
+if ( ! defined( 'HQP_PLUGIN_DIR' ) ) {
+    define( 'HQP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+}
+if ( ! defined( 'HQP_PLUGIN_URL' ) ) {
+    define( 'HQP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+}
 
 // Include Loader
 require_once HQP_PLUGIN_DIR . 'includes/class-hqp-loader.php';
@@ -23,4 +29,3 @@ function run_hotel_qr_plugin() {
 }
 } 
 run_hotel_qr_plugin();
-

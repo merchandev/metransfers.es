@@ -9675,7 +9675,7 @@ body .page-banner__meta {
 @keyframes spin { 100%{transform:rotate(360deg)} }
 
 /* ===========================================
-   RUTA PAGE � Diseno Premium v2
+   RUTA PAGE — Diseño Premium v2
    =========================================== */
 
 /* ---- Hero compacto ---- */
@@ -9928,7 +9928,7 @@ body .page-banner__meta {
 }
 
 /* ===========================================
-   RUTAS ARCHIVE � Premium v1
+   RUTAS ARCHIVE — Premium v1
    =========================================== */
 
 /* Hero */
@@ -10179,7 +10179,7 @@ body .page-banner__meta {
 }
 
 /* ===========================================
-   OVERRIDE: Ruta hero = mismo tama�o que home
+   OVERRIDE: Ruta hero = mismo tamaño que home
    =========================================== */
 .ruta-page .ruta-hero {
     min-height: 100svh !important;

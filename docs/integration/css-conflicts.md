@@ -1,4 +1,4 @@
-﻿# CSS Conflicts Analysis — MeTransfers Platform Integration
+# CSS Conflicts Analysis — MeTransfers Platform Integration
 **Fase:** 1 — Inventario | **Fecha:** 2026-08-19
 
 > Este documento analiza los conflictos CSS entre el tema y el plugin, e identifica las hojas de estilo que se cargan globalmente de forma inapropiada.

@@ -14,18 +14,6 @@ class WPTB_Admin {
         add_action( 'admin_post_wptb_view_receipt', array( $this, 'view_booking_receipt' ) );
         add_action( 'admin_post_wptb_export_excel', array( $this, 'export_bookings_excel' ) );
         
-        // AUTO-MIGRATION: Ensure DB is up to date (v3.2)
-        if ( ! get_option( 'wptb_db_version_3_2' ) ) {
-            require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wptb-activator.php';
-            update_option( 'wptb_db_version_3_2', true );
-        }
-
-        // Ensure Vehicle Selection page exists for the separated Step 2 flow.
-        if ( ! get_option( 'wptb_vehicle_page_version_1' ) ) {
-            require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wptb-activator.php';
-            update_option( 'wptb_vehicle_page_version_1', true );
-        }
-
         // Highlight Main Menu Item (Green Darker)
         add_action('admin_head', function() {
             echo '<style>
@@ -108,12 +96,52 @@ class WPTB_Admin {
 
     public function register_settings() {
         register_setting( 'wptb_settings_group', 'wptb_google_maps_api_key', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+        register_setting( 'wptb_settings_group', 'wptb_google_maps_server_api_key', array( 'sanitize_callback' => array( $this, 'sanitize_google_server_key' ) ) );
+
+        // Redsys.
+        register_setting( 'wptb_settings_group', 'wptb_redsys_merchant_code', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+        register_setting( 'wptb_settings_group', 'wptb_redsys_secret_key', array( 'sanitize_callback' => array( $this, 'sanitize_redsys_secret' ) ) );
+        register_setting( 'wptb_settings_group', 'wptb_redsys_terminal', array( 'sanitize_callback' => 'absint' ) );
+        register_setting( 'wptb_settings_group', 'wptb_redsys_currency', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+        register_setting( 'wptb_settings_group', 'wptb_redsys_environment', array( 'sanitize_callback' => array( $this, 'sanitize_redsys_environment' ) ) );
+
+        // Optional SMTP transport. WordPress mail remains active while these fields are empty.
+        register_setting( 'wptb_settings_group', 'wptb_smtp_host', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+        register_setting( 'wptb_settings_group', 'wptb_smtp_user', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+        register_setting( 'wptb_settings_group', 'wptb_smtp_password', array( 'sanitize_callback' => array( $this, 'sanitize_smtp_password' ) ) );
+        register_setting( 'wptb_settings_group', 'wptb_smtp_port', array( 'sanitize_callback' => 'absint' ) );
+        register_setting( 'wptb_settings_group', 'wptb_smtp_encryption', array( 'sanitize_callback' => array( $this, 'sanitize_smtp_encryption' ) ) );
+        register_setting( 'wptb_settings_group', 'wptb_smtp_from', array( 'sanitize_callback' => 'sanitize_email' ) );
+        register_setting( 'wptb_settings_group', 'wptb_smtp_from_name', array( 'sanitize_callback' => 'sanitize_text_field' ) );
         
         // Notifications
         register_setting( 'wptb_settings_group', 'wptb_admin_email_notifications', array( 'sanitize_callback' => 'sanitize_email' ) );
         register_setting( 'wptb_settings_group', 'wptb_admin_phone_notifications', array( 'sanitize_callback' => 'sanitize_text_field' ) );
         register_setting( 'wptb_settings_group', 'wptb_whatsapp_apikey', array( 'sanitize_callback' => 'sanitize_text_field' ) );
         // Removed: price_per_km and base_price - now configured per vehicle
+    }
+
+    public function sanitize_redsys_secret( $value ) {
+        $value = sanitize_text_field( $value );
+        return '' !== $value ? $value : get_option( 'wptb_redsys_secret_key', '' );
+    }
+
+    public function sanitize_google_server_key( $value ) {
+        $value = sanitize_text_field( $value );
+        return '' !== $value ? $value : get_option( 'wptb_google_maps_server_api_key', '' );
+    }
+
+    public function sanitize_smtp_password( $value ) {
+        $value = sanitize_text_field( $value );
+        return '' !== $value ? $value : get_option( 'wptb_smtp_password', '' );
+    }
+
+    public function sanitize_redsys_environment( $value ) {
+        return 'live' === $value ? 'live' : 'test';
+    }
+
+    public function sanitize_smtp_encryption( $value ) {
+        return in_array( $value, array( 'ssl', 'tls', '' ), true ) ? $value : 'tls';
     }
 
     public function update_booking_status() {
@@ -124,7 +152,10 @@ class WPTB_Admin {
         }
 
         $id = intval( $_POST['id'] );
-        $status = sanitize_text_field( $_POST['status'] );
+        $status = isset( $_POST['status'] ) ? sanitize_key( wp_unslash( $_POST['status'] ) ) : '';
+        if ( ! in_array( $status, array( 'pending', 'confirmed', 'cancelled' ), true ) ) {
+            wp_send_json_error( 'Estado inválido.' );
+        }
 
         global $wpdb;
         $table_name = $wpdb->prefix . 'wptb_bookings';
@@ -201,6 +232,8 @@ class WPTB_Admin {
     }
 
     public function check_recent_backup() {
+        check_ajax_referer( 'wptb_delete_single_nonce', 'security' );
+
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_send_json_error();
         }
@@ -661,7 +694,7 @@ class WPTB_Admin {
                                     <span class="<?php echo $badge_class; ?>"><?php echo $label; ?></span>
                                     <?php if($is_round_trip && !empty($booking->return_date)): ?>
                                         <div style="margin-top:4px; font-size:11px; color:#666;">
-                                            Retorno: <?php echo $booking->return_date . ' ' . $booking->return_time; ?>
+                                            Retorno: <?php echo esc_html( $booking->return_date . ' ' . $booking->return_time ); ?>
                                         </div>
                                     <?php endif; ?>
                                 </td>
@@ -679,11 +712,16 @@ class WPTB_Admin {
                                 </td>
                                 <td>
                                     <?php 
-                                        $method = $booking->payment_method ? ucfirst($booking->payment_method) : '-';
-                                        if (strtolower($method) === 'stripe') {
-                                            $method = '<strong>💳 Stripe</strong>';
-                                        }
-                                        echo $method . '<br>';
+                                        $method_key = sanitize_key( $booking->payment_method );
+                                        $payment_labels = array(
+                                            'stripe' => '💳 Stripe',
+                                            'redsys' => '💳 Redsys',
+                                            'complimentary' => 'Cortesía',
+                                        );
+                                        $method = isset( $payment_labels[ $method_key ] )
+                                            ? $payment_labels[ $method_key ]
+                                            : ( $method_key ? ucfirst( $method_key ) : '-' );
+                                        echo '<strong>' . esc_html( $method ) . '</strong><br>';
                                         
                                         if ( $booking->payment_intent_id ) {
                                             $id_label = (strtolower($booking->payment_method) === 'redsys') ? 'Transfer' : 'ID:';
@@ -692,7 +730,7 @@ class WPTB_Admin {
                                     ?>
                                 </td>
                                 <td>
-                                    <select class="wptb-status-select wptb-badge <?php echo $status_class; ?>" data-id="<?php echo $booking->id; ?>">
+                                    <select class="wptb-status-select wptb-badge <?php echo esc_attr( $status_class ); ?>" data-id="<?php echo absint( $booking->id ); ?>">
                                         <option value="pending" <?php selected( in_array($booking->status, ['pending','added-to-cart','on-hold']) ); ?>>Por confirmar</option>
                                         <option value="confirmed" <?php selected( in_array($booking->status, ['confirmed','completed','processing']) ); ?>>Confirmado</option>
                                         <option value="cancelled" <?php selected( in_array($booking->status, ['cancelled','failed']) ); ?>>Cancelado</option>
@@ -701,10 +739,10 @@ class WPTB_Admin {
                                 <td>
                                     <div style="display:flex; flex-direction:column; gap:5px;">
                                         <div style="display:flex; gap:5px;">
-                                            <a href="<?php echo admin_url('admin-post.php?action=wptb_view_receipt&id='.$booking->id); ?>" target="_blank" class="button button-small" title="Ver Recibo" style="flex:1; text-align:center;">
+                                            <a href="<?php echo esc_url( admin_url( 'admin-post.php?action=wptb_view_receipt&id=' . absint( $booking->id ) ) ); ?>" target="_blank" class="button button-small" title="Ver Recibo" style="flex:1; text-align:center;">
                                                 <span class="dashicons dashicons-media-document"></span> Recibo
                                             </a>
-                                            <a href="<?php echo admin_url('admin-post.php?action=wptb_view_receipt&id='.$booking->id.'&auto_print=1'); ?>" target="_blank" class="button button-small" title="Descargar PDF" style="padding: 0 6px;">
+                                            <a href="<?php echo esc_url( admin_url( 'admin-post.php?action=wptb_view_receipt&id=' . absint( $booking->id ) . '&auto_print=1' ) ); ?>" target="_blank" class="button button-small" title="Descargar PDF" style="padding: 0 6px;">
                                                 <span class="dashicons dashicons-download" style="margin-top:3px; color:#1e7e34;"></span>
                                             </a>
                                             <button type="button" class="button button-small wptb-delete-single-booking" data-id="<?php echo $booking->id; ?>" title="Borrar Reserva" style="padding: 0 6px; color: #dc3232; border-color: #dc3232;">
@@ -910,8 +948,84 @@ class WPTB_Admin {
                             </p>
                         </td>
                     </tr>
+                    <tr valign="top">
+                        <th scope="row">Google Maps API Key (servidor)</th>
+                        <td>
+                            <input type="password" name="wptb_google_maps_server_api_key"
+                                   value="" class="regular-text" autocomplete="new-password" placeholder="Dejar vacío para conservar la actual" />
+                            <p class="description">Opcional. Úsala con restricciones de IP para verificar distancia y precio en el servidor. Si no existe, se usa la clave pública anterior. <?php echo \MeTransfers\Core\Settings::get( 'google_maps_server_api_key', '' ) ? 'Hay una clave de servidor configurada.' : ''; ?></p>
+                        </td>
+                    </tr>
                 </table>
-                
+
+                <h2 style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd;">💳 Redsys</h2>
+                <p class="description">También puedes definir estos valores mediante constantes <code>MT_REDSYS_*</code> en <code>wp-config.php</code>; las constantes tienen prioridad.</p>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">Código de comercio</th>
+                        <td><input type="text" name="wptb_redsys_merchant_code" value="<?php echo esc_attr( get_option( 'wptb_redsys_merchant_code', '' ) ); ?>" class="regular-text" autocomplete="off"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Clave secreta</th>
+                        <td>
+                            <input type="password" name="wptb_redsys_secret_key" value="" class="regular-text" autocomplete="new-password" placeholder="Dejar vacío para conservar la actual">
+                            <p class="description"><?php echo \MeTransfers\Core\Settings::get( 'redsys_secret', '' ) ? 'Hay una clave configurada.' : 'No hay ninguna clave configurada.'; ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Terminal / moneda</th>
+                        <td>
+                            <input type="number" min="1" name="wptb_redsys_terminal" value="<?php echo esc_attr( get_option( 'wptb_redsys_terminal', '1' ) ); ?>" class="small-text">
+                            <input type="text" name="wptb_redsys_currency" value="<?php echo esc_attr( get_option( 'wptb_redsys_currency', '978' ) ); ?>" class="small-text" maxlength="3">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Entorno</th>
+                        <td>
+                            <select name="wptb_redsys_environment">
+                                <option value="test" <?php selected( get_option( 'wptb_redsys_environment', 'test' ), 'test' ); ?>>Pruebas</option>
+                                <option value="live" <?php selected( get_option( 'wptb_redsys_environment', 'test' ), 'live' ); ?>>Producción</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+
+                <h2 style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd;">✉️ SMTP opcional</h2>
+                <p class="description">Si host, usuario o contraseña quedan sin configurar, se utiliza el transporte de correo normal de WordPress.</p>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">Servidor / puerto</th>
+                        <td>
+                            <input type="text" name="wptb_smtp_host" value="<?php echo esc_attr( get_option( 'wptb_smtp_host', '' ) ); ?>" class="regular-text" autocomplete="off">
+                            <input type="number" min="1" max="65535" name="wptb_smtp_port" value="<?php echo esc_attr( get_option( 'wptb_smtp_port', '465' ) ); ?>" class="small-text">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Usuario / contraseña</th>
+                        <td>
+                            <input type="text" name="wptb_smtp_user" value="<?php echo esc_attr( get_option( 'wptb_smtp_user', '' ) ); ?>" class="regular-text" autocomplete="off">
+                            <input type="password" name="wptb_smtp_password" value="" class="regular-text" autocomplete="new-password" placeholder="Dejar vacío para conservar la actual">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Cifrado</th>
+                        <td>
+                            <select name="wptb_smtp_encryption">
+                                <option value="ssl" <?php selected( get_option( 'wptb_smtp_encryption', 'ssl' ), 'ssl' ); ?>>SSL</option>
+                                <option value="tls" <?php selected( get_option( 'wptb_smtp_encryption', 'ssl' ), 'tls' ); ?>>TLS</option>
+                                <option value="" <?php selected( get_option( 'wptb_smtp_encryption', 'ssl' ), '' ); ?>>Sin cifrado</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Remitente</th>
+                        <td>
+                            <input type="email" name="wptb_smtp_from" value="<?php echo esc_attr( get_option( 'wptb_smtp_from', '' ) ); ?>" class="regular-text" placeholder="reservas@example.com">
+                            <input type="text" name="wptb_smtp_from_name" value="<?php echo esc_attr( get_option( 'wptb_smtp_from_name', 'MeTransfers Reservas' ) ); ?>" class="regular-text">
+                        </td>
+                    </tr>
+                </table>
+
                 <h2 style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd;">🔔 Notificaciones (Admin)</h2>
                 <table class="form-table">
                     <tr valign="top">
@@ -957,7 +1071,7 @@ class WPTB_Admin {
 
             <h2 style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd;">📊 Exportar Datos</h2>
             <p>Descarga un archivo de Excel (.xlsx) profesional con el historial completo de todas las reservas de traslados y un directorio de clientes.</p>
-            <a href="<?php echo esc_url( admin_url( 'admin-post.php?action=wptb_export_excel' ) ); ?>" class="button button-secondary" style="background: #1e7e34; color: white; border-color: #155724; padding: 5px 15px; text-decoration: none;">
+            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=wptb_export_excel' ), 'wptb_export_excel' ) ); ?>" class="button button-secondary" style="background: #1e7e34; color: white; border-color: #155724; padding: 5px 15px; text-decoration: none;">
                 <span class="dashicons dashicons-media-spreadsheet" style="margin-top: 3px;"></span> Exportar Todas las Reservas (Excel)
             </a>
 
@@ -1260,6 +1374,7 @@ class WPTB_Admin {
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_die( 'No tienes permisos suficientes.' );
         }
+        check_admin_referer( 'wptb_export_excel' );
 
         if ( ! class_exists( 'XLSXWriter' ) ) {
             require_once plugin_dir_path( __FILE__ ) . 'xlsxwriter.class.php';

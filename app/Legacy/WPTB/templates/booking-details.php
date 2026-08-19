@@ -3,8 +3,37 @@
  * Template for Booking Details & Confirmation Page
  * Steps 3 & 4
  */
+$wptb_payment_state = 'none';
+$wptb_payment_order_id = '';
+$wptb_payment_booking = null;
+
+if ( isset( $_GET['payment_result'] ) ) {
+    $wptb_payment_result = sanitize_key( wp_unslash( $_GET['payment_result'] ) );
+    $wptb_payment_order_id = isset( $_GET['oid'] )
+        ? sanitize_text_field( wp_unslash( $_GET['oid'] ) )
+        : '';
+
+    if ( 'ko' === $wptb_payment_result ) {
+        $wptb_payment_state = 'failed';
+    } elseif ( 'ok' === $wptb_payment_result && '' !== $wptb_payment_order_id ) {
+        global $wpdb;
+        $wptb_bookings_table = $wpdb->prefix . 'wptb_bookings';
+        $wptb_payment_booking = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT id, status, payment_status FROM $wptb_bookings_table WHERE payment_intent_id = %s",
+                $wptb_payment_order_id
+            )
+        );
+
+        $wptb_payment_state = $wptb_payment_booking
+            && 'paid' === $wptb_payment_booking->payment_status
+            && in_array( $wptb_payment_booking->status, array( 'confirmed', 'completed' ), true )
+                ? 'confirmed'
+                : 'pending';
+    }
+}
 ?>
-<div id="wptb-plugin-container" class="wptb-iso" style="margin-top: 28px;">
+<div id="wptb-plugin-container" class="wptb-iso" data-payment-state="<?php echo esc_attr( $wptb_payment_state ); ?>" style="margin-top: 28px;">
     
     <!-- PROGRESS BAR -->
     <div class="progress-bar-container">
@@ -210,7 +239,7 @@
         </div>
 
         <!-- STEP 3: DETAILS -->
-        <div id="wptb-step-3" class="booking-step" style="background: transparent !important; padding: 0 !important; border: none !important;">
+        <div id="wptb-step-3" class="booking-step" style="display: <?php echo 'none' === $wptb_payment_state ? 'block' : 'none'; ?>; background: transparent !important; padding: 0 !important; border: none !important;">
             <h2 style="color: #004B68 !important; margin-bottom: 20px; font-weight: 800;">Detalles de la Reserva</h2>
             
             <div class="booking-layout-wrapper" style="background: transparent !important;">
@@ -310,48 +339,32 @@
         </div>
 
         <!-- STEP 4: SUCCESS -->
-        <div id="wptb-step-4" class="booking-success" style="display: <?php echo (isset($_GET['payment_result']) && $_GET['payment_result'] === 'ok') ? 'block' : 'none'; ?>; background-color: #003f59 !important; border-radius: 24px !important; border: 1px solid #004B68 !important; color: #fff !important;">
+        <div id="wptb-step-4" class="booking-success" style="display: <?php echo 'confirmed' === $wptb_payment_state ? 'block' : 'none'; ?>; background-color: #003f59 !important; border-radius: 24px !important; border: 1px solid #004B68 !important; color: #fff !important;">
             <div class="success-icon">
                 <span class="dashicons dashicons-yes" style="color: #004B68 !important;"></span>
             </div>
             <h2 style="color: #fff !important;">¡Reserva Confirmada!</h2>
             <p style="color: #ccc !important;">Hemos enviado los detalles a tu correo electrónico.</p>
             
-            <?php
-            if ( isset($_GET['payment_result']) && $_GET['payment_result'] === 'ok' && isset($_GET['oid']) ) {
-                global $wpdb;
-                $table_name = $wpdb->prefix . 'wptb_bookings';
-                $order_id = sanitize_text_field( $_GET['oid'] );
-                $booking = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE payment_intent_id = %s", $order_id ) );
-                
-                if ( $booking ) {
-                    // Fetch vehicle name
-                    $vehicle_table = $wpdb->prefix . 'wptb_vehicles';
-                    $vehicle_name = $wpdb->get_var( $wpdb->prepare( "SELECT name FROM $vehicle_table WHERE id = %d", $booking->vehicle_id ) );
-                    if ( !$vehicle_name ) $vehicle_name = 'Vehículo Asignado';
-
-                    echo '<div class="order-details-box" style="border: 1px solid #004B68 !important; padding: 20px; border-radius: 12px; margin: 20px 0; text-align: left; color: #fff !important;">';
-                    echo '<h3 style="color: #fff !important; margin-bottom: 15px; border-bottom: 1px solid #004B68; padding-bottom: 10px;">Detalles de tu viaje</h3>';
-                    echo '<p style="color: #ccc !important; margin-bottom: 5px;"><strong style="color: #fff !important;">Referencia:</strong> <span style="color: #fff !important;">#' . esc_html($booking->id) . '</span></p>';
-                    echo '<p style="color: #ccc !important; margin-bottom: 5px;"><strong style="color: #fff !important;">Cliente:</strong> <span style="color: #fff !important;">' . esc_html($booking->customer_name) . '</span></p>';
-                    echo '<p style="color: #ccc !important; margin-bottom: 5px;"><strong style="color: #fff !important;">Fecha y Hora:</strong> <span style="color: #fff !important;">' . esc_html($booking->booking_date . ' ' . $booking->booking_time) . '</span></p>';
-                    echo '<p style="color: #ccc !important; margin-bottom: 5px;"><strong style="color: #fff !important;">Ruta:</strong> <span style="color: #fff !important;">' . esc_html($booking->origin) . ' <br> &rarr; ' . esc_html($booking->destination) . '</span></p>';
-                    echo '<p style="color: #ccc !important; margin-bottom: 5px;"><strong style="color: #fff !important;">Vehículo:</strong> <span style="color: #fff !important;">' . esc_html($vehicle_name) . '</span></p>';
-                    echo '<p style="color: #ccc !important; margin-bottom: 5px;"><strong style="color: #fff !important;">Precio Final:</strong> <span style="color: #66d0ff !important; font-weight: bold;">€' . esc_html($booking->price) . '</span></p>';
-                    echo '</div>';
-                } else {
-                    echo '<div class="order-details-box" style="border: 1px solid #004B68 !important; padding: 20px; border-radius: 12px; margin: 20px 0; color: #fff !important;">';
-                    echo '<p style="color: #ccc !important;"><strong style="color: #fff !important;">Referencia:</strong> <span id="success-order-id" style="color: #fff !important;">#' . esc_html($order_id) . '</span></p>';
-                    echo '</div>';
-                }
-            } else {
-            ?>
-                <div class="order-details-box" style="border: 1px solid #004B68 !important; padding: 20px; border-radius: 12px; margin: 20px 0;">
-                    <p style="color: #fff;"><strong>Referencia:</strong> <span id="success-order-id" style="color: #004B68;">#...</span></p>
-                </div>
-            <?php } ?>
+            <div class="order-details-box" style="border: 1px solid #004B68 !important; padding: 20px; border-radius: 12px; margin: 20px 0;">
+                <p style="color: #fff;"><strong>Referencia:</strong> <span id="success-order-id" style="color: #fff;">#<?php echo $wptb_payment_order_id ? esc_html( $wptb_payment_order_id ) : '...'; ?></span></p>
+            </div>
             
             <a href="/" class="btn-primary" style="background: #004B68 !important; border-radius: 24px !important; padding: 15px 30px; display: inline-block; color: #fff; text-decoration: none; margin-top: 15px;">Volver al Inicio</a>
+        </div>
+
+        <div id="wptb-payment-pending" class="booking-success" style="display: <?php echo 'pending' === $wptb_payment_state ? 'block' : 'none'; ?>; background-color: #003f59 !important; border-radius: 24px !important; border: 1px solid #004B68 !important; color: #fff !important;">
+            <h2 style="color: #fff !important;">Estamos verificando tu pago</h2>
+            <p style="color: #ccc !important;">La operación volvió correctamente desde Redsys, pero la confirmación segura aún no ha llegado. Actualiza esta página dentro de unos segundos.</p>
+            <?php if ( $wptb_payment_order_id ) : ?>
+                <p style="color: #fff;"><strong>Referencia:</strong> #<?php echo esc_html( $wptb_payment_order_id ); ?></p>
+            <?php endif; ?>
+        </div>
+
+        <div id="wptb-payment-failed" class="booking-success" style="display: <?php echo 'failed' === $wptb_payment_state ? 'block' : 'none'; ?>; background-color: #003f59 !important; border-radius: 24px !important; border: 1px solid #004B68 !important; color: #fff !important;">
+            <h2 style="color: #fff !important;">El pago no se completó</h2>
+            <p style="color: #ccc !important;">No se ha confirmado ningún cargo. Puedes volver a iniciar la reserva o contactar con soporte si necesitas ayuda.</p>
+            <a href="/reservas-metransfers/" class="btn-primary" style="background: #004B68 !important; border-radius: 24px !important; padding: 15px 30px; display: inline-block; color: #fff; text-decoration: none; margin-top: 15px;">Intentarlo de nuevo</a>
         </div>
 
     </div>
