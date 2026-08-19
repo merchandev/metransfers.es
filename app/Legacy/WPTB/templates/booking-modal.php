@@ -13,7 +13,7 @@ $wptb_i18n = \MeTransfers\Booking\I18n::strings();
                 <?php 
                 // Include dynamic form for split destination logic
                 $form_suffix = '-modal';
-                include WPTB_PLUGIN_DIR . 'templates/booking-form-dynamic.php'; 
+                include MT_WPTB_DIR . 'templates/booking-form-dynamic.php';
                 ?>
             </div>
 

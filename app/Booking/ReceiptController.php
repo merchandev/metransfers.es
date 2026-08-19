@@ -31,7 +31,7 @@ final class ReceiptController {
             header( "Content-Security-Policy: default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'", true );
         }
 
-        require WPTB_PLUGIN_DIR . 'templates/receipt.php';
+        require MT_WPTB_DIR . 'templates/receipt.php';
         exit;
     }
 }

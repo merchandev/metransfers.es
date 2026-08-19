@@ -58,35 +58,64 @@
 .mt-booking textarea.mt-input { resize: vertical; min-height: 110px; }
 
 .wptb-panel { width: 100%; }
-.wptb-main-search-form {
+#wptb-plugin-container.mt-booking--search {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+#wptb-plugin-container.wptb-iso .wptb-search-panel {
+    container-type: inline-size;
+}
+#wptb-plugin-container.wptb-iso .wptb-main-search-form {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-    padding: 20px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    width: 100%;
+    padding: clamp(20px, 5cqi, 32px);
     border: 1px solid var(--mt-border-color);
     border-radius: var(--mt-radius-lg);
     background: #fff;
     box-shadow: var(--mt-shadow-md);
 }
-.wptb-main-search-field { position: relative; }
-.wptb-main-search-field input {
-    width: 100%;
-    min-height: 52px;
-    padding: 20px 14px 7px;
+#wptb-plugin-container.wptb-iso .wptb-main-search-field {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 8px;
+}
+#wptb-plugin-container.wptb-iso .wptb-main-search-field input {
+    width: 100% !important;
+    min-width: 0;
+    min-height: 58px;
+    padding: 0 16px !important;
     border: 1px solid var(--mt-border-color);
     border-radius: var(--mt-radius-sm);
     background: #fff;
     color: var(--mt-color-text);
+    font: inherit;
+    line-height: 1.25;
 }
-.wptb-main-search-field label {
-    position: absolute;
-    top: 7px;
-    left: 14px;
+#wptb-plugin-container.wptb-iso .wptb-main-search-field label {
+    position: static !important;
+    order: -1;
+    margin: 0;
     color: var(--mt-color-muted);
-    font-size: .72rem;
+    font-size: .9rem;
+    font-weight: 700;
+    line-height: 1.25;
     pointer-events: none;
+    transform: none !important;
 }
-.wptb-main-search-submit { grid-column: 1 / -1; }
+#wptb-plugin-container.wptb-iso .wptb-origin-wrapper input {
+    padding-right: 56px !important;
+}
+#wptb-plugin-container.wptb-iso .wptb-main-search-submit {
+    width: 100%;
+    min-height: 58px;
+    margin: 0;
+}
 .trip-type-selector { display: flex; gap: 8px; margin: 0 0 24px; padding: 5px; border-radius: 999px; background: var(--mt-color-surface-alt); }
 .trip-type-btn { flex: 1; min-height: 44px; border: 0; border-radius: 999px; background: transparent; color: var(--mt-color-primary); font-weight: 700; cursor: pointer; }
 .trip-type-btn.active { background: var(--mt-color-primary); color: #fff; box-shadow: var(--mt-shadow-sm); }
@@ -119,16 +148,27 @@
 .vehicle-capacity { color: var(--mt-color-muted); font-size: .82rem; }
 .vehicle-price-compact { color: var(--mt-color-primary); font-weight: 800; }
 
-@media (min-width: 760px) {
-    .wptb-main-search-form { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-    .wptb-main-search-submit { grid-column: auto; }
+@container (min-width: 42rem) {
+    #wptb-plugin-container.wptb-iso .wptb-main-search-form {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 20px;
+    }
+    #wptb-plugin-container.wptb-iso .wptb-search-field-origin,
+    #wptb-plugin-container.wptb-iso .wptb-search-field-destination {
+        grid-column: span 6;
+    }
+    #wptb-plugin-container.wptb-iso .wptb-search-field-date,
+    #wptb-plugin-container.wptb-iso .wptb-search-field-time,
+    #wptb-plugin-container.wptb-iso .wptb-main-search-submit {
+        grid-column: span 4;
+    }
 }
 
 .wptb-origin-wrapper { position: relative; }
 .wptb-geolocation-btn {
     position: absolute;
-    top: 50%;
-    right: 14px;
+    right: 10px;
+    bottom: 9px;
     z-index: 2;
     display: grid;
     place-items: center;
@@ -140,7 +180,6 @@
     background: transparent;
     color: var(--mt-color-primary);
     cursor: pointer;
-    transform: translateY(-50%);
 }
 .wptb-geolocation-btn:hover { background: var(--mt-color-surface-alt); }
 .wptb-geolocation-btn .dashicons { width: 24px; height: 24px; font-size: 24px; }

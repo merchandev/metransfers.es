@@ -36,7 +36,7 @@ $wptb_i18n = \MeTransfers\Booking\I18n::strings();
                 <div id="payment-message" class="mt-alert is-hidden" role="alert"></div>
                 <form id="payment-form" action="" method="post">
                     <div id="map-canvas" class="mt-checkout__map" aria-label="<?php echo esc_attr( $wptb_i18n['trip_summary'] ); ?>"></div>
-                    <img class="mt-checkout__payment-methods" src="<?php echo esc_url( WPTB_PLUGIN_URL . 'assets/images/49alternativo.png' ); ?>" alt="<?php echo esc_attr( $wptb_i18n['payment_methods_alt'] ); ?>">
+                    <img class="mt-checkout__payment-methods" src="<?php echo esc_url( MT_WPTB_URL . 'assets/images/49alternativo.png' ); ?>" alt="<?php echo esc_attr( $wptb_i18n['payment_methods_alt'] ); ?>">
                     <div id="payment-element" class="is-hidden"></div>
 
                     <div class="mt-terms" id="wptb-terms-wrapper">

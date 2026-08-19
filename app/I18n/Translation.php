@@ -47,6 +47,62 @@ final class Translation {
 		return $results;
 	}
 
+	/**
+	 * Build the complete source catalog used by the admin prebuilder.
+	 *
+	 * Booking labels are included explicitly, while literal mt_translate()
+	 * calls are discovered from theme PHP files. Published WordPress content is
+	 * included because the_content/the_title are translated from the same cache.
+	 */
+	public static function sourceCatalog() {
+		$texts = array_values( \MeTransfers\Booking\I18n::sourceStrings() );
+		$root  = function_exists( 'get_template_directory' ) ? get_template_directory() : dirname( __DIR__, 2 );
+
+		if ( is_dir( $root ) ) {
+			$iterator = new \RecursiveIteratorIterator(
+				new \RecursiveDirectoryIterator( $root, \FilesystemIterator::SKIP_DOTS )
+			);
+			foreach ( $iterator as $file ) {
+				$path = $file->getPathname();
+				if ( 'php' !== strtolower( $file->getExtension() )
+					|| preg_match( '#[\\\\/](?:vendor|node_modules|tests|\.git)[\\\\/]#', $path )
+					|| $file->getSize() > 2 * 1024 * 1024 ) {
+					continue;
+				}
+
+				$source = file_get_contents( $path );
+				if ( false === $source || false === strpos( $source, 'mt_translate' ) ) {
+					continue;
+				}
+				$texts = array_merge( $texts, self::literalTranslateArguments( $source ) );
+			}
+		}
+
+		if ( function_exists( 'get_posts' ) ) {
+			$posts = get_posts(
+				array(
+					'post_type'      => 'any',
+					'post_status'    => 'publish',
+					'posts_per_page' => -1,
+					'orderby'        => 'ID',
+					'order'          => 'ASC',
+				)
+			);
+			foreach ( $posts as $post ) {
+				foreach ( array( 'post_title', 'post_excerpt', 'post_content' ) as $property ) {
+					if ( isset( $post->{$property} ) ) {
+						$texts[] = $post->{$property};
+					}
+				}
+			}
+		}
+
+		$texts = array_map( 'trim', array_filter( $texts, 'is_string' ) );
+		$texts = array_filter( $texts );
+
+		return array_values( array_unique( $texts ) );
+	}
+
 	public static function remoteBatch( array $texts, $language ) {
 		if ( ! is_admin()
 			|| ! current_user_can( Capabilities::MANAGE_INTEGRATIONS )
@@ -107,6 +163,51 @@ final class Translation {
 		return $language && defined( 'MT_LANGS' ) && isset( MT_LANGS[ $language ] )
 			? $language
 			: Language::get();
+	}
+
+	private static function literalTranslateArguments( $source ) {
+		$tokens  = token_get_all( $source );
+		$results = array();
+		$count   = count( $tokens );
+
+		for ( $index = 0; $index < $count; $index++ ) {
+			$token = $tokens[ $index ];
+			if ( ! is_array( $token ) || T_STRING !== $token[0] || 'mt_translate' !== strtolower( $token[1] ) ) {
+				continue;
+			}
+
+			$cursor = $index + 1;
+			while ( $cursor < $count && is_array( $tokens[ $cursor ] ) && in_array( $tokens[ $cursor ][0], array( T_WHITESPACE, T_COMMENT, T_DOC_COMMENT ), true ) ) {
+				++$cursor;
+			}
+			if ( $cursor >= $count || '(' !== $tokens[ $cursor ] ) {
+				continue;
+			}
+			++$cursor;
+			while ( $cursor < $count && is_array( $tokens[ $cursor ] ) && in_array( $tokens[ $cursor ][0], array( T_WHITESPACE, T_COMMENT, T_DOC_COMMENT ), true ) ) {
+				++$cursor;
+			}
+			if ( $cursor < $count && is_array( $tokens[ $cursor ] ) && T_CONSTANT_ENCAPSED_STRING === $tokens[ $cursor ][0] ) {
+				$results[] = self::decodePhpStringLiteral( $tokens[ $cursor ][1] );
+			}
+		}
+
+		return $results;
+	}
+
+	private static function decodePhpStringLiteral( $literal ) {
+		$quote = substr( $literal, 0, 1 );
+		$value = substr( $literal, 1, -1 );
+		if ( "'" === $quote ) {
+			return strtr(
+				$value,
+				array(
+					'\\\\' => '\\',
+					"\\'"  => '\'',
+				)
+			);
+		}
+		return stripcslashes( $value );
 	}
 
 	private static function cacheKey( $text, $language ) {

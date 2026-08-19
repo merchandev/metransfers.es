@@ -3,7 +3,9 @@ namespace MeTransfers\Core;
 
 class Assets {
     public function register() {
-        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ), 5 );
+        // Run after plugins so the integrated booking design wins the cascade
+        // while an old external booking plugin is being removed from a site.
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ), 100 );
     }
 
     public function enqueue() {
