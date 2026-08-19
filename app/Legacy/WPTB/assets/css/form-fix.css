@@ -1,0 +1,107 @@
+/* Main Form Input Text Color Fix */
+#wptb-step-1 input[type="date"],
+#wptb-step-1 input[type="time"],
+#wptb-step-1 input[type="text"] {
+    color: #FFFFFF !important;
+}
+
+/* Input placeholder color */
+#wptb-step-1 input::placeholder {
+    color: #999 !important;
+}
+
+/* Autocomplete text color */
+#wptb-step-1 input:-webkit-autofill,
+#wptb-step-1 input:-webkit-autofill:hover,
+#wptb-step-1 input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #FFFFFF !important;
+    -webkit-box-shadow: 0 0 0px 1000px #05173D inset !important;
+}
+
+/* Details Form Text Color Fix */
+#wptb-details-form input[type="number"],
+#wptb-details-form input[type="text"],
+#wptb-details-form input[type="tel"],
+#wptb-details-form input[type="email"],
+#wptb-details-form textarea {
+    color: #FFFFFF !important;
+}
+
+/* Details Form Placeholder */
+#wptb-details-form input::placeholder,
+#wptb-details-form textarea::placeholder {
+    color: #999 !important;
+}
+
+/* Details Form Autocomplete */
+#wptb-details-form input:-webkit-autofill,
+#wptb-details-form input:-webkit-autofill:hover,
+#wptb-details-form input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #FFFFFF !important;
+    -webkit-box-shadow: 0 0 0px 1000px #05173D inset !important;
+}
+
+/* ===== STRIPE PAYMENT FORM LABELS ===== */
+/* CRITICAL: Make all Stripe labels white - Ultra-specific selectors */
+label.p-FieldLabel,
+label.p-FieldLabel.Label,
+label.p-FieldLabel.Label.Label--empty,
+.p-Field label.p-FieldLabel,
+.p-FieldsetCell label.p-FieldLabel,
+div[data-field] label.p-FieldLabel {
+    color: #FFFFFF !important;
+}
+
+/* Force all label-like elements in Stripe forms */
+.p-FieldLabel * {
+    color: #FFFFFF !important;
+}
+
+/* Stripe input text color */
+input.p-Input-input,
+input.p-Fieldset-input,
+.Input.p-Input-input,
+.p-Input input,
+select.Input,
+select.p-Select-select,
+select.p-Fieldset-input {
+    color: #FFFFFF !important;
+    background-color: #003A52 !important;
+}
+
+/* Stripe placeholder text */
+.p-Input-input::placeholder,
+input.p-Input-input::placeholder,
+input.p-Fieldset-input::placeholder {
+    color: #999 !important;
+}
+
+/* Stripe select dropdown text */
+select.Input option,
+select.p-Select-select option {
+    color: #333 !important;
+    background-color: #fff !important;
+}
+
+/* All labels within Stripe fields */
+.p-Field label,
+.p-FieldsetCell label,
+div[data-field] label {
+    color: #FFFFFF !important;
+}
+
+/* Screen reader text - keep accessible but styled */
+.u-visually-hidden {
+    color: #FFFFFF !important;
+}
+
+/* FadeWrapper spans that might contain text */
+.FadeWrapper {
+    color: #FFFFFF !important;
+}
+
+/* Additional catch-all for any Stripe label elements */
+[class*="FieldLabel"],
+[class*="Label"] {
+    color: #FFFFFF !important;
+}

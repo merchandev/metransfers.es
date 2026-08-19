@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Stripe Payment - Debug</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .section {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .success { background: #d4edda; border-left: 4px solid #28a745; }
+        .error { background: #f8d7da; border-left: 4px solid #dc3545; }
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Stripe Payment Debug Tool</h1>
+    
+    <div class="section">
+        <h2>1. Crear Datos de Prueba en sessionStorage</h2>
+        <p>Haz clic aquí para crear datos de prueba de una reserva:</p>
+        <button onclick="createTestData()">Crear Datos de Prueba</button>
+        <button onclick="clearTestData()">Limpiar sessionStorage</button>
+    </div>
+    
+    <div class="section">
+        <h2>2. Verificar sessionStorage</h2>
+        <button onclick="checkSessionStorage()">Verificar sessionStorage</button>
+        <div id="sessionStorageResult"></div>
+    </div>
+    
+    <div class="section">
+        <h2>3. Probar Redirección a Página de Pago</h2>
+        <p>Esto te redirigirá a la página de pago con los datos de prueba:</p>
+        <button onclick="redirectToPayment()">Ir a Página de Pago</button>
+    </div>
+    
+    <div class="section">
+        <h2>4. Verificar Configuración de Stripe</h2>
+        <button onclick="testStripeConfig()">Verificar Stripe</button>
+        <div id="stripeConfigResult"></div>
+    </div>
+
+    <script>
+        function createTestData() {
+            const testBookingData = {
+                date: '2024-12-20',
+                time: '10:00',
+                origin: 'Barcelona, España',
+                destination: 'Madrid, España',
+                distance_km: 621.5,
+                duration_minutes: 363,
+                duration_text: '6 hours 3 mins',
+                vehicle_id: 1,
+                vehicle_name: 'Mercedes Clase E',
+                trip_type: 'one_way',
+                price: 150.00,
+                passengers: 2,
+                customer_name: 'Juan Pérez',
+                customer_email: 'juan@example.com',
+                customer_phone: '+34 600 000 000',
+                suitcases: 2,
+                carry_ons: 1,
+                flight_number: 'IB1234',
+                notes: 'Prueba de pago'
+            };
+            
+            sessionStorage.setItem('wptb_booking_data', JSON.stringify(testBookingData));
+            alert('✅ Datos de prueba creados en sessionStorage!');
+            checkSessionStorage();
+        }
+        
+        function clearTestData() {
+            sessionStorage.removeItem('wptb_booking_data');
+            alert('🗑️ sessionStorage limpiado');
+            checkSessionStorage();
+        }
+        
+        function checkSessionStorage() {
+            const savedData = sessionStorage.getItem('wptb_booking_data');
+            const resultDiv = document.getElementById('sessionStorageResult');
+            
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                resultDiv.innerHTML = `
+                    <div class="success" style="margin-top: 15px;">
+                        <h3>✅ Datos encontrados en sessionStorage</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="error" style="margin-top: 15px;">
+                        <h3>❌ No hay datos en sessionStorage</h3>
+                        <p>SessionStorage está vacío. Crea datos de prueba primero.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function redirectToPayment() {
+            const savedData = sessionStorage.getItem('wptb_booking_data');
+            if (!savedData) {
+                alert('❌ Error: Primero debes crear datos de prueba');
+                return;
+            }
+            
+            // Redirigir a la página de pago
+            window.location.href = '/pago-stripe/';
+        }
+        
+        function testStripeConfig() {
+            const resultDiv = document.getElementById('stripeConfigResult');
+            
+            // Verificar si wptb_vars está disponible
+            if (typeof wptb_vars !== 'undefined') {
+                resultDiv.innerHTML = `
+                    <div class="success" style="margin-top: 15px;">
+                        <h3>✅ wptb_vars está disponible</h3>
+                        <pre>${JSON.stringify({
+                            ajax_url: wptb_vars.ajax_url,
+                            stripe_key_preview: wptb_vars.stripe_publishable_key ? wptb_vars.stripe_publishable_key.substring(0, 20) + '...' : 'NO CONFIGURADA',
+                            payment_url: wptb_vars.payment_url,
+                            nonce: wptb_vars.nonce ? 'presente' : 'ausente'
+                        }, null, 2)}</pre>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="error" style="margin-top: 15px;">
+                        <h3>❌ wptb_vars NO está disponible</h3>
+                        <p>Esto es normal en esta página de prueba. La variable estará disponible en las páginas de WordPress.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Auto-check on load
+        window.onload = function() {
+            checkSessionStorage();
+        };
+    </script>
+</body>
+</html>

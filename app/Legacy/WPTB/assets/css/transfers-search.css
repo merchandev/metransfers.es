@@ -1,0 +1,341 @@
+/* Encapsulation Wrapper */
+#pts-module-wrapper {
+  all: initial;
+  /* Reset everything */
+  display: block;
+  font-family: var(--font-body), sans-serif;
+  color: #1a1a1a;
+  background: transparent;
+  width: 100%;
+  box-sizing: border-box;
+
+  /* Scoped Variables */
+  --pts-primary: #0066CC;
+  --pts-primary-dark: #004C99;
+  --pts-accent: #0052A3;
+  --pts-background: #ffffff;
+  --pts-surface: #f8f9fa;
+  --pts-surface-hover: #e9ecef;
+  --pts-text-primary: #111827;
+  --pts-text-secondary: #4B5563;
+  --pts-text-muted: #9CA3AF;
+  --pts-border: #E5E7EB;
+  --pts-radius: 16px;
+  --pts-shadow-sm: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --pts-shadow-hover: 0 20px 40px rgba(0, 86, 179, 0.12);
+}
+
+#pts-module-wrapper * {
+  box-sizing: border-box;
+}
+
+#pts-module-wrapper .pts-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  color: var(--pts-text-primary);
+}
+
+/* Search Section */
+#pts-module-wrapper .pts-search-section {
+  margin-bottom: 3rem;
+  text-align: center;
+  position: relative;
+}
+
+/* Container acts as the visual input box now */
+#pts-module-wrapper .pts-search-container {
+  position: relative;
+  max-width: 680px;
+  margin: 0 auto 2rem;
+  display: flex;
+  align-items: center;
+  background: var(--pts-primary) !important;
+  /* Blue background requested */
+  border: 1px solid var(--pts-accent) !important;
+  border-radius: 12px;
+  /* Rounded borders */
+  padding: 0.5rem 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 75, 104, 0.4);
+  /* Subtle inner depth */
+}
+
+/* Focus state on container when input is focused */
+#pts-module-wrapper .pts-search-container:focus-within {
+  background: #ffffff !important;
+  border-color: var(--pts-primary) !important;
+  box-shadow: 0 8px 24px rgba(0, 102, 204, 0.15) !important;
+  transform: translateY(-2px);
+}
+
+#pts-module-wrapper .pts-search-icon {
+  /* Static position in flex flow */
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  flex-shrink: 0;
+  color: var(--pts-text-muted);
+  /* Muted color for elegance */
+  width: 24px;
+  height: 24px;
+  margin-right: 1rem;
+  pointer-events: none;
+}
+
+#pts-module-wrapper .pts-search-container:focus-within .pts-search-icon {
+  color: var(--pts-primary);
+}
+
+#pts-module-wrapper .pts-search-input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  /* Adjusted padding */
+  background: #ffffff !important;
+  /* Ensure visibility if transparent fails */
+  border: 1px solid #d1d5db !important;
+  /* User requested this specific color */
+  border-radius: 12px !important;
+  /* Match container roundness */
+  color: var(--pts-text-primary);
+  font-size: 1.1rem;
+  font-weight: 500;
+  font-family: inherit;
+  box-shadow: none;
+  outline: none;
+  margin-left: 0.5rem;
+  /* Little space from icon */
+}
+
+#pts-module-wrapper .pts-search-input:focus {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+#pts-module-wrapper .pts-search-input::placeholder {
+  color: #94a3b8;
+  opacity: 1;
+  font-weight: 400;
+}
+
+/* Filters */
+#pts-module-wrapper .pts-filters {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#pts-module-wrapper .pts-filter-btn {
+  padding: 0.75rem 1.5rem;
+  background: #ffffff;
+  border: 1px solid var(--pts-border);
+  border-radius: 100px;
+  color: var(--pts-text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--pts-shadow-sm);
+}
+
+#pts-module-wrapper .pts-filter-btn:hover {
+  border-color: var(--pts-primary);
+  color: var(--pts-primary);
+  background: #f8FAFC;
+  transform: translateY(-1px);
+}
+
+#pts-module-wrapper .pts-filter-btn.active {
+  background: var(--pts-primary);
+  border-color: var(--pts-primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 75, 104, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Destinations Grid */
+#pts-module-wrapper .pts-destinations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+  animation: ptsFadeIn 0.5s ease;
+}
+
+#pts-module-wrapper .pts-destination-card {
+  background: #fff;
+  border: 1px solid var(--pts-border);
+  border-radius: var(--pts-radius);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--pts-shadow-sm);
+}
+
+#pts-module-wrapper .pts-destination-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--pts-shadow-hover);
+  border-color: var(--pts-primary);
+}
+
+/* Header Layout: Name/Region Left, Badge Right */
+#pts-module-wrapper .pts-destination-header {
+  display: flex;
+  align-items: flex-start;
+  /* Align top */
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+#pts-module-wrapper .pts-destination-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+#pts-module-wrapper .pts-destination-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--pts-text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+#pts-module-wrapper .pts-destination-region {
+  font-size: 0.85rem;
+  color: var(--pts-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+#pts-module-wrapper .pts-destination-region svg {
+  width: 14px;
+  height: 14px;
+  color: var(--pts-accent);
+}
+
+/* Badge styling */
+#pts-module-wrapper .pts-badge {
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+#pts-module-wrapper .pts-badge-category {
+  background: #f0f7ff;
+  color: var(--pts-primary);
+}
+
+/* No Results */
+#pts-module-wrapper .pts-no-results {
+  text-align: center;
+  padding: 4rem 2rem;
+  animation: ptsFadeIn 0.5s ease;
+}
+
+#pts-module-wrapper .pts-no-results svg {
+  margin-bottom: 1.5rem;
+  color: var(--pts-text-muted);
+}
+
+#pts-module-wrapper .pts-no-results h3 {
+  font-size: 1.25rem;
+  color: var(--pts-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+#pts-module-wrapper .pts-no-results p {
+  color: var(--pts-text-muted);
+  font-size: 0.95rem;
+}
+
+/* Animations */
+@keyframes ptsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  #pts-module-wrapper .pts-destinations-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  #pts-module-wrapper .pts-search-input {
+    font-size: 16px;
+  }
+
+  #pts-module-wrapper .pts-filter-btn {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 0.5rem 0.75rem;
+  }
+}
+/* Google Places Autocomplete Fix for Dark Backgrounds */
+.pac-container {
+    background-color: #0f1c2a !important; /* Mismo fondo oscuro de la captura */
+    border: 1px solid #004B68 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
+}
+.pac-item {
+    color: #ffffff !important; /* Texto claro para que sea legible */
+    border-top: 1px solid #1a2a3a !important;
+    padding: 10px !important;
+}
+.pac-item-query {
+    color: #4da6ff !important; /* Texto coincidente en azul claro */
+}
+.pac-item:hover {
+    background-color: #1a2a3a !important;
+}
+
+/* Hacer clickable todo el input de fecha y hora */
+input[type="date"],
+input[type="time"] {
+    position: relative;
+    cursor: pointer !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0; /* Oculta el icono nativo pero mantiene el area clickable sobre todo el input */
+    cursor: pointer !important;
+}
+
+
+/* Fuerza el color en los spans internos para sobreescribir el tema */
+.pac-item span {
+    color: #ffffff !important;
+}
+.pac-item .pac-item-query {
+    color: #4da6ff !important;
+}
+.pac-item .pac-item-query span.pac-matched {
+    color: #4da6ff !important;
+}
+
