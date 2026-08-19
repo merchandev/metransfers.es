@@ -204,6 +204,8 @@ add_action( 'template_redirect', function() {
             $post = $original_post;
             $wp_query->queried_object    = $original_post;
             $wp_query->queried_object_id = $original_post->ID;
+              $wp_query->post              = $original_post;
+              $wp_query->posts             = [ $original_post ];
             $wp_query->is_page           = ( $original_post->post_type === 'page' );
             $wp_query->is_singular       = true;
             $wp_query->is_single         = ( $original_post->post_type !== 'page' );
@@ -218,6 +220,8 @@ add_action( 'template_redirect', function() {
                 $post = $fallback;
                 $wp_query->queried_object    = $fallback;
                 $wp_query->queried_object_id = $fallback->ID;
+                  $wp_query->post              = $fallback;
+                  $wp_query->posts             = [ $fallback ];
                 $wp_query->is_page           = true;
                 $wp_query->is_singular       = true;
                 setup_postdata( $post );
