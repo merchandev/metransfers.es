@@ -28,6 +28,10 @@ class Application {
         }
 
         self::loadLegacyModules();
+
+        // Boot modern components
+        $shortcodes = new \MeTransfers\Booking\Shortcodes();
+        $shortcodes->register();
     }
 
     private static function loadLegacyModules() {

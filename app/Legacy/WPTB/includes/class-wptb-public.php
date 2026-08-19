@@ -140,45 +140,18 @@ class WPTB_Public {
         add_shortcode( 'wptb_booking_popup', array( $this, 'render_booking_popup' ) );
     }
 
-    public function render_booking_form( $atts ) {
-        ob_start();
-        $booking_source = 'Metransfers';
-        include WPTB_PLUGIN_DIR . 'templates/booking-form.php';
-        return ob_get_clean();
-    }
+    
 
-    public function render_vehicle_selection( $atts ) {
-        ob_start();
-        include WPTB_PLUGIN_DIR . 'templates/booking-vehicles.php';
-        return ob_get_clean();
-    }
     
-    public function render_booking_details() {
-        ob_start();
-        include WPTB_PLUGIN_DIR . 'templates/booking-details.php';
-        return ob_get_clean();
-    }
     
-    public function render_checkout_page() {
-        ob_start();
-        include WPTB_PLUGIN_DIR . 'templates/checkout.php';
-        return ob_get_clean();
-    }
+    
+    
+    
 
     // ===== NEW SHORTCODES =====
-    public function render_popular_carousel() {
-        ob_start();
-        include WPTB_PLUGIN_DIR . 'templates/popular-carousel.php';
-        // Auto-include modal so it's always available when carousel is present
-        include WPTB_PLUGIN_DIR . 'templates/booking-modal.php';
-        return ob_get_clean();
-    }
+    
 
-    public function render_booking_popup() {
-        ob_start();
-        include WPTB_PLUGIN_DIR . 'templates/booking-modal.php';
-        return ob_get_clean();
-    }
+    
 
     public function save_booking() {
         // Check for WooCommerce
