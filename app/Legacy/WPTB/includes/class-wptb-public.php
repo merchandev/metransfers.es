@@ -52,10 +52,11 @@ class WPTB_Public {
     public function enqueue_scripts() {
         // 1. STYLES
         // Core Styles
-        wp_enqueue_style( 'wptb-main-style', WPTB_PLUGIN_URL . 'assets/css/style.css', array(), filemtime( WPTB_PLUGIN_DIR . 'assets/css/style.css' ) );
-        // wp_enqueue_style( 'wptb-booking-css', WPTB_PLUGIN_URL . 'assets/css/booking-style.css', array(), '4.1.4' ); // File does not exist
-        wp_enqueue_style( 'wptb-modal-vehicles-css', WPTB_PLUGIN_URL . 'assets/css/modal-vehicles.css', array(), filemtime( WPTB_PLUGIN_DIR . 'assets/css/modal-vehicles.css' ) );
-        wp_enqueue_style( 'wptb-form-fix-css', WPTB_PLUGIN_URL . 'assets/css/form-fix.css', array(), filemtime( WPTB_PLUGIN_DIR . 'assets/css/form-fix.css' ) );
+        if (is_page(array('seleccionar-vehiculo', 'reservas-metransfers', 'pago', 'reservas-hotel'))) {
+            wp_enqueue_style( 'wptb-main-style', WPTB_PLUGIN_URL . 'assets/css/style.css', array(), filemtime( WPTB_PLUGIN_DIR . 'assets/css/style.css' ) );
+            wp_enqueue_style( 'wptb-modal-vehicles-css', WPTB_PLUGIN_URL . 'assets/css/modal-vehicles.css', array(), filemtime( WPTB_PLUGIN_DIR . 'assets/css/modal-vehicles.css' ) );
+            wp_enqueue_style( 'wptb-form-fix-css', WPTB_PLUGIN_URL . 'assets/css/form-fix.css', array(), filemtime( WPTB_PLUGIN_DIR . 'assets/css/form-fix.css' ) );
+        }
         wp_enqueue_style( 'dashicons' );
         wp_enqueue_style( 'material-symbols-outlined', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200', array(), null );
         
@@ -599,7 +600,7 @@ class WPTB_Public {
                 'distance_km' => floatval( $booking_data['distance_km'] ),
                 'vehicle_id' => intval( $booking_data['vehicle_id'] ),
                 'trip_type' => !empty( $booking_data['trip_type'] ) ? sanitize_text_field( $booking_data['trip_type'] ) : 'one_way',
-                'price' => floatval( $booking_data['price'] ),
+                'price' => \WPTB_Pricing::calculate_price( floatval($booking_data['distance_km']), intval($booking_data['vehicle_id']), !empty($booking_data['trip_type']) ? sanitize_text_field($booking_data['trip_type']) : 'one_way' ),
                 'customer_name' => !empty($booking_data['customer_name']) ? sanitize_text_field( $booking_data['customer_name'] ) : '',
                 'customer_email' => !empty($booking_data['customer_email']) ? sanitize_email( $booking_data['customer_email'] ) : '',
                 'customer_phone' => !empty($booking_data['customer_phone']) ? sanitize_text_field( $booking_data['customer_phone'] ) : '',
@@ -667,10 +668,9 @@ class WPTB_Public {
 
             // 2. Prepare Redsys Params
             // ---------------------------------------------------------
-            $key = '6N2lZu0nf+j7MnyFKGWyOxdzZau5sAAE'; // SHA-256 Key provided
             $redsys = new WPTB_Redsys_API();
             
-            $amount = intval( $booking_data['price'] * 100 ); // Cents
+            $amount = intval( $data_db['price'] * 100 ); // Cents
             
             // Order ID para Getnet/Redsys: 12 dÃ­gitos rellenos con ceros a la izquierda.
             // El booking_id ya es >= 10000 gracias al AUTO_INCREMENT configurado en el activador.
@@ -782,45 +782,11 @@ class WPTB_Public {
      */
     public function check_return_url_payment_force() {
         if ( isset( $_GET['payment_result'] ) && $_GET['payment_result'] === 'ok' && isset( $_GET['oid'] ) ) {
-            
             $order_id = sanitize_text_field( $_GET['oid'] );
-            error_log( "WPTB FORCE CHECK: Detected return URL for Order ID $order_id" );
-            
-            global $wpdb;
-            $table_name = $wpdb->prefix . 'wptb_bookings';
-            
-            // Find Booking by Order ID
-            $booking = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE payment_intent_id = %s", $order_id ) );
-            
-            if ( $booking ) {
-                // If it's still pending, FORCE confirm it
-                if ( $booking->status !== 'confirmed' ) {
-                    
-                    error_log( "WPTB SUB-FORCE: Forcing confirmation for Booking #{$booking->id} via Return URL." );
-                    
-                    $wpdb->update(
-                        $table_name,
-                        array( 
-                            'status' => 'confirmed', 
-                            'payment_status' => 'paid' 
-                        ),
-                        array( 'id' => $booking->id )
-                    );
-                    
-                    // RE-FETCH updated booking object to be safe
-                    $booking_updated = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $booking->id ) );
-                    
-                    // Send Emails
-                    $this->process_booking_notifications( $booking->id, $booking_updated );
-                    $this->send_whatsapp_alert( $booking->id, $booking_updated );
-                } else {
-                     error_log( "WPTB FORCE CHECK: Booking #{$booking->id} already confirmed. Skipping force action." );
-                }
-            } else {
-                error_log( "WPTB FORCE CHECK: Booking NOT found for Order ID $order_id" );
-            }
+            error_log( 'WPTB: Return URL hit for Order ' . $order_id . '. Confirmation is now handled exclusively by IPN.' );
         }
     }
+
 
     /**
      * SMTP Configuration (Hardcoded as per request)

@@ -312,7 +312,6 @@ class HQP_Public {
                 require_once WPTB_PLUGIN_DIR . 'includes/class-wptb-redsys.php';
             }
             
-            $key = '6N2lZu0nf+j7MnyFKGWyOxdzZau5sAAE'; 
             $merchant_code = '48234082';
             $terminal = '1';
             $currency = '978'; // EUR
