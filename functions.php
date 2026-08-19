@@ -73,7 +73,7 @@ if ( ! defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) ) {
 
 // Centralized Versioning
 if ( ! defined( 'ME_TRANSFERS_VERSION' ) ) {
-	define( 'ME_TRANSFERS_VERSION', '4.1.5' );
+	define( 'ME_TRANSFERS_VERSION', '4.2.0' );
 }
 
 
