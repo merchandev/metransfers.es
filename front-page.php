@@ -1215,7 +1215,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="fg"><label for="contact-mensaje"><?php echo mt_translate("Mensaje"); ?></label><textarea id="contact-mensaje" name="mensaje" rows="5" placeholder="<?php echo esc_attr(mt_translate('Indica origen, destino, fecha, hora, pasajeros, equipaje y cualquier petición especial.')); ?>" required></textarea></div>
         <div class="cform__check">
           <input type="checkbox" id="gdpr" name="gdpr_aceptado" value="1" required>
-          <label for="gdpr">He leído y acepto la Política de Privacidad y el tratamiento de mis datos.</label>
+          <label for="gdpr"><?php echo mt_translate("He leído y acepto la Política de Privacidad y el tratamiento de mis datos."); ?></label>
         </div>
         <button type="submit" class="btn btn-solid cform__submit"><?php echo mt_translate("Enviar solicitud"); ?></button>
         <div class="cform__ok" role="status" aria-live="polite"><?php echo mt_translate("Gracias. Hemos recibido tu solicitud y te responderemos lo antes posible."); ?></div>
