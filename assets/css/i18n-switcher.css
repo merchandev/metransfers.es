@@ -44,12 +44,13 @@
     border-left: 1px solid rgba(255, 255, 255, .12);
     box-shadow: -10px 0 30px rgba(0, 0, 0, .5);
     transform: translateX(100%);
-    transition: transform .4s cubic-bezier(.4, 0, .2, 1), visibility .4s;
+    transition: transform .4s cubic-bezier(.4, 0, .2, 1), visibility 0s linear .4s;
 }
 
 .mt-lang-menu.open {
     visibility: visible;
     transform: translateX(0);
+    transition-delay: 0s, 0s;
 }
 
 .mt-lang-menu ul {

@@ -521,8 +521,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const $ = jQuery;
-
             // Initialize global bookingData if needed
             if (!window.bookingData) {
                 window.bookingData = { trip_type: 'one_way' };
@@ -708,7 +706,7 @@ jQuery(document).ready(function($) {
     // Asegurar que al hacer clic en el label o hacer foco en el input, se abra el selector nativo
     $("input[type='date'], input[type='time']").on("focus click", function() {
         if (typeof this.showPicker === "function") {
-            try { this.showPicker(); } catch(e) {}
+            try { this.showPicker(); } catch(e) { /* Browser picker is optional. */ }
         }
     });
     

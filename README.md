@@ -23,7 +23,7 @@ app/
     └── Hotel/            Adaptador de Hotel QR
 assets/                    Design system y tracking del booking
 docs/integration/          Contratos, inventarios y guías de staging
-tests/                     Pruebas smoke/unitarias sin WordPress completo
+tests/                     PHPUnit, regresión legacy, integración WordPress y Playwright
 tools/                     Utilidades operativas mantenidas
 ```
 
@@ -31,9 +31,10 @@ tools/                     Utilidades operativas mantenidas
 
 ## Requisitos
 
-- WordPress 6.x y PHP 8.2 recomendado.
+- WordPress 6.8.6 o 7.0.2 y PHP 8.2 (matriz verificada en CI).
 - MySQL/MariaDB compatible con `dbDelta()`.
-- Node.js para validar sintaxis JavaScript.
+- Composer 2 para PHPUnit, PHPStan, WPCS y auditoría de dependencias.
+- Node.js 24 y npm para ESLint, auditoría y Playwright.
 - WooCommerce solo para el flujo legacy que crea pedidos/carrito.
 - Google Maps JavaScript API para autocompletado/mapas.
 - Google Distance Matrix API accesible desde el servidor para autorizar distancia y precio.
@@ -79,16 +80,26 @@ El gateway bloquea el endpoint Live mientras falte cualquiera de las cuatro atte
 
 1. Desplegar el contenido como el tema activo de staging.
 2. Crear las constantes en `wp-config.php` o configurar sus opciones desde **MeTransfers → Ajustes generales**.
-3. La migración versionada se ejecuta automáticamente en `init` y `admin_init`; comprobar sus logs tras el primer request.
+3. La migración versionada se ejecuta automáticamente en `init` y `admin_init`; comprobar el journal tras el primer request.
 4. Revisar `wp_options.mt_platform_db_version`; la versión esperada está definida por `MT_PLATFORM_DB_VERSION`.
 5. Verificar el estado con `php tools/migration-status.php` dentro de un entorno WordPress cargado.
 
-La migración actual también aprovisiona contenido inicial por compatibilidad. Debe probarse primero sobre una copia reciente de la base de datos.
+Los cambios de schema, backfills y seeds están separados. Las migraciones deben probarse primero sobre una copia reciente de la base de datos.
 
 ## Pruebas locales
 
 ```bash
-find . -path ./vendor -prune -o -type f -name "*.php" -print0 | xargs -0 -n1 php -l
+composer install
+composer validate --strict
+composer audit --locked
+composer quality
+npm ci
+npm audit --audit-level=high
+npm run lint:js
+npx playwright install chromium
+npm run test:e2e
+
+# Regresión compatible mantenida durante la transición legacy:
 php tests/test-legacy-load.php
 php tests/test-pricing.php
 php tests/test-route-distance.php
@@ -99,13 +110,15 @@ php tests/test-outbox.php
 php tests/test-booking-drafts.php
 php tests/test-server-vehicle-quotes.php
 php tests/test-money.php
+php tests/test-authoritative-receipt.php
+php tests/test-admin-security.php
+php tests/test-migrations.php
 php tests/test-i18n.php
 php tests/test-i18n-routing.php
 php tests/test-production-readiness.php
-find . -path ./node_modules -prune -o -path ./vendor -prune -o -type f -name "*.js" -print0 | xargs -0 -n1 node --check
 ```
 
-GitHub Actions repite estas verificaciones y añade controles de BOM/mojibake, patrones de credenciales y Gitleaks.
+GitHub Actions ejecuta gates independientes de PHP, JavaScript/Chromium, Gitleaks y arranque WordPress real sobre MariaDB para WordPress 6.8.6 y 7.0.2. El smoke de WordPress verifica migraciones, tablas, CPT, shortcodes, capacidades, cron y rewrite rules. Playwright cubre contratos de selector de idioma, tracking de compra confirmado/no confirmado, idempotencia, limpieza de datos de sesión y eventos de contacto; el funnel completo continúa siendo un gate de staging.
 
 ## Flujo de reservas y pagos
 

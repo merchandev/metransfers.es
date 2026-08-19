@@ -47,6 +47,10 @@ class OutboxWpdbMock {
     public $events = array();
 
     public function prepare( $query, ...$args ) {
+        if ( false !== strpos( $query, '%i' ) ) {
+            $identifier = array_shift( $args );
+            $query = preg_replace( '/%i/', (string) $identifier, $query, 1 );
+        }
         $this->last_args = $args;
         return $query;
     }

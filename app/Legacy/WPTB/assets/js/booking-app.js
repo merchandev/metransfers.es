@@ -43,7 +43,6 @@ jQuery(document).ready(function ($) {
     })();
 
     // ===== GLOBAL STATE =====
-    let originAutocomplete, destinationAutocomplete;
     let map, directionsService, directionsRenderer;
     let bookingData = {
         date: '',
@@ -585,7 +584,7 @@ jQuery(document).ready(function ($) {
     });
 
     // Handle Route Calculation
-    function calculateRoute(suffix) {
+    function calculateRoute() {
         processCalculation();
     }
 
@@ -680,7 +679,7 @@ jQuery(document).ready(function ($) {
                 if (vehicles.length > 0) {
                     displayVehicles(vehicles);
                 } else {
-                    displayNoVehicles(response);
+                    displayNoVehicles();
                 }
             },
             error: function (xhr, status, error) {
@@ -692,7 +691,7 @@ jQuery(document).ready(function ($) {
         });
     }
 
-    function displayNoVehicles(response) {
+    function displayNoVehicles() {
         track('booking_error', { error_type: 'no_vehicles' });
         const $message = $('<div>', { class: 'mt-empty-state' });
         $message.append('<span class="dashicons dashicons-warning mt-empty-state__icon"></span>');
@@ -763,7 +762,7 @@ jQuery(document).ready(function ($) {
         e.stopPropagation(); // Prevent bubbling to card onclick
         const $card = $(this).closest('.vehicle-card');
         const id = $card.data('vehicle-id');
-        selectVehicle(id);
+        window.selectVehicle(id);
     });
 
     function useServerVehiclePrice(vehicle) {

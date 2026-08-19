@@ -1,0 +1,21 @@
+parameters:
+    level: 5
+    paths:
+        - app/Booking/BookingDatePolicy.php
+        - app/Booking/I18n.php
+        - app/Core/Outbox.php
+        - app/Core/ReleaseGate.php
+        - app/I18n
+        - app/Payments/Redsys/Gateway.php
+        - app/Pricing
+    scanFiles:
+        - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+        - tests/bootstrap/phpstan-stubs.php
+        - app/Legacy/WPTB/includes/class-wptb-redsys.php
+        - app/Legacy/WPTB/includes/class-wptb-vehicle-manager.php
+    dynamicConstantNames:
+        MT_ACTIVE_LANGS: 'list<string>'
+        MT_SEO_LANGS: 'list<string>'
+        MT_LANGS: 'array<string, array{label: string, name: string, google_code: string}>'
+    tmpDir: .phpstan-cache
+    reportUnmatchedIgnoredErrors: true

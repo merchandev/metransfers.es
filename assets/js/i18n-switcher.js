@@ -48,7 +48,9 @@
             document.body.classList.add('mt-lang-open');
         }
         if (closeButton) {
-            closeButton.focus();
+            window.setTimeout(function () {
+                closeButton.focus();
+            }, 0);
         }
     }
 

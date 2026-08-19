@@ -1,0 +1,47 @@
+{
+    "name": "merchandev/metransfers",
+    "description": "Quality tooling for the MeTransfers WordPress theme and booking platform.",
+    "type": "wordpress-theme",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2"
+    },
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.2.1",
+        "php-stubs/wordpress-stubs": "^7.0.1",
+        "phpcompatibility/phpcompatibility-wp": "^2.1.8",
+        "phpstan/phpstan": "^2.2.8",
+        "phpunit/phpunit": "^11.5.44",
+        "squizlabs/php_codesniffer": "^3.13.5",
+        "wp-coding-standards/wpcs": "^3.4.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "MeTransfers\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MeTransfers\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "platform": {
+            "php": "8.2.0"
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "test:unit": "phpunit --configuration phpunit.xml.dist",
+        "analyse": "phpstan analyse --configuration phpstan.neon --memory-limit=1G --no-progress",
+        "cs": "phpcs --standard=phpcs.xml.dist",
+        "quality": [
+            "@test:unit",
+            "@analyse",
+            "@cs"
+        ]
+    }
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<ruleset name="MeTransfers modern PHP">
+    <description>Incremental WPCS and PHP 8.2+ compatibility gate for modern, payment-sensitive code.</description>
+
+    <file>app/I18n</file>
+    <file>app/Payments/Redsys/Gateway.php</file>
+    <file>app/Pricing</file>
+    <file>app/Core/Outbox.php</file>
+    <file>app/Core/ReleaseGate.php</file>
+    <file>tests/Unit</file>
+
+    <arg name="basepath" value="."/>
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="8"/>
+    <arg value="sp"/>
+
+    <rule ref="WordPress-Core">
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+        <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
+    </rule>
+    <rule ref="PHPCompatibilityWP"/>
+
+    <config name="testVersion" value="8.2-"/>
+</ruleset>

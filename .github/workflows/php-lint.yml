@@ -1,4 +1,4 @@
-name: PHP Linting
+name: Quality Gate
 
 on:
   workflow_dispatch:
@@ -7,13 +7,22 @@ on:
   pull_request:
     branches: [ "main", "master" ]
 
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
-  pull-requests: write
+  pull-requests: read
+
+env:
+  COMPOSER_NO_INTERACTION: 1
 
 jobs:
-  php-lint:
+  php-quality:
+    name: PHP quality and regression
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -21,19 +30,30 @@ jobs:
           fetch-depth: 0
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: '8.2'
           coverage: none
+          tools: composer:v2
 
-      - name: Lint PHP Files
+      - name: Install locked PHP tools
+        run: composer install --no-progress --prefer-dist
+
+      - name: Validate and audit Composer dependencies
+        run: |
+          composer validate --strict
+          composer audit --locked
+
+      - name: Run PHPUnit, PHPStan and WPCS
+        run: composer quality
+
+      - name: Lint PHP files
         shell: bash
         run: |
           set -o pipefail
-          echo "Starting PHP syntax check..."
-          find . -path ./vendor -prune -o -type f -name "*.php" -print0 | xargs -0 -n1 php -l | tee output.log
+          find . -path ./vendor -prune -o -type f -name "*.php" -print0 | xargs -0 -n1 php -l | tee php-lint.log
 
-      - name: Run integration tests
+      - name: Run legacy regression suite
         shell: bash
         run: |
           php tests/test-legacy-load.php
@@ -53,68 +73,128 @@ jobs:
           php tests/test-i18n-routing.php
           php tests/test-production-readiness.php
 
-      - name: Check JavaScript syntax
-        shell: bash
-        run: |
-          find . \
-            -path ./node_modules -prune -o \
-            -path ./vendor -prune -o \
-            -type f -name "*.js" -print0 | xargs -0 -n1 node --check
-
       - name: Check UTF-8 corruption
         shell: bash
         run: |
           set -e
-
-          echo "Checking UTF-8 BOM..."
-          if grep -rIl $'^\xEF\xBB\xBF' \
-            --include="*.php" \
-            --include="*.css" \
-            --include="*.js" \
-            .; then
+          if grep -rIl $'^\xEF\xBB\xBF' --include="*.php" --include="*.css" --include="*.js" --exclude-dir="vendor" --exclude-dir="node_modules" .; then
             echo "ERROR: UTF-8 BOM detected."
             exit 1
           fi
-
-          echo "Checking mojibake..."
-          if grep -rInE \
-            'Ã.|Â.|â€|â†|â•|â”|ï¿|ðŸ|�' \
-            --include="*.php" \
-            --include="*.css" \
-            --include="*.js" \
-            --exclude-dir="vendor" \
-            .; then
+          if grep -rInE 'Ã.|Â.|â€|â†|â•|â”|ï¿|ðŸ|�' --include="*.php" --include="*.css" --include="*.js" --exclude-dir="vendor" --exclude-dir="node_modules" .; then
             echo "ERROR: possible UTF-8 corruption detected."
             exit 1
           fi
-
-          echo "Encoding check passed."
 
       - name: Check committed credentials
         shell: bash
         run: |
           set -e
-          if grep -rInE \
-            'sk_live_[A-Za-z0-9]{16,}|pk_live_[A-Za-z0-9]{32,}|AIza[0-9A-Za-z_-]{20,}' \
-            --exclude-dir=".git" \
-            --exclude-dir="vendor" \
-            .; then
+          if grep -rInE 'sk_live_[A-Za-z0-9]{16,}|pk_live_[A-Za-z0-9]{32,}|AIza[0-9A-Za-z_-]{20,}' --exclude-dir=".git" --exclude-dir="vendor" --exclude-dir="node_modules" .; then
             echo "ERROR: possible committed credential detected."
             exit 1
           fi
 
-      - name: Scan Git history and changes with Gitleaks
+  javascript-quality:
+    name: JavaScript and browser contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install locked JavaScript tools
+        run: npm ci
+
+      - name: Audit JavaScript dependencies
+        run: npm audit --audit-level=high
+
+      - name: Run ESLint
+        run: npm run lint:js
+
+      - name: Check JavaScript syntax
+        shell: bash
+        run: find assets app/Legacy tests/e2e -type f -name "*.js" -print0 | xargs -0 -n1 node --check
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright contracts
+        run: npm run test:e2e
+
+  wordpress-integration:
+    name: WordPress ${{ matrix.wordpress }} integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        wordpress: [ '6.8.6', '7.0.2' ]
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup PHP and WP-CLI
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.2'
+          coverage: none
+          extensions: mysqli
+          tools: wp-cli
+
+      - name: Install WordPress fixture
+        env:
+          WP_VERSION: ${{ matrix.wordpress }}
+        shell: bash
+        run: |
+          set -euxo pipefail
+          wp core download --path=/tmp/wordpress --version="$WP_VERSION" --force
+          wp config create --path=/tmp/wordpress --dbname=wordpress --dbuser=root --dbpass=root --dbhost=127.0.0.1:3306 --skip-check
+          wp core install --path=/tmp/wordpress --url=http://metransfers.test --title=MeTransfers --admin_user=admin --admin_password=integration-only --admin_email=integration@example.test --skip-email
+          ln -s "$GITHUB_WORKSPACE" /tmp/wordpress/wp-content/themes/metransfers
+          wp theme activate metransfers --path=/tmp/wordpress
+          wp option update permalink_structure '/%postname%/' --path=/tmp/wordpress
+          wp rewrite flush --hard --path=/tmp/wordpress
+
+      - name: Run WordPress behavioral smoke
+        run: wp eval-file "$GITHUB_WORKSPACE/tests/Integration/wordpress-smoke.php" --path=/tmp/wordpress
+
+  security:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Scan Git changes with Gitleaks
         if: github.event_name != 'workflow_dispatch'
         uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # gitleaks-action scans the complete repository history for a manual
-      # dispatch. This repository has documented pre-baseline findings, so a
-      # manual branch validation scans the current tree while PR/push runs keep
-      # using the commit-range behavior above. Live remains blocked by the
-      # credential-rotation attestations in ReleaseGate.
-      - name: Scan current tree with Gitleaks (manual runs)
+      - name: Scan current tree with Gitleaks
         if: github.event_name == 'workflow_dispatch'
         uses: docker://ghcr.io/gitleaks/gitleaks:v8.30.1
         with:
