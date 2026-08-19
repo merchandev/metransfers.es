@@ -3,6 +3,7 @@ namespace MeTransfers\Notifications;
 
 use MeTransfers\Booking\I18n;
 use MeTransfers\Core\Settings;
+use MeTransfers\Pricing\Money;
 
 final class NotificationService {
     public static function bookingPending( $booking_id, $booking ) {
@@ -30,7 +31,7 @@ final class NotificationService {
         $text .= "🚘 " . $vehicle_name . "\n";
         $text .= "📍 " . (string) $booking->origin . "\n⬇️\n📍 " . (string) $booking->destination . "\n";
         $text .= "📅 " . (string) $booking->booking_date . ' ' . (string) $booking->booking_time . "\n";
-        $text .= "💶 €" . number_format( (float) $booking->price, 2, '.', '' ) . "\n";
+        $text .= "💶 €" . Money::fromBooking( $booking )->decimal() . "\n";
         $text .= "📞 " . (string) $booking->customer_phone;
 
         $response = wp_remote_get(
@@ -178,7 +179,7 @@ final class NotificationService {
             $t( 'vehicle' ) => $vehicle_name,
             $t( 'passengers' ) => (int) $booking->passengers,
             $t( 'luggage' ) => (int) $booking->suitcases . ' + ' . (int) $booking->carry_ons,
-            $t( 'price' ) => '€' . number_format( (float) $booking->price, 2, '.', '' ),
+            $t( 'price' ) => '€' . Money::fromBooking( $booking )->decimal(),
         );
         if ( ! empty( $booking->flight_number ) ) {
             $rows[ $t( 'flight' ) ] = $booking->flight_number;

@@ -98,6 +98,7 @@ php tests/test-hardening-phase1.php
 php tests/test-outbox.php
 php tests/test-booking-drafts.php
 php tests/test-server-vehicle-quotes.php
+php tests/test-money.php
 php tests/test-i18n.php
 php tests/test-production-readiness.php
 find . -path ./node_modules -prune -o -path ./vendor -prune -o -type f -name "*.js" -print0 | xargs -0 -n1 node --check

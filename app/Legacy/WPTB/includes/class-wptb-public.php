@@ -209,7 +209,9 @@ class WPTB_Public {
         }
         $distance = (float) $quote['total_distance_km'];
         $duration_minutes = (int) $quote['duration_minutes'];
-        $price = (float) $quote['price'];
+        $price_money = new \MeTransfers\Pricing\Money( (int) $quote['price_cents'] );
+        $price = $price_money->decimalFloat();
+        $price_cents = $price_money->cents();
 
         // Add to WooCommerce Cart
         $product_id = get_option( 'wptb_transfer_product_id' );
@@ -232,6 +234,7 @@ class WPTB_Public {
                     'vehicle_name' => $vehicle->name,
                     'trip_type' => $trip_type,
                     'custom_price' => $price,
+                    'price_cents' => $price_cents,
                     'passengers' => $passengers,
                     'suitcases' => $suitcases,
                     'carry_ons' => $carry_ons,
@@ -260,6 +263,7 @@ class WPTB_Public {
                     'distance_km' => $distance,
                     'duration_minutes' => $duration_minutes,
                     'price' => $price,
+                    'price_cents' => $price_cents,
                     'customer_name' => $fullName,
                     'customer_email' => $email,
                     'customer_phone' => $phone,
@@ -275,7 +279,7 @@ class WPTB_Public {
                     'booking_locale' => $language,
                     'created_at' => current_time( 'mysql' )
                 ),
-                array( '%s', '%s', '%s', '%s', '%f', '%d', '%f', '%s', '%s', '%s', '%d', '%d', '%d', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s' )
+                array( '%s', '%s', '%s', '%s', '%f', '%d', '%f', '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s' )
             );
 
             if ( false === $inserted || ! $wpdb->insert_id ) {
@@ -621,6 +625,7 @@ class WPTB_Public {
                 wp_send_json_error( array( 'code' => 'invalid_draft', 'message' => \MeTransfers\Booking\I18n::text( 'invalid_contact', $language ) ) );
                 return;
             }
+            $draft_money = \MeTransfers\Pricing\Money::fromDecimal( $booking_data['price'] );
 
             $payload = array(
                 'date'               => sanitize_text_field( $booking_data['date'] ),
@@ -630,7 +635,8 @@ class WPTB_Public {
                 'vehicle_id'         => $vehicle_id,
                 'vehicle_name'       => sanitize_text_field( $vehicle->name ),
                 'trip_type'          => isset( $booking_data['trip_type'] ) && 'round_trip' === $booking_data['trip_type'] ? 'round_trip' : 'one_way',
-                'price'              => round( (float) $booking_data['price'], 2 ),
+                'price'              => $draft_money->decimalFloat(),
+                'price_cents'        => $draft_money->cents(),
                 'customer_name'      => sanitize_text_field( $booking_data['customer_name'] ),
                 'customer_email'     => $customer_email,
                 'customer_phone'     => sanitize_text_field( $booking_data['customer_phone'] ),
@@ -723,7 +729,7 @@ class WPTB_Public {
             return;
         }
 
-        $amount = (int) round( (float) $booking->price * 100 );
+        $amount = \MeTransfers\Pricing\Money::fromBooking( $booking )->cents();
         $order_id = ! empty( $booking->payment_intent_id )
             ? (string) $booking->payment_intent_id
             : str_pad( (int) $booking_id, 12, '0', STR_PAD_LEFT );
@@ -851,12 +857,15 @@ class WPTB_Public {
                 return;
             }
 
-            $server_price = (float) $quote['price'];
+            $server_money = new \MeTransfers\Pricing\Money( (int) $quote['price_cents'] );
+            $server_price = $server_money->decimalFloat();
+            $server_price_cents = $server_money->cents();
             $distance_km = (float) $quote['total_distance_km'];
             $duration_minutes = (int) $quote['duration_minutes'];
-            $displayed_price = (float) $booking_data['price'];
-            if ( abs( $server_price - $displayed_price ) > 0.01 ) {
+            $displayed_price_cents = \MeTransfers\Pricing\Money::fromDecimal( $booking_data['price'] )->cents();
+            if ( $server_price_cents !== $displayed_price_cents ) {
                 $booking_data['price'] = $server_price;
+                $booking_data['price_cents'] = $server_price_cents;
                 $booking_data['distance_km'] = $distance_km;
                 $booking_data['duration_minutes'] = $duration_minutes;
                 $drafts->updatePayload( (int) $draft['id'], $booking_data );
@@ -864,6 +873,7 @@ class WPTB_Public {
                     'code' => 'price_changed',
                     'message' => \MeTransfers\Booking\I18n::text( 'price_changed', $language ),
                     'server_price' => $server_price,
+                    'server_price_cents' => $server_price_cents,
                 ) );
                 return;
             }
@@ -901,6 +911,7 @@ class WPTB_Public {
                 'vehicle_id' => $vehicle_id,
                 'trip_type' => $trip_type,
                 'price' => $server_price,
+                'price_cents' => $server_price_cents,
                 'customer_name' => $customer_name,
                 'customer_email' => $customer_email,
                 'customer_phone' => $customer_phone,
@@ -1009,7 +1020,7 @@ class WPTB_Public {
         $reported_amount = isset( $notification_parameters['ds_amount'] )
             ? (int) $notification_parameters['ds_amount']
             : 0;
-        $expected_amount = (int) round( (float) $booking->price * 100 );
+        $expected_amount = \MeTransfers\Pricing\Money::fromBooking( $booking )->cents();
         if ( $reported_amount !== $expected_amount ) {
             error_log( 'WPTB Redsys notification rejected: amount mismatch for booking #' . (int) $booking->id . '.' );
             status_header( 400 );

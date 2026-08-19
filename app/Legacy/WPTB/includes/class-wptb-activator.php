@@ -19,6 +19,7 @@ class WPTB_Activator {
             distance_km float,
             duration_minutes int,
             price decimal(10,2),
+            price_cents bigint(20) unsigned DEFAULT NULL,
             customer_name varchar(150),
             customer_email varchar(150),
             customer_phone varchar(50),
@@ -59,6 +60,14 @@ class WPTB_Activator {
             KEY destination (destination(50))
         ) $charset_collate;";
         dbDelta( $sql_bookings );
+
+        // Compatibility backfill uses MySQL DECIMAL arithmetic and is safe to
+        // repeat. New writes persist both columns until legacy readers retire.
+        $wpdb->query(
+            "UPDATE $table_bookings
+             SET price_cents = CAST(ROUND(price * 100) AS UNSIGNED)
+             WHERE price_cents IS NULL AND price IS NOT NULL AND price >= 0"
+        );
 
         // Durable analytics outbox. Financial conversions are recorded by the
         // payment callback even when the customer never returns to the browser.

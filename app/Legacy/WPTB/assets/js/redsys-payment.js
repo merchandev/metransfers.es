@@ -285,6 +285,7 @@
                         track('payment_error', { error_type: errorCode });
                         if (response.data && response.data.code === 'price_changed') {
                             bookingData.price = parseFloat(response.data.server_price);
+                            bookingData.price_cents = Number.parseInt(response.data.server_price_cents, 10);
                             populateSummary(bookingData);
                         }
                         showError((response.data && response.data.message) || t('bank_connection_error', 'No se pudo conectar con el banco.'));

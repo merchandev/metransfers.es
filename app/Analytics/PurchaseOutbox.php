@@ -3,6 +3,7 @@ namespace MeTransfers\Analytics;
 
 use MeTransfers\Core\Outbox;
 use MeTransfers\Core\Settings;
+use MeTransfers\Pricing\Money;
 
 /**
  * GA4 delivery adapter. New purchases use the generic outbox; the legacy
@@ -103,7 +104,14 @@ final class PurchaseOutbox {
     }
 
     private static function eligible( $booking ) {
-        if ( ! $booking || empty( $booking->id ) || (float) $booking->price <= 0 ) {
+        if ( ! $booking || empty( $booking->id ) ) {
+            return false;
+        }
+        try {
+            if ( Money::fromBooking( $booking )->cents() <= 0 ) {
+                return false;
+            }
+        } catch ( \InvalidArgumentException $exception ) {
             return false;
         }
         $client_id = isset( $booking->analytics_client_id )
@@ -113,6 +121,7 @@ final class PurchaseOutbox {
     }
 
     private static function payload( $booking ) {
+        $money = Money::fromBooking( $booking );
         return array(
             'client_id' => sanitize_text_field( $booking->analytics_client_id ),
             'events'    => array(
@@ -120,7 +129,7 @@ final class PurchaseOutbox {
                     'name'   => 'purchase',
                     'params' => array(
                         'transaction_id'       => (string) $booking->id,
-                        'value'                => (float) $booking->price,
+                        'value'                => $money->decimalFloat(),
                         'currency'             => 'EUR',
                         'engagement_time_msec' => 1,
                     ),

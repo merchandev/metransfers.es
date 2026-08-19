@@ -157,6 +157,7 @@ class BookingDraftService {
                     'vehicle_name',
                     'trip_type',
                     'price',
+                    'price_cents',
                     'passengers',
                     'return_date',
                     'return_time',

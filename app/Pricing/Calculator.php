@@ -93,9 +93,11 @@ class Calculator {
         }
 
         $final_price = apply_filters( 'wptb_calculated_price', $final_price, $vehicle_id, $distance_km, $trip_type );
+        $money = Money::fromDecimal( $final_price );
 
         return array(
-            'price' => round( $final_price, 2 ),
+            'price' => $money->decimalFloat(),
+            'price_cents' => $money->cents(),
             'breakdown' => $breakdown,
             'vehicle' => array(
                 'id' => $vehicle->id,

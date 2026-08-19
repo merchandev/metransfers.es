@@ -667,6 +667,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 window.bookingData.vehicle_name = vehicle.name;
                 window.bookingData.vehicle = vehicle;
                 window.bookingData.price = Number.parseFloat(vehicle.price);
+                window.bookingData.price_cents = Number.parseInt(vehicle.price_cents, 10);
 
                 track('vehicle_select', {
                     vehicle_id: vehicle.id,

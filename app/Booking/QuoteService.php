@@ -56,6 +56,7 @@ final class QuoteService {
                 'image'            => $image,
                 'image_url'        => $image,
                 'price'            => (float) $quote['price'],
+                'price_cents'      => (int) $quote['price_cents'],
                 'currency'         => 'EUR',
             );
         }
@@ -86,6 +87,7 @@ final class QuoteService {
         return array(
             'valid'                => true,
             'price'                => (float) $pricing['price'],
+            'price_cents'          => (int) $pricing['price_cents'],
             'distance_km'          => (float) $context['pricing_distance_km'],
             'total_distance_km'    => (float) $context['total_distance_km'],
             'duration_minutes'     => (int) $context['duration_minutes'],

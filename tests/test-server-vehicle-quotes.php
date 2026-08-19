@@ -80,6 +80,7 @@ require_once __DIR__ . '/../app/Booking/BookingDatePolicy.php';
 require_once __DIR__ . '/../app/Booking/RouteDistance.php';
 require_once __DIR__ . '/../app/Booking/RouteContext.php';
 require_once __DIR__ . '/../app/Booking/VehicleCapacityPolicy.php';
+require_once __DIR__ . '/../app/Pricing/Money.php';
 require_once __DIR__ . '/../app/Pricing/Calculator.php';
 require_once __DIR__ . '/../app/Booking/QuoteService.php';
 
@@ -95,6 +96,7 @@ $list = \MeTransfers\Booking\QuoteService::createVehicleList( $input );
 assert_vehicle_quote( ! empty( $list['valid'] ) && 2 === count( $list['vehicles'] ), 'All active vehicles must receive a server quote.' );
 assert_vehicle_quote( 1 === $GLOBALS['mt_vehicle_quote_route_calls'], 'All vehicle prices must share one resolved route.' );
 assert_vehicle_quote( 210.0 === $list['vehicles'][0]['price'], 'The server must price the first vehicle.' );
+assert_vehicle_quote( 21000 === $list['vehicles'][0]['price_cents'], 'Vehicle quotes must expose exact integer cents.' );
 assert_vehicle_quote( 300.0 === $list['vehicles'][1]['price'], 'The server must price the second vehicle.' );
 assert_vehicle_quote( 100.0 === $list['route']['total_distance_km'], 'The response must carry the server route context.' );
 

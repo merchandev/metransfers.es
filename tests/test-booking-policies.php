@@ -51,6 +51,7 @@ require_once __DIR__ . '/../app/Booking/ServiceAreaPolicy.php';
 require_once __DIR__ . '/../app/Booking/BookingDatePolicy.php';
 require_once __DIR__ . '/../app/Booking/RouteDistance.php';
 require_once __DIR__ . '/../app/Booking/RouteContext.php';
+require_once __DIR__ . '/../app/Pricing/Money.php';
 require_once __DIR__ . '/../app/Pricing/Calculator.php';
 require_once __DIR__ . '/../app/Booking/QuoteService.php';
 

@@ -56,7 +56,8 @@ jQuery(document).ready(function ($) {
         vehicle_id: 0,
         vehicle_name: '',
         trip_type: 'one_way',
-        price: 0
+        price: 0,
+        price_cents: 0
     };
 
     function vehicleQuoteRequest(data) {
@@ -428,6 +429,7 @@ jQuery(document).ready(function ($) {
                 bookingData.vehicle_id = vehicle.id;
                 bookingData.vehicle_name = vehicle.name;
                 bookingData.price = Number.parseFloat(vehicle.price);
+                bookingData.price_cents = Number.parseInt(vehicle.price_cents, 10);
 
                 track('vehicle_select', {
                     vehicle_id: vehicle.id,
@@ -773,6 +775,7 @@ jQuery(document).ready(function ($) {
         }
 
         bookingData.price = price;
+        bookingData.price_cents = Number.parseInt(vehicle.price_cents, 10);
         completeVehicleSelection(vehicle);
     }
 
@@ -959,6 +962,7 @@ jQuery(document).ready(function ($) {
             }
 
             bookingData.price = Number.parseFloat(response.data.price);
+            bookingData.price_cents = Number.parseInt(response.data.price_cents, 10);
             bookingData.distance_km = Number.parseFloat(response.data.total_distance_km);
             bookingData.duration_minutes = Number.parseInt(response.data.duration_minutes, 10);
             bookingData.language = response.data.booking_locale || wptb_vars.language || 'es';
@@ -1038,6 +1042,7 @@ jQuery(document).ready(function ($) {
                 vehicle_name: '',
                 trip_type: 'one_way',
                 price: 0,
+                price_cents: 0,
                 source: source || ''
             };
         }
@@ -1160,6 +1165,7 @@ jQuery(document).ready(function ($) {
             bookingData.vehicle_id = 0;
             bookingData.vehicle_name = '';
             bookingData.price = 0;
+            bookingData.price_cents = 0;
             sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
 
             // Show search summary (route info at top)
