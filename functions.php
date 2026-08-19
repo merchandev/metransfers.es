@@ -1577,6 +1577,19 @@ add_action( 'wp_head', function() {
 // En wp-config.php staging: define('WP_ENVIRONMENT_TYPE','staging');
 // En wp-config.php producción: define('WP_ENVIRONMENT_TYPE','production');
 // ==========================================
+function mt_is_transactional_page( $post = null ): bool {
+	$post = get_post( $post );
+	if ( ! $post || 'page' !== $post->post_type ) {
+		return false;
+	}
+
+	return in_array(
+		$post->post_name,
+		array( 'seleccionar-vehiculo', 'reservas-metransfers', 'pago', 'finalizar-pago', 'reservas-hotel' ),
+		true
+	);
+}
+
 add_filter( 'wp_robots', static function ( array $robots ): array {
 	$prod_hosts = [ 'metransfers.es', 'www.metransfers.es' ];
 	$current_host = wp_parse_url( home_url(), PHP_URL_HOST );
@@ -1590,8 +1603,13 @@ add_filter( 'wp_robots', static function ( array $robots ): array {
 	if ( is_tag() || is_search() || is_author() || is_date() || is_attachment() ) {
 		return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
 	}
+
+	// 3. El embudo transaccional nunca debe competir en resultados orgánicos.
+	if ( is_singular( 'page' ) && mt_is_transactional_page( get_queried_object_id() ) ) {
+		return array_merge( $robots, array( 'noindex' => true, 'follow' => true, 'noarchive' => true ) );
+	}
 	
-	// 3. Internacionalización incompleta (todo lo que no sea 'es')
+	// 4. Internacionalización incompleta (idiomas aún no aprobados para SEO)
 	if (
 	    function_exists( 'mt_lang' )
 	    && defined( 'MT_SEO_LANGS' )
@@ -1600,7 +1618,7 @@ add_filter( 'wp_robots', static function ( array $robots ): array {
 		return array_merge( $robots, array( 'noindex' => true, 'follow' => true ) );
 	}
 
-	// 4. Umbral de calidad para rutas
+	// 5. Umbral de calidad para rutas
 	if ( is_singular( 'ruta' ) ) {
 		// _mt_seo_ready=1 → indexar. Si no está a 1, no indexar. Es el único control de calidad.
 		$seo_ready = get_post_meta( get_the_ID(), '_mt_seo_ready', true );
@@ -1609,7 +1627,7 @@ add_filter( 'wp_robots', static function ( array $robots ): array {
 		}
 	}
 
-	// 5. Destinos genéricos (sin contenido diferenciado) → noindex temporal.
+	// 6. Destinos genéricos (sin contenido diferenciado) → noindex temporal.
 	// Solo se indexan destinos con contenido curado específico (salou, lloret-de-mar).
 	// Ampliar la lista $specific_destinations cuando un destino tenga contenido real único.
 	if ( is_page() && ! is_front_page() ) {
@@ -1629,6 +1647,14 @@ add_filter( 'wp_robots', static function ( array $robots ): array {
 // YOAST SEO: Excluir rutas de baja calidad y destinos genéricos del sitemap
 // ==========================================
 add_filter( 'wpseo_exclude_from_sitemap_by_post_ids', function( $excluded ) {
+	// El funnel es técnico y queda excluido en cualquier idioma.
+	foreach ( array( 'seleccionar-vehiculo', 'reservas-metransfers', 'pago', 'finalizar-pago', 'reservas-hotel' ) as $slug ) {
+		$page = get_page_by_path( $slug );
+		if ( $page ) {
+			$excluded[] = (int) $page->ID;
+		}
+	}
+
 	// 1. Excluir rutas que no están listas para SEO
 	$args = array(
 		'post_type'      => 'ruta',
@@ -1675,8 +1701,23 @@ add_filter( 'wpseo_exclude_from_sitemap_by_post_ids', function( $excluded ) {
 		$excluded = array_merge( $excluded, $generic_destination_ids );
 	}
 	
-	return $excluded;
+	return array_values( array_unique( array_map( 'intval', $excluded ) ) );
 } );
+
+add_filter( 'wp_sitemaps_posts_query_args', function( $args, $post_type ) {
+	if ( 'page' !== $post_type ) {
+		return $args;
+	}
+	$excluded = array();
+	foreach ( array( 'seleccionar-vehiculo', 'reservas-metransfers', 'pago', 'finalizar-pago', 'reservas-hotel' ) as $slug ) {
+		$page = get_page_by_path( $slug );
+		if ( $page ) {
+			$excluded[] = (int) $page->ID;
+		}
+	}
+	$args['post__not_in'] = array_values( array_unique( array_merge( isset( $args['post__not_in'] ) ? (array) $args['post__not_in'] : array(), $excluded ) ) );
+	return $args;
+}, 10, 2 );
 
 // Excluir taxonomías y tipos de contenido irrelevantes del Sitemap
 add_filter( 'wpseo_sitemap_exclude_taxonomy', function( $exclude, $taxonomy ) {

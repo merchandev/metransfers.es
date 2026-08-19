@@ -23,6 +23,12 @@ Estos endpoints manejan la busqueda de vehiculos, el calculo de precios y la cre
 **Descripcion:** Recalcula el precio (similar a get_vehicles, posiblemente usado en otros flujos).
 - **Acceso:** Privado y publico
 
+### 1.2.1 `wptb_get_quote`
+**Descripcion:** Devuelve el presupuesto autoritativo que también consume el pago.
+- **Acceso:** Privado y publico, protegido por `wptb_vars.nonce`.
+- **Validaciones:** área de servicio, fecha/antelación, vuelta posterior, rutas reales, vehículo y reglas completas de pricing.
+- **Respuesta:** precio, distancia total y por trayecto, duración, desglose, vehículo y `booking_locale`.
+
 ### 1.3 `wptb_save_booking`
 **Descripcion:** Guarda los datos de la reserva en base de datos.
 - **Acceso:** Privado y publico
@@ -38,6 +44,8 @@ Los nombres legacy `wptb_create_booking` y `wptb_get_pricing` no forman parte de
 - **Acceso:** Privado y publico
 - **Parametros esperados:**
   - `booking_data` (JSON/string): Datos de la reserva. Precio, distancia y duracion client-side se ignoran.
+  - `booking_data.terms_accepted` debe ser booleano verdadero.
+  - `booking_data.terms_version` debe coincidir exactamente con `MT_TERMS_VERSION`.
   - `security` (nonce).
 - **Respuesta esperada:** JSON con la URL del entorno configurado y parametros firmados (`Ds_Signature`, `Ds_MerchantParameters`).
 
@@ -106,4 +114,4 @@ Durante la integracion y el movimiento del codigo del plugin hacia el tema (`app
 1. Los hooks `wp_ajax_` vigentes listados arriba **NO deben cambiar de nombre**.
 2. Las respuestas JSON deben mantener la **misma estructura** (claves) que espera el JS actual (por ejemplo, `booking-app.js` y `redsys-payment.js`).
 3. Los **nonces** deben generarse bajo las mismas claves (`wptb_vars.nonce`, `mt_lead_nonce`).
-4. **Vulnerabilidad a corregir:** El endpoint `wptb_initiate_redsys` **DEBE** modificarse internamente para ignorar el `precio` enviado en el parametro `booking_data` por el cliente, y recalcularlo usando la distancia, vehiculo, tipo de viaje y tarifas minimas, asegurando que la orden de Redsys se genere con un precio autorizado por el servidor.
+4. `wptb_initiate_redsys` ignora como autoridad el precio del navegador, ejecuta `QuoteService` otra vez y solo genera la orden si el precio coincide, la ruta está cubierta, las fechas son válidas y existe consentimiento legal versionado.

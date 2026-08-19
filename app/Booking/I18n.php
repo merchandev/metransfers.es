@@ -22,11 +22,13 @@ final class I18n {
         return isset( $strings[ $key ] ) ? $strings[ $key ] : (string) $key;
     }
 
+    public static function normalizeLanguage( $language ) {
+        $language = strtolower( preg_replace( '/[^a-z-]/i', '', (string) $language ) );
+        return preg_match( '/^[a-z]{2}$/', $language ) ? $language : 'es';
+    }
+
     public static function strings( $language = '' ) {
-        $language = '' !== $language ? strtolower( preg_replace( '/[^a-z-]/i', '', (string) $language ) ) : self::language();
-        if ( ! preg_match( '/^[a-z]{2}$/', $language ) ) {
-            $language = 'es';
-        }
+        $language = self::normalizeLanguage( '' !== $language ? $language : self::language() );
         if ( isset( self::$translated[ $language ] ) ) {
             return self::$translated[ $language ];
         }
@@ -52,6 +54,13 @@ final class I18n {
 
         self::$translated[ $language ] = $source;
         return $source;
+    }
+
+    /**
+     * Spanish source catalog used by the admin/CLI translation prebuilder.
+     */
+    public static function sourceStrings() {
+        return self::spanish();
     }
 
     public static function url( $path = '/' ) {
@@ -145,6 +154,7 @@ final class I18n {
             'terms_link'                => 'Términos y condiciones',
             'terms_suffix'              => 'de la web y estoy de acuerdo en continuar',
             'terms_required'            => 'Debes aceptar los Términos y condiciones para continuar.',
+            'terms_server_required'     => 'La aceptación de los Términos y condiciones no pudo verificarse.',
             'pay'                       => 'Pagar',
             'processing'                => 'Procesando...',
             'payment_redirect'          => 'Serás redirigido a la pasarela de pago segura del banco.',
@@ -157,6 +167,12 @@ final class I18n {
             'location_error'            => 'Permiso denegado o error de ubicación. Por favor escribe tu origen.',
             'origin_restriction'        => 'Lo sentimos, solo operamos transfers con origen en el área de Barcelona.',
             'destination_restriction'   => 'El destino debe estar dentro de los países europeos con cobertura.',
+            'origin_policy_error'       => 'No se pudo verificar el origen del traslado.',
+            'destination_policy_error'  => 'No se pudo verificar el destino del traslado.',
+            'route_outside_service_area'=> 'La ruta debe comenzar o terminar en Cataluña y el otro punto debe estar dentro del área europea cubierta.',
+            'invalid_booking_datetime'  => 'La fecha u hora del traslado no es válida.',
+            'booking_lead_time_error'   => 'La reserva debe realizarse con al menos dos horas de antelación.',
+            'return_datetime_error'     => 'La fecha y hora de vuelta deben ser posteriores a la salida.',
             'geolocation_unsupported'   => 'Tu navegador no soporta geolocalización.',
             'geocode_error'             => 'No se pudo determinar la dirección. Por favor ingrésala manualmente.',
             'calculating'               => 'Calculando...',
@@ -190,6 +206,17 @@ final class I18n {
             'pdf_unavailable'           => 'La librería PDF no está disponible.',
             'receipt_title'             => 'Recibo de reserva',
             'trip_type'                 => 'Tipo de viaje',
+            'notification_pending_title'=> 'Reserva recibida',
+            'notification_confirmed_title'=> '¡Reserva confirmada!',
+            'notification_pending_intro'=> 'Hemos recibido tu solicitud y está pendiente de pago.',
+            'notification_confirmed_intro'=> 'Tu reserva ha sido confirmada y el pago se recibió correctamente.',
+            'hello'                     => 'Hola',
+            'luggage'                   => 'Equipaje',
+            'flight'                    => 'Vuelo',
+            'notes'                     => 'Notas',
+            'price'                     => 'Precio',
+            'visit_website'             => 'Ir a la web',
+            'notification_help'         => 'Si necesitas ayuda, responde a este correo.',
         );
     }
 
@@ -265,6 +292,7 @@ final class I18n {
             'terms_link'                => 'Terms and conditions',
             'terms_suffix'              => 'and agree to continue',
             'terms_required'            => 'You must accept the Terms and conditions to continue.',
+            'terms_server_required'     => 'Acceptance of the Terms and conditions could not be verified.',
             'pay'                       => 'Pay',
             'processing'                => 'Processing...',
             'payment_redirect'          => 'You will be redirected to the bank\'s secure payment gateway.',
@@ -277,6 +305,12 @@ final class I18n {
             'location_error'            => 'Location permission was denied or unavailable. Please enter your origin.',
             'origin_restriction'        => 'Sorry, transfer origins must be within the Barcelona area.',
             'destination_restriction'   => 'The destination must be within one of the supported European countries.',
+            'origin_policy_error'       => 'The transfer origin could not be verified.',
+            'destination_policy_error'  => 'The transfer destination could not be verified.',
+            'route_outside_service_area'=> 'The route must start or finish in Catalonia and the other point must be within the supported European service area.',
+            'invalid_booking_datetime'  => 'The transfer date or time is invalid.',
+            'booking_lead_time_error'   => 'Bookings require at least two hours of advance notice.',
+            'return_datetime_error'     => 'The return date and time must be later than the outbound trip.',
             'geolocation_unsupported'   => 'Your browser does not support geolocation.',
             'geocode_error'             => 'The address could not be determined. Please enter it manually.',
             'calculating'               => 'Calculating...',
@@ -310,6 +344,17 @@ final class I18n {
             'pdf_unavailable'           => 'The PDF library is unavailable.',
             'receipt_title'             => 'Booking receipt',
             'trip_type'                 => 'Trip type',
+            'notification_pending_title'=> 'Booking received',
+            'notification_confirmed_title'=> 'Booking confirmed!',
+            'notification_pending_intro'=> 'We received your booking request and it is awaiting payment.',
+            'notification_confirmed_intro'=> 'Your booking is confirmed and your payment was received successfully.',
+            'hello'                     => 'Hello',
+            'luggage'                   => 'Luggage',
+            'flight'                    => 'Flight',
+            'notes'                     => 'Notes',
+            'price'                     => 'Price',
+            'visit_website'             => 'Visit website',
+            'notification_help'         => 'Reply to this email if you need help.',
         );
     }
 }

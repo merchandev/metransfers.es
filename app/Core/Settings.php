@@ -62,6 +62,30 @@ class Settings {
             'constants' => array( 'MT_SMTP_FROM_NAME' ),
             'options'   => array( 'wptb_smtp_from_name' ),
         ),
+        'ga4_measurement_id' => array(
+            'constants' => array( 'MT_GA4_MEASUREMENT_ID' ),
+            'options'   => array( 'mt_ga4_measurement_id' ),
+        ),
+        'ga4_api_secret' => array(
+            'constants' => array( 'MT_GA4_API_SECRET' ),
+            'options'   => array( 'mt_ga4_api_secret' ),
+        ),
+        'redsys_credentials_rotated_at' => array(
+            'constants' => array( 'MT_REDSYS_CREDENTIALS_ROTATED_AT' ),
+            'options'   => array( 'mt_redsys_credentials_rotated_at' ),
+        ),
+        'smtp_credentials_rotated_at' => array(
+            'constants' => array( 'MT_SMTP_CREDENTIALS_ROTATED_AT' ),
+            'options'   => array( 'mt_smtp_credentials_rotated_at' ),
+        ),
+        'maps_credentials_rotated_at' => array(
+            'constants' => array( 'MT_MAPS_CREDENTIALS_ROTATED_AT' ),
+            'options'   => array( 'mt_maps_credentials_rotated_at' ),
+        ),
+        'redsys_sandbox_verified_at' => array(
+            'constants' => array( 'MT_REDSYS_SANDBOX_VERIFIED_AT' ),
+            'options'   => array( 'mt_redsys_sandbox_verified_at' ),
+        ),
     );
 
     public static function get( $key, $default = null ) {

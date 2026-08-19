@@ -27,9 +27,8 @@ if ( ! defined('MT_LANGS') ) {
 }
 
 if ( ! defined('MT_ACTIVE_LANGS') ) {
-    // All languages active. Translation via Google Cloud Translate (mt_google_api_key option).
-    // Without an API key, content is shown in Spanish (safe fallback, no errors).
-    // Reactivamos todos los idiomas como solicitó el usuario.
+    // All languages remain navigable. Non-local catalogs are pre-generated in
+    // admin and public requests only read cache/DB; Spanish is the safe fallback.
     define( 'MT_ACTIVE_LANGS', [ 'es', 'en', 'fr', 'de', 'it', 'pt', 'ca', 'ru', 'zh', 'ja', 'ar' ] );
 }
 
@@ -327,34 +326,8 @@ function mt_translate( string $text, string $lang = '' ): string {
     }
     if ( $cached !== null && $cached !== false ) return $cached;
 
-    $api_key = get_option( 'mt_google_api_key', '' );
-    if ( empty( $api_key ) ) return $text;
-
-    $response = wp_remote_post(
-        'https://translation.googleapis.com/language/translate/v2?key=' . $api_key,
-        [
-            'headers' => [ 'Content-Type' => 'application/json' ],
-            'body'    => wp_json_encode( [
-                'q'      => [ $text ],
-                'source' => 'es',
-                'target' => MT_LANGS[ $lang ]['google_code'],
-                'format' => 'html',
-            ] ),
-            'timeout' => 10,
-        ]
-    );
-
-    if ( is_wp_error( $response ) ) return $text;
-
-    $body       = json_decode( wp_remote_retrieve_body( $response ), true );
-    $translated = $body['data']['translations'][0]['translatedText'] ?? null;
-
-    if ( $translated ) {
-        $decoded = html_entity_decode( $translated, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
-        update_option( $cache_key, $decoded, false );
-        wp_cache_set( $cache_key, $decoded, 'mt_i18n', 3600 );
-        return $decoded;
-    }
+    // Public rendering is cache-only. Remote translation is an explicit admin
+    // prebuild operation so a page request can never wait on Google Translate.
     return $text;
 }
 
@@ -362,10 +335,7 @@ function mt_translate_batch( array $texts, string $lang = '' ): array {
     if ( ! $lang ) $lang = mt_lang();
     if ( $lang === 'es' || empty( $texts ) ) return $texts;
 
-    $api_key      = get_option( 'mt_google_api_key', '' );
     $results      = [];
-    $to_translate = [];
-    $cache_keys   = [];
 
     foreach ( $texts as $i => $text ) {
         $cache_key = 'mt_tr_' . $lang . '_' . md5( $text );
@@ -378,49 +348,57 @@ function mt_translate_batch( array $texts, string $lang = '' ): array {
         }
         if ( $cached !== null && $cached !== false ) {
             $results[ $i ] = $cached;
-        } elseif ( $api_key ) {
-            $to_translate[ $i ] = $text;
-            $cache_keys[ $i ]   = $cache_key;
         } else {
             $results[ $i ] = $text;
         }
     }
 
-    if ( ! empty( $to_translate ) && $api_key ) {
-        $chunks = array_chunk( $to_translate, 100, true );
-        foreach ( $chunks as $chunk ) {
-            $response = wp_remote_post(
-                'https://translation.googleapis.com/language/translate/v2?key=' . $api_key,
-                [
-                    'headers' => [ 'Content-Type' => 'application/json' ],
-                    'body'    => wp_json_encode( [
-                        'q'      => array_values( $chunk ),
-                        'source' => 'es',
-                        'target' => MT_LANGS[ $lang ]['google_code'],
-                        'format' => 'html',
-                    ] ),
-                    'timeout' => 15,
-                ]
-            );
+    ksort( $results );
+    return $results;
+}
 
-            if ( ! is_wp_error( $response ) ) {
-                $body         = json_decode( wp_remote_retrieve_body( $response ), true );
-                $translations = $body['data']['translations'] ?? [];
-                $keys         = array_keys( $chunk );
-                foreach ( $translations as $j => $tr ) {
-                    $idx     = $keys[ $j ];
-                    $decoded = html_entity_decode( $tr['translatedText'], ENT_QUOTES | ENT_HTML5, 'UTF-8' );
-                    $results[ $idx ] = $decoded;
-                    update_option( $cache_keys[ $idx ], $decoded, false );
-                    wp_cache_set( $cache_keys[ $idx ], $decoded, 'mt_i18n', 3600 );
-                }
-            } else {
-                foreach ( $chunk as $i => $t ) { $results[ $i ] = $t; }
-            }
-        }
+function mt_translate_batch_remote( array $texts, string $lang ): array {
+    if ( ! is_admin() || ! current_user_can( 'manage_options' ) || 'es' === $lang || ! isset( MT_LANGS[ $lang ] ) ) {
+        return $texts;
+    }
+    $api_key = get_option( 'mt_google_api_key', '' );
+    if ( ! $api_key ) {
+        return $texts;
     }
 
-    ksort( $results );
+    $results = array();
+    foreach ( array_chunk( $texts, 100, true ) as $chunk ) {
+        $response = wp_remote_post(
+            'https://translation.googleapis.com/language/translate/v2?key=' . $api_key,
+            array(
+                'headers' => array( 'Content-Type' => 'application/json' ),
+                'body'    => wp_json_encode( array(
+                    'q'      => array_values( $chunk ),
+                    'source' => 'es',
+                    'target' => MT_LANGS[ $lang ]['google_code'],
+                    'format' => 'html',
+                ) ),
+                'timeout' => 30,
+            )
+        );
+        if ( is_wp_error( $response ) ) {
+            continue;
+        }
+        $body = json_decode( wp_remote_retrieve_body( $response ), true );
+        $translations = $body['data']['translations'] ?? array();
+        $keys = array_keys( $chunk );
+        foreach ( $translations as $index => $translation ) {
+            if ( ! isset( $keys[ $index ], $translation['translatedText'] ) ) {
+                continue;
+            }
+            $key = $keys[ $index ];
+            $decoded = html_entity_decode( $translation['translatedText'], ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+            $cache_key = 'mt_tr_' . $lang . '_' . md5( $chunk[ $key ] );
+            update_option( $cache_key, $decoded, false );
+            wp_cache_set( $cache_key, $decoded, 'mt_i18n', 3600 );
+            $results[ $key ] = $decoded;
+        }
+    }
     return $results;
 }
 
@@ -740,6 +718,16 @@ function mt_i18n_settings_page(): void {
         echo '<div class="notice notice-success"><p>Configuracion guardada.</p></div>';
     }
 
+    $prebuild_result = null;
+    if ( isset( $_POST['mt_prebuild_translations'] ) && check_admin_referer( 'mt_i18n_save' ) ) {
+        $prebuild_lang = sanitize_key( $_POST['mt_prebuild_lang'] ?? '' );
+        if ( isset( MT_LANGS[ $prebuild_lang ] ) && 'es' !== $prebuild_lang ) {
+            $sources = array_values( \MeTransfers\Booking\I18n::sourceStrings() );
+            $translated = mt_translate_batch_remote( $sources, $prebuild_lang );
+            $prebuild_result = sprintf( '%d de %d textos se guardaron para %s.', count( $translated ), count( $sources ), strtoupper( $prebuild_lang ) );
+        }
+    }
+
     // Handle API test
     $test_result = null;
     if ( isset( $_POST['mt_test_api'] ) && check_admin_referer( 'mt_i18n_save' ) ) {
@@ -787,12 +775,23 @@ function mt_i18n_settings_page(): void {
             <?php submit_button( 'Guardar API Key', 'primary', 'mt_save_settings', false ); ?>
             &nbsp;&nbsp;
             <?php submit_button( 'Probar API ahora', 'secondary', 'mt_test_api', false ); ?>
+            &nbsp;&nbsp;
+            <select name="mt_prebuild_lang">
+                <?php foreach ( MT_LANGS as $code => $language ) : if ( 'es' === $code ) continue; ?>
+                    <option value="<?php echo esc_attr( $code ); ?>"><?php echo esc_html( $language['name'] ); ?></option>
+                <?php endforeach; ?>
+            </select>
+            <?php submit_button( 'Pre-generar catálogo booking', 'secondary', 'mt_prebuild_translations', false ); ?>
         </form>
 
         <?php if ( $test_result !== null ) : ?>
         <div class="notice notice-<?php echo $test_result['ok'] ? 'success' : 'error'; ?>" style="margin-top:12px">
             <p><?php echo $test_result['ok'] ? '✅ API funciona: ' : '❌ Fallo: '; echo esc_html( $test_result['msg'] ); ?></p>
         </div>
+        <?php endif; ?>
+
+        <?php if ( null !== $prebuild_result ) : ?>
+        <div class="notice notice-success"><p><?php echo esc_html( $prebuild_result ); ?></p></div>
         <?php endif; ?>
 
         <hr>

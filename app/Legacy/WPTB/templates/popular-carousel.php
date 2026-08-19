@@ -72,8 +72,8 @@ if(count($slides) < 10) {
                             </div>
                         <?php else: ?>
                             <!-- Fallback Placeholder if no image -->
-                            <div class="mtfs-image-wrapper" style="background: linear-gradient(135deg, #004b68 0%, #003A52 100%); display: flex; align-items: center; justify-content: center;">
-                                <span class="dashicons dashicons-location" style="color:#005575; font-size:60px; width:60px; height:60px;"></span>
+                            <div class="mtfs-image-wrapper mtfs-image-wrapper--placeholder">
+                                <span class="dashicons dashicons-location mtfs-placeholder-icon"></span>
                             </div>
                         <?php endif; ?>
                         

@@ -64,8 +64,14 @@ try {
         'HQP_Public',
         'MeTransfers\\Core\\Assets',
         'MeTransfers\\Core\\Migrations',
+        'MeTransfers\\Core\\ReleaseGate',
         'MeTransfers\\Booking\\I18n',
         'MeTransfers\\Booking\\RouteDistance',
+        'MeTransfers\\Booking\\ServiceAreaPolicy',
+        'MeTransfers\\Booking\\BookingDatePolicy',
+        'MeTransfers\\Booking\\QuoteService',
+        'MeTransfers\\Notifications\\NotificationService',
+        'MeTransfers\\Analytics\\PurchaseOutbox',
         'MeTransfers\\Payments\\Redsys\\Gateway'
     ];
     

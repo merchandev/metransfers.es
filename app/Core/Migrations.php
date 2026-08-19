@@ -7,6 +7,7 @@ class Migrations {
     public function register() {
         add_action( 'after_switch_theme', array( $this, 'run' ) );
         add_action( 'admin_init', array( $this, 'maybe_run' ), 1 );
+        add_action( 'init', array( $this, 'maybe_run' ), 1 );
     }
 
     public function maybe_run() {

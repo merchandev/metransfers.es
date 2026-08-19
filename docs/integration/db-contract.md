@@ -41,6 +41,10 @@
 | payment_method | varchar(50) | SI | — | Metodo de pago |
 | payment_intent_id | varchar(255) | SI | — | ID transaccion Redsys/Stripe |
 | payment_status | varchar(20) | SI | 'pending' | Estado del pago |
+| booking_locale | varchar(10) | SI | 'es' | Idioma persistido del cliente |
+| terms_accepted_at | datetime | SI | — | Evidencia temporal del consentimiento |
+| terms_version | varchar(50) | SI | — | Versión legal aceptada |
+| analytics_client_id | varchar(100) | SI | — | Client ID técnico para reconciliación GA4 |
 | hotel_token | varchar(255) | SI | — | Token QR hotel |
 | source | varchar(50) | SI | 'Metransfers' | Origen de la reserva |
 | created_at | datetime | SI | CURRENT_TIMESTAMP | Creacion |
@@ -50,6 +54,9 @@
 - KEY vehicle_id (vehicle_id)
 - KEY booking_date (booking_date)
 - KEY status (status)
+- KEY status_booking_date (status, booking_date)
+- KEY payment_status_created_at (payment_status, created_at)
+- KEY vehicle_booking_date (vehicle_id, booking_date)
 - KEY payment_intent_id (payment_intent_id)
 - KEY hotel_token (hotel_token)
 
@@ -64,6 +71,12 @@
 - `paid`
 - `failed`
 - `refunded`
+
+---
+
+### wp_mt_analytics_outbox
+
+Outbox duradero de eventos financieros con consentimiento analítico. `event_key` es único (`purchase:{booking_id}`), de modo que callbacks duplicados no duplican compras. Mantiene payload, intentos, bloqueo de worker, estado, último error y fecha de envío.
 
 ---
 

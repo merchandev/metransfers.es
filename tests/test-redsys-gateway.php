@@ -52,6 +52,7 @@ class WPTB_Redsys_API {
 define( 'WPTB_PLUGIN_DIR', __DIR__ . '/../app/Legacy/WPTB/' );
 
 require_once __DIR__ . '/../app/Core/Settings.php';
+require_once __DIR__ . '/../app/Core/ReleaseGate.php';
 require_once __DIR__ . '/../app/Payments/Redsys/Gateway.php';
 
 $gateway = new \MeTransfers\Payments\Redsys\Gateway();
@@ -121,6 +122,16 @@ if ( empty( $denied['valid'] ) || ! empty( $denied['authorized'] ) ) {
 }
 
 $test_options['wptb_redsys_environment'] = 'live';
+$blocked_live_gateway = new \MeTransfers\Payments\Redsys\Gateway();
+if ( $blocked_live_gateway->is_configured() ) {
+    fwrite( STDERR, "FAILED: live Redsys must be blocked without operational attestations.\n" );
+    exit( 1 );
+}
+
+$test_options['mt_redsys_credentials_rotated_at'] = '2026-08-19T10:00:00+00:00';
+$test_options['mt_smtp_credentials_rotated_at'] = '2026-08-19T10:00:00+00:00';
+$test_options['mt_maps_credentials_rotated_at'] = '2026-08-19T10:00:00+00:00';
+$test_options['mt_redsys_sandbox_verified_at'] = '2026-08-19T10:00:00+00:00';
 $live_gateway = new \MeTransfers\Payments\Redsys\Gateway();
 $live_form = $live_gateway->generate_payment_form( 124, 100, '000000000124', 'Cliente Test' );
 if ( 'https://sis.redsys.es/sis/realizarPago' !== $live_form['url'] ) {
