@@ -73,8 +73,19 @@ if ( ! defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) ) {
 
 // Centralized Versioning
 if ( ! defined( 'ME_TRANSFERS_VERSION' ) ) {
-	define( 'ME_TRANSFERS_VERSION', '4.3.0' );
+	define( 'ME_TRANSFERS_VERSION', '4.3.1' );
 }
+
+// Auto-purge SiteGround Cache after theme update to prevent cached errors
+add_action('init', function() {
+    $current_version = get_option('mt_theme_version', '0.0.0');
+    if ( $current_version !== ME_TRANSFERS_VERSION ) {
+        update_option('mt_theme_version', ME_TRANSFERS_VERSION);
+        if ( function_exists('sg_cachepress_purge_cache') ) {
+            sg_cachepress_purge_cache();
+        }
+    }
+});
 
 
 
