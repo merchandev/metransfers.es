@@ -94,6 +94,16 @@ final class Translation {
 						$texts[] = $post->{$property};
 					}
 				}
+				
+				// Yoast SEO Meta
+				$yoast_title = get_post_meta( $post->ID, '_yoast_wpseo_title', true );
+				if ( $yoast_title ) {
+					$texts[] = $yoast_title;
+				}
+				$yoast_desc = get_post_meta( $post->ID, '_yoast_wpseo_metadesc', true );
+				if ( $yoast_desc ) {
+					$texts[] = $yoast_desc;
+				}
 			}
 		}
 

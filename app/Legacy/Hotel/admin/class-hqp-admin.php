@@ -1,7 +1,5 @@
 <?php
 
-require_once HQP_PLUGIN_DIR . 'admin/class-hqp-vehicles-admin.php';
-
 class HQP_Admin {
 
     public function register_hotel_cpt() { /* Migrated to app/Core/PostTypes.php */ }
@@ -110,7 +108,7 @@ class HQP_Admin {
         $van_id = get_post_meta( $post->ID, '_hqp_van_id', true );
         
         global $wpdb;
-        $vehicles = $wpdb->get_results("SELECT id, name, capacity FROM {$wpdb->prefix}wptb_hotel_vehicles WHERE is_active = 1 ORDER BY display_order ASC");
+        $vehicles = $wpdb->get_results("SELECT id, name, capacity FROM {$wpdb->prefix}wptb_vehicles WHERE is_active = 1 ORDER BY display_order ASC");
 
         wp_nonce_field( 'hqp_save_hotel_details', 'hqp_nonce' );
         ?>
@@ -304,7 +302,7 @@ class HQP_Admin {
         }
 
         global $wpdb;
-        $vehicles = $wpdb->get_results("SELECT id FROM {$wpdb->prefix}wptb_hotel_vehicles WHERE is_active = 1");
+        $vehicles = $wpdb->get_results("SELECT id FROM {$wpdb->prefix}wptb_vehicles WHERE is_active = 1");
         if ( $vehicles ) {
             foreach ( $vehicles as $v ) {
                 $key_post = 'hqp_price_vehicle_' . $v->id;
@@ -467,16 +465,6 @@ class HQP_Admin {
             \MeTransfers\Admin\Capabilities::MANAGE_HOTELS,
             'hotel-qr-reservations',
             array( $this, 'display_hotel_reservations_page' )
-        );
-        
-        $vehicles_admin = new HQP_Vehicles_Admin();
-        add_submenu_page(
-            'edit.php?post_type=hotel_partner',
-            'Vehículos',
-            'Vehículos',
-            \MeTransfers\Admin\Capabilities::MANAGE_VEHICLES,
-            'hotel-vehicles',
-            array( $vehicles_admin, 'display_vehicles_page' )
         );
     }
     

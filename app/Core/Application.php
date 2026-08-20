@@ -88,6 +88,22 @@ class Application {
         if ( is_admin() ) {
             $admin_menu = new \MeTransfers\Admin\Menu();
             add_action( 'admin_menu', array( $admin_menu, 'register' ) );
+
+            // Aviso si faltan páginas críticas del flujo de reserva
+            add_action( 'admin_notices', array( '\MeTransfers\Core\Seeds', 'adminNoticesMissingPages' ) );
+
+            // Endpoint para crear páginas faltantes con un clic desde el aviso
+            add_action( 'admin_init', static function () {
+                if ( ! isset( $_GET['page'] ) || 'mt-seeds-run' !== $_GET['page'] ) {
+                    return;
+                }
+                if ( ! current_user_can( 'manage_options' ) ) {
+                    wp_die( esc_html__( 'No tienes permisos para realizar esta acción.', 'me-transfers' ) );
+                }
+                \MeTransfers\Core\Seeds::run();
+                wp_safe_redirect( add_query_arg( 'mt_seeds_done', '1', admin_url() ) );
+                exit;
+            } );
         }
     }
 

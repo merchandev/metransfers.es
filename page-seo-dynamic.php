@@ -147,32 +147,33 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
         <div class="seo-hero-grid">
             <!-- TEXTO -->
             <div>
-                <div class="hero-badge-seo">De puerta a puerta | Confort garantizado</div>
-                <h1 class="hero-title-seo"><?php echo esc_html( mt_translate( $title_hero  )); ?></h1>
+                <div class="hero-badge-seo"><?php echo esc_html( mt_translate( 'De puerta a puerta | Confort garantizado' ) ); ?></div>
+                <h1 class="hero-title-seo"><?php echo esc_html( mt_translate( $title_hero ) ); ?></h1>
                 <p class="hero-lead-seo">
-                    <?php echo esc_html( mt_translate( $lead_hero  )); ?>
+                    <?php echo esc_html( mt_translate( $lead_hero ) ); ?>
                 </p>
                 <div class="hero__checks">
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Precio fijo sin cargos ocultos</span>
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos modernos y limpios</span>
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Seguimiento de vuelos en tiempo real</span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo esc_html( mt_translate( 'Precio fijo sin cargos ocultos' ) ); ?></span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo esc_html( mt_translate( 'Vehículos modernos y limpios' ) ); ?></span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo esc_html( mt_translate( 'Seguimiento de vuelos en tiempo real' ) ); ?></span>
                 </div>
             </div>
 
             <!-- PANEL RESERVA -->
             <div id="reservar">
                 <div class="hero__panel">
-                    <h2>Calcula tu traslado online</h2>
+                    <h2><?php echo esc_html( mt_translate( 'Calcula tu traslado online' ) ); ?></h2>
                     <?php if ( shortcode_exists( 'wptb_booking_form' ) ) : ?>
                         <?php echo do_shortcode( '[wptb_booking_form]' ); ?>
                     <?php else : ?>
-                        <p style="text-align:center;padding:20px;color:var(--muted);">Activa el plugin de reservas (WPTB).</p>
+                        <p style="text-align:center;padding:20px;color:var(--muted);"><?php echo esc_html( mt_translate( 'Activa el plugin de reservas (WPTB).' ) ); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
     </section>
     
+
     <!-- Contenido SEO -->
     <section class="section container gs-reveal" style="padding: 80px 16px;">
         <div class="entry-content" style="max-width: 900px; margin: 0 auto; line-height: 1.8; font-size: 1.1rem; background: #fff; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
@@ -215,13 +216,13 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
       <div class="wrap">
         <div class="cta__inner">
           <div>
-            <p class="tag">Reserva tu próximo traslado</p>
-            <h2>Tu viaje comienza con una recogida bien organizada</h2>
-            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
+            <p class="tag"><?php echo esc_html( mt_translate( 'Reserva tu próximo traslado' ) ); ?></p>
+            <h2><?php echo esc_html( mt_translate( 'Tu viaje comienza con una recogida bien organizada' ) ); ?></h2>
+            <p class="cta__lead"><?php echo esc_html( mt_translate( 'Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.' ) ); ?></p>
           </div>
           <div class="cta__btns">
-            <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
-            <a href="https://wa.me/34662024136?text=Hola,%20quisiera%20informaci%C3%B3n%20sobre%20traslados%20desde%20Barcelona%20a%20<?php echo urlencode($destino); ?>" class="btn btn-ghost-inv" target="_blank" rel="noopener">Consultar por WhatsApp</a>
+            <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);"><?php echo esc_html( mt_translate( 'Presupuestar y reservar' ) ); ?></a>
+            <a href="https://wa.me/34662024136?text=<?php echo urlencode( mt_translate( 'Hola, quisiera información sobre traslados desde Barcelona a ' ) . $destino ); ?>" class="btn btn-ghost-inv" target="_blank" rel="noopener"><?php echo esc_html( mt_translate( 'Consultar por WhatsApp' ) ); ?></a>
           </div>
         </div>
       </div>

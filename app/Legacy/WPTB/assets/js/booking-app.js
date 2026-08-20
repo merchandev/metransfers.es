@@ -158,19 +158,23 @@ jQuery(document).ready(function ($) {
             $(dateId).attr('min', wptb_vars.min_date);
         }
 
+        let originValidated = false;
+        let isGoogleMapsActive = false;
+
         // Autocomplete is an enhancement. Manual addresses and submission keep
         // working when Google Maps is unavailable or slow to initialize.
         let autocompleteAttempts = 0;
         const maxAutocompleteAttempts = 12;
         function initAutocomplete() {
             if (typeof google !== 'undefined' && google.maps && google.maps.places) {
+                isGoogleMapsActive = true;
 
-                // ORIGIN: Restricted to Barcelona province bounds
+                // ORIGIN: Restricted to Catalunya bounds
                 const originOptions = {
                     fields: ["formatted_address", "geometry", "name", "address_components"],
                     bounds: new google.maps.LatLngBounds(
-                        new google.maps.LatLng(41.16, 1.63), // SW Barcelona province
-                        new google.maps.LatLng(42.33, 2.83)  // NE Barcelona province
+                        new google.maps.LatLng(40.523, 0.252), // SW Catalunya (Montsià)
+                        new google.maps.LatLng(42.861, 3.328)  // NE Catalunya (Cap de Creus)
                     ),
                     strictBounds: true,
                     componentRestrictions: { country: 'ES' }
@@ -195,10 +199,20 @@ jQuery(document).ready(function ($) {
                         const place = originAutocomplete.getPlace();
                         if (place && place.address_components) {
                             if (!validateOriginArea(place)) {
-                                alert(t('origin_restriction', 'Lo sentimos, solo operamos transfers con origen en el área de Barcelona.'));
+                                alert(t('origin_restriction', 'Lo sentimos, solo operamos transfers con origen en Cataluña.'));
                                 originInput.value = '';
+                                originValidated = false;
+                            } else {
+                                originValidated = true;
                             }
+                        } else {
+                            originValidated = false;
                         }
+                    });
+                    
+                    // Reset validation if user types manually after selecting
+                    $(originInput).on('input', function() {
+                        originValidated = false;
                     });
                 }
 
@@ -225,7 +239,11 @@ jQuery(document).ready(function ($) {
                 autocompleteAttempts += 1;
                 setTimeout(initAutocomplete, 500);
             } else {
-                console.warn('Google Maps autocomplete unavailable; manual address entry remains enabled.');
+                if (typeof wptb_vars !== 'undefined' && !wptb_vars.google_maps_api_key) {
+                    console.error('❌ ERROR CRÍTICO: La API Key de Google Maps está VACÍA en los ajustes de WordPress. El autocompletado no funcionará hasta que la configures en MeTransfers -> Integraciones.');
+                } else {
+                    console.warn('Google Maps autocomplete unavailable (el script no se cargó a tiempo); la entrada manual sigue activa.');
+                }
             }
         }
 
@@ -308,6 +326,13 @@ jQuery(document).ready(function ($) {
             // Basic validation
             if (!date || !time || !origin || !destination) {
                 alert(t('complete_all_fields', 'Por favor completa todos los campos.'));
+                return;
+            }
+
+            // Strict Origin Validation (Require selection from dropdown)
+            if (isGoogleMapsActive && !originValidated) {
+                alert(t('origin_must_select', 'Por favor, selecciona una dirección de origen válida de la lista desplegable (solo Cataluña).'));
+                $(originId).focus();
                 return;
             }
 
