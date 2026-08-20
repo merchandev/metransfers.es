@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 class HQP_Admin {
 
@@ -146,7 +146,7 @@ class HQP_Admin {
         </p>
         <hr style="margin: 20px 0;">
         <h4>Precios Fijos (Opcional)</h4>
-        <p class="description">Si se establece un precio aquí, será el precio único ofertado para el trayecto desde/hacia este hotel (dentro de Barcelona/Cataluña) para ese vehículo. Los vehículos con precio "0" o vacío no se ofrecerán.</p>
+        <p class="description">Si se establece un precio aquí, será el precioúnico ofertado para el trayecto desde/hacia este hotel (dentro de Barcelona/Cataluña) para ese Vehículo. Los Vehículos con precio "0" o vacío no se ofrecerán.</p>
         
         <div style="display:flex; flex-wrap: wrap; gap: 20px;">
             <?php foreach($vehicles as $v): 
@@ -603,8 +603,8 @@ class HQP_Admin {
                     echo paginate_links(array(
                         'base' => add_query_arg('paged', '%#%'),
                         'format' => '',
-                        'prev_text' => '&laquo;',
-                        'next_text' => '&raquo;',
+                        'prev_text' => '&laquí;',
+                        'next_text' => '&raquí;',
                         'total' => $total_pages,
                         'current' => $current_page
                     ));
