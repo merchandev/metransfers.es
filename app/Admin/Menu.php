@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 namespace MeTransfers\Admin;
 
 class Menu {

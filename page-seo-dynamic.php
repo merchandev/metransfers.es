@@ -185,26 +185,16 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
             else : 
             ?>
                 <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;"><?php echo esc_html( mt_translate( $tipo_servicio  )); ?> a <?php echo esc_html( mt_translate( $destino  )); ?> sin esperas</h2>
-                <p>
-                    Llegar a <?php echo esc_html( mt_translate( $destino  )); ?> desde Barcelona nunca fue tan sencillo. Evita las largas colas para el autobús y las incómodas combinaciones de trenes con equipaje. Nuestro servicio de <strong><?php echo esc_html( mt_translate( strtolower($tipo_servicio) ) ); ?> a <?php echo esc_html( mt_translate( $destino  )); ?></strong> está pensado para que tu descanso comience desde el momento en que aterrizas.
-                </p>
-                <p>
-                    Nuestros conductores monitorizan los vuelos de llegada al Aeropuerto de El Prat, por lo que incluso si tu vuelo se retrasa, te estaremos esperando en la terminal de llegadas con un cartel con tu nombre. Desde allí, el trayecto hasta <?php echo esc_html( mt_translate( $destino  )); ?> será directo y confortable.
-                </p>
+                <p><?php echo sprintf( mt_translate( "Llegar a %1$s desde Barcelona nunca fue tan sencillo. Evita las largas colas para el autobús y las incómodas combinaciones de trenes con equipaje. Nuestro servicio de %2$s a %1$s está pensado para que tu descanso comience desde el momento en que aterrizas." ), esc_html( $destino ), esc_html( strtolower($tipo_servicio) ) ); ?></p>
+                <p><?php echo sprintf( mt_translate( "Nuestros conductores monitorizan los vuelos de llegada al Aeropuerto de El Prat, por lo que incluso si tu vuelo se retrasa, te estaremos esperando en la terminal de llegadas con un cartel con tu nombre. Desde allí, el trayecto hasta %s será directo y confortable." ), esc_html( $destino ) ); ?></p>
                 
-                <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">La mejor opción para familias y grupos</h3>
-                <p>
-                    Si viajas con amigos, familia o grupos grandes, disponemos de espaciosas furgonetas y minivans Mercedes-Benz con capacidad para hasta 7 pasajeros y todo su equipaje. 
-                </p>
-                <p>
-                    Además, proporcionamos bajo solicitud las sillas de retención infantil adecuadas para que los más pequeños viajen de forma segura y cumpliendo todas las normativas de tráfico.
-                </p>
+                <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;"><?php echo mt_translate( "La mejor opción para familias y grupos" ); ?></h3>
+                <p><?php echo mt_translate( "Si viajas con amigos, familia o grupos grandes, disponemos de espaciosas furgonetas y minivans Mercedes-Benz con capacidad para hasta 7 pasajeros y todo su equipaje." ); ?></p>
+                <p><?php echo mt_translate( "Además, proporcionamos bajo solicitud las sillas de retención infantil adecuadas para que los más pequeños viajen de forma segura y cumpliendo todas las normativas de tráfico." ); ?></p>
 
                 <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
-                    <h4 style="margin-top:0; color:#0066CC;">CONSEJO: Reserva tu trayecto de ida y vuelta</h4>
-                    <p style="margin-bottom:0;">
-                        Para disfrutar de un viaje sin sobresaltos, te aconsejamos reservar conjuntamente el trayecto de ida y el de vuelta al aeropuerto. Nuestro conductor te recogerá en la puerta de tu hotel en <?php echo esc_html( mt_translate( $destino  )); ?> a la hora óptima para que llegues a tiempo a tu vuelo en Barcelona.
-                    </p>
+                    <h4 style="margin-top:0; color:#0066CC;"><?php echo mt_translate( "CONSEJO: Reserva tu trayecto de ida y vuelta" ); ?></h4>
+                    <p style="margin-bottom:0;"><?php echo sprintf( mt_translate( "Para disfrutar de un viaje sin sobresaltos, te aconsejamos reservar conjuntamente el trayecto de ida y el de vuelta al aeropuerto. Nuestro conductor te recogerá en la puerta de tu hotel en %s a la hora óptima para que llegues a tiempo a tu vuelo en Barcelona." ), esc_html( $destino ) ); ?></p>
                 </div>
             <?php endif; ?>
 
@@ -230,4 +220,7 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
 </main>
 
 <?php get_footer(); ?>
+
+
+
 

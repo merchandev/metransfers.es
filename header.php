@@ -111,7 +111,7 @@ body .hero-booking-card {
         document.documentElement.classList.add('btt-loading');
         var loader = document.createElement('div');
         loader.className = 'btt-global-loader is-active';
-        loader.innerHTML = '<div class="btt-spinner"></div><h2 style="font-weight:300;letter-spacing:1px">Calculando su mejor ruta...</h2>';
+        loader.innerHTML = '<div class="btt-spinner"></div><h2 style="font-weight:300;letter-spacing:1px"><?php echo esc_js(mt_translate('Calculando su mejor ruta...')); ?></h2>';
         document.addEventListener('DOMContentLoaded', function() {
             document.body.appendChild(loader);
             document.getElementById('page') && (document.getElementById('page').style.display = 'none');
@@ -126,7 +126,7 @@ body .hero-booking-card {
 <?php wp_body_open(); ?>
 
 <div id="page" class="site">
-<a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Saltar al contenido', 'me-transfers' ); ?></a>
+<a class="skip-link screen-reader-text" href="#primary"><?php echo esc_html( mt_translate( 'Saltar al contenido' ) ); ?></a>
 
 <header id="masthead" class="site-header" role="banner">
 	<div class="container header-inner">
@@ -151,7 +151,7 @@ body .hero-booking-card {
 		</div>
 
 		<!-- ② Nav Desktop -->
-		<nav class="main-navigation" id="main-nav" aria-label="Menú principal">
+		<nav class="main-navigation" id="main-nav" aria-label="<?php echo esc_attr( mt_translate( 'Menú principal' ) ); ?>">
 			<?php
 			wp_nav_menu( array(
 				'theme_location' => 'menu-1',

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 class HQP_Import_Export {
 
