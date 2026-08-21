@@ -2,13 +2,13 @@
     max-width: var(--mt-container);
     margin: 0 auto;
     padding: clamp(24px, 5vw, 64px) 20px;
-    color: var(--mt-color-text);
+    color: var(--mt-color-text) !important;
     font-family: var(--mt-font-body);
 }
 .mt-booking .is-hidden { display: none; }
 .mt-booking__title {
     margin: 0 0 28px;
-    color: var(--mt-color-primary);
+    color: var(--mt-color-primary) !important;
     font-family: var(--mt-font-heading);
     font-size: clamp(1.8rem, 4vw, 2.5rem);
 }
@@ -18,10 +18,10 @@
     padding: 22px;
     border-radius: var(--mt-radius-lg);
     background: var(--mt-color-primary);
-    color: #fff;
+    color: #fff !important;
     box-shadow: var(--mt-shadow-md);
 }
-.mt-booking__summary h2 { margin: 20px 0 12px; color: #fff; font-family: var(--mt-font-heading); }
+.mt-booking__summary h2 { margin: 20px 0 12px; color: #fff !important; font-family: var(--mt-font-heading); }
 .mt-booking__summary dl,
 .mt-booking__summary dd { margin: 0; }
 .mt-booking__summary dl > div {
@@ -32,9 +32,9 @@
     border-bottom: 1px solid rgba(255,255,255,.15);
 }
 .mt-booking__summary dt { color: rgba(255,255,255,.76); }
-.mt-booking__summary dd { color: #fff; font-weight: 700; text-align: right; overflow-wrap: anywhere; }
+.mt-booking__summary dd { color: #fff !important; font-weight: 700; text-align: right; overflow-wrap: anywhere; }
 .mt-booking__summary .mt-booking__total { margin-top: 8px; border: 0; font-size: 1.2rem; }
-.mt-booking__summary .mt-booking__total dd { color: #ffd27d; }
+.mt-booking__summary .mt-booking__total dd { color: #ffd27d !important; }
 .mt-booking__map { width: 100%; height: 240px; border-radius: var(--mt-radius-md); background: #e7eef1; overflow: hidden; }
 
 .mt-booking__form {
@@ -54,7 +54,7 @@
     border-radius: var(--mt-radius-md);
     background: var(--mt-color-surface-alt);
 }
-.mt-booking__return legend { padding: 0 8px; color: var(--mt-color-primary); font-weight: 800; }
+.mt-booking__return legend { padding: 0 8px; color: var(--mt-color-primary) !important; font-weight: 800; }
 .mt-booking textarea.mt-input { resize: vertical; min-height: 110px; }
 
 .wptb-panel { width: 100%; }
@@ -93,7 +93,7 @@
     border: 1px solid var(--mt-border-color);
     border-radius: var(--mt-radius-sm);
     background: #fff;
-    color: var(--mt-color-text);
+    color: var(--mt-color-text) !important;
     font: inherit;
     line-height: 1.25;
 }
@@ -117,8 +117,8 @@
     margin: 0;
 }
 .trip-type-selector { display: flex; gap: 8px; margin: 0 0 24px; padding: 5px; border-radius: 999px; background: var(--mt-color-surface-alt); }
-.trip-type-btn { flex: 1; min-height: 44px; border: 0; border-radius: 999px; background: transparent; color: var(--mt-color-primary); font-weight: 700; cursor: pointer; }
-.trip-type-btn.active { background: var(--mt-color-primary); color: #fff; box-shadow: var(--mt-shadow-sm); }
+.trip-type-btn { flex: 1; min-height: 44px; border: 0; border-radius: 999px; background: transparent; color: var(--mt-color-primary) !important; font-weight: 700; cursor: pointer; }
+.trip-type-btn.active { background: var(--mt-color-primary); color: #fff !important; box-shadow: var(--mt-shadow-sm); }
 
 .wptb-modal-overlay {
     position: fixed;
@@ -146,7 +146,7 @@
 .wptb-modal-vehicle-btn .vehicle-icon img { width: 72px; height: 56px; object-fit: contain; }
 .vehicle-info-compact { display: grid; gap: 3px; }
 .vehicle-capacity { color: var(--mt-color-muted); font-size: .82rem; }
-.vehicle-price-compact { color: var(--mt-color-primary); font-weight: 800; }
+.vehicle-price-compact { color: var(--mt-color-primary) !important; font-weight: 800; }
 
 @container (min-width: 42rem) {
     #wptb-plugin-container.wptb-iso .wptb-main-search-form {
@@ -178,7 +178,7 @@
     border: 0;
     border-radius: 50%;
     background: transparent;
-    color: var(--mt-color-primary);
+    color: var(--mt-color-primary) !important;
     cursor: pointer;
 }
 .wptb-geolocation-btn:hover { background: var(--mt-color-surface-alt); }
@@ -210,14 +210,14 @@
 .mt-vehicle-card__image { display: grid; place-items: center; height: 200px; padding: 20px; background: var(--mt-color-surface-alt); }
 .mt-vehicle-card__image img { width: auto; max-width: 100%; max-height: 100%; object-fit: contain; }
 .mt-vehicle-card__body { display: flex; flex: 1; flex-direction: column; justify-content: space-between; padding: 24px; }
-.mt-vehicle-card__body h3 { margin: 0 0 12px; color: var(--mt-color-text); font-family: var(--mt-font-heading); font-size: 1.25rem; }
+.mt-vehicle-card__body h3 { margin: 0 0 12px; color: var(--mt-color-text) !important; font-family: var(--mt-font-heading); font-size: 1.25rem; }
 .mt-vehicle-card .vehicle-features { display: flex; gap: 14px; margin-bottom: 16px; color: var(--mt-color-muted); }
 .mt-vehicle-card .vehicle-features span { display: inline-flex; gap: 6px; align-items: center; }
 .mt-vehicle-card .vehicle-features .dashicons { color: var(--mt-color-accent); }
 .mt-vehicle-card__footer { margin-top: auto; }
 .mt-vehicle-card .vehicle-price-preview { margin-bottom: 14px; padding: 14px; border-radius: var(--mt-radius-md); background: var(--mt-color-primary); text-align: center; }
-.mt-vehicle-card .price-label { display: block; margin-bottom: 4px; color: rgba(255,255,255,.78); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
-.mt-vehicle-card .price-value { display: block; color: #ffd27d; font-size: 1.65rem; font-weight: 800; }
+.mt-vehicle-card .price-label { display: block; margin-bottom: 4px; color: rgba(255,255,255,.78) !important; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
+.mt-vehicle-card .price-value { display: block; color: #ffd27d !important; font-size: 1.65rem; font-weight: 800; }
 .mt-vehicle-card .mt-button { width: 100%; background: var(--mt-color-accent); }
 .mt-vehicle-card .mt-button:hover { background: var(--mt-color-accent-hover); }
 
@@ -231,7 +231,7 @@
     box-shadow: var(--mt-shadow-lg);
     text-align: center;
 }
-.mt-status h1 { color: var(--mt-color-primary); font-family: var(--mt-font-heading); }
+.mt-status h1 { color: var(--mt-color-primary) !important; font-family: var(--mt-font-heading); }
 .mt-status__icon {
     display: grid;
     place-items: center;
@@ -255,3 +255,5 @@
     .mt-booking__layout { grid-template-columns: minmax(300px, .8fr) minmax(0, 1.45fr); align-items: start; }
     .mt-booking__summary { position: sticky; top: 24px; }
 }
+
+
