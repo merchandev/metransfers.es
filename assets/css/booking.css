@@ -14,6 +14,7 @@
 }
 .mt-booking__layout { display: grid; gap: 24px; }
 .mt-booking__summary {
+    color: #fff !important;
     align-self: start;
     padding: 22px;
     border-radius: var(--mt-radius-lg);
@@ -21,7 +22,7 @@
     color: #fff !important;
     box-shadow: var(--mt-shadow-md);
 }
-.mt-booking__summary h2 { margin: 20px 0 12px; color: #fff !important; font-family: var(--mt-font-heading); }
+#wptb-plugin-container .mt-booking__summary h2 { margin: 20px 0 12px; color: #ffd27d !important; font-family: var(--mt-font-heading); }
 .mt-booking__summary dl,
 .mt-booking__summary dd { margin: 0; }
 .mt-booking__summary dl > div {
@@ -31,10 +32,11 @@
     padding: 9px 0;
     border-bottom: 1px solid rgba(255,255,255,.15);
 }
-.mt-booking__summary dt { color: rgba(255,255,255,.76); }
-.mt-booking__summary dd { color: #fff !important; font-weight: 700; text-align: right; overflow-wrap: anywhere; }
+#wptb-plugin-container .mt-booking__summary span { color: #ffd27d !important; }
+#wptb-plugin-container .mt-booking__summary dt { color: rgba(255,255,255,.76) !important; }
+#wptb-plugin-container .mt-booking__summary dd { color: #fff !important; font-weight: 700; text-align: right; overflow-wrap: anywhere; }
 .mt-booking__summary .mt-booking__total { margin-top: 8px; border: 0; font-size: 1.2rem; }
-.mt-booking__summary .mt-booking__total dd { color: #ffd27d !important; }
+#wptb-plugin-container .mt-booking__summary .mt-booking__total dd { color: #ffd27d !important; }
 .mt-booking__map { width: 100%; height: 240px; border-radius: var(--mt-radius-md); background: #e7eef1; overflow: hidden; }
 
 .mt-booking__form {
@@ -253,8 +255,11 @@
 }
 @media (min-width: 920px) {
     .mt-booking__layout { grid-template-columns: minmax(300px, .8fr) minmax(0, 1.45fr); align-items: start; }
-    .mt-booking__summary { position: sticky; top: 24px; }
+    .mt-booking__summary {
+    color: #fff !important; position: sticky; top: 24px; }
 }
+
+
 
 
 
