@@ -160,7 +160,7 @@ class HQP_Public {
 
         $vehicles = array();
         global $wpdb;
-        $db_vehicles = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wptb_hotel_vehicles WHERE is_active = 1 ORDER BY display_order ASC");
+        $db_vehicles = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}wptb_vehicles WHERE is_active = 1 ORDER BY display_order ASC");
 
         if ( $db_vehicles ) {
             foreach ( $db_vehicles as $v ) {
@@ -242,7 +242,7 @@ class HQP_Public {
         $passengers = isset( $data['passengers'] ) ? max( 1, absint( $data['passengers'] ) ) : 1;
         $vehicle = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT id, capacity FROM {$wpdb->prefix}wptb_hotel_vehicles WHERE id = %d AND is_active = 1",
+                "SELECT id, capacity FROM {$wpdb->prefix}wptb_vehicles WHERE id = %d AND is_active = 1",
                 $vehicle_id
             )
         );

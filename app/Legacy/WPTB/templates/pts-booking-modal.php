@@ -1,4 +1,4 @@
-<?php $wptb_i18n = \MeTransfers\Booking\I18n::strings(); ?>
+﻿<?php $wptb_i18n = \MeTransfers\Booking\I18n::strings(); ?>
 <!-- Premium Transfers Modal - Mismo estilo que WPTB Modal -->
 <div id="pts-booking-modal" class="wptb-modal-overlay is-hidden">
     <div class="wptb-modal-content wptb-modal-large">
@@ -69,7 +69,7 @@
                         <!-- Vehicles will be loaded via AJAX -->
                     </div>
 
-                    <button type="button" id="pts-back-step2" class="secondary-btn mt-button mt-button--secondary">
+                    <button type="button" id="pts-back-step2" class="btn btn-outline" style="margin-top: 24px; display: flex; margin-inline: auto;">
                         <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
                         <?php echo esc_html( $wptb_i18n['change_search'] ); ?>
                     </button>
@@ -98,3 +98,4 @@
         </div>
     </div>
 </div>
+

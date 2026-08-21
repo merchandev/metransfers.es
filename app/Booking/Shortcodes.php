@@ -18,37 +18,37 @@ class Shortcodes {
     public function render_booking_form( $atts ) {
         ob_start();
         $booking_source = 'Metransfers';
-        require WPTB_PLUGIN_DIR . 'templates/booking-form.php';
+        require MT_WPTB_DIR . 'templates/booking-form.php';
         return ob_get_clean();
     }
 
     public function render_vehicle_selection( $atts ) {
         ob_start();
-        require WPTB_PLUGIN_DIR . 'templates/booking-vehicles.php';
+        require MT_WPTB_DIR . 'templates/booking-vehicles.php';
         return ob_get_clean();
     }
 
     public function render_booking_details( $atts ) {
         ob_start();
-        require WPTB_PLUGIN_DIR . 'templates/booking-details.php';
+        require MT_WPTB_DIR . 'templates/booking-details.php';
         return ob_get_clean();
     }
 
     public function render_checkout_page( $atts ) {
         ob_start();
-        require WPTB_PLUGIN_DIR . 'templates/checkout.php';
+        require MT_WPTB_DIR . 'templates/checkout.php';
         return ob_get_clean();
     }
 
     public function render_popular_carousel( $atts ) {
         ob_start();
-        require WPTB_PLUGIN_DIR . 'templates/popular-carousel.php';
+        require MT_WPTB_DIR . 'templates/popular-carousel.php';
         return ob_get_clean();
     }
 
     public function render_booking_popup( $atts ) {
         ob_start();
-        require WPTB_PLUGIN_DIR . 'templates/booking-modal.php';
+        require MT_WPTB_DIR . 'templates/booking-modal.php';
         return ob_get_clean();
     }
 }

@@ -74,3 +74,39 @@ test('contact tracking accepts allowlisted events only', async ({ page }) => {
   expect(events).toContain('click_phone');
   expect(events).toContain('click_whatsapp');
 });
+
+test('booking search uses a readable vertical layout in a narrow hero panel', async ({ page }) => {
+  await page.setViewportSize({ width: 800, height: 900 });
+  await page.goto('/tests/e2e/fixtures/booking-search.html');
+
+  const fields = page.locator('.wptb-main-search-field');
+  const boxes = await fields.evaluateAll((elements) => elements.map((element) => {
+    const box = element.getBoundingClientRect();
+    const label = element.querySelector('label').getBoundingClientRect();
+    const input = element.querySelector('input').getBoundingClientRect();
+    return { x: box.x, y: box.y, height: input.height, labelBottom: label.bottom, inputTop: input.top };
+  }));
+
+  expect(boxes).toHaveLength(4);
+  expect(new Set(boxes.map((box) => Math.round(box.x))).size).toBe(1);
+  expect(boxes.every((box) => box.height >= 58)).toBe(true);
+  expect(boxes.every((box) => box.labelBottom <= box.inputTop)).toBe(true);
+  const submitBox = await page.getByRole('button', { name: 'Buscar vehículos' }).boundingBox();
+  expect(submitBox.width).toBeGreaterThan(380);
+});
+
+test('booking search only creates columns when its own container is wide enough', async ({ page }) => {
+  await page.setViewportSize({ width: 1100, height: 800 });
+  await page.goto('/tests/e2e/fixtures/booking-search.html');
+  await page.locator('.fixture-panel').evaluate((element) => element.classList.add('is-wide'));
+
+  const positions = await page.locator('.wptb-main-search-field').evaluateAll((elements) => elements.map((element) => {
+    const box = element.getBoundingClientRect();
+    return { x: Math.round(box.x), y: Math.round(box.y) };
+  }));
+
+  expect(positions[0].y).toBe(positions[1].y);
+  expect(positions[0].x).not.toBe(positions[1].x);
+  expect(positions[2].y).toBe(positions[3].y);
+  expect(positions[2].y).toBeGreaterThan(positions[0].y);
+});

@@ -66,8 +66,19 @@ class WPTB_Public {
                 ),
                 'https://maps.googleapis.com/maps/api/js'
             );
+            // Cargar en el footer de forma síncrona, como estaba originalmente, para asegurar 
+            // que google.maps.places se instancie antes de que el usuario interactúe.
             wp_enqueue_script( 'google-maps', $maps_url, array(), null, true );
+        } elseif ( empty( $api_key ) && in_array( $phase, $maps_phases, true ) && is_admin() ) {
+            // Aviso en el admin si la API Key está ausente y se necesita Maps
+            add_action( 'admin_notices', static function () {
+                echo '<div class="notice notice-warning is-dismissible"><p>';
+                echo '<strong>MeTransfers:</strong> ';
+                echo esc_html__( 'La clave de API de Google Maps está vacía. El autocompletado de direcciones y el cálculo de rutas no funcionarán. Configúrala en MeTransfers → Integraciones.', 'me-transfers' );
+                echo '</p></div>';
+            } );
         }
+
 
         // 3. BOOKING APP (search, vehicle and details only)
         $booking_phases = array( 'search', 'vehicle', 'details', 'hotel' );

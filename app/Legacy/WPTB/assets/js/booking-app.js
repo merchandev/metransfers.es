@@ -83,12 +83,27 @@ jQuery(document).ready(function ($) {
         target.duration_minutes = Number.parseInt(route.duration_minutes || 0, 10);
         target.duration_text = target.duration_minutes > 0 ? target.duration_minutes + ' min' : '';
         target.quote_verified = true;
+        sessionStorage.setItem('wptb_booking_data', JSON.stringify(target));
+        updateRouteSummary(target);
+    }
+
+    function updateRouteSummary(data) {
+        if (!data || !$('#wptb-vehicle-summary-route').length) return;
+        const distance = Number.parseFloat(data.distance_km || 0);
+        const suffix = distance > 0 ? ' (' + distance.toFixed(1) + ' km)' : '';
+        $('#wptb-vehicle-summary-route').text(data.origin + ' → ' + data.destination + suffix);
     }
 
     function vehicleQuotesFromResponse(response) {
         if (!response || !response.success || !response.data) return [];
         applyServerRoute(response.data.route, bookingData);
         return Array.isArray(response.data.vehicles) ? response.data.vehicles : [];
+    }
+
+    function responseMessage(response, fallback) {
+        return response && response.data && response.data.message
+            ? response.data.message
+            : fallback;
     }
 
     // ===== ORIGIN & DESTINATION RESTRICTIONS =====
@@ -143,16 +158,23 @@ jQuery(document).ready(function ($) {
             $(dateId).attr('min', wptb_vars.min_date);
         }
 
-        // Initialize Autocomplete with Retry Logic
+        let originValidated = false;
+        let isGoogleMapsActive = false;
+
+        // Autocomplete is an enhancement. Manual addresses and submission keep
+        // working when Google Maps is unavailable or slow to initialize.
+        let autocompleteAttempts = 0;
+        const maxAutocompleteAttempts = 12;
         function initAutocomplete() {
             if (typeof google !== 'undefined' && google.maps && google.maps.places) {
+                isGoogleMapsActive = true;
 
-                // ORIGIN: Restricted to Barcelona province bounds
+                // ORIGIN: Restricted to Catalunya bounds
                 const originOptions = {
                     fields: ["formatted_address", "geometry", "name", "address_components"],
                     bounds: new google.maps.LatLngBounds(
-                        new google.maps.LatLng(41.16, 1.63), // SW Barcelona province
-                        new google.maps.LatLng(42.33, 2.83)  // NE Barcelona province
+                        new google.maps.LatLng(40.523, 0.252), // SW Catalunya (Montsià)
+                        new google.maps.LatLng(42.861, 3.328)  // NE Catalunya (Cap de Creus)
                     ),
                     strictBounds: true,
                     componentRestrictions: { country: 'ES' }
@@ -177,10 +199,20 @@ jQuery(document).ready(function ($) {
                         const place = originAutocomplete.getPlace();
                         if (place && place.address_components) {
                             if (!validateOriginArea(place)) {
-                                alert(t('origin_restriction', 'Lo sentimos, solo operamos transfers con origen en el área de Barcelona.'));
+                                alert(t('origin_restriction', 'Lo sentimos, solo operamos transfers con origen en Cataluña.'));
                                 originInput.value = '';
+                                originValidated = false;
+                            } else {
+                                originValidated = true;
                             }
+                        } else {
+                            originValidated = false;
                         }
+                    });
+                    
+                    // Reset validation if user types manually after selecting
+                    $(originInput).on('input', function() {
+                        originValidated = false;
                     });
                 }
 
@@ -203,15 +235,15 @@ jQuery(document).ready(function ($) {
                         }
                     });
                 }
-            } else {
-                // Check if script is even in DOM
-                const scriptExists = document.querySelector('script[src*="maps.googleapis.com"]');
-                if (!scriptExists) {
-                    console.error('❌ CRITICAL: Google Maps API Script NOT found in DOM. Check API Key configuration.');
-                } else {
-                    console.warn('⚠️ Google Maps script found but object not ready. Billing issue? Retrying...');
-                }
+            } else if (autocompleteAttempts < maxAutocompleteAttempts) {
+                autocompleteAttempts += 1;
                 setTimeout(initAutocomplete, 500);
+            } else {
+                if (typeof wptb_vars !== 'undefined' && !wptb_vars.google_maps_api_key) {
+                    console.error('❌ ERROR CRÍTICO: La API Key de Google Maps está VACÍA en los ajustes de WordPress. El autocompletado no funcionará hasta que la configures en MeTransfers -> Integraciones.');
+                } else {
+                    console.warn('Google Maps autocomplete unavailable (el script no se cargó a tiempo); la entrada manual sigue activa.');
+                }
             }
         }
 
@@ -223,7 +255,7 @@ jQuery(document).ready(function ($) {
             $originWrapper.addClass('wptb-origin-wrapper');
 
             const locBtn = `
-                <button type="button" id="${locBtnId}" class="wptb-geolocation-btn" title="Usar mi ubicación actual">
+                <button type="button" id="${locBtnId}" class="wptb-geolocation-btn" title="${escapeHtml(t('use_location', 'Usar mi ubicación actual'))}" aria-label="${escapeHtml(t('use_location', 'Usar mi ubicación actual'))}">
                     <span class="dashicons dashicons-location"></span>
                 </button>
             `;
@@ -244,6 +276,12 @@ jQuery(document).ready(function ($) {
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
+                    if (typeof google === 'undefined' || !google.maps || !google.maps.Geocoder) {
+                        $icon.removeClass('dashicons-update spin').addClass('dashicons-location');
+                        alert(t('geocode_error', 'No se pudo determinar la dirección. Por favor ingrésala manualmente.'));
+                        $(originId).focus();
+                        return;
+                    }
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
                     const geocoder = new google.maps.Geocoder();
@@ -291,6 +329,13 @@ jQuery(document).ready(function ($) {
                 return;
             }
 
+            // Strict Origin Validation (Require selection from dropdown)
+            if (isGoogleMapsActive && !originValidated) {
+                alert(t('origin_must_select', 'Por favor, selecciona una dirección de origen válida de la lista desplegable (solo Cataluña).'));
+                $(originId).focus();
+                return;
+            }
+
             track('booking_start', { booking_flow: suffix === '-modal' ? 'modal' : 'main' });
             track('route_search', {
                 booking_flow: suffix === '-modal' ? 'modal' : 'main',
@@ -305,53 +350,22 @@ jQuery(document).ready(function ($) {
 
             // Check if this is modal form
             if (suffix === '-modal') {
-                // Modal flow: Calculate and show vehicles INSIDE modal
+                // The server validates the route and returns authoritative prices.
                 calculateRouteForModal();
             } else {
-                // Main form flow: Calculate route normally
-                calculateRoute(suffix);
+                // Persist immediately and let the server calculate the route on
+                // the vehicle page. The form no longer becomes inert when the
+                // browser-side Google Directions service is unavailable.
+                calculateRoute(searchFormId);
             }
         });
     }
 
     // Calculate route specifically for modal (shows vehicles inside modal)
     function calculateRouteForModal() {
-        if (typeof google === 'undefined') return;
-
-        if (!directionsService) directionsService = new google.maps.DirectionsService();
-
-        const request = {
-            origin: bookingData.origin,
-            destination: bookingData.destination,
-            travelMode: 'DRIVING'
-        };
-
-        const $btn = $('#wptb-search-form-modal button[type="submit"]');
-        $btn.prop('disabled', true).text(t('calculating', 'Calculando...'));
-
-        directionsService.route(request, function (result, status) {
-            $btn.prop('disabled', false).text(t('search_vehicles', 'Buscar vehículos'));
-
-            if (status === 'OK') {
-                const route = result.routes[0];
-                const leg = route.legs[0];
-
-                bookingData.distance_km = (leg.distance.value / 1000).toFixed(1);
-                bookingData.duration_minutes = Math.round(leg.duration.value / 60);
-                bookingData.duration_text = leg.duration.text;
-
-                // Switch to Step 2 INSIDE modal
-                $('#wptb-modal-step-1').hide();
-                $('#wptb-modal-step-2').fadeIn();
-
-                // Load vehicles into modal
-                loadVehiclesIntoModal();
-
-            } else {
-                track('booking_error', { error_type: 'route_calculation' });
-                alert(t('route_error', 'No se pudo calcular la ruta. Verifica el origen y el destino.'));
-            }
-        });
+        $('#wptb-modal-step-1').hide();
+        $('#wptb-modal-step-2').fadeIn();
+        loadVehiclesIntoModal();
     }
 
     // Load vehicles into modal grid
@@ -376,7 +390,8 @@ jQuery(document).ready(function ($) {
                     displayVehiclesInModal(vehicles);
                 } else {
                     track('booking_error', { error_type: 'no_vehicles' });
-                    $('#wptb-modal-vehicles-grid').html('<p class="mt-inline-notice">' + escapeHtml(t('no_vehicles', 'No se encontraron vehículos disponibles.')) + '</p>');
+                    const message = responseMessage(response, t('no_vehicles', 'No se encontraron vehículos disponibles.'));
+                    $('#wptb-modal-vehicles-grid').html('<p class="mt-inline-notice mt-inline-notice--error">' + escapeHtml(message) + '</p>');
                 }
             },
             error: function (xhr, status, error) {
@@ -584,56 +599,26 @@ jQuery(document).ready(function ($) {
     });
 
     // Handle Route Calculation
-    function calculateRoute() {
-        processCalculation();
+    function calculateRoute(searchFormId) {
+        processCalculation(searchFormId);
     }
 
-    // Initialize Directions Service globally if not already
-    // Removed unsafe eager init to avoid crashes if Google API isn't ready.
-    // It is initialized lazily in processCalculation() and initRouteMap()
+    // Route quoting is server-side. Google Directions remains optional and is
+    // initialized only when the details page renders its route map.
 
-    function processCalculation() {
-        if (typeof google === 'undefined') return;
-
-        // Ensure Directions Service exists
-        if (!directionsService) directionsService = new google.maps.DirectionsService();
-
-        const request = {
-            origin: bookingData.origin,
-            destination: bookingData.destination,
-            travelMode: 'DRIVING'
-        };
-
-        const $btn = $('button[type="submit"]'); // Generic selector for submit btn
+    function processCalculation(searchFormId) {
+        const $btn = $(searchFormId).find('button[type="submit"]');
         $btn.prop('disabled', true).text(t('calculating', 'Calculando...'));
+        bookingData.distance_km = 0;
+        bookingData.duration_minutes = 0;
+        bookingData.duration_text = '';
+        bookingData.quote_verified = false;
+        sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
 
-        directionsService.route(request, function (result, status) {
-            $btn.prop('disabled', false).text(t('search_vehicles', 'Buscar vehículos'));
-
-            if (status === 'OK') {
-                const route = result.routes[0];
-                const leg = route.legs[0];
-
-                bookingData.distance_km = (leg.distance.value / 1000).toFixed(1);
-                bookingData.duration_minutes = Math.round(leg.duration.value / 60);
-                bookingData.duration_text = leg.duration.text;
-
-                // Guardar en sessionStorage para que la página de destino lo lea
-                sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
-
-                let vehiclesUrl;
-                if (typeof wptb_vars !== 'undefined' && wptb_vars.vehicles_url) {
-                    vehiclesUrl = wptb_vars.vehicles_url;
-                } else {
-                    vehiclesUrl = '/seleccionar-vehiculo/';
-                }
-                window.location.href = vehiclesUrl;
-
-            } else {
-                track('booking_error', { error_type: 'route_calculation' });
-                alert(t('route_error', 'No se pudo calcular la ruta. Verifica el origen y el destino.'));
-            }
-        });
+        const vehiclesUrl = (typeof wptb_vars !== 'undefined' && wptb_vars.vehicles_url)
+            ? wptb_vars.vehicles_url
+            : '/seleccionar-vehiculo/';
+        window.location.href = vehiclesUrl;
     }
 
     // ===== BTT OVERLAY REMOVER =====
@@ -679,7 +664,7 @@ jQuery(document).ready(function ($) {
                 if (vehicles.length > 0) {
                     displayVehicles(vehicles);
                 } else {
-                    displayNoVehicles();
+                    displayNoVehicles(responseMessage(response, t('no_vehicles', 'No se encontraron vehículos disponibles.')));
                 }
             },
             error: function (xhr, status, error) {
@@ -691,11 +676,11 @@ jQuery(document).ready(function ($) {
         });
     }
 
-    function displayNoVehicles() {
+    function displayNoVehicles(message) {
         track('booking_error', { error_type: 'no_vehicles' });
         const $message = $('<div>', { class: 'mt-empty-state' });
         $message.append('<span class="dashicons dashicons-warning mt-empty-state__icon"></span>');
-        $message.append($('<p>').text(t('no_vehicles', 'No se encontraron vehículos disponibles.')));
+        $message.append($('<p>').text(message || t('no_vehicles', 'No se encontraron vehículos disponibles.')));
         $('#vehicles-grid').empty().append($message);
     }
 
@@ -1048,52 +1033,6 @@ jQuery(document).ready(function ($) {
         return null;
     }
 
-    // ===== CALCULATE DISTANCE VIA DISTANCE MATRIX (fallback, no DirectionsService billing needed) =====
-    function calculateDistanceAndLoadVehicles(origin, destination, onSuccess, onError) {
-        function tryWithGoogle() {
-            if (typeof google === 'undefined' || !google.maps || !google.maps.DistanceMatrixService) {
-                setTimeout(tryWithGoogle, 500);
-                return;
-            }
-            const service = new google.maps.DistanceMatrixService();
-            service.getDistanceMatrix(
-                {
-                    origins: [origin],
-                    destinations: [destination],
-                    travelMode: google.maps.TravelMode.DRIVING,
-                    unitSystem: google.maps.UnitSystem.METRIC
-                },
-                function (response, status) {
-                    if (status !== 'OK') {
-                        if (typeof onError === 'function') onError(t('route_error', 'No se pudo calcular la ruta. Verifica el origen y el destino.') + ' ' + status);
-                        return;
-                    }
-                    const element = response &&
-                        response.rows &&
-                        response.rows[0] &&
-                        response.rows[0].elements &&
-                        response.rows[0].elements[0]
-                        ? response.rows[0].elements[0]
-                        : null;
-
-                    if (!element || element.status !== 'OK' || !element.distance || !element.duration) {
-                        if (typeof onError === 'function') onError(t('route_not_found', 'No se encontró una ruta entre los puntos indicados.'));
-                        return;
-                    }
-
-                    if (typeof onSuccess === 'function') {
-                        onSuccess({
-                            distanceKm: (element.distance.value / 1000).toFixed(1),
-                            durationMinutes: Math.round(element.duration.value / 60),
-                            durationText: element.duration.text
-                        });
-                    }
-                }
-            );
-        }
-        tryWithGoogle();
-    }
-
     // ===== INIT DETAILS OR VEHICLE SELECTION PAGE =====
     function initDetailsPage() {
         const isVehiclePage = $('#wptb-step-2').length > 0 && $('#wptb-step-3').length === 0;
@@ -1113,36 +1052,12 @@ jQuery(document).ready(function ($) {
                 $('#wptb-step-2').show();
                 $('#vehicles-grid').html('<div class="loading-spinner mt-empty-state">' + escapeHtml(t('calculating', 'Calculando...')) + '</div>');
 
-                calculateDistanceAndLoadVehicles(
-                    urlData.origin,
-                    urlData.destination,
-                    function (metrics) {
-                        urlData.distance_km = metrics.distanceKm;
-                        urlData.duration_minutes = metrics.durationMinutes;
-                        urlData.duration_text = metrics.durationText;
-
-                        bookingData = urlData;
-                        sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
-
-
-                        if ($('#wptb-vehicle-summary-route').length) {
-                            $('#wptb-vehicle-summary-route').text(bookingData.origin + ' → ' + bookingData.destination + ' (' + bookingData.distance_km + ' km)');
-                        }
-
-                        $('.trip-type-btn').removeClass('active');
-                        $('.trip-type-btn[data-type="one_way"]').addClass('active');
-
-                        loadVehicles();
-                    },
-                    function (errMsg) {
-                        const message = errMsg || t('route_error', 'No se pudo calcular la ruta. Verifica el origen y el destino.');
-                        $('#vehicles-grid').html(
-                            '<div class="mt-alert mt-alert--error mt-empty-state" role="alert">' +
-                            escapeHtml(message) +
-                            '</div>'
-                        );
-                    }
-                );
+                bookingData = urlData;
+                sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
+                updateRouteSummary(bookingData);
+                $('.trip-type-btn').removeClass('active');
+                $('.trip-type-btn[data-type="one_way"]').addClass('active');
+                loadVehicles();
                 return;
             }
         }
@@ -1152,14 +1067,19 @@ jQuery(document).ready(function ($) {
             return;
         }
 
-        bookingData = JSON.parse(savedData);
+        try {
+            bookingData = JSON.parse(savedData);
+        } catch (error) {
+            console.error('Invalid booking session data:', error);
+            sessionStorage.removeItem('wptb_booking_data');
+            if (isVehiclePage) {
+                $('#vehicles-grid').html('<p class="mt-inline-notice mt-inline-notice--error">' + escapeHtml(t('corrupt_booking_data', 'Los datos de la reserva están dañados.')) + '</p>');
+            }
+            return;
+        }
 
         // ===== VEHICLE SELECTION PAGE (/seleccionar-vehiculo/) =====
         if (isVehiclePage) {
-            if (!bookingData.distance_km) {
-                console.warn('⚠️ No distance_km in bookingData. Cannot load vehicles.');
-                return;
-            }
             // Always reset vehicle_id so the user can pick fresh
             bookingData.vehicle_id = 0;
             bookingData.vehicle_name = '';
@@ -1168,9 +1088,7 @@ jQuery(document).ready(function ($) {
             sessionStorage.setItem('wptb_booking_data', JSON.stringify(bookingData));
 
             // Show search summary (route info at top)
-            if ($('#wptb-vehicle-summary-route').length) {
-                $('#wptb-vehicle-summary-route').text(bookingData.origin + ' → ' + bookingData.destination + ' (' + bookingData.distance_km + ' km)');
-            }
+            updateRouteSummary(bookingData);
             // Sync trip type buttons
             $('.trip-type-btn').removeClass('active');
             $(`.trip-type-btn[data-type="${bookingData.trip_type}"]`).addClass('active');

@@ -42,7 +42,7 @@ class RouteDistance {
             ),
             'https://maps.googleapis.com/maps/api/distancematrix/json'
         );
-        $response = wp_remote_get( $url, array( 'timeout' => 8 ) );
+        $response = wp_remote_get( $url, array( 'timeout' => 8, 'headers' => array( 'Referer' => home_url( '/' ) ) ) );
         if ( is_wp_error( $response ) ) {
             return array( 'error' => 'No se pudo consultar la ruta.' );
         }
@@ -94,3 +94,4 @@ class RouteDistance {
         return true;
     }
 }
+

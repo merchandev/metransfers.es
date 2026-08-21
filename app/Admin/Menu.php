@@ -23,7 +23,7 @@ class Menu {
         // Hotel Submenus (Integrating HQP_Admin)
         add_submenu_page('wptb-reservas', 'Hoteles', 'Red de Hoteles', Capabilities::MANAGE_HOTELS, 'edit.php?post_type=hotel_partner');
         add_submenu_page('wptb-reservas', 'Reservas Hotel QR', 'Reservas Hotel QR', Capabilities::MANAGE_HOTELS, 'hotel-qr-reservations', $this->get_legacy_callback('HQP_Admin', 'display_hotel_reservations_page'));
-        add_submenu_page('wptb-reservas', 'Vehículos Hotel', 'Vehículos Hotel', Capabilities::MANAGE_VEHICLES, 'hotel-vehicles', $this->get_legacy_callback('HQP_Vehicles_Admin', 'display_vehicles_page'));
+        add_submenu_page('wptb-reservas', 'Importar Hoteles', 'Importar Hoteles', Capabilities::MANAGE_HOTELS, 'mt-import-hotels', $this->get_legacy_callback('HQP_Import_Export', 'render_page'));
 
         // General Settings
         add_submenu_page('wptb-reservas', 'Ajustes Generales', 'Ajustes Generales', Capabilities::MANAGE_INTEGRATIONS, 'wptb-settings', $this->get_legacy_callback('WPTB_Admin', 'display_settings_page'));
