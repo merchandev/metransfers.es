@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 namespace MeTransfers\Booking;
 
 use MeTransfers\Core\Settings;
