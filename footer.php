@@ -601,7 +601,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			e.preventDefault();
 			const btn = waForm.querySelector('button[type="submit"]');
 			const originalHtml = btn.innerHTML;
-			btn.innerHTML = '<?php echo esc_js(mt_translate(''Enviando...'')); ?>';
+			btn.innerHTML = '<?php echo esc_js(mt_translate('Enviando...')); ?>';
 			btn.disabled = true;
 
 			const formData = new FormData(waForm);
@@ -610,8 +610,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			formData.append('origen', 'whatsapp');
 
 			if(!window.mtAjax) {
-				console.error('<?php echo esc_js(mt_translate(''Error crítico: mtAjax no definido. Abortando envío.'')); ?>');
-				alert('<?php echo esc_js(mt_translate(''Ocurrió un error en la configuración. Por favor recargue la página.'')); ?>');
+				console.error('<?php echo esc_js(mt_translate('Error crítico: mtAjax no definido. Abortando envío.')); ?>');
+				alert('<?php echo esc_js(mt_translate('Ocurrió un error en la configuración. Por favor recargue la página.')); ?>');
 				btn.innerHTML = originalHtml;
 				btn.disabled = false;
 				return;
@@ -624,14 +624,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			.then(response => response.json())
 			.then(data => {
 				if (!data.success) {
-					throw new Error(data.data?.message || '<?php echo esc_js(mt_translate(''No se pudo guardar la solicitud.'')); ?>');
+					throw new Error(data.data?.message || '<?php echo esc_js(mt_translate('No se pudo guardar la solicitud.')); ?>');
 				}
 				const msg = encodeURIComponent(formData.get('mensaje') + '\n\n*Nombre:* ' + formData.get('nombre') + '\n*Teléfono:* ' + formData.get('telefono'));
 				window.location.href = 'https://wa.me/34662024136?text=' + msg;
 			})
 			.catch(err => {
 				console.error(err);
-				alert(err.message || '<?php echo esc_js(mt_translate(''Error de conexión. Inténtelo de nuevo.'')); ?>');
+				alert(err.message || '<?php echo esc_js(mt_translate('Error de conexión. Inténtelo de nuevo.')); ?>');
 			})
 			.finally(() => {
 				btn.innerHTML = originalHtml;
@@ -645,7 +645,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.addEventListener('click', function(e) {
 		const target = e.target.closest('button, .btn, a.js-wa-trigger, a[href^="mailto:"], a[href^="tel:"]');
 		if (target) {
-			let buttonText = target.innerText.trim() || target.value || target.title || '<?php echo esc_js(mt_translate(''Botón sin texto'')); ?>';
+			let buttonText = target.innerText.trim() || target.value || target.title || '<?php echo esc_js(mt_translate('Botón sin texto')); ?>';
 			// Si el texto es muy largo, cortarlo
 			if (buttonText.length > 50) buttonText = buttonText.substring(0, 50) + '...';
 			
@@ -672,3 +672,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
+
