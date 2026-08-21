@@ -216,8 +216,8 @@
 .mt-vehicle-card .vehicle-features .dashicons { color: var(--mt-color-accent); }
 .mt-vehicle-card__footer { margin-top: auto; }
 .mt-vehicle-card .vehicle-price-preview { margin-bottom: 14px; padding: 14px; border-radius: var(--mt-radius-md); background: var(--mt-color-primary); text-align: center; }
-.mt-vehicle-card .price-label { display: block; margin-bottom: 4px; color: rgba(255,255,255,.78) !important; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
-.mt-vehicle-card .price-value { display: block; color: #ffd27d !important; font-size: 1.65rem; font-weight: 800; }
+#wptb-plugin-container .mt-vehicle-card .price-label { display: block; margin-bottom: 4px; color: rgba(255,255,255,.78) !important; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
+#wptb-plugin-container .mt-vehicle-card .price-value { display: block; color: #ffd27d !important; font-size: 1.65rem; font-weight: 800; }
 .mt-vehicle-card .mt-button { width: 100%; background: var(--mt-color-accent); }
 .mt-vehicle-card .mt-button:hover { background: var(--mt-color-accent-hover); }
 
@@ -255,6 +255,7 @@
     .mt-booking__layout { grid-template-columns: minmax(300px, .8fr) minmax(0, 1.45fr); align-items: start; }
     .mt-booking__summary { position: sticky; top: 24px; }
 }
+
 
 
 
