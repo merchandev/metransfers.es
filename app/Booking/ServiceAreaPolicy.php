@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 namespace MeTransfers\Booking;
 
 use MeTransfers\Core\Settings;
@@ -98,7 +98,7 @@ final class ServiceAreaPolicy {
             ),
             'https://maps.googleapis.com/maps/api/geocode/json'
         );
-        $response = wp_remote_get( $url, array( 'timeout' => 8 ) );
+        $response = wp_remote_get( $url, array( 'timeout' => 8, 'headers' => array( 'Referer' => home_url( '/' ) ) ) );
         if ( is_wp_error( $response ) ) {
             return array( 'valid' => false );
         }
@@ -168,3 +168,5 @@ final class ServiceAreaPolicy {
         return strtolower( (string) $text );
     }
 }
+
+

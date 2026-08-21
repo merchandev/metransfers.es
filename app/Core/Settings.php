@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 namespace MeTransfers\Core;
 
 /**
@@ -149,7 +149,10 @@ class Settings {
     public static function requireServerMapsKey() {
         $key = trim( (string) self::get( 'google_maps_server_api_key', '' ) );
         if ( '' === $key ) {
-            throw new \RuntimeException( 'Server Maps key missing.' );
+            $key = trim( (string) self::get( 'google_maps_api_key', '' ) );
+            if ( '' === $key ) {
+                throw new \RuntimeException( 'Server Maps key missing.' );
+            }
         }
 
         return $key;
@@ -197,3 +200,4 @@ class Settings {
         return substr( hash( 'sha256', (string) $option ), 0, 16 );
     }
 }
+
