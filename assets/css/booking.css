@@ -207,8 +207,8 @@
 }
 .mt-vehicle-card:hover,
 .mt-vehicle-card.selected { border-color: var(--mt-color-accent); box-shadow: var(--mt-shadow-lg); transform: translateY(-2px); }
-.mt-vehicle-card__image { display: grid; place-items: center; height: 200px; padding: 20px; background: var(--mt-color-surface-alt); }
-.mt-vehicle-card__image img { width: auto; max-width: 100%; max-height: 100%; object-fit: contain; }
+.mt-vehicle-card__image { display: flex; align-items: center; justify-content: center; height: 200px; padding: 15px; background: var(--mt-color-surface-alt); overflow: hidden; }
+.mt-vehicle-card__image img { width: 100% !important; height: 100% !important; max-height: 170px !important; object-fit: contain !important; }
 .mt-vehicle-card__body { display: flex; flex: 1; flex-direction: column; justify-content: space-between; padding: 24px; }
 .mt-vehicle-card__body h3 { margin: 0 0 12px; color: var(--mt-color-text) !important; font-family: var(--mt-font-heading); font-size: 1.25rem; }
 .mt-vehicle-card .vehicle-features { display: flex; gap: 14px; margin-bottom: 16px; color: var(--mt-color-muted); }
@@ -255,5 +255,6 @@
     .mt-booking__layout { grid-template-columns: minmax(300px, .8fr) minmax(0, 1.45fr); align-items: start; }
     .mt-booking__summary { position: sticky; top: 24px; }
 }
+
 
 
