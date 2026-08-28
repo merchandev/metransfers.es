@@ -1589,6 +1589,7 @@ function mt_is_transactional_page( $post = null ): bool {
 		array( 'seleccionar-vehiculo', 'reservas-metransfers', 'pago', 'finalizar-pago', 'reservas-hotel' ),
 		true
 	);
+}
 // ==========================================
 // CORRECCIÓN SEO: OPENGRAPH DE LA PORTADA
 // ==========================================
