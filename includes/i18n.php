@@ -34,7 +34,7 @@ if ( ! defined( 'MT_ACTIVE_LANGS' ) ) {
 
 if ( ! defined( 'MT_SEO_LANGS' ) ) {
     // A language enters this allowlist only after human SEO/content acceptance.
-    define( 'MT_SEO_LANGS', array( 'es' ) );
+    define( 'MT_SEO_LANGS', array( 'es', 'en', 'fr', 'ru', 'zh', 'de', 'it', 'pt', 'ca', 'nl' ) );
 }
 
 function mt_get_current_lang(): string {
@@ -84,6 +84,13 @@ function mt_translate_title( $title, $id = null ) {
 function mt_translate_excerpt( $excerpt ) {
     return \MeTransfers\I18n\Translation::translate( $excerpt );
 }
+
+add_filter( 'wp_nav_menu_objects', function( $items ) {
+	foreach ( $items as $item ) {
+		$item->title = \MeTransfers\I18n\Translation::translate( $item->title );
+	}
+	return $items;
+}, 99 );
 
 \MeTransfers\I18n\Language::boot();
 ( new \MeTransfers\I18n\Router() )->register();

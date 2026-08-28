@@ -563,8 +563,7 @@ a.contact__val:hover{color:var(--blue);}
           <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Atención 24/7 bajo reserva'); ?></span>
         </div>
         <div class="hero__ctas">
-          <a href="#panel" class="btn btn-solid"><?php echo mt_translate('Calcular mi traslado'); ?></a>
-          <a href="https://wa.me/34662024136?text=Hola,%20necesito%20informaci%C3%B3n%20para%20organizar%20un%20traslado%20privado%20con%20MeTransfers." class="btn btn-ghost-inv" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 32 32" fill="currentColor"><path d="M26.576 5.363c-2.69-2.69-6.406-4.354-10.511-4.354-8.209 0-14.865 6.655-14.865 14.865 0 2.732 0.737 5.291 2.022 7.491l-0.038-0.070-2.109 7.702 7.879-2.067c2.051 1.139 4.498 1.809 7.102 1.809h0.006c8.209-0.003 14.862-6.659 14.862-14.868 0-4.103-1.662-7.817-4.349-10.507l0 0zM16.062 28.228h-0.005c-0 0-0.001 0-0.001 0-2.319 0-4.489-0.64-6.342-1.753l0.056 0.031-0.451-0.267-4.675 1.227 1.247-4.559-0.294-0.467c-1.185-1.862-1.889-4.131-1.889-6.565 0-6.822 5.531-12.353 12.353-12.353s12.353 5.531 12.353 12.353c0 6.822-5.53 12.353-12.353 12.353h-0zM22.838 18.977c-0.371-0.186-2.197-1.083-2.537-1.208-0.341-0.124-0.589-0.185-0.837 0.187-0.246 0.371-0.958 1.207-1.175 1.455-0.216 0.249-0.434 0.279-0.805 0.094-1.15-0.466-2.138-1.087-2.997-1.852l0.010 0.009c-0.799-0.74-1.484-1.587-2.037-2.521l-0.028-0.052c-0.216-0.371-0.023-0.572 0.162-0.757 0.167-0.166 0.372-0.434 0.557-0.65 0.146-0.179 0.271-0.384 0.366-0.604l0.006-0.017c0.043-0.087 0.068-0.188 0.068-0.296 0-0.131-0.037-0.253-0.101-0.357l0.002 0.003c-0.094-0.186-0.836-2.014-1.145-2.758-0.302-0.724-0.609-0.625-0.836-0.637-0.216-0.010-0.464-0.012-0.712-0.012-0.395 0.010-0.746 0.188-0.988 0.463l-0.001 0.002c-0.802 0.761-1.3 1.834-1.3 3.023 0 0.026 0 0.053 0.001 0.079l-0-0.004c0.131 1.467 0.681 2.784 1.527 3.857l-0.012-0.015c1.604 2.379 3.742 4.282 6.251 5.564l0.094 0.043c0.548 0.248 1.25 0.513 1.968 0.74l0.149 0.041c0.442 0.14 0.951 0.221 1.479 0.221 0.303 0 0.601-0.027 0.889-0.078l-0.031 0.004c1.069-0.223 1.956-0.868 2.497-1.749l0.009-0.017c0.165-0.366 0.261-0.793 0.261-1.242 0-0.185-0.016-0.366-0.047-0.542l0.003 0.019c-0.092-0.155-0.34-0.247-0.712-0.434z"/></svg> Consultar por WhatsApp</a>
+          <a href="https://wa.me/34662024136?text=Hola,%20necesito%20informaci%C3%B3n%20para%20organizar%20un%20traslado%20privado%20con%20MeTransfers." class="btn btn-ghost-inv" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 32 32" fill="currentColor"><path d="M26.576 5.363c-2.69-2.69-6.406-4.354-10.511-4.354-8.209 0-14.865 6.655-14.865 14.865 0 2.732 0.737 5.291 2.022 7.491l-0.038-0.070-2.109 7.702 7.879-2.067c2.051 1.139 4.498 1.809 7.102 1.809h0.006c8.209-0.003 14.862-6.659 14.862-14.868 0-4.103-1.662-7.817-4.349-10.507l0 0zM16.062 28.228h-0.005c-0 0-0.001 0-0.001 0-2.319 0-4.489-0.64-6.342-1.753l0.056 0.031-0.451-0.267-4.675 1.227 1.247-4.559-0.294-0.467c-1.185-1.862-1.889-4.131-1.889-6.565 0-6.822 5.531-12.353 12.353-12.353s12.353 5.531 12.353 12.353c0 6.822-5.53 12.353-12.353 12.353h-0zM22.838 18.977c-0.371-0.186-2.197-1.083-2.537-1.208-0.341-0.124-0.589-0.185-0.837 0.187-0.246 0.371-0.958 1.207-1.175 1.455-0.216 0.249-0.434 0.279-0.805 0.094-1.15-0.466-2.138-1.087-2.997-1.852l0.010 0.009c-0.799-0.74-1.484-1.587-2.037-2.521l-0.028-0.052c-0.216-0.371-0.023-0.572 0.162-0.757 0.167-0.166 0.372-0.434 0.557-0.65 0.146-0.179 0.271-0.384 0.366-0.604l0.006-0.017c0.043-0.087 0.068-0.188 0.068-0.296 0-0.131-0.037-0.253-0.101-0.357l0.002 0.003c-0.094-0.186-0.836-2.014-1.145-2.758-0.302-0.724-0.609-0.625-0.836-0.637-0.216-0.010-0.464-0.012-0.712-0.012-0.395 0.010-0.746 0.188-0.988 0.463l-0.001 0.002c-0.802 0.761-1.3 1.834-1.3 3.023 0 0.026 0 0.053 0.001 0.079l-0-0.004c0.131 1.467 0.681 2.784 1.527 3.857l-0.012-0.015c1.604 2.379 3.742 4.282 6.251 5.564l0.094 0.043c0.548 0.248 1.25 0.513 1.968 0.74l0.149 0.041c0.442 0.14 0.951 0.221 1.479 0.221 0.303 0 0.601-0.027 0.889-0.078l-0.031 0.004c1.069-0.223 1.956-0.868 2.497-1.749l0.009-0.017c0.165-0.366 0.261-0.793 0.261-1.242 0-0.185-0.016-0.366-0.047-0.542l0.003 0.019c-0.092-0.155-0.34-0.247-0.712-0.434z"/></svg> <?php echo esc_html( mt_translate( 'Consultar por WhatsApp' ) ); ?></a>
         </div>
         <div class="hero__stats">
           <div>
@@ -587,9 +586,9 @@ a.contact__val:hover{color:var(--blue);}
         <div class="hero__panel">
           <h2><?php echo mt_translate('Calcula tu traslado'); ?></h2>
           <?php if ( shortcode_exists( 'wptb_booking_form' ) ) : ?>
-            <?php echo mt_translate( do_shortcode( '[wptb_booking_form]' ) ); ?>
+            <?php echo do_shortcode( '[wptb_booking_form]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- trusted shortcode markup. ?>
           <?php else : ?>
-            <p style="text-align:center;padding:20px;color:var(--muted);">Activa el plugin de reservas.</p>
+            <p style="text-align:center;padding:20px;color:var(--muted);"><?php echo esc_html( mt_translate( 'El formulario de reservas no está disponible temporalmente.' ) ); ?></p>
           <?php endif; ?>
         </div>
       </div>
@@ -609,9 +608,7 @@ a.contact__val:hover{color:var(--blue);}
         <?php echo mt_translate("Transfers de aeropuerto, puerto y traslados privados"); ?>
     </h2>
     <p class="lead tc" style="margin:20px auto 0;">
-        <?php echo mt_translate("Organizamos recogidas y llegadas desde o hacia el Aeropuerto de Barcelona,"); ?>
-        hoteles, puerto, estaciones y otras ciudades, con vehículo privado y chófer
-        profesional.
+        <?php echo mt_translate("Organizamos recogidas y llegadas desde o hacia el Aeropuerto de Barcelona, hoteles, puerto, estaciones y otras ciudades, con vehículo privado y chófer profesional."); ?>
     </p>
 
     <div class="srv__grid">
@@ -736,7 +733,7 @@ a.contact__val:hover{color:var(--blue);}
       <div class="fleet__card">
         <div class="fleet__img-wrap">
           <img src="<?php echo $bdi; ?>/corporate-vip.webp" alt="ECONOMIC CLASS - Berlina ejecutiva" class="fleet__img" loading="lazy" decoding="async">
-          <span class="fleet__badge">Hasta 3 pasajeros</span>
+          <span class="fleet__badge"><?php echo esc_html( mt_translate( 'Hasta 3 pasajeros' ) ); ?></span>
         </div>
         <div class="fleet__body">
           <span class="fleet__cat"><?php echo mt_translate("Berlina ejecutiva"); ?></span>
@@ -761,7 +758,7 @@ a.contact__val:hover{color:var(--blue);}
           <p><?php echo mt_translate("Máxima privacidad y confort para clientes VIP, directivos, ocasiones especiales y servicios de representación."); ?></p>
           <div class="fleet__specs">
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> <?php echo mt_translate("Hasta 2 pasajeros"); ?></span>
-            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Servicio de alta gama</span>
+            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> <?php echo esc_html( mt_translate( 'Servicio de alta gama' ) ); ?></span>
           </div>
           <a href="#panel" class="btn btn-ghost" style="text-align:center;justify-content:center;"><?php echo esc_html( mt_translate( 'Consultar servicio premium' ) ); ?></a>
         </div>
@@ -770,7 +767,7 @@ a.contact__val:hover{color:var(--blue);}
       <div class="fleet__card">
         <div class="fleet__img-wrap">
           <img src="<?php echo $bdi; ?>/family-v-class.webp" alt="MINI VAN «V» Class - Minivan premium" class="fleet__img" loading="lazy" decoding="async">
-          <span class="fleet__badge">Hasta 7 pasajeros</span>
+          <span class="fleet__badge"><?php echo esc_html( mt_translate( 'Hasta 7 pasajeros' ) ); ?></span>
         </div>
         <div class="fleet__body">
           <span class="fleet__cat"><?php echo mt_translate("Minivan premium"); ?></span>
@@ -778,7 +775,7 @@ a.contact__val:hover{color:var(--blue);}
           <p><?php echo mt_translate("Espacio amplio para familias, grupos, equipos de trabajo, tours privados y pasajeros con mayor volumen de equipaje."); ?></p>
           <div class="fleet__specs">
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> <?php echo mt_translate("Hasta 7 pasajeros"); ?></span>
-            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Capacidad máxima de equipaje</span>
+            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> <?php echo esc_html( mt_translate( 'Capacidad máxima de equipaje' ) ); ?></span>
           </div>
           <a href="#panel" class="btn btn-ghost" style="text-align:center;justify-content:center;"><?php echo esc_html( mt_translate( 'Reservar vehículo para grupos' ) ); ?></a>
         </div>
@@ -787,7 +784,7 @@ a.contact__val:hover{color:var(--blue);}
       <div class="fleet__card">
         <div class="fleet__img-wrap">
           <img src="<?php echo $bdi; ?>/family-v-class.webp" alt="MINI VAN ECONOMIC - Minivan" class="fleet__img" loading="lazy" decoding="async">
-          <span class="fleet__badge">Hasta 7 pasajeros</span>
+          <span class="fleet__badge"><?php echo esc_html( mt_translate( 'Hasta 7 pasajeros' ) ); ?></span>
         </div>
         <div class="fleet__body">
           <span class="fleet__cat"><?php echo mt_translate("Minivan"); ?></span>
@@ -795,14 +792,14 @@ a.contact__val:hover{color:var(--blue);}
           <p><?php echo mt_translate("Opción económica y espaciosa para familias o grupos de hasta 7 pasajeros que buscan comodidad al mejor precio."); ?></p>
           <div class="fleet__specs">
             <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg> <?php echo mt_translate("Hasta 7 pasajeros"); ?></span>
-            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> Capacidad estándar de equipaje</span>
+            <span class="fleet__spec"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> <?php echo esc_html( mt_translate( 'Capacidad estándar de equipaje' ) ); ?></span>
           </div>
           <a href="#panel" class="btn btn-ghost" style="text-align:center;justify-content:center;"><?php echo esc_html( mt_translate( 'Reservar vehículo para grupos' ) ); ?></a>
         </div>
       </div>
 
     </div>
-    <p class="fleet__note">El modelo concreto puede variar por otro vehículo de categoría y características equivalentes según disponibilidad.</p>
+    <p class="fleet__note"><?php echo esc_html( mt_translate( 'El modelo concreto puede variar por otro vehículo de categoría y características equivalentes según disponibilidad.' ) ); ?></p>
   </div>
 </section>
 
@@ -812,7 +809,7 @@ a.contact__val:hover{color:var(--blue);}
   <div class="wrap">
 
     <p class="tag tc" style="justify-content:center;">
-        Rutas y destinos más solicitados
+        <?php echo esc_html( mt_translate( 'Rutas y destinos más solicitados' ) ); ?>
     </p>
 
     <h2 class="tc">
@@ -820,15 +817,13 @@ a.contact__val:hover{color:var(--blue);}
     </h2>
 
     <p class="lead tc" style="margin:20px auto 0;">
-        Organizamos traslados desde el Aeropuerto de Barcelona, hoteles,
-        estaciones, puerto y domicilios, además de trayectos hacia Barcelona
-        y destinos de larga distancia.
+        <?php echo esc_html( mt_translate( 'Organizamos traslados desde el Aeropuerto de Barcelona, hoteles, estaciones, puerto y domicilios, además de trayectos hacia Barcelona y destinos de larga distancia.' ) ); ?>
     </p>
 
     <div class="routes__grid">
 
       <a
-        href="<?php echo esc_url( mt_localized_url( 'traslados-privados' ) ); ?>"
+        href="<?php echo esc_url( mt_localized_url( 'taxis-privado-barcelona' ) ); ?>"
         class="route__item"
         style="text-decoration:none;color:inherit;"
       >
@@ -853,11 +848,11 @@ a.contact__val:hover{color:var(--blue);}
         style="text-decoration:none;color:inherit;"
       >
         <div class="route__info">
-          <h3>Barcelona ↔ Sitges</h3>
-          <p>Traslado puerta a puerta para hoteles, viviendas y eventos.</p>
+          <h3><?php echo esc_html( mt_translate( 'Barcelona ↔ Sitges' ) ); ?></h3>
+          <p><?php echo esc_html( mt_translate( 'Traslado puerta a puerta para hoteles, viviendas y eventos.' ) ); ?></p>
         </div>
         <span class="route__time">
-            <?php echo esc_html( mt_get_route_duration( 'barcelona-sitges' ) ?: 'Según tráfico' ); ?>
+            <?php echo esc_html( mt_translate( mt_get_route_duration( 'barcelona-sitges' ) ?: 'Según tráfico' ) ); ?>
         </span>
       </a>
 
@@ -874,16 +869,16 @@ a.contact__val:hover{color:var(--blue);}
       </a>
 
       <a
-        href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-portaventura' ) ); ?>"
+        href="<?php echo esc_url( mt_localized_url( 'taxis-barcelona-port-aventura' ) ); ?>"
         class="route__item"
         style="text-decoration:none;color:inherit;"
       >
         <div class="route__info">
-          <h3>Barcelona ↔ PortAventura</h3>
-          <p>Traslado privado para familias y grupos.</p>
+          <h3><?php echo esc_html( mt_translate( 'Barcelona ↔ PortAventura' ) ); ?></h3>
+          <p><?php echo esc_html( mt_translate( 'Traslado privado para familias y grupos.' ) ); ?></p>
         </div>
         <span class="route__time">
-            <?php echo esc_html( mt_get_route_duration( 'barcelona-portaventura' ) ?: 'Según tráfico' ); ?>
+            <?php echo esc_html( mt_translate( mt_get_route_duration( 'barcelona-portaventura' ) ?: 'Según tráfico' ) ); ?>
         </span>
       </a>
 
@@ -893,11 +888,11 @@ a.contact__val:hover{color:var(--blue);}
         style="text-decoration:none;color:inherit;"
       >
         <div class="route__info">
-          <h3>Barcelona ↔ Salou</h3>
-          <p>Traslado directo a hoteles y apartamentos turísticos.</p>
+          <h3><?php echo esc_html( mt_translate( 'Barcelona ↔ Salou' ) ); ?></h3>
+          <p><?php echo esc_html( mt_translate( 'Traslado directo a hoteles y apartamentos turísticos.' ) ); ?></p>
         </div>
         <span class="route__time">
-            <?php echo esc_html( mt_get_route_duration( 'barcelona-salou' ) ?: 'Según tráfico' ); ?>
+            <?php echo esc_html( mt_translate( mt_get_route_duration( 'barcelona-salou' ) ?: 'Según tráfico' ) ); ?>
         </span>
       </a>
 
@@ -911,7 +906,7 @@ a.contact__val:hover{color:var(--blue);}
           <p><?php echo mt_translate("Traslado directo a la ciudad o al aeropuerto de Girona."); ?></p>
         </div>
         <span class="route__time">
-            <?php echo esc_html( mt_get_route_duration( 'barcelona-girona' ) ?: 'Según tráfico' ); ?>
+            <?php echo esc_html( mt_translate( mt_get_route_duration( 'barcelona-girona' ) ?: 'Según tráfico' ) ); ?>
         </span>
       </a>
 
@@ -921,14 +916,13 @@ a.contact__val:hover{color:var(--blue);}
         style="text-decoration:none;color:inherit;"
       >
         <div class="route__info">
-          <h3>Barcelona ↔ Andorra</h3>
-          <p>Servicio privado de larga distancia con paradas bajo petición.</p>
+          <h3><?php echo esc_html( mt_translate( 'Barcelona ↔ Andorra' ) ); ?></h3>
+          <p><?php echo esc_html( mt_translate( 'Servicio privado de larga distancia con paradas bajo petición.' ) ); ?></p>
         </div>
         <span class="route__time">
             <?php
             echo esc_html(
-                mt_get_route_duration( 'barcelona-andorra' )
-                ?: 'Según tráfico'
+                mt_translate( mt_get_route_duration( 'barcelona-andorra' ) ?: 'Según tráfico' )
             );
             ?>
         </span>
@@ -938,7 +932,7 @@ a.contact__val:hover{color:var(--blue);}
 
     <div class="tc" style="margin-top:40px;">
       <a href="<?php echo esc_url( get_post_type_archive_link( 'ruta' ) ); ?>" class="btn btn-ghost">
-        Ver todas las rutas
+        <?php echo esc_html( mt_translate( 'Ver todas las rutas' ) ); ?>
       </a>
     </div>
 
@@ -959,9 +953,9 @@ a.contact__val:hover{color:var(--blue);}
       <div class="tour__card tour__main">
         <div class="tour__img" style="background-image:url('<?php echo $arts; ?>/descubre-barcelona-en-4-6-u-8-horas-elige-el-tour-en-coche-a-tu-medida-4144.jpg');"></div>
         <div class="tour__content">
-          <h3><?php echo mt_translate("Tour privado"); ?> por Barcelona</h3>
-          <p>Sagrada Familia, Passeig de Gràcia, Barrio Gótico y Montjuïc. Itinerario flexible de 4, 6 u 8 horas con vehículo premium.</p>
-          <a href="<?php echo esc_url( mt_localized_url( 'tour-en-barcelona' ) . '#tour-booking' ); ?>" class="tour__cta-btn">Más información</a>
+          <h3><?php echo esc_html( mt_translate( 'Tour privado por Barcelona' ) ); ?></h3>
+          <p><?php echo esc_html( mt_translate( 'Sagrada Familia, Passeig de Gràcia, Barrio Gótico y Montjuïc. Itinerario flexible de 4, 6 u 8 horas con vehículo premium.' ) ); ?></p>
+          <a href="<?php echo esc_url( mt_localized_url( 'tour-en-barcelona' ) . '#tour-booking' ); ?>" class="tour__cta-btn"><?php echo esc_html( mt_translate( 'Más información' ) ); ?></a>
         </div>
       </div>
 
@@ -1012,7 +1006,7 @@ a.contact__val:hover{color:var(--blue);}
     <div class="tc">
       <a href="https://www.getyourguide.com/es-es/metransfers-s12737/" target="_blank" rel="noopener noreferrer" class="gyg-badge" style="text-decoration:none;display:inline-flex;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFB547" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        Opiniones verificadas en GetYourGuide &rarr; Ver opiniones
+        <?php echo esc_html( mt_translate( 'Opiniones verificadas en GetYourGuide → Ver opiniones' ) ); ?>
       </a>
     </div>
 
@@ -1205,7 +1199,7 @@ a.contact__val:hover{color:var(--blue);}
               <option value="horas"><?php echo mt_translate("Chófer por horas"); ?></option>
               <option value="evento"><?php echo mt_translate("Empresa o evento"); ?></option>
               <option value="tour"><?php echo mt_translate("Tour privado"); ?></option>
-              <option value="grupo">Grupo o celebración</option>
+              <option value="grupo"><?php echo esc_html( mt_translate( 'Grupo o celebración' ) ); ?></option>
               <option value="otro"><?php echo mt_translate("Otro servicio"); ?></option>
             </select>
           </div>
@@ -1272,12 +1266,12 @@ if(cform){
         cform.querySelector('.cform__ok').style.display = 'block';
         cform.reset();
       } else {
-        alert(data.data || 'Ocurrió un error. Inténtalo de nuevo.');
+        alert(data.data || '<?php echo esc_js( mt_translate( 'Ocurrió un error. Inténtalo de nuevo.' ) ); ?>');
       }
     })
     .catch(error => {
       console.error('Error:', error);
-      alert('Ocurrió un error al enviar el formulario.');
+      alert('<?php echo esc_js( mt_translate( 'Ocurrió un error al enviar el formulario.' ) ); ?>');
     })
     .finally(() => {
       btn.innerHTML = originalText;
