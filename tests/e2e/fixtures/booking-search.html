@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Booking search fixture</title>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/booking.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 32px; background: #10283a; font-family: var(--mt-font-body); }
+    .fixture-panel { width: min(100%, 560px); margin: 0 auto; padding: 28px; border-radius: 24px; background: #fff; }
+    .fixture-panel.is-wide { width: min(100%, 840px); }
+  </style>
+</head>
+<body>
+  <main class="fixture-panel">
+    <div id="wptb-plugin-container" class="wptb-iso mt-booking mt-booking--search">
+      <div class="booking-form active wptb-panel wptb-search-panel">
+        <form class="wptb-main-search-form">
+          <div class="floating-label wptb-main-search-field wptb-search-field-origin wptb-origin-wrapper">
+            <input type="text" id="origin" name="origin" required>
+            <label for="origin">Origen</label>
+            <button type="button" class="wptb-geolocation-btn" aria-label="Usar mi ubicación">◎</button>
+          </div>
+          <div class="floating-label wptb-main-search-field wptb-search-field-destination">
+            <input type="text" id="destination" name="destination" required>
+            <label for="destination">Destino</label>
+          </div>
+          <div class="floating-label wptb-main-search-field wptb-search-field-date">
+            <input type="date" id="date" name="transfer_date" required>
+            <label for="date">Fecha</label>
+          </div>
+          <div class="floating-label wptb-main-search-field wptb-search-field-time">
+            <input type="time" id="time" name="transfer_time" required>
+            <label for="time">Hora</label>
+          </div>
+          <button type="submit" class="wptb-main-search-submit mt-button mt-button--primary">Buscar vehículos</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

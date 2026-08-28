@@ -147,32 +147,33 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
         <div class="seo-hero-grid">
             <!-- TEXTO -->
             <div>
-                <div class="hero-badge-seo">De puerta a puerta | Confort garantizado</div>
-                <h1 class="hero-title-seo"><?php echo esc_html( mt_translate( $title_hero  )); ?></h1>
+                <div class="hero-badge-seo"><?php echo esc_html( mt_translate( 'De puerta a puerta | Confort garantizado' ) ); ?></div>
+                <h1 class="hero-title-seo"><?php echo esc_html( mt_translate( $title_hero ) ); ?></h1>
                 <p class="hero-lead-seo">
-                    <?php echo esc_html( mt_translate( $lead_hero  )); ?>
+                    <?php echo esc_html( mt_translate( $lead_hero ) ); ?>
                 </p>
                 <div class="hero__checks">
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Precio fijo sin cargos ocultos</span>
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos modernos y limpios</span>
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Seguimiento de vuelos en tiempo real</span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo esc_html( mt_translate( 'Precio fijo sin cargos ocultos' ) ); ?></span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo esc_html( mt_translate( 'Vehículos modernos y limpios' ) ); ?></span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo esc_html( mt_translate( 'Seguimiento de vuelos en tiempo real' ) ); ?></span>
                 </div>
             </div>
 
             <!-- PANEL RESERVA -->
             <div id="reservar">
                 <div class="hero__panel">
-                    <h2>Calcula tu traslado online</h2>
+                    <h2><?php echo esc_html( mt_translate( 'Calcula tu traslado online' ) ); ?></h2>
                     <?php if ( shortcode_exists( 'wptb_booking_form' ) ) : ?>
                         <?php echo do_shortcode( '[wptb_booking_form]' ); ?>
                     <?php else : ?>
-                        <p style="text-align:center;padding:20px;color:var(--muted);">Activa el plugin de reservas (WPTB).</p>
+                        <p style="text-align:center;padding:20px;color:var(--muted);"><?php echo esc_html( mt_translate( 'Activa el plugin de reservas (WPTB).' ) ); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
     </section>
     
+
     <!-- Contenido SEO -->
     <section class="section container gs-reveal" style="padding: 80px 16px;">
         <div class="entry-content" style="max-width: 900px; margin: 0 auto; line-height: 1.8; font-size: 1.1rem; background: #fff; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
@@ -183,27 +184,17 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
                 the_content();
             else : 
             ?>
-                <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;"><?php echo esc_html( mt_translate( $tipo_servicio  )); ?> a <?php echo esc_html( mt_translate( $destino  )); ?> sin esperas</h2>
-                <p>
-                    Llegar a <?php echo esc_html( mt_translate( $destino  )); ?> desde Barcelona nunca fue tan sencillo. Evita las largas colas para el autobús y las incómodas combinaciones de trenes con equipaje. Nuestro servicio de <strong><?php echo esc_html( mt_translate( strtolower($tipo_servicio) ) ); ?> a <?php echo esc_html( mt_translate( $destino  )); ?></strong> está pensado para que tu descanso comience desde el momento en que aterrizas.
-                </p>
-                <p>
-                    Nuestros conductores monitorizan los vuelos de llegada al Aeropuerto de El Prat, por lo que incluso si tu vuelo se retrasa, te estaremos esperando en la terminal de llegadas con un cartel con tu nombre. Desde allí, el trayecto hasta <?php echo esc_html( mt_translate( $destino  )); ?> será directo y confortable.
-                </p>
+                <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;"><?php echo esc_html( sprintf( mt_translate( '%s a %s sin esperas' ), $tipo_servicio, $destino ) ); ?></h2>
+                <p><?php echo sprintf( mt_translate( "Llegar a %1$s desde Barcelona nunca fue tan sencillo. Evita las largas colas para el autobús y las incómodas combinaciones de trenes con equipaje. Nuestro servicio de %2$s a %1$s está pensado para que tu descanso comience desde el momento en que aterrizas." ), esc_html( $destino ), esc_html( strtolower($tipo_servicio) ) ); ?></p>
+                <p><?php echo sprintf( mt_translate( "Nuestros conductores monitorizan los vuelos de llegada al Aeropuerto de El Prat, por lo que incluso si tu vuelo se retrasa, te estaremos esperando en la terminal de llegadas con un cartel con tu nombre. Desde allí, el trayecto hasta %s será directo y confortable." ), esc_html( $destino ) ); ?></p>
                 
-                <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">La mejor opción para familias y grupos</h3>
-                <p>
-                    Si viajas con amigos, familia o grupos grandes, disponemos de espaciosas furgonetas y minivans Mercedes-Benz con capacidad para hasta 7 pasajeros y todo su equipaje. 
-                </p>
-                <p>
-                    Además, proporcionamos bajo solicitud las sillas de retención infantil adecuadas para que los más pequeños viajen de forma segura y cumpliendo todas las normativas de tráfico.
-                </p>
+                <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;"><?php echo mt_translate( "La mejor opción para familias y grupos" ); ?></h3>
+                <p><?php echo mt_translate( "Si viajas con amigos, familia o grupos grandes, disponemos de espaciosas furgonetas y minivans Mercedes-Benz con capacidad para hasta 7 pasajeros y todo su equipaje." ); ?></p>
+                <p><?php echo mt_translate( "Además, proporcionamos bajo solicitud las sillas de retención infantil adecuadas para que los más pequeños viajen de forma segura y cumpliendo todas las normativas de tráfico." ); ?></p>
 
                 <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
-                    <h4 style="margin-top:0; color:#0066CC;">CONSEJO: Reserva tu trayecto de ida y vuelta</h4>
-                    <p style="margin-bottom:0;">
-                        Para disfrutar de un viaje sin sobresaltos, te aconsejamos reservar conjuntamente el trayecto de ida y el de vuelta al aeropuerto. Nuestro conductor te recogerá en la puerta de tu hotel en <?php echo esc_html( mt_translate( $destino  )); ?> a la hora óptima para que llegues a tiempo a tu vuelo en Barcelona.
-                    </p>
+                    <h4 style="margin-top:0; color:#0066CC;"><?php echo mt_translate( "CONSEJO: Reserva tu trayecto de ida y vuelta" ); ?></h4>
+                    <p style="margin-bottom:0;"><?php echo sprintf( mt_translate( "Para disfrutar de un viaje sin sobresaltos, te aconsejamos reservar conjuntamente el trayecto de ida y el de vuelta al aeropuerto. Nuestro conductor te recogerá en la puerta de tu hotel en %s a la hora óptima para que llegues a tiempo a tu vuelo en Barcelona." ), esc_html( $destino ) ); ?></p>
                 </div>
             <?php endif; ?>
 
@@ -215,13 +206,13 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
       <div class="wrap">
         <div class="cta__inner">
           <div>
-            <p class="tag">Reserva tu próximo traslado</p>
-            <h2>Tu viaje comienza con una recogida bien organizada</h2>
-            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
+            <p class="tag"><?php echo esc_html( mt_translate( 'Reserva tu próximo traslado' ) ); ?></p>
+            <h2><?php echo esc_html( mt_translate( 'Tu viaje comienza con una recogida bien organizada' ) ); ?></h2>
+            <p class="cta__lead"><?php echo esc_html( mt_translate( 'Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.' ) ); ?></p>
           </div>
           <div class="cta__btns">
-            <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
-            <a href="https://wa.me/34662024136?text=Hola,%20quisiera%20informaci%C3%B3n%20sobre%20traslados%20desde%20Barcelona%20a%20<?php echo urlencode($destino); ?>" class="btn btn-ghost-inv" target="_blank" rel="noopener">Consultar por WhatsApp</a>
+            <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);"><?php echo esc_html( mt_translate( 'Presupuestar y reservar' ) ); ?></a>
+            <a href="https://wa.me/34662024136?text=<?php echo urlencode( mt_translate( 'Hola, quisiera información sobre traslados desde Barcelona a ' ) . $destino ); ?>" class="btn btn-ghost-inv" target="_blank" rel="noopener"><?php echo esc_html( mt_translate( 'Consultar por WhatsApp' ) ); ?></a>
           </div>
         </div>
       </div>
@@ -229,4 +220,7 @@ $lead_hero = sprintf('Inicia tus vacaciones o viaje de negocios sin estrés. Res
 </main>
 
 <?php get_footer(); ?>
+
+
+
 

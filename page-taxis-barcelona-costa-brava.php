@@ -107,26 +107,26 @@ get_header(); ?>
         <div class="seo-hero-grid">
             <!-- TEXTO -->
             <div>
-                <div class="hero-badge-seo">Playas, calas y pueblos | Viaje exclusivo</div>
-                <h1 class="hero-title-seo">Taxis y traslados desde Barcelona a la Costa Brava</h1>
+                <div class="hero-badge-seo"><?php echo mt_translate('Playas, calas y pueblos | Viaje exclusivo'); ?></div>
+                <h1 class="hero-title-seo"><?php echo mt_translate('Taxis y traslados desde Barcelona a la Costa Brava'); ?></h1>
                 <p class="hero-lead-seo">
-                    Disfruta del paisaje y comienza tu escapada de lujo. Reserva tu taxi o traslado privado desde Barcelona o El Prat hacia cualquier destino de la Costa Brava (Lloret de Mar, Tossa, Cadaqués, Begur). 
+                    <?php echo mt_translate('Disfruta del paisaje y comienza tu escapada de lujo. Reserva tu taxi o traslado privado desde Barcelona o El Prat hacia cualquier destino de la Costa Brava (Lloret de Mar, Tossa, Cadaqués, Begur).'); ?> 
                 </p>
                 <div class="hero__checks">
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Choferes experimentados</span>
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vehículos clase VIP disponibles</span>
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Puntualidad y discreción</span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Choferes experimentados'); ?></span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Vehículos clase VIP disponibles'); ?></span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Puntualidad y discreción'); ?></span>
                 </div>
             </div>
 
             <!-- PANEL RESERVA -->
             <div id="reservar">
                 <div class="hero__panel">
-                    <h2>Calcula tu traslado online</h2>
+                    <h2><?php echo mt_translate('Calcula tu traslado online'); ?></h2>
                     <?php if ( shortcode_exists( 'wptb_booking_form' ) ) : ?>
                         <?php echo do_shortcode( '[wptb_booking_form]' ); ?>
                     <?php else : ?>
-                        <p style="text-align:center;padding:20px;color:var(--muted);">Activa el plugin de reservas (WPTB).</p>
+                        <p style="text-align:center;padding:20px;color:var(--muted);"><?php echo mt_translate('Activa el plugin de reservas (WPTB).'); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -137,35 +137,35 @@ get_header(); ?>
     <section class="section container gs-reveal" style="padding: 80px 16px;">
         <div class="entry-content" style="max-width: 900px; margin: 0 auto; line-height: 1.8; font-size: 1.1rem; background: #fff; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
             
-            <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;">Viaja a los pueblos más bonitos de la Costa Brava</h2>
+            <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;"><?php echo mt_translate('Viaja a los pueblos más bonitos de la Costa Brava'); ?></h2>
             <p>
-                La Costa Brava ofrece algunos de los paisajes marítimos más espectaculares de Cataluña. Sin embargo, acceder a muchos de sus pintorescos pueblos y calas escondidas mediante transporte público puede ser complicado y consumir mucho tiempo de tus vacaciones. 
+                <?php echo mt_translate('La Costa Brava ofrece algunos de los paisajes marítimos más espectaculares de Cataluña. Sin embargo, acceder a muchos de sus pintorescos pueblos y calas escondidas mediante transporte público puede ser complicado y consumir mucho tiempo de tus vacaciones.'); ?> 
             </p>
             <p>
-                La solución ideal es reservar un <strong>traslado privado desde Barcelona a la Costa Brava</strong>. Te recogemos en el Aeropuerto de Barcelona (El Prat), la estación de Sants o tu propio hotel en la ciudad, y te llevamos puerta a puerta hasta tu alojamiento costero.
+                La solución ideal es reservar un <strong><?php echo mt_translate('traslado privado desde Barcelona a la Costa Brava'); ?></strong>. Te recogemos en el Aeropuerto de Barcelona (El Prat), la estación de Sants o tu propio hotel en la ciudad, y te llevamos puerta a puerta hasta tu alojamiento costero.
             </p>
             
-            <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">Destinos populares en la Costa Brava</h3>
+            <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;"><?php echo mt_translate('Destinos populares en la Costa Brava'); ?></h3>
             <p>
-                Ofrecemos servicios de transfer a todas las poblaciones principales, incluyendo:
+                <?php echo mt_translate('Ofrecemos servicios de transfer a todas las poblaciones principales, incluyendo:'); ?>
             </p>
             <ul style="margin-bottom: 1.5rem; color: #334155; line-height: 1.8;">
-                <li><strong>Lloret de Mar y Blanes:</strong> Los destinos más rápidos y populares, ideales para turismo de playa.</li>
-                <li><strong>Tossa de Mar:</strong> Famosa por su impresionante castillo medieval junto al mar.</li>
-                <li><strong>Platja d'Aro y Palamós:</strong> Excelentes opciones gastronómicas y de tiendas de lujo.</li>
-                <li><strong>Begur, Pals y L'Escala:</strong> Encanto histórico, ruinas de Empúries y calas espectaculares de aguas cristalinas.</li>
-                <li><strong>Cadaqués y Roses:</strong> El encanto del Cap de Creus y la tierra que inspiró a Salvador Dalí.</li>
+                <li><strong><?php echo mt_translate('Lloret de Mar y Blanes:'); ?></strong> Los destinos más rápidos y populares, ideales para turismo de playa.</li>
+                <li><strong><?php echo mt_translate('Tossa de Mar:'); ?></strong> Famosa por su impresionante castillo medieval junto al mar.</li>
+                <li><strong><?php echo mt_translate('Platja d\'Aro y Palamós:'); ?></strong> Excelentes opciones gastronómicas y de tiendas de lujo.</li>
+                <li><strong><?php echo mt_translate('Begur, Pals y L\'Escala:'); ?></strong> Encanto histórico, ruinas de Empúries y calas espectaculares de aguas cristalinas.</li>
+                <li><strong><?php echo mt_translate('Cadaqués y Roses:'); ?></strong> El encanto del Cap de Creus y la tierra que inspiró a Salvador Dalí.</li>
             </ul>
 
-            <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">La comodidad de un coche privado</h3>
+            <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;"><?php echo mt_translate('La comodidad de un coche privado'); ?></h3>
             <p>
-                Todos nuestros vehículos están equipados con aire acondicionado, asientos confortables y amplio espacio para el equipaje, algo esencial si viajas para unas vacaciones largas en la playa o si llevas material deportivo (como palos de golf o equipo de buceo).
+                <?php echo mt_translate('Todos nuestros vehículos están equipados con aire acondicionado, asientos confortables y amplio espacio para el equipaje, algo esencial si viajas para unas vacaciones largas en la playa o si llevas material deportivo (como palos de golf o equipo de buceo).'); ?>
             </p>
 
             <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
-                <h4 style="margin-top:0; color:#0066CC;">INFORMACIÓN: Chófer por horas o excursiones de un día</h4>
+                <h4 style="margin-top:0; color:#0066CC;"><?php echo mt_translate('INFORMACIÓN: Chófer por horas o excursiones de un día'); ?></h4>
                 <p style="margin-bottom:0;">
-                    Si prefieres no alojarte allí pero deseas explorar la Costa Brava durante un día, puedes contratar nuestro servicio de "Chófer por horas". Tu conductor personal te llevará a los pueblos que elijas, esperará por ti y te traerá de vuelta a Barcelona por la tarde.
+                    <?php echo mt_translate('Si prefieres no alojarte allí pero deseas explorar la Costa Brava durante un día, puedes contratar nuestro servicio de "Chófer por horas". Tu conductor personal te llevará a los pueblos que elijas, esperará por ti y te traerá de vuelta a Barcelona por la tarde.'); ?>
                 </p>
             </div>
 
@@ -177,13 +177,13 @@ get_header(); ?>
       <div class="wrap">
         <div class="cta__inner">
           <div>
-            <p class="tag">Reserva tu próximo traslado</p>
-            <h2>Tu viaje comienza con una recogida bien organizada</h2>
-            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
+            <p class="tag"><?php echo mt_translate('Reserva tu próximo traslado'); ?></p>
+            <h2><?php echo mt_translate('Tu viaje comienza con una recogida bien organizada'); ?></h2>
+            <p class="cta__lead"><?php echo mt_translate('Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.'); ?></p>
           </div>
           <div class="cta__btns">
-            <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
-            <a href="https://wa.me/34662024136?text=Hola,%20quisiera%20informaci%C3%B3n%20sobre%20traslados%20desde%20Barcelona%20a%20la%20Costa%20Brava" class="btn btn-ghost-inv" target="_blank" rel="noopener">Consultar por WhatsApp</a>
+            <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);"><?php echo mt_translate('Presupuestar y reservar'); ?></a>
+            <a href="https://wa.me/34662024136?text=Hola,%20quisiera%20informaci%C3%B3n%20sobre%20traslados%20desde%20Barcelona%20a%20la%20Costa%20Brava" class="btn btn-ghost-inv" target="_blank" rel="noopener"><?php echo mt_translate('Consultar por WhatsApp'); ?></a>
           </div>
         </div>
       </div>

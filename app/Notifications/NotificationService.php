@@ -145,8 +145,22 @@ final class NotificationService {
         $email_result = self::sendEmails( $booking_id, $booking, $status );
         $errors = true === $email_result ? array() : explode( ',', (string) $email_result );
 
-        if ( 'confirmed' === $status && ! self::sendWhatsapp( $booking_id, $booking ) ) {
-            $errors[] = 'whatsapp';
+        if ( 'confirmed' === $status ) {
+            if ( ! self::sendWhatsapp( $booking_id, $booking ) ) {
+                $errors[] = 'whatsapp';
+            }
+            
+            // Fire Webhook for third-party integrations (e.g., Zapier/Make -> Google Calendar)
+            $webhook_url = \MeTransfers\Core\Settings::get( 'webhook_url', '' );
+            if ( ! empty( $webhook_url ) ) {
+                wp_remote_post( $webhook_url, array(
+                    'method'   => 'POST',
+                    'headers'  => array( 'Content-Type' => 'application/json' ),
+                    'body'     => wp_json_encode( $booking ),
+                    'timeout'  => 5,
+                    'blocking' => false, // Do not delay the user experience
+                ) );
+            }
         }
 
         do_action( 'mt_booking_notifications_dispatched', $booking_id, $status, $errors );

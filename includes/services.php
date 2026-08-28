@@ -19,11 +19,11 @@ function me_transfers_get_service_catalog() {
 	return array(
 
 		// ─── 1. TRASLADOS AL AEROPUERTO ─────────────────────────────────────────────
-		'traslados-aeropuerto' => array(
+		'transfer-aeropuerto-barcelona' => array(
 			'title'       => 'MeTransfers Barcelona - Traslado al Aeropuerto desde Barcelona',
 			'h1'          => 'Traslado privado al Aeropuerto de Barcelona',
 			'subtitle'    => 'Te recogemos en Barcelona y te llevamos a El Prat',
-			'slug'        => 'traslados-aeropuerto',
+			'slug'        => 'transfer-aeropuerto-barcelona',
 			'badge'       => 'Aeropuerto El Prat · 24/7',
 			'hero_desc'   => 'Te recogemos en tu hotel u oficina en Barcelona y te llevamos directamente al Aeropuerto El Prat. Seguimiento de vuelo en tiempo real, tarifa fija y hasta 60 min de cortesía en aeropuerto en llegadas.',
 			'desc_long'   => 'Salir desde Barcelona hacia el aeropuerto nunca fue tan sencillo. En MeTransfers calculamos el tiempo de salida desde tu domicilio, hotel u oficina con margen suficiente para que llegues tranquilo, sin carreras y con energía para tu viaje.
@@ -212,7 +212,7 @@ Para bodas, ofrecemos decoración del vehículo, bebidas de bienvenida y coordin
  * @return string
  */
 function me_transfers_get_service_url( $slug ) {
-	$page = get_page_by_path( $slug, OBJECT, 'page' );
+	$page = get_page_by_path( $slug, 'OBJECT', 'page' );
 	if ( $page instanceof WP_Post ) {
 		return get_permalink( $page->ID );
 	}

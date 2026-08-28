@@ -51,7 +51,7 @@ function me_transfers_sync_seo_page_titles() {
 	}
 
 	foreach ( me_transfers_get_static_seo_page_titles() as $slug => $seo_title ) {
-		$page = get_page_by_path( $slug, OBJECT, 'page' );
+		$page = get_page_by_path( $slug, 'OBJECT', 'page' );
 
 		if ( $page instanceof WP_Post && $page->post_title !== $seo_title ) {
 			wp_update_post(

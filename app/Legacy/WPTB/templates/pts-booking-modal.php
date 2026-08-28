@@ -2,7 +2,7 @@
 <!-- Premium Transfers Modal - Mismo estilo que WPTB Modal -->
 <div id="pts-booking-modal" class="wptb-modal-overlay is-hidden">
     <div class="wptb-modal-content wptb-modal-large">
-        <button type="button" id="pts-modal-close" class="wptb-modal-close">Ã—</button>
+        <button type="button" id="pts-modal-close" class="wptb-modal-close">×</button>
         <h2 class="wptb-modal-title"><?php echo esc_html( $wptb_i18n['book_transfer'] ); ?></h2>
         
         <div class="wptb-modal-body">
@@ -24,7 +24,7 @@
 
                         <!-- Origen (siempre Barcelona) -->
                         <div class="floating-label wptb-origin-wrapper">
-                            <input type="text" id="pts-origin" name="origin" placeholder=" " value="Barcelona, EspaÃ±a" readonly autocomplete="off">
+                            <input type="text" id="pts-origin" name="origin" placeholder=" " value="Barcelona, España" readonly autocomplete="off">
                             <label for="pts-origin"><?php echo esc_html( $wptb_i18n['origin'] ); ?></label>
                         </div>
 
@@ -69,7 +69,7 @@
                         <!-- Vehicles will be loaded via AJAX -->
                     </div>
 
-                    <button type="button" id="pts-back-step2" class="secondary-btn mt-button mt-button--secondary">
+                    <button type="button" id="pts-back-step2" class="btn btn-outline" style="margin-top: 24px; display: flex; margin-inline: auto;">
                         <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
                         <?php echo esc_html( $wptb_i18n['change_search'] ); ?>
                     </button>
@@ -98,3 +98,4 @@
         </div>
     </div>
 </div>
+

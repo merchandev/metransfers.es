@@ -339,13 +339,13 @@ class WPTB_Bookings_Admin {
             return;
         }
 
-        // Establecer el AUTO_INCREMENT en 10000 para que el próximo ID sea 10000
-        $wpdb->query( "ALTER TABLE $table_name AUTO_INCREMENT = 10000" );
+        // Establecer el AUTO_INCREMENT en 100000 para que el próximo ID sea 100000
+        $wpdb->query( "ALTER TABLE $table_name AUTO_INCREMENT = 100000" );
 
         \MeTransfers\Admin\AuditLog::record( 'booking.all_deleted', 'booking', 0, array( 'count' => $total ) );
 
         wp_send_json_success( array(
-            'message' => "Se han borrado $total reservas. El próximo ID de reserva será 10000."
+            'message' => "Se han borrado $total reservas. El próximo ID de reserva será 100000."
         ) );
     }
 }
