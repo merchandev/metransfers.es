@@ -134,8 +134,8 @@ while ( have_posts() ) :
 
 		<header class="single-article-hero single-article-hero--solid">
 			<div class="container single-article-hero-inner">
-				<nav class="single-breadcrumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'me-transfers' ); ?>">
-					<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Inicio', 'me-transfers' ); ?></a>
+				<nav class="single-breadcrumbs" aria-label="<?php echo esc_attr( mt_translate( 'Breadcrumb' ) ); ?>">
+					<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php echo esc_html( mt_translate( 'Inicio' ) ); ?></a>
 					<span aria-hidden="true">/</span>
 					<a href="<?php echo esc_url( $blog_url ); ?>"><?php echo esc_html( mt_translate( $blog_label  )); ?></a>
 					<span aria-hidden="true">/</span>
@@ -178,18 +178,18 @@ while ( have_posts() ) :
 						<footer class="single-article-footer">
 							<div class="single-article-utility">
 								<div class="single-share">
-									<span class="single-share-label" style="color: var(--text-secondary) !important; font-weight: bold;"><?php esc_html_e( 'Compartir', 'me-transfers' ); ?></span>
+									<span class="single-share-label" style="color: var(--text-secondary) !important; font-weight: bold;"><?php echo esc_html( mt_translate( 'Compartir' ) ); ?></span>
 									<a href="https://wa.me/?text=<?php echo urlencode( get_the_title( $post_id ) . ' ' . get_permalink( $post_id ) ); ?>" target="_blank" rel="noopener" class="share-btn share-wa">WhatsApp</a>
 								</div>
 							</div>
 
 							<div class="single-cta-box">
 								<div class="single-cta-copy">
-									<span class="single-cta-eyebrow"><?php esc_html_e( 'Reserva privada', 'me-transfers' ); ?></span>
-									<h2 class="single-cta-title"><?php esc_html_e( '¿Listo para tu próximo traslado?', 'me-transfers' ); ?></h2>
-									<p><?php esc_html_e( 'Reserva tu traslado privado o tour personalizado en Barcelona con una experiencia premium, puntual y adaptada a tu agenda.', 'me-transfers' ); ?></p>
+									<span class="single-cta-eyebrow"><?php echo esc_html( mt_translate( 'Reserva privada' ) ); ?></span>
+									<h2 class="single-cta-title"><?php echo esc_html( mt_translate( '¿Listo para tu próximo traslado?' ) ); ?></h2>
+									<p><?php echo esc_html( mt_translate( 'Reserva tu traslado privado o tour personalizado en Barcelona con una experiencia premium, puntual y adaptada a tu agenda.' ) ); ?></p>
 								</div>
-								<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Reservar ahora', 'me-transfers' ); ?></a>
+								<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary"><?php echo esc_html( mt_translate( 'Reservar ahora' ) ); ?></a>
 							</div>
 						</footer>
 					</div>
@@ -251,10 +251,10 @@ while ( have_posts() ) :
 				<div class="container">
 					<div class="single-related-header">
 						<div>
-							<span class="single-related-eyebrow"><?php esc_html_e( 'Sigue leyendo', 'me-transfers' ); ?></span>
-							<h2 id="related-posts-title" class="single-related-title"><?php esc_html_e( 'También te puede interesar', 'me-transfers' ); ?></h2>
+							<span class="single-related-eyebrow"><?php echo esc_html( mt_translate( 'Sigue leyendo' ) ); ?></span>
+							<h2 id="related-posts-title" class="single-related-title"><?php echo esc_html( mt_translate( 'También te puede interesar' ) ); ?></h2>
 						</div>
-						<a href="<?php echo esc_url( $blog_url ); ?>" class="single-related-link"><?php esc_html_e( 'Ver todo el blog', 'me-transfers' ); ?></a>
+						<a href="<?php echo esc_url( $blog_url ); ?>" class="single-related-link"><?php echo esc_html( mt_translate( 'Ver todo el blog' ) ); ?></a>
 					</div>
 
 					<div class="related-grid">
@@ -282,7 +282,7 @@ while ( have_posts() ) :
 
 									<div class="related-card-meta">
 										<time datetime="<?php echo esc_attr( mt_translate( get_the_date( 'c' ) ) ); ?>"><?php echo esc_html( mt_translate( get_the_date( 'd M Y' ) ) ); ?></time>
-										<span><?php echo esc_html( mt_translate( $related_read_time  )); ?> <?php esc_html_e( 'min', 'me-transfers' ); ?></span>
+										<span><?php echo esc_html( mt_translate( $related_read_time  )); ?> <?php echo esc_html( mt_translate( 'min' ) ); ?></span>
 									</div>
 								</div>
 							</article>

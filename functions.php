@@ -987,6 +987,11 @@ function me_transfers_custom_redirects() {
         $path = wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), PHP_URL_PATH );
         $path = trailingslashit( '/' . trim( $path, '/' ) );
 
+        // Extract language prefix if present
+        $detected_lang = \MeTransfers\I18n\Language::detect();
+        $path_no_lang = \MeTransfers\I18n\Language::pathWithoutLanguage( $path );
+        $path_no_lang = trailingslashit( '/' . trim( $path_no_lang, '/' ) );
+
         // -----------------------------------------------------------------
         // 301 — URL antigua tiene sustituto semánticamente equivalente.
         // Se ejecuta ANTES de comprobar is_404() para interceptar URLs que aún devuelven 200
@@ -1001,7 +1006,8 @@ function me_transfers_custom_redirects() {
             '/transfer-puerto-barcelona/'                                                 => '/traslados-puerto/',
             '/empresas/'                                                                  => '/corporativo-y-eventos/',
             '/traslados-aeropuerto/'                                                      => '/transfer-aeropuerto-barcelona/',
-            // '/taxis-barcelona-port-aventura/'                                             => '/rutas/barcelona-portaventura/',
+            '/taxis-barcelona-port-aventura/'                                             => '/destinos/portaventura/',
+            '/rutas/barcelona-portaventura/'                                              => '/destinos/portaventura/',
             '/taxis-barcelona-salou/'                                                     => '/rutas/barcelona-salou/',
             '/taxis-barcelona-costa-brava/'                                               => '/destinos/costa-brava/',
             '/taxis-barcelona-girona/'                                                    => '/rutas/barcelona-girona/',
@@ -1014,16 +1020,20 @@ function me_transfers_custom_redirects() {
 
             // Antiguas URLs WooCommerce con sustituto equivalente
             '/tienda-barcelona-tours-transfers/transfers/traslado-a-andorra/'             => '/rutas/barcelona-andorra/',
-            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-portaventura/'  => '/taxis-barcelona-port-aventura/',
-            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-a-portaventura/'=> '/taxis-barcelona-port-aventura/',
+            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-portaventura/'  => '/destinos/portaventura/',
+            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-a-portaventura/'=> '/destinos/portaventura/',
             '/tienda-barcelona-tours-transfers/transfers/transfer-privado-salou/'         => '/rutas/barcelona-salou/',
             '/tienda-barcelona-tours-transfers/transfers/transfer-privado-girona/'        => '/rutas/barcelona-girona/',
             '/tienda-barcelona-tours-transfers/transfers/'                                => '/rutas/',
             '/tienda-barcelona-tours-transfers/'                                          => '/',
         );
 
-        if ( isset( $redirects_301[ $path ] ) ) {
-            wp_safe_redirect( home_url( $redirects_301[ $path ] ), 301 );
+        if ( isset( $redirects_301[ $path_no_lang ] ) ) {
+            $target = $redirects_301[ $path_no_lang ];
+            if ( $detected_lang !== 'es' ) {
+                $target = '/' . $detected_lang . $target;
+            }
+            wp_safe_redirect( home_url( $target ), 301 );
             exit;
         }
 
@@ -1031,7 +1041,7 @@ function me_transfers_custom_redirects() {
         // 410 Patrón wildcard: URL WooCommerce sin sustituto equivalente
         // Se ejecuta ANTES de comprobar is_404() para evitar soft 404
         // -----------------------------------------------------------------
-        if ( str_starts_with( $path, '/tienda-barcelona-tours-transfers/' ) ) {
+        if ( str_starts_with( $path_no_lang, '/tienda-barcelona-tours-transfers/' ) ) {
             global $wp_query;
             $wp_query->set_404();
             status_header( 410 );
@@ -1057,6 +1067,55 @@ function me_transfers_custom_redirects() {
             '/taxis-barcelona-alquezar/',
             '/taxis-barcelona-colliure/',
             '/taxis-barcelona-carcasona/',
+            '/taxis-barcelona-toulouse/',
+            '/taxis-barcelona-montpellier/',
+            '/taxis-barcelona-formigal/',
+            '/taxis-barcelona-cerler/',
+            '/taxis-barcelona-baqueira/',
+            '/taxis-barcelona-nimes/',
+            '/taxis-barcelona-avignon/',
+            '/taxis-barcelona-marsella/',
+            '/taxis-barcelona-narbona/',
+            '/taxis-barcelona-perpinan/',
+            '/taxis-barcelona-huesca/',
+            '/taxis-barcelona-pamplona/',
+            '/taxis-barcelona-san-sebastian/',
+            '/taxis-barcelona-bilbao/',
+            '/taxis-barcelona-vitoria/',
+            '/taxis-barcelona-zaragoza/',
+            '/taxis-barcelona-logrono/',
+            '/taxis-barcelona-burgos/',
+            '/taxis-barcelona-salamanca/',
+            '/taxis-barcelona-leon/',
+            '/taxis-barcelona-oviedo/',
+            '/taxis-barcelona-santander/',
+            '/taxis-barcelona-vigo/',
+            '/taxis-barcelona-santiago-de-compostela/',
+            '/taxis-barcelona-a-coruna/',
+            '/taxis-barcelona-gijon/',
+            '/taxis-barcelona-alicante/',
+            '/taxis-barcelona-benidorm/',
+            '/taxis-barcelona-murcia/',
+            '/taxis-barcelona-cartagena/',
+            '/taxis-barcelona-almeria/',
+            '/taxis-barcelona-granada/',
+            '/taxis-barcelona-malaga/',
+            '/taxis-barcelona-marbella/',
+            '/taxis-barcelona-cadiz/',
+            '/taxis-barcelona-sevilla/',
+            '/taxis-barcelona-cordoba/',
+            '/taxis-barcelona-toledo/',
+            '/taxis-barcelona-madrid/',
+            '/taxis-barcelona-valencia/',
+            '/taxis-barcelona-zarautz/',
+            '/taxis-barcelona-hondarribia/',
+            '/taxis-barcelona-jaca/',
+            '/taxis-barcelona-ainda/',
+            '/taxis-barcelona-candanchu/',
+            '/taxis-barcelona-panticosa/',
+            '/taxis-barcelona-ordesa/',
+            '/taxis-barcelona-benasque/',
+            '/taxis-barcelona-torla/',
             '/traslados-barcelona-taull/',
             '/traslados-barcelona-vielha/',
             '/traslados-barcelona-besalu/',
@@ -1071,7 +1130,7 @@ function me_transfers_custom_redirects() {
             '/traslados-barcelona-carcasona/',
         );
 
-        if ( in_array( $path, $gone_urls, true ) ) {
+        if ( in_array( $path_no_lang, $gone_urls, true ) ) {
             global $wp_query;
             $wp_query->set_404();
             status_header( 410 );

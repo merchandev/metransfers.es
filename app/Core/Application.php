@@ -11,7 +11,7 @@ class Application {
         self::$booted = true;
 
         if (!defined('MT_PLATFORM_VERSION')) {
-            define('MT_PLATFORM_VERSION', '6.9.0');
+            define('MT_PLATFORM_VERSION', '6.9.1');
         }
         if (!defined('MT_PLATFORM_DB_VERSION')) {
             define('MT_PLATFORM_DB_VERSION', '6.5.0');
@@ -20,11 +20,17 @@ class Application {
             define('MT_TERMS_VERSION', '2026-08-18');
         }
 
+        if (!defined('MT_WPTB_DIR')) {
+            define('MT_WPTB_DIR', get_template_directory() . '/app/Legacy/WPTB/');
+        }
+        if (!defined('MT_WPTB_URL')) {
+            define('MT_WPTB_URL', get_template_directory_uri() . '/app/Legacy/WPTB/');
+        }
         if (!defined('WPTB_PLUGIN_DIR')) {
-            define('WPTB_PLUGIN_DIR', get_template_directory() . '/app/Legacy/WPTB/');
+            define('WPTB_PLUGIN_DIR', MT_WPTB_DIR);
         }
         if (!defined('WPTB_PLUGIN_URL')) {
-            define('WPTB_PLUGIN_URL', get_template_directory_uri() . '/app/Legacy/WPTB/');
+            define('WPTB_PLUGIN_URL', MT_WPTB_URL);
         }
         if (!defined('WPTB_VERSION')) {
             define('WPTB_VERSION', MT_PLATFORM_VERSION);
@@ -57,6 +63,10 @@ class Application {
         $assets = new \MeTransfers\Core\Assets();
         $assets->register();
 
+        if ( self::hasExternalBookingPluginConflict() ) {
+            add_action( 'admin_notices', array( __CLASS__, 'renderBookingPluginConflictNotice' ) );
+        }
+
         $migrations = new \MeTransfers\Core\Migrations();
         $migrations->register();
 
@@ -78,6 +88,22 @@ class Application {
         if ( is_admin() ) {
             $admin_menu = new \MeTransfers\Admin\Menu();
             add_action( 'admin_menu', array( $admin_menu, 'register' ) );
+
+            // Aviso si faltan páginas críticas del flujo de reserva
+            add_action( 'admin_notices', array( '\MeTransfers\Core\Seeds', 'adminNoticesMissingPages' ) );
+
+            // Endpoint para crear páginas faltantes con un clic desde el aviso
+            add_action( 'admin_init', static function () {
+                if ( ! isset( $_GET['page'] ) || 'mt-seeds-run' !== $_GET['page'] ) {
+                    return;
+                }
+                if ( ! current_user_can( 'manage_options' ) ) {
+                    wp_die( esc_html__( 'No tienes permisos para realizar esta acción.', 'me-transfers' ) );
+                }
+                \MeTransfers\Core\Seeds::run();
+                wp_safe_redirect( add_query_arg( 'mt_seeds_done', '1', admin_url() ) );
+                exit;
+            } );
         }
     }
 
@@ -92,5 +118,23 @@ class Application {
 
         // The former Unified_Integration shim is intentionally not loaded. Its
         // responsibilities now live in the dedicated booking and hotel modules.
+    }
+
+    public static function renderBookingPluginConflictNotice() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+        echo '<div class="notice notice-error"><p><strong>MeTransfers:</strong> ';
+        echo esc_html__( 'El plugin externo de reservas sigue activo y está cargando código antiguo por encima de la integración del tema. Desactiva “Complete Booking Plugin” para usar el formulario, las cotizaciones y los idiomas integrados.', 'me-transfers' );
+        echo '</p></div>';
+    }
+
+    private static function hasExternalBookingPluginConflict() {
+        if ( ! defined( 'WPTB_PLUGIN_DIR' ) || ! defined( 'MT_WPTB_DIR' ) ) {
+            return false;
+        }
+        $configured = rtrim( str_replace( '\\', '/', WPTB_PLUGIN_DIR ), '/' );
+        $integrated = rtrim( str_replace( '\\', '/', MT_WPTB_DIR ), '/' );
+        return $configured !== $integrated;
     }
 }

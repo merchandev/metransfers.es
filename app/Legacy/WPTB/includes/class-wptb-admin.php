@@ -120,6 +120,7 @@ class WPTB_Admin {
         register_setting( 'wptb_settings_group', 'wptb_admin_email_notifications', array( 'sanitize_callback' => 'sanitize_email' ) );
         register_setting( 'wptb_settings_group', 'wptb_admin_phone_notifications', array( 'sanitize_callback' => 'sanitize_text_field' ) );
         register_setting( 'wptb_settings_group', 'wptb_whatsapp_apikey', array( 'sanitize_callback' => array( $this, 'sanitize_whatsapp_api_key' ) ) );
+        register_setting( 'wptb_settings_group', 'wptb_webhook_url', array( 'sanitize_callback' => 'esc_url_raw' ) );
         // Removed: price_per_km and base_price - now configured per vehicle
     }
 
@@ -164,7 +165,7 @@ class WPTB_Admin {
 
         $id = intval( $_POST['id'] );
         $status = isset( $_POST['status'] ) ? sanitize_key( wp_unslash( $_POST['status'] ) ) : '';
-        if ( ! in_array( $status, array( 'pending', 'confirmed', 'cancelled' ), true ) ) {
+        if ( ! in_array( $status, array( 'pending', 'confirmed', 'cancelled', 'completed' ), true ) ) {
             wp_send_json_error( 'Estado inválido.' );
         }
 
@@ -744,7 +745,8 @@ class WPTB_Admin {
                             <?php 
                                 // Status Logic
                                 $status_class = 'secondary';
-                                if(in_array($booking->status, ['confirmed','completed','processing'])) $status_class = 'confirmed';
+                                if(in_array($booking->status, ['confirmed','processing'])) $status_class = 'confirmed';
+                                elseif($booking->status === 'completed') $status_class = 'completed';
                                 elseif(in_array($booking->status, ['added-to-cart','pending','on-hold'])) $status_class = 'pending';
                                 elseif(in_array($booking->status, ['cancelled','failed'])) $status_class = 'cancelled';
                             ?>
@@ -809,7 +811,8 @@ class WPTB_Admin {
                                 <td>
                                     <select class="wptb-status-select wptb-badge <?php echo esc_attr( $status_class ); ?>" data-id="<?php echo absint( $booking->id ); ?>">
                                         <option value="pending" <?php selected( in_array($booking->status, ['pending','added-to-cart','on-hold']) ); ?>>Por confirmar</option>
-                                        <option value="confirmed" <?php selected( in_array($booking->status, ['confirmed','completed','processing']) ); ?>>Confirmado</option>
+                                        <option value="confirmed" <?php selected( in_array($booking->status, ['confirmed','processing']) ); ?>>Confirmado</option>
+                                        <option value="completed" <?php selected( $booking->status === 'completed' ); ?>>Completado</option>
                                         <option value="cancelled" <?php selected( in_array($booking->status, ['cancelled','failed']) ); ?>>Cancelado</option>
                                     </select>
                                 </td>
@@ -858,10 +861,11 @@ class WPTB_Admin {
                 $select.prop('disabled', true).css('opacity', '0.6');
                 
                 // Update Color Class immediately for responsiveness
-                $select.removeClass('confirmed pending cancelled secondary');
+                $select.removeClass('confirmed pending cancelled secondary completed');
                 if(status === 'confirmed') $select.addClass('confirmed');
                 else if(status === 'pending') $select.addClass('pending');
                 else if(status === 'cancelled') $select.addClass('cancelled');
+                else if(status === 'completed') $select.addClass('completed');
 
                 // AJAX
                 $.post(ajaxurl, {
@@ -983,6 +987,7 @@ class WPTB_Admin {
             .wptb-badge.confirmed { background-color: #28a745; } /* Green */
             .wptb-badge.pending { background-color: #ffc107; color: #333; } /* Yellow */
             .wptb-badge.cancelled { background-color: #dc3545; } /* Red */
+            .wptb-badge.completed { background-color: #1a237e; color: #fff !important; } /* Dark Blue with White text */
             
             .wptb-badge-round {
                 background-color: #6f42c1;
@@ -1169,6 +1174,16 @@ class WPTB_Admin {
                             </p>
                         </td>
                     </tr>
+
+                    <tr valign="top">
+                        <th scope="row">Webhook URL (Zapier, Make, etc.)</th>
+                        <td>
+                            <input type="url" name="wptb_webhook_url" value="<?php echo esc_url( get_option('wptb_webhook_url', '') ); ?>" class="regular-text" placeholder="https://hooks.zapier.com/..." />
+                            <p class="description">
+                                Al confirmar una reserva, enviaremos los datos en formato JSON a esta URL. Ideal para conectar con <strong>Google Calendar</strong>, Slack, etc.
+                            </p>
+                        </td>
+                    </tr>
                 </table>
 
                 <?php submit_button('Guardar Cambios'); ?>
@@ -1197,11 +1212,12 @@ class WPTB_Admin {
 
                 <!-- Delete All -->
                 <div style="background: #fff; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; flex: 1;">
-                    <h3 style="margin-top: 0; color: #dc3232;">Borrar TODO</h3>
-                    <p class="description">Esta acción eliminará <strong>permanentemente</strong> todas las reservas de la base de datos y reiniciará la numeración de los pedidos (IDs) a 10000.</p>
-                    <br><br>
+                    <h3 style="margin-top: 0; color: #dc3232;">Reiniciar Reservas (Clientes y Hoteles)</h3>
+                    <p class="description">Esta acción eliminará <strong>únicamente el registro de reservas</strong> (tanto web como de hoteles) para que puedas comenzar desde cero y llevar un control real de los pagos realizados.</p>
+                    <p class="description"><strong>No borrará</strong> tu configuración, precios, ni tus hoteles registrados.</p>
+                    <br>
                     <button type="button" id="wptb-delete-all-bookings-settings-btn" class="button button-primary" style="background:#dc3232; color:#fff; border-color:#b22222; font-weight:bold;">
-                        🗑️ Borrar TODAS las Reservas
+                        🔄 Reiniciar Todas las Reservas
                     </button>
                 </div>
             </div>
@@ -1270,42 +1286,40 @@ class WPTB_Admin {
             });
 
             $('#wptb-delete-all-bookings-settings-btn').on('click', function() {
-                check_backup_and_execute(function() {
-                    // Primera confirmación
-                    if (!confirm('⚠️ ¿Estás SEGURO de que quieres borrar TODAS las reservas?\n\nEsta acción no se puede deshacer.')) {
-                        return;
-                    }
-                    // Segunda confirmación: escribir la palabra clave
-                    const keyword = prompt('Para confirmar, escribe exactamente: BORRAR');
-                    if (keyword !== 'BORRAR') {
-                        alert('Acción cancelada.');
-                        return;
-                    }
+                // Primera confirmación
+                if (!confirm('⚠️ ¿Estás SEGURO de que quieres reiniciar el registro de reservas?\n\nEsta acción eliminará permanentemente todas las reservas para comenzar desde cero.')) {
+                    return;
+                }
+                // Segunda confirmación: escribir la palabra clave
+                const keyword = prompt('Para confirmar, escribe exactamente: REINICIAR');
+                if (keyword !== 'REINICIAR') {
+                    alert('Acción cancelada.');
+                    return;
+                }
 
-                    const $btn = $('#wptb-delete-all-bookings-settings-btn');
-                    $btn.prop('disabled', true).text('Borrando...');
+                const $btn = $('#wptb-delete-all-bookings-settings-btn');
+                $btn.prop('disabled', true).text('Reiniciando...');
 
-                    $.ajax({
-                        url: ajaxurl,
-                        type: 'POST',
-                        data: {
-                            action: 'wptb_delete_all_bookings',
-                            nonce: '<?php echo wp_create_nonce("wptb_delete_all_nonce"); ?>'
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                alert('✅ ' + response.data.message);
-                                location.reload();
-                            } else {
-                                alert('❌ Error: ' + response.data.message);
-                                $btn.prop('disabled', false).text('🗑️ Borrar TODAS las Reservas');
-                            }
-                        },
-                        error: function() {
-                            alert('❌ Error de conexión al intentar borrar.');
-                            $btn.prop('disabled', false).text('🗑️ Borrar TODAS las Reservas');
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'wptb_delete_all_bookings',
+                        nonce: '<?php echo wp_create_nonce("wptb_delete_all_nonce"); ?>'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('✅ ' + response.data.message);
+                            location.reload();
+                        } else {
+                            alert('❌ Error: ' + response.data.message);
+                            $btn.prop('disabled', false).text('🔄 Reiniciar Todas las Reservas');
                         }
-                    });
+                    },
+                    error: function() {
+                        alert('❌ Error de conexión al intentar reiniciar.');
+                        $btn.prop('disabled', false).text('🔄 Reiniciar Todas las Reservas');
+                    }
                 });
             });
         });
@@ -1526,6 +1540,8 @@ class WPTB_Admin {
             'Email'              => 'string',
             'Teléfono'           => 'string',
             'Precio (€)'         => 'price',
+            'Estado de Pago'     => 'string',
+            'Monto Pagado (€)'   => 'price',
             'Distancia (km)'     => 'string',
             'Origen'             => 'string',
             'Destino'            => 'string',
@@ -1538,7 +1554,7 @@ class WPTB_Admin {
             'Notas Adicionales'  => 'string',
             'Origen/Fuente'      => 'string',
         );
-        $col_widths = array( 'widths' => array( 8, 18, 17, 25, 28, 15, 12, 14, 42, 42, 14, 10, 22, 10, 22, 14, 35, 12 ) );
+        $col_widths = array( 'widths' => array( 8, 18, 17, 25, 28, 15, 12, 17, 18, 14, 42, 42, 14, 10, 22, 10, 22, 14, 35, 12 ) );
 
         // ── Estilos de cabecera por estado (color visual por pestaña) ──
         $tab_configs = array(
@@ -1615,6 +1631,10 @@ class WPTB_Admin {
                     $estado = isset( $status_labels[ $row['status'] ] )
                         ? $status_labels[ $row['status'] ]
                         : strtoupper( $row['status'] );
+                        
+                    // Pagos
+                    $payment_status = ( 'paid' === (string) $row['payment_status'] ) ? 'Pagado' : 'Pendiente';
+                    $amount_paid    = ( 'paid' === (string) $row['payment_status'] ) ? (float) $row['price'] : 0.0;
 
                     $writer->writeSheetRow( $sheet_name, array(
                         (int)   $row['id'],
@@ -1624,6 +1644,8 @@ class WPTB_Admin {
                                 $row['customer_email'],
                                 $row['customer_phone'],
                         (float) $row['price'],
+                                $payment_status,
+                                $amount_paid,
                                 $row['distance_km'] . ' km',
                                 $row['origin'],
                                 $row['destination'],

@@ -1,7 +1,5 @@
 <?php
 
-require_once HQP_PLUGIN_DIR . 'admin/class-hqp-vehicles-admin.php';
-
 class HQP_Admin {
 
     public function register_hotel_cpt() { /* Migrated to app/Core/PostTypes.php */ }
@@ -110,7 +108,7 @@ class HQP_Admin {
         $van_id = get_post_meta( $post->ID, '_hqp_van_id', true );
         
         global $wpdb;
-        $vehicles = $wpdb->get_results("SELECT id, name, capacity FROM {$wpdb->prefix}wptb_hotel_vehicles WHERE is_active = 1 ORDER BY display_order ASC");
+        $vehicles = $wpdb->get_results("SELECT id, name, capacity FROM {$wpdb->prefix}wptb_vehicles WHERE is_active = 1 ORDER BY display_order ASC");
 
         wp_nonce_field( 'hqp_save_hotel_details', 'hqp_nonce' );
         ?>
@@ -148,7 +146,7 @@ class HQP_Admin {
         </p>
         <hr style="margin: 20px 0;">
         <h4>Precios Fijos (Opcional)</h4>
-        <p class="description">Si se establece un precio aquí, será el precio único ofertado para el trayecto desde/hacia este hotel (dentro de Barcelona/Cataluña) para ese vehículo. Los vehículos con precio "0" o vacío no se ofrecerán.</p>
+        <p class="description">Si se establece un precio aquí, será el precioúnico ofertado para el trayecto desde/hacia este hotel (dentro de Barcelona/Cataluña) para ese Vehículo. Los Vehículos con precio "0" o vacío no se ofrecerán.</p>
         
         <div style="display:flex; flex-wrap: wrap; gap: 20px;">
             <?php foreach($vehicles as $v): 
@@ -304,7 +302,7 @@ class HQP_Admin {
         }
 
         global $wpdb;
-        $vehicles = $wpdb->get_results("SELECT id FROM {$wpdb->prefix}wptb_hotel_vehicles WHERE is_active = 1");
+        $vehicles = $wpdb->get_results("SELECT id FROM {$wpdb->prefix}wptb_vehicles WHERE is_active = 1");
         if ( $vehicles ) {
             foreach ( $vehicles as $v ) {
                 $key_post = 'hqp_price_vehicle_' . $v->id;
@@ -468,16 +466,6 @@ class HQP_Admin {
             'hotel-qr-reservations',
             array( $this, 'display_hotel_reservations_page' )
         );
-        
-        $vehicles_admin = new HQP_Vehicles_Admin();
-        add_submenu_page(
-            'edit.php?post_type=hotel_partner',
-            'Vehículos',
-            'Vehículos',
-            \MeTransfers\Admin\Capabilities::MANAGE_VEHICLES,
-            'hotel-vehicles',
-            array( $vehicles_admin, 'display_vehicles_page' )
-        );
     }
     
     /**
@@ -615,8 +603,8 @@ class HQP_Admin {
                     echo paginate_links(array(
                         'base' => add_query_arg('paged', '%#%'),
                         'format' => '',
-                        'prev_text' => '&laquo;',
-                        'next_text' => '&raquo;',
+                        'prev_text' => '&laquí;',
+                        'next_text' => '&raquí;',
                         'total' => $total_pages,
                         'current' => $current_page
                     ));

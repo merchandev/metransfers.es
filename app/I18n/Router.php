@@ -2,7 +2,7 @@
 namespace MeTransfers\I18n;
 
 final class Router {
-	const RULES_VERSION = 'v5-modular-router';
+	const RULES_VERSION = 'v6-full-route-map';
 
 	public function register() {
 		add_action( 'init', array( __CLASS__, 'registerRewriteRules' ), 5 );
@@ -33,19 +33,67 @@ final class Router {
 
 	public static function fixedTemplate( $page ) {
 		$templates = array(
-			'home'                   => 'front-page.php',
-			'aeropuerto-barcelona'   => 'template-servicio.php',
-			'puerto-barcelona'       => 'template-servicio.php',
-			'conductor-privado'      => 'template-servicio.php',
-			'traslados-corporativos' => 'template-servicio.php',
-			'tours-privados'         => 'template-tours.php',
-			'bodas-eventos'          => 'template-servicio.php',
-			'flota'                  => 'template-flota.php',
-			'blog'                   => 'index.php',
-			'noticias'               => 'index.php',
-			'rutas'                  => 'archive-ruta.php',
+			// Home
+			'home'                        => 'front-page.php',
+
+			// Servicios principales
+			'aeropuerto-barcelona'        => 'template-servicio.php',
+			'traslados-aeropuerto'        => 'template-servicio.php',
+			'puerto-barcelona'            => 'template-servicio.php',
+			'traslados-puerto'            => 'template-servicio.php',
+			'conductor-privado'           => 'template-servicio.php',
+			'chofer-por-horas'            => 'template-servicio.php',
+			'traslados-corporativos'      => 'template-servicio.php',
+			'corporativo-y-eventos'       => 'template-servicio.php',
+			'tours-privados'              => 'template-tours.php',
+			'bodas-eventos'               => 'template-servicio.php',
+			'grupos'                      => 'template-servicio.php',
+			'flota'                       => 'template-flota.php',
+
+			// Páginas SEO manuales (plantillas dedicadas)
+			'taxis-privado-barcelona'     => 'page-taxis-privado-barcelona.php',
+			'taxis-barcelona-port-aventura' => 'page-taxis-barcelona-port-aventura.php',
+			'taxis-barcelona-salou'       => 'page-taxis-barcelona-salou.php',
+			'taxis-barcelona-costa-brava' => 'page-taxis-barcelona-costa-brava.php',
+			'taxis-barcelona-girona'      => 'page-taxis-barcelona-girona.php',
+
+			// Páginas SEO dinámicas (taxis-* y traslados-barcelona-* usan page-seo-dynamic.php)
+			// Se resuelven en dispatch() por prefijo, ver lógica de isSeoPage()
+
+			// Reservas y flujo de booking
+			'reservaciones'               => 'page-reservaciones.php',
+			'seleccionar-vehiculo'        => 'page.php',
+			'reservas-metransfers'        => 'page.php',
+			'pago'                        => 'page.php',
+			'reservas-hotel'              => 'page.php',
+
+			// Soporte / Legales
+			'contacto'                    => 'page-contacto.php',
+			'gracias'                     => 'page-gracias.php',
+			'faq'                         => 'page.php',
+			'privacidad'                  => 'page.php',
+			'terminos-y-condiciones'      => 'page.php',
+			'cookies'                     => 'page.php',
+
+			// Blog / Rutas
+			'blog'                        => 'index.php',
+			'noticias'                    => 'index.php',
+			'rutas'                       => 'archive-ruta.php',
 		);
-		return isset( $templates[ $page ] ) ? $templates[ $page ] : null;
+
+		// Páginas SEO dinámicas: taxis-barcelona-* y traslados-barcelona-*
+		// usan la plantilla dinámica unificada.
+		if ( isset( $templates[ $page ] ) ) {
+			return $templates[ $page ];
+		}
+		if ( 0 === strpos( $page, 'taxis-barcelona-' ) || 0 === strpos( $page, 'traslados-barcelona-' ) ) {
+			$seo_tpl = get_template_directory() . '/page-seo-dynamic.php';
+			if ( file_exists( $seo_tpl ) ) {
+				return 'page-seo-dynamic.php';
+			}
+		}
+
+		return null;
 	}
 
 	public static function registerRewriteRules() {
@@ -98,18 +146,43 @@ final class Router {
 		$template      = self::fixedTemplate( $page );
 		$original_post = null;
 
+		// Páginas del flujo de booking: buscar el post real en WordPress por slug
+		// para que booking_phase() pueda leer el post_content y detectar shortcodes.
+		$booking_flow_pages = array(
+			'seleccionar-vehiculo',
+			'reservas-metransfers',
+			'pago',
+			'reservas-hotel',
+			'gracias',
+			'faq',
+			'privacidad',
+			'terminos-y-condiciones',
+			'cookies',
+			'contacto',
+		);
+
 		if ( in_array( $page, array( 'blog', 'noticias' ), true ) ) {
 			self::hydrateArchive( 'post' );
 		} elseif ( 'rutas' === $page ) {
 			self::hydrateArchive( 'ruta' );
-		} elseif ( null === $template ) {
+		} elseif ( in_array( $page, $booking_flow_pages, true ) || null === $template ) {
+			// Intentar primero obtener el post real por slug exacto
 			$post_id = url_to_postid( home_url( '/' . $page . '/' ) );
+			if ( ! $post_id ) {
+				// Fallback: buscar por post_name directamente
+				$found = get_page_by_path( $page, 'OBJECT', array( 'page', 'post' ) );
+				if ( $found ) {
+					$post_id = $found->ID;
+				}
+			}
 			if ( $post_id ) {
 				$original_post = get_post( $post_id );
 				if ( is_array( $original_post ) ) {
 					$original_post = new \WP_Post( (object) $original_post );
 				}
-				$template = self::templateForPost( $original_post, $post_id );
+				if ( null === $template ) {
+					$template = self::templateForPost( $original_post, $post_id );
+				}
 			}
 		}
 
@@ -139,6 +212,7 @@ final class Router {
 			99
 		);
 	}
+
 
 	public static function localizeMenuLink( $attributes, $menu_item = null, $args = null ) {
 		if ( ! Language::isTranslated() || empty( $attributes['href'] ) ) {

@@ -57,7 +57,8 @@ $wptb_i18n = \MeTransfers\Booking\I18n::strings();
             <!-- Vehicles will be loaded via AJAX -->
         </div>
 
-        <button type="button" id="wptb-back-step2" class="secondary-btn wptb-back-search-btn mt-button mt-button--secondary"><?php echo esc_html( $wptb_i18n['change_search'] ); ?></button>
+        <button type="button" id="wptb-back-step2" class="btn btn-outline wptb-back-search-btn" style="margin-top: 24px; display: flex; margin-inline: auto;"><?php echo esc_html( $wptb_i18n['change_search'] ); ?></button>
     </div>
 
 </div>
+

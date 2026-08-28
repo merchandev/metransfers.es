@@ -9,10 +9,14 @@ final class VehicleCapacityPolicy {
         $carry_ons = absint( $carry_ons );
         $passenger_capacity = $vehicle && isset( $vehicle->capacity ) ? max( 0, (int) $vehicle->capacity ) : 0;
         $luggage_capacity = $vehicle && isset( $vehicle->luggage_capacity ) ? max( 0, (int) $vehicle->luggage_capacity ) : 0;
-        $requested_luggage = $suitcases + $carry_ons;
+        $max_per_person = 2;
+        $max_suitcases = $passengers * $max_per_person;
+        $max_carry_ons = $passengers * $max_per_person;
         $valid = $vehicle
             && $passengers <= $passenger_capacity
-            && $requested_luggage <= $luggage_capacity;
+            && ( $suitcases + $carry_ons ) <= $luggage_capacity
+            && $suitcases <= $max_suitcases
+            && $carry_ons <= $max_carry_ons;
 
         return array(
             'valid'              => (bool) $valid,
@@ -21,7 +25,8 @@ final class VehicleCapacityPolicy {
             'passenger_capacity' => $passenger_capacity,
             'suitcases'          => $suitcases,
             'carry_ons'          => $carry_ons,
-            'requested_luggage'  => $requested_luggage,
+            'max_suitcases'      => $max_suitcases,
+            'max_carry_ons'      => $max_carry_ons,
             'luggage_capacity'   => $luggage_capacity,
         );
     }

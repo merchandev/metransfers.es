@@ -54,6 +54,27 @@
         }
     }
 
+    /**
+     * Guarda la preferencia de idioma en una cookie (30 días).
+     * PHP la leerá en Language::boot() para redirigir al usuario
+     * cuando llegue a una URL sin prefijo de idioma.
+     */
+    function saveLangCookie(langCode) {
+        var expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toUTCString();
+        document.cookie = 'mt_preferred_lang=' + langCode + '; path=/; expires=' + expires + '; SameSite=Lax';
+    }
+
+    // Guardar preferencia al hacer clic en cualquier enlace de idioma
+    menu.querySelectorAll('a[href]').forEach(function (link) {
+        link.addEventListener('click', function () {
+            var href = link.getAttribute('href') || '';
+            // Extraer el código de idioma del href: /en/contacto → 'en', / → 'es'
+            var match = href.match(/\/([a-z]{2})\//);
+            var langCode = match ? match[1] : 'es';
+            saveLangCookie(langCode);
+        });
+    });
+
     trigger.addEventListener('click', function (event) {
         event.stopPropagation();
         if (isOpen()) {
@@ -80,3 +101,4 @@
         event.stopPropagation();
     });
 }());
+

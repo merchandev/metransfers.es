@@ -107,26 +107,26 @@ get_header(); ?>
         <div class="seo-hero-grid">
             <!-- TEXTO -->
             <div>
-                <div class="hero-badge-seo">Elegancia, rapidez y confort</div>
-                <h1 class="hero-title-seo">Taxis y traslados desde Barcelona a Girona</h1>
+                <div class="hero-badge-seo"><?php echo mt_translate('Elegancia, rapidez y confort'); ?></div>
+                <h1 class="hero-title-seo"><?php echo mt_translate('Taxis y traslados desde Barcelona a Girona'); ?></h1>
                 <p class="hero-lead-seo">
-                    Traslados premium entre Barcelona y la ciudad de Girona o su aeropuerto. Ya viajes por turismo, negocios o para tomar un vuelo, disfruta de un coche privado, puntual y a tarifa fija.
+                    <?php echo mt_translate('Traslados premium entre Barcelona y la ciudad de Girona o su aeropuerto. Ya viajes por turismo, negocios o para tomar un vuelo, disfruta de un coche privado, puntual y a tarifa fija.'); ?>
                 </p>
                 <div class="hero__checks">
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Trayectos directos por autopista</span>
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Conexión entre aeropuertos (El Prat / GRO)</span>
-                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Facturación para empresas</span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Trayectos directos por autopista'); ?></span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Conexión entre aeropuertos (El Prat / GRO)'); ?></span>
+                  <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> <?php echo mt_translate('Facturación para empresas'); ?></span>
                 </div>
             </div>
 
             <!-- PANEL RESERVA -->
             <div id="reservar">
                 <div class="hero__panel">
-                    <h2>Calcula tu traslado online</h2>
+                    <h2><?php echo mt_translate('Calcula tu traslado online'); ?></h2>
                     <?php if ( shortcode_exists( 'wptb_booking_form' ) ) : ?>
                         <?php echo do_shortcode( '[wptb_booking_form]' ); ?>
                     <?php else : ?>
-                        <p style="text-align:center;padding:20px;color:var(--muted);">Activa el plugin de reservas (WPTB).</p>
+                        <p style="text-align:center;padding:20px;color:var(--muted);"><?php echo mt_translate('Activa el plugin de reservas (WPTB).'); ?></p>
                     <?php endif; ?>
                 </div>
             </div>
@@ -137,31 +137,31 @@ get_header(); ?>
     <section class="section container gs-reveal" style="padding: 80px 16px;">
         <div class="entry-content" style="max-width: 900px; margin: 0 auto; line-height: 1.8; font-size: 1.1rem; background: #fff; padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
             
-            <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;">De Barcelona al Barri Vell de Girona</h2>
+            <h2 style="color: var(--text-dark); margin-bottom: 1.5rem;"><?php echo mt_translate('De Barcelona al Barri Vell de Girona'); ?></h2>
             <p>
-                Girona es una ciudad con un encanto histórico inigualable, famosa por su vibrante barrio judío, sus puentes sobre el río Onyar y por haber sido escenario de series famosas como Juego de Tronos. 
+                <?php echo mt_translate('Girona es una ciudad con un encanto histórico inigualable, famosa por su vibrante barrio judío, sus puentes sobre el río Onyar y por haber sido escenario de series famosas como Juego de Tronos.'); ?> 
             </p>
             <p>
-                Si tienes previsto visitarla o alojarte allí, reserva tu <strong>taxi de Barcelona a Girona</strong> con MeTransfers. El viaje dura poco más de una hora, es totalmente directo y te dejaremos a los pies de tu hotel o alojamiento, algo clave dado que gran parte del centro histórico es peatonal o de difícil acceso si no se conoce la zona.
+                Si tienes previsto visitarla o alojarte allí, reserva tu <strong><?php echo mt_translate('taxi de Barcelona a Girona'); ?></strong> con MeTransfers. El viaje dura poco más de una hora, es totalmente directo y te dejaremos a los pies de tu hotel o alojamiento, algo clave dado que gran parte del centro histórico es peatonal o de difícil acceso si no se conoce la zona.
             </p>
             
-            <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">Conexiones de aeropuerto a aeropuerto</h3>
+            <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;"><?php echo mt_translate('Conexiones de aeropuerto a aeropuerto'); ?></h3>
             <p>
-                Muchos viajeros aterrizan en el <strong>Aeropuerto de Girona-Costa Brava (GRO)</strong> para dirigirse a Barcelona, o viceversa, aterrizan en Barcelona y necesitan llegar rápidamente al aeropuerto de Girona para un vuelo de conexión. 
+                Muchos viajeros aterrizan en el <strong><?php echo mt_translate('Aeropuerto de Girona-Costa Brava (GRO)'); ?></strong> para dirigirse a Barcelona, o viceversa, aterrizan en Barcelona y necesitan llegar rápidamente al aeropuerto de Girona para un vuelo de conexión. 
             </p>
             <p>
-                Ofrecemos traslados urgentes y programados entre ambos aeropuertos o entre la ciudad y las terminales aéreas. Nuestros chóferes te esperarán en el punto de encuentro de la terminal, te ayudarán con el equipaje y se asegurarán de que llegues a tiempo.
+                <?php echo mt_translate('Ofrecemos traslados urgentes y programados entre ambos aeropuertos o entre la ciudad y las terminales aéreas. Nuestros chóferes te esperarán en el punto de encuentro de la terminal, te ayudarán con el equipaje y se asegurarán de que llegues a tiempo.'); ?>
             </p>
 
-            <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;">Turismo corporativo y de negocios</h3>
+            <h3 style="color: var(--text-dark); margin-top: 2.5rem; margin-bottom: 1rem;"><?php echo mt_translate('Turismo corporativo y de negocios'); ?></h3>
             <p>
-                Girona es también un importante centro de negocios. Si viajas por motivos profesionales, ponemos a tu disposición berlinas de clase ejecutiva (como el Mercedes-Benz Clase E) con interiores sobrios y elegantes. Emitimos facturas oficiales y garantizamos la máxima discreción para ti o para los directivos y clientes de tu empresa.
+                <?php echo mt_translate('Girona es también un importante centro de negocios. Si viajas por motivos profesionales, ponemos a tu disposición berlinas de clase ejecutiva (como el Mercedes-Benz Clase E) con interiores sobrios y elegantes. Emitimos facturas oficiales y garantizamos la máxima discreción para ti o para los directivos y clientes de tu empresa.'); ?>
             </p>
 
             <div style="background: #eef2ff; border-left: 4px solid #0066CC; padding: 20px; border-radius: 0 8px 8px 0; margin-top: 2rem;">
-                <h4 style="margin-top:0; color:#0066CC;">CONSEJO: Viajes de un día (Tour privado)</h4>
+                <h4 style="margin-top:0; color:#0066CC;"><?php echo mt_translate('CONSEJO: Viajes de un día (Tour privado)'); ?></h4>
                 <p style="margin-bottom:0;">
-                    Girona se puede ver perfectamente en una excursión de un día. Consúltanos por nuestros tours privados en los que te llevamos a Girona por la mañana y regresamos contigo a Barcelona por la tarde.
+                    <?php echo mt_translate('Girona se puede ver perfectamente en una excursión de un día. Consúltanos por nuestros tours privados en los que te llevamos a Girona por la mañana y regresamos contigo a Barcelona por la tarde.'); ?>
                 </p>
             </div>
 
@@ -173,13 +173,13 @@ get_header(); ?>
       <div class="wrap">
         <div class="cta__inner">
           <div>
-            <p class="tag">Reserva tu próximo traslado</p>
-            <h2>Tu viaje comienza con una recogida bien organizada</h2>
-            <p class="cta__lead">Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.</p>
+            <p class="tag"><?php echo mt_translate('Reserva tu próximo traslado'); ?></p>
+            <h2><?php echo mt_translate('Tu viaje comienza con una recogida bien organizada'); ?></h2>
+            <p class="cta__lead"><?php echo mt_translate('Indica el origen, el destino, la fecha y la hora. Te mostraremos las opciones disponibles para que reserves el vehículo que mejor se adapta a tu trayecto.'); ?></p>
           </div>
           <div class="cta__btns">
-            <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);">Presupuestar y reservar</a>
-            <a href="https://wa.me/34662024136?text=Hola,%20quisiera%20informaci%C3%B3n%20sobre%20traslados%20desde%20Barcelona%20a%20Girona" class="btn btn-ghost-inv" target="_blank" rel="noopener">Consultar por WhatsApp</a>
+            <a href="#reservar" class="btn btn-solid" style="background:#fff;color:var(--deep);"><?php echo mt_translate('Presupuestar y reservar'); ?></a>
+            <a href="https://wa.me/34662024136?text=Hola,%20quisiera%20informaci%C3%B3n%20sobre%20traslados%20desde%20Barcelona%20a%20Girona" class="btn btn-ghost-inv" target="_blank" rel="noopener"><?php echo mt_translate('Consultar por WhatsApp'); ?></a>
           </div>
         </div>
       </div>

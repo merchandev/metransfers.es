@@ -78,6 +78,10 @@ class Settings {
             'constants' => array( 'MT_WHATSAPP_ADMIN_PHONE' ),
             'options'   => array( 'wptb_admin_phone_notifications' ),
         ),
+        'webhook_url' => array(
+            'constants' => array(),
+            'options'   => array( 'wptb_webhook_url' ),
+        ),
         'translation_api_key' => array(
             'constants' => array( 'MT_TRANSLATION_API_KEY' ),
             'options'   => array( 'mt_google_api_key' ),
@@ -197,3 +201,4 @@ class Settings {
         return substr( hash( 'sha256', (string) $option ), 0, 16 );
     }
 }
+

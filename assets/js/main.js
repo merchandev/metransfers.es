@@ -293,32 +293,33 @@ function initDestinationRequestForm() {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
+        const ajaxConfig = window.meTransfersPublic || window.meTransfers || null;
+        const i18n = (ajaxConfig && ajaxConfig.i18n) ? ajaxConfig.i18n : {};
+
         const submitBtn = form.querySelector('.destination-request-submit');
         const defaultText = submitBtn.textContent;
         const msgContainer = document.createElement('div');
         msgContainer.style.marginTop = '1rem';
         msgContainer.style.fontSize = '0.9rem';
         msgContainer.style.fontWeight = '500';
-        
+
         // Remove previous message if exists
         const prevMsg = form.querySelector('.request-msg');
         if (prevMsg) prevMsg.remove();
-        
+
         msgContainer.className = 'request-msg';
-        
+
         try {
-            submitBtn.textContent = 'Enviando...';
+            submitBtn.textContent = i18n.sending || 'Enviando...';
             submitBtn.disabled = true;
-            
+
             const formData = new FormData(form);
-            
-            const ajaxConfig = window.meTransfersPublic || window.meTransfers || null;
 
             if (!ajaxConfig || !ajaxConfig.ajaxUrl) {
                 throw new Error('AJAX URL not found.');
             }
-            
+
             const response = await fetch(ajaxConfig.ajaxUrl, {
                 method: 'POST',
                 body: new URLSearchParams(formData), // Standard text-only form serialization
@@ -326,20 +327,20 @@ function initDestinationRequestForm() {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
             });
-            
+
             if ( ! response.ok ) {
-                    throw new Error( 'Server error: ' + response.status );
-                }
-                const result = await response.json();
-            
+                throw new Error( 'Server error: ' + response.status );
+            }
+            const result = await response.json();
+
             if (result.success) {
                 msgContainer.style.color = '#10b981'; // success green
-                msgContainer.textContent = result.data.message || 'Solicitud enviada correctamente.';
+                msgContainer.textContent = result.data.message || i18n.sent || 'Solicitud enviada correctamente.';
                 form.reset();
             } else {
-                throw new Error(result.data || 'Error al enviar la solicitud.');
+                throw new Error(result.data || i18n.errorSend || 'Error al enviar la solicitud.');
             }
-            
+
         } catch (error) {
             msgContainer.style.color = '#ef4444'; // error red
             msgContainer.textContent = error.message;

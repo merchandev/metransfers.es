@@ -54,10 +54,10 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					$cta_href = me_transfers_get_section_url( 'panel' );
 				}
 				?>
-				<a href="<?php echo esc_url( $cta_href ); ?>" class="btn btn-solid" style="background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;border:none;padding:14px 32px;font-size:15px;border-radius:10px;">
+				<a href="<?php echo esc_url( $cta_href ); ?>" class="btn btn-primary">
 					<?php echo esc_html( mt_translate( $service['cta_text']  )); ?>
 				</a>
-				<button type="button" class="btn js-wa-trigger" style="background:#25d366;color:#fff;border:none;padding:14px 28px;font-size:15px;border-radius:10px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+				<button type="button" class="btn btn-whatsapp js-wa-trigger">
 					<span class="material-symbols-outlined" aria-hidden="true">chat</span>
 					WhatsApp
 				</button>
@@ -129,8 +129,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<!-- Campos comunes: Nombre, Email, Teléfono -->
 					<p class="svc-form-section-title">
 						<span class="material-symbols-outlined" aria-hidden="true" style="font-size:18px;">person</span>
-						Tus datos
-					</p>
+						<?php echo mt_translate("Tus datos"); ?></p>
 					<div class="svc-form-row">
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-nombre"><?php echo mt_translate("Nombre completo *"); ?></label>
@@ -139,11 +138,11 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-telefono">Teléfono *</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-telefono"><?php echo mt_translate("Teléfono *"); ?></label>
 							<input type="tel" id="<?php echo esc_attr( $form_id ); ?>-telefono" name="telefono" autocomplete="tel" placeholder="+34 600 000 000" required>
 						</div>
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-email">Email</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-email"><?php echo mt_translate("Email"); ?></label>
 							<input type="email" id="<?php echo esc_attr( $form_id ); ?>-email" name="email" autocomplete="email" placeholder="<?php echo esc_attr( mt_translate( 'tu@email.com' ) ); ?>">
 						</div>
 					</div>
@@ -155,44 +154,43 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<?php if ( $form_type === 'aeropuerto' ) : ?>
 					<p class="svc-form-section-title">
 						<span class="material-symbols-outlined" aria-hidden="true" style="font-size:18px;">flight</span>
-						Detalles del traslado
-					</p>
+						<?php echo mt_translate("Detalles del traslado"); ?></p>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-vuelo">Nº de vuelo</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-vuelo"><?php echo mt_translate("Nº de vuelo"); ?></label>
 							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-vuelo" name="extra_vuelo" placeholder="<?php echo esc_attr( mt_translate( 'Ej: VY1234' ) ); ?>">
 						</div>
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-fecha">Fecha *</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-fecha"><?php echo mt_translate("Fecha *"); ?></label>
 							<input type="date" id="<?php echo esc_attr( $form_id ); ?>-fecha" name="extra_fecha" required>
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-hora">Hora recogida</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-hora"><?php echo mt_translate("Hora recogida"); ?></label>
 							<input type="time" id="<?php echo esc_attr( $form_id ); ?>-hora" name="extra_hora">
 						</div>
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-direccion">Origen / Destino</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-direccion"><?php echo mt_translate("Origen / Destino"); ?></label>
 							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-direccion" name="extra_direccion" placeholder="<?php echo esc_attr( mt_translate( 'Hotel o dirección' ) ); ?>">
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-pasajeros">Pasajeros</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-pasajeros"><?php echo mt_translate("Pasajeros"); ?></label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-pasajeros" name="extra_pasajeros">
-								<option value="">Selecciona...</option>
+								<option value=""><?php echo mt_translate("Selecciona..."); ?></option>
 								<?php for ( $i = 1; $i <= 10; $i++ ) : ?>
-								<option value="<?php echo $i; ?>"><?php echo $i; ?> pasajero<?php echo $i > 1 ? 's' : ''; ?></option>
+								<option value="<?php echo $i; ?>"><?php echo $i . ' ' . mt_translate( $i > 1 ? 'pasajeros' : 'pasajero' ); ?></option>
 								<?php endfor; ?>
 							</select>
 						</div>
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-maletas">Maletas grandes</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-maletas"><?php echo mt_translate("Maletas grandes"); ?></label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-maletas" name="extra_maletas">
-								<option value="">Selecciona...</option>
+								<option value=""><?php echo mt_translate("Selecciona..."); ?></option>
 								<option>1</option><option>2</option><option>3</option>
-								<option>4</option><option>5+</option>
+								<option>4</option><option><?php echo mt_translate("5+"); ?></option>
 							</select>
 						</div>
 					</div>
@@ -200,41 +198,40 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<?php elseif ( $form_type === 'puerto' ) : ?>
 					<p class="svc-form-section-title">
 						<span class="material-symbols-outlined" aria-hidden="true" style="font-size:18px;">directions_boat</span>
-						Detalles del traslado
-					</p>
+						<?php echo mt_translate("Detalles del traslado"); ?></p>
 					<div class="svc-form-row">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-barco">Nombre del barco / crucero</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-barco"><?php echo mt_translate("Nombre del barco / crucero"); ?></label>
 							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-barco" name="extra_barco" placeholder="<?php echo esc_attr( mt_translate( 'Ej: MSC Grandiosa' ) ); ?>">
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-fecha">Fecha *</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-fecha"><?php echo mt_translate("Fecha *"); ?></label>
 							<input type="date" id="<?php echo esc_attr( $form_id ); ?>-fecha" name="extra_fecha" required>
 						</div>
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-terminal">Terminal</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-terminal"><?php echo mt_translate("Terminal"); ?></label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-terminal" name="extra_terminal">
 								<option value="">No lo sé aún</option>
 								<option>Adossat A</option><option>Adossat B</option>
 								<option>Adossat C</option><option>Adossat D</option>
-								<option>Drassanes</option><option>Otra</option>
+								<option>Drassanes</option><option><?php echo mt_translate("Otra"); ?></option>
 							</select>
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-pasajeros">Pasajeros</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-pasajeros"><?php echo mt_translate("Pasajeros"); ?></label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-pasajeros" name="extra_pasajeros">
-								<option value="">Selecciona...</option>
+								<option value=""><?php echo mt_translate("Selecciona..."); ?></option>
 								<?php for ( $i = 1; $i <= 10; $i++ ) : ?>
-								<option value="<?php echo $i; ?>"><?php echo $i; ?> pasajero<?php echo $i > 1 ? 's' : ''; ?></option>
+								<option value="<?php echo $i; ?>"><?php echo $i . ' ' . mt_translate( $i > 1 ? 'pasajeros' : 'pasajero' ); ?></option>
 								<?php endfor; ?>
 							</select>
 						</div>
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-origen">Origen / Destino</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-origen"><?php echo mt_translate("Origen / Destino"); ?></label>
 							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-origen" name="extra_origen" placeholder="<?php echo esc_attr( mt_translate( 'Ej: Aeropuerto T1' ) ); ?>">
 						</div>
 					</div>
@@ -242,36 +239,35 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<?php elseif ( $form_type === 'horas' ) : ?>
 					<p class="svc-form-section-title">
 						<span class="material-symbols-outlined" aria-hidden="true" style="font-size:18px;">schedule</span>
-						Detalles del servicio
-					</p>
+						<?php echo mt_translate("Detalles del servicio"); ?></p>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-fecha">Fecha *</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-fecha"><?php echo mt_translate("Fecha *"); ?></label>
 							<input type="date" id="<?php echo esc_attr( $form_id ); ?>-fecha" name="extra_fecha" required>
 						</div>
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-hora">Hora de inicio</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-hora"><?php echo mt_translate("Hora de inicio"); ?></label>
 							<input type="time" id="<?php echo esc_attr( $form_id ); ?>-hora" name="extra_hora">
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-horas">Horas estimadas</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-horas"><?php echo mt_translate("Horas estimadas"); ?></label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-horas" name="extra_horas">
-								<option value="">Selecciona...</option>
-								<option>3 horas</option><option>4 horas</option><option>5 horas</option>
-								<option>6 horas</option><option>8 horas</option>
-								<option>10 horas (día completo)</option>
+								<option value=""><?php echo mt_translate("Selecciona..."); ?></option>
+								<option><?php echo mt_translate("3 horas"); ?></option><option><?php echo mt_translate("4 horas"); ?></option><option><?php echo mt_translate("5 horas"); ?></option>
+								<option><?php echo mt_translate("6 horas"); ?></option><option><?php echo mt_translate("8 horas"); ?></option>
+								<option><?php echo mt_translate("10 horas (día completo)"); ?></option>
 							</select>
 						</div>
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-partida">Punto de partida</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-partida"><?php echo mt_translate("Punto de partida"); ?></label>
 							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-partida" name="extra_partida" placeholder="<?php echo esc_attr( mt_translate( 'Hotel o dirección' ) ); ?>">
 						</div>
 					</div>
 					<div class="svc-form-row">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-plan">Descripción del plan</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-plan"><?php echo mt_translate("Descripción del plan"); ?></label>
 							<textarea id="<?php echo esc_attr( $form_id ); ?>-plan" name="extra_plan" placeholder="<?php echo esc_attr( mt_translate( 'Describe las paradas...' ) ); ?>"></textarea>
 						</div>
 					</div>
@@ -279,41 +275,40 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<?php elseif ( $form_type === 'corporativo' ) : ?>
 					<p class="svc-form-section-title">
 						<span class="material-symbols-outlined" aria-hidden="true" style="font-size:18px;">business_center</span>
-						Detalles del evento
-					</p>
+						<?php echo mt_translate("Detalles del evento"); ?></p>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-empresa">Empresa</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-empresa"><?php echo mt_translate("Empresa"); ?></label>
 							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-empresa" name="extra_empresa" placeholder="<?php echo esc_attr( mt_translate( 'Nombre de tu empresa' ) ); ?>">
 						</div>
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-tipo-evento">Tipo de evento</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-tipo-evento"><?php echo mt_translate("Tipo de evento"); ?></label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-tipo-evento" name="extra_tipo_evento">
-								<option value="">Selecciona...</option>
-								<option>Congreso / Feria</option>
-								<option>Reunión ejecutiva</option>
-								<option>Incentivo</option>
-								<option>Otro</option>
+								<option value=""><?php echo mt_translate("Selecciona..."); ?></option>
+								<option><?php echo mt_translate("Congreso / Feria"); ?></option>
+								<option><?php echo mt_translate("Reunión ejecutiva"); ?></option>
+								<option><?php echo mt_translate("Incentivo"); ?></option>
+								<option><?php echo mt_translate("Otro"); ?></option>
 							</select>
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-vehiculos">Vehículos</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-vehiculos"><?php echo mt_translate("Vehículos"); ?></label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-vehiculos" name="extra_vehiculos">
-								<option value="">Selecciona...</option>
-								<option>1 vehículo</option><option>2 vehículos</option>
-								<option>3-5 vehículos</option><option>Más de 5</option>
+								<option value=""><?php echo mt_translate("Selecciona..."); ?></option>
+								<option><?php echo mt_translate("1 vehículo"); ?></option><option><?php echo mt_translate("2 vehículos"); ?></option>
+								<option><?php echo mt_translate("3-5 vehículos"); ?></option><option><?php echo mt_translate("Más de 5"); ?></option>
 							</select>
 						</div>
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-fecha">Fecha inicio *</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-fecha"><?php echo mt_translate("Fecha inicio *"); ?></label>
 							<input type="date" id="<?php echo esc_attr( $form_id ); ?>-fecha" name="extra_fecha" required>
 						</div>
 					</div>
 					<div class="svc-form-row">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-descripcion">Descripción</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-descripcion"><?php echo mt_translate("Descripción"); ?></label>
 							<textarea id="<?php echo esc_attr( $form_id ); ?>-descripcion" name="extra_descripcion" placeholder="<?php echo esc_attr( mt_translate( 'Horarios, rutas...' ) ); ?>"></textarea>
 						</div>
 					</div>
@@ -321,32 +316,31 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<?php elseif ( $form_type === 'tours' ) : ?>
 					<p class="svc-form-section-title">
 						<span class="material-symbols-outlined" aria-hidden="true" style="font-size:18px;">map</span>
-						Detalles del tour
-					</p>
+						<?php echo mt_translate("Detalles del tour"); ?></p>
 					<div class="svc-form-row">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-destino">Tour de interés</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-destino"><?php echo mt_translate("Tour de interés"); ?></label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-destino" name="extra_destino">
-								<option value="">Selecciona...</option>
-								<option>Montserrat</option>
-								<option>Costa Brava</option>
-								<option>Girona + Costa Brava</option>
-								<option>Tarragona Romana</option>
-								<option>Sitges y Penedès</option>
-								<option>Barcelona City Tour</option>
-								<option>Ruta personalizada</option>
+								<option value=""><?php echo mt_translate("Selecciona..."); ?></option>
+								<option><?php echo mt_translate("Montserrat"); ?></option>
+								<option><?php echo mt_translate("Costa Brava"); ?></option>
+								<option><?php echo mt_translate("Girona + Costa Brava"); ?></option>
+								<option><?php echo mt_translate("Tarragona Romana"); ?></option>
+								<option><?php echo mt_translate("Sitges y Penedès"); ?></option>
+								<option><?php echo mt_translate("Barcelona City Tour"); ?></option>
+								<option><?php echo mt_translate("Ruta personalizada"); ?></option>
 							</select>
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-fecha">Fecha *</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-fecha"><?php echo mt_translate("Fecha *"); ?></label>
 							<input type="date" id="<?php echo esc_attr( $form_id ); ?>-fecha" name="extra_fecha" required>
 						</div>
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-personas">Personas</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-personas"><?php echo mt_translate("Personas"); ?></label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-personas" name="extra_personas">
-								<option value="">Selecciona...</option>
+								<option value=""><?php echo mt_translate("Selecciona..."); ?></option>
 								<?php for ( $i = 1; $i <= 8; $i++ ) : ?>
 								<option value="<?php echo $i; ?>"><?php echo $i; ?> persona<?php echo $i > 1 ? 's' : ''; ?></option>
 								<?php endfor; ?>
@@ -355,9 +349,9 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					</div>
 					<div class="svc-form-row">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-idioma">Idioma preferido</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-idioma"><?php echo mt_translate("Idioma preferido"); ?></label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-idioma" name="extra_idioma">
-								<option>Español</option><option>Inglés</option><option>Francés</option><option>Otro</option>
+								<option><?php echo mt_translate("Español"); ?></option><option><?php echo mt_translate("Inglés"); ?></option><option><?php echo mt_translate("Francés"); ?></option><option><?php echo mt_translate("Otro"); ?></option>
 							</select>
 						</div>
 					</div>
@@ -365,41 +359,40 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<?php elseif ( $form_type === 'grupos' ) : ?>
 					<p class="svc-form-section-title">
 						<span class="material-symbols-outlined" aria-hidden="true" style="font-size:18px;">groups</span>
-						Detalles del grupo
-					</p>
+						<?php echo mt_translate("Detalles del grupo"); ?></p>
 					<div class="svc-form-row">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-grupo">Nombre del grupo</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-grupo"><?php echo mt_translate("Nombre del grupo"); ?></label>
 							<input type="text" id="<?php echo esc_attr( $form_id ); ?>-grupo" name="extra_grupo" placeholder="<?php echo esc_attr( mt_translate( 'Ej: Boda García' ) ); ?>">
 						</div>
 					</div>
 					<div class="svc-form-row two-cols">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-tipo-evento">Tipo de evento</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-tipo-evento"><?php echo mt_translate("Tipo de evento"); ?></label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-tipo-evento" name="extra_tipo_evento">
-								<option value="">Selecciona...</option>
-								<option>Boda</option><option>Cumpleaños</option>
-								<option>Incentivo de empresa</option><option>Excursión</option><option>Otro</option>
+								<option value=""><?php echo mt_translate("Selecciona..."); ?></option>
+								<option><?php echo mt_translate("Boda"); ?></option><option><?php echo mt_translate("Cumpleaños"); ?></option>
+								<option><?php echo mt_translate("Incentivo de empresa"); ?></option><option><?php echo mt_translate("Excursión"); ?></option><option><?php echo mt_translate("Otro"); ?></option>
 							</select>
 						</div>
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-personas">Personas</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-personas"><?php echo mt_translate("Personas"); ?></label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-personas" name="extra_personas">
-								<option value="">Selecciona...</option>
-								<option>8-15 personas</option><option>15-30 personas</option>
-								<option>30-50 personas</option><option>Más de 50</option>
+								<option value=""><?php echo mt_translate("Selecciona..."); ?></option>
+								<option><?php echo mt_translate("8-15 personas"); ?></option><option><?php echo mt_translate("15-30 personas"); ?></option>
+								<option><?php echo mt_translate("30-50 personas"); ?></option><option><?php echo mt_translate("Más de 50"); ?></option>
 							</select>
 						</div>
 					</div>
 					<div class="svc-form-row">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-fecha">Fecha del evento *</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-fecha"><?php echo mt_translate("Fecha del evento *"); ?></label>
 							<input type="date" id="<?php echo esc_attr( $form_id ); ?>-fecha" name="extra_fecha" required>
 						</div>
 					</div>
 					<div class="svc-form-row">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-descripcion">Servicio necesario</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-descripcion"><?php echo mt_translate("Servicio necesario"); ?></label>
 							<textarea id="<?php echo esc_attr( $form_id ); ?>-descripcion" name="extra_descripcion" placeholder="<?php echo esc_attr( mt_translate( 'Origen, destino, horarios...' ) ); ?>"></textarea>
 						</div>
 					</div>
@@ -409,7 +402,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<!-- Mensaje adicional -->
 					<div class="svc-form-row">
 						<div class="sfg">
-							<label for="<?php echo esc_attr( $form_id ); ?>-mensaje">Comentarios adicionales</label>
+							<label for="<?php echo esc_attr( $form_id ); ?>-mensaje"><?php echo mt_translate("Comentarios adicionales"); ?></label>
 							<textarea id="<?php echo esc_attr( $form_id ); ?>-mensaje" name="mensaje" placeholder="<?php echo esc_attr( mt_translate( 'Cualquier detalle adicional...' ) ); ?>"></textarea>
 						</div>
 					</div>
@@ -418,7 +411,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 					<div class="svc-gdpr">
 						<input type="checkbox" id="<?php echo esc_attr( $form_id ); ?>-gdpr" name="gdpr_aceptado" value="1" required>
 						<label for="<?php echo esc_attr( $form_id ); ?>-gdpr">
-							He leído y acepto la <a href="<?php echo esc_url( home_url( '/politica-de-privacidad' ) ); ?>" target="_blank">Política de Privacidad</a>.
+							<?php echo mt_translate("He leído y acepto la"); ?> <a href="<?php echo esc_url( home_url( '/politica-de-privacidad' ) ); ?>" target="_blank"><?php echo mt_translate("Política de Privacidad"); ?></a>.
 						</label>
 					</div>
 
@@ -429,7 +422,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 
 					<div class="svc-form-ok" id="<?php echo esc_attr( $form_id ); ?>-ok">
 						<span class="material-symbols-outlined" aria-hidden="true" style="vertical-align: middle; margin-right: 5px;">check_circle</span>
-						¡Solicitud enviada! Te responderemos muy pronto.
+						<?php echo mt_translate("¡Solicitud enviada! Te responderemos muy pronto."); ?>
 					</div>
 
 				</form>
