@@ -1286,16 +1286,14 @@ function mt_ensure_portaventura_page() {
 add_action( 'template_redirect', function() {
     $path = trim( wp_parse_url( $_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH ), '/' );
     if ( $path === 'taxis-barcelona-port-aventura' ) {
-        if ( is_404() ) {
-            global $wp_query;
-            $wp_query->is_404 = false;
-            $wp_query->is_page = true;
-            status_header( 200 );
-            require get_stylesheet_directory() . '/page-taxis-barcelona-port-aventura.php';
-            exit;
-        }
+        global $wp_query;
+        $wp_query->is_404 = false;
+        $wp_query->is_page = true;
+        status_header( 200 );
+        require get_stylesheet_directory() . '/page-taxis-barcelona-port-aventura.php';
+        exit;
     }
-}, 9 );
+}, 1 );
 function mt_ensure_seo_pages() {
     $seo_pages = array(
         array(
