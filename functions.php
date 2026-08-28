@@ -1251,6 +1251,51 @@ function mt_ensure_service_pages_and_templates() {
 // que competían directamente con el CPT /rutas/* y /destinos/*.
 // Las URLs antiguas se gestionan mediante redirecciones 301 (ver me_transfers_custom_redirects).
 // add_action( 'admin_init', 'mt_ensure_seo_pages' );
+
+// ==========================================
+// FIX: Asegurar que la landing SEO de Port Aventura exista (Evitar 404)
+// ==========================================
+add_action( 'admin_init', 'mt_ensure_portaventura_page' );
+function mt_ensure_portaventura_page() {
+    $slug = 'taxis-barcelona-port-aventura';
+    $page = get_page_by_path( $slug );
+    $trashed = get_page_by_path( $slug . '__trashed' );
+
+    if ( ! $page && ! $trashed ) {
+        $page_id = wp_insert_post( array(
+            'post_title'     => 'MeTransfers Barcelona - Taxis Barcelona a Port Aventura',
+            'post_name'      => $slug,
+            'post_content'   => '',
+            'post_status'    => 'publish',
+            'post_type'      => 'page',
+        ) );
+        if ( $page_id && ! is_wp_error( $page_id ) ) {
+            update_post_meta( $page_id, '_wp_page_template', 'page-taxis-barcelona-port-aventura.php' );
+        }
+    } elseif ( $page && $page->post_status !== 'publish' ) {
+        // If it exists but is not published (e.g. draft), publish it
+        wp_update_post( array(
+            'ID' => $page->ID,
+            'post_status' => 'publish'
+        ) );
+        update_post_meta( $page->ID, '_wp_page_template', 'page-taxis-barcelona-port-aventura.php' );
+    }
+}
+
+// Fallback for visitors: if the page still returns 404 (e.g. admin_init hasn't run yet or page was deleted), intercept it
+add_action( 'template_redirect', function() {
+    $path = trim( wp_parse_url( $_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH ), '/' );
+    if ( $path === 'taxis-barcelona-port-aventura' ) {
+        if ( is_404() ) {
+            global $wp_query;
+            $wp_query->is_404 = false;
+            $wp_query->is_page = true;
+            status_header( 200 );
+            require get_stylesheet_directory() . '/page-taxis-barcelona-port-aventura.php';
+            exit;
+        }
+    }
+}, 9 );
 function mt_ensure_seo_pages() {
     $seo_pages = array(
         array(
