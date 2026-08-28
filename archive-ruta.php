@@ -25,19 +25,14 @@ $zonas = array(
 );
 
 // ─── Obtener TODAS las rutas publicadas ────────────────────────────────────
-$all_rutas = get_posts( array(
+$args = array(
     'post_type'      => 'ruta',
+    'posts_per_page' => -1, // Mostrar todas en la pgina de archivo principal
     'post_status'    => 'publish',
-    'posts_per_page' => -1,
-    'orderby'        => 'title',
+    'orderby'        => 'menu_order title',
     'order'          => 'ASC',
-    'meta_query'     => array(
-        array(
-            'key'   => '_mt_seo_ready',
-            'value' => '1',
-        ),
-    ),
-) );
+);
+$all_rutas = get_posts( $args );
 
 // Indexar por slug para acceso rápido
 $rutas_by_slug = array();

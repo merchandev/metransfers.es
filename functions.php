@@ -1656,7 +1656,22 @@ add_filter( 'wp_robots', static function ( array $robots ): array {
 			}
 		}
 	}
+	// 7. Limpieza forzada de noindex heredados para landings SEO
+	if ( is_singular( 'ruta' ) || is_page( 'traslados-aeropuerto' ) || is_page( 'transfer-aeropuerto-barcelona' ) ) {
+		unset( $robots['noindex'] );
+		$robots['index'] = true;
+	}
 
+	return $robots;
+}, 99 );
+
+add_filter( 'wpseo_robots_array', function( $robots ) {
+	$wp_robots = apply_filters( 'wp_robots', array() );
+	if ( isset( $wp_robots['noindex'] ) && $wp_robots['noindex'] ) {
+		$robots['index'] = 'noindex';
+	} elseif ( isset( $wp_robots['index'] ) && $wp_robots['index'] ) {
+		$robots['index'] = 'index';
+	}
 	return $robots;
 }, 99 );
 
@@ -1672,29 +1687,7 @@ add_filter( 'wpseo_exclude_from_sitemap_by_post_ids', function( $excluded ) {
 		}
 	}
 
-	// 1. Excluir rutas que no están listas para SEO
-	$args = array(
-		'post_type'      => 'ruta',
-		'posts_per_page' => -1,
-		'fields'         => 'ids',
-		'meta_query'     => array(
-			'relation' => 'OR',
-			array(
-				'key'     => '_mt_seo_ready',
-				'compare' => 'NOT EXISTS',
-			),
-			array(
-				'key'     => '_mt_seo_ready',
-				'value'   => '1',
-				'compare' => '!=',
-			),
-		),
-	);
-	$poor_routes = get_posts( $args );
-	
-	if ( ! empty( $poor_routes ) ) {
-		$excluded = array_merge( $excluded, $poor_routes );
-	}
+
 
 	// 2. Excluir destinos genéricos
 	$args_pages = array(

@@ -618,7 +618,7 @@ a.contact__val:hover{color:var(--blue);}
         <div class="srv__ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
         <h3><?php echo mt_translate("Transfer Aeropuerto de Barcelona: llegadas y salidas"); ?></h3>
         <p><?php echo mt_translate("Te recogemos en El Prat para llevarte al centro de Barcelona, tu hotel, el puerto o cualquier otro destino. También coordinamos traslados desde Barcelona hacia el aeropuerto, adaptando la recogida al horario de tu vuelo."); ?></p>
-        <a href="<?php echo esc_url( mt_localized_url( 'traslados-aeropuerto' ) ); ?>" class="btn-link"><?php echo mt_translate("Ver traslados al aeropuerto"); ?> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="<?php echo esc_url( mt_localized_url( 'transfer-aeropuerto-barcelona' ) ); ?>" class="btn-link"><?php echo mt_translate("Ver traslados al aeropuerto"); ?> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
       <div class="srv__item">
