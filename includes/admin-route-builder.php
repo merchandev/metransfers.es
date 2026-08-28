@@ -165,7 +165,7 @@ function mt_render_route_builder_page() {
                 <?php
                 $rutas_esperadas = mt_get_phase1_routes();
                 foreach ( $rutas_esperadas as $slug => $title ) {
-                    $page = get_page_by_path( $slug, OBJECT, 'ruta' );
+                    $page = get_page_by_path( $slug, 'OBJECT', 'ruta' );
                     if ( ! $page ) {
                         // Comprobar también en papelera o borradores
                         $query = new WP_Query( array(
