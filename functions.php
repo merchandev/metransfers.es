@@ -41,7 +41,7 @@ require_once get_template_directory() . '/includes/leads-cpt.php';
 
 // Herramienta de administración: repoblar post_content desde los catálogos PHP.
 // Disponible en: Herramientas → Repoblar Contenido
-if ( is_admin() && defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) && ME_TRANSFERS_ENABLE_MIGRATIONS ) {
+if ( is_admin() ) {
     require_once get_template_directory() . '/includes/admin-content-repopulate.php';
     require_once get_template_directory() . '/includes/auto-migration-v5.php';
 }
@@ -70,12 +70,12 @@ add_action( 'template_redirect', function() {
 
 // Migration safety switch — set to false once initial migration is done.
 if ( ! defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) ) {
-	define( 'ME_TRANSFERS_ENABLE_MIGRATIONS', false );
+	define( 'ME_TRANSFERS_ENABLE_MIGRATIONS', true );
 }
 
 // Centralized Versioning
 if ( ! defined( 'ME_TRANSFERS_VERSION' ) ) {
-	define( 'ME_TRANSFERS_VERSION', '4.3.11' );
+	define( 'ME_TRANSFERS_VERSION', '4.3.12' );
 }
 
 // Auto-purge SiteGround Cache after theme update to prevent cached errors
@@ -270,6 +270,11 @@ function me_transfers_scripts() {
 		'tourBookingNonce'  => wp_create_nonce( 'mt_tour_booking_nonce' ),
 		'contactNonce'      => wp_create_nonce( 'mt_contact_request' ),
 		'lang'              => function_exists( 'mt_lang' ) ? mt_lang() : 'es',
+		'i18n'              => function_exists( 'mt_translate' ) ? array(
+			'sending'   => mt_translate( 'Enviando...' ),
+			'sent'      => mt_translate( 'Solicitud enviada correctamente.' ),
+			'errorSend' => mt_translate( 'Error al enviar la solicitud.' ),
+		) : array(),
 	);
 
 	wp_localize_script( 'me-transfers-main-js', 'meTransfers', $ajax_config );
@@ -992,8 +997,11 @@ function me_transfers_custom_redirects() {
 
             // Antiguas landings /taxis-* y /traslados-*
             '/transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v/' => '/grupos/',
-            '/taxis-privado-barcelona/'                                                   => '/traslados-privados/',
-            '/taxis-barcelona-port-aventura/'                                             => '/rutas/barcelona-portaventura/',
+            '/traslados-privados/'                                                        => '/taxis-privado-barcelona/',
+            '/transfer-puerto-barcelona/'                                                 => '/traslados-puerto/',
+            '/empresas/'                                                                  => '/corporativo-y-eventos/',
+            '/traslados-aeropuerto/'                                                      => '/transfer-aeropuerto-barcelona/',
+            // '/taxis-barcelona-port-aventura/'                                             => '/rutas/barcelona-portaventura/',
             '/taxis-barcelona-salou/'                                                     => '/rutas/barcelona-salou/',
             '/taxis-barcelona-costa-brava/'                                               => '/destinos/costa-brava/',
             '/taxis-barcelona-girona/'                                                    => '/rutas/barcelona-girona/',
@@ -1006,8 +1014,8 @@ function me_transfers_custom_redirects() {
 
             // Antiguas URLs WooCommerce con sustituto equivalente
             '/tienda-barcelona-tours-transfers/transfers/traslado-a-andorra/'             => '/rutas/barcelona-andorra/',
-            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-portaventura/'  => '/rutas/barcelona-portaventura/',
-            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-a-portaventura/'=> '/rutas/barcelona-portaventura/',
+            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-portaventura/'  => '/taxis-barcelona-port-aventura/',
+            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-a-portaventura/'=> '/taxis-barcelona-port-aventura/',
             '/tienda-barcelona-tours-transfers/transfers/transfer-privado-salou/'         => '/rutas/barcelona-salou/',
             '/tienda-barcelona-tours-transfers/transfers/transfer-privado-girona/'        => '/rutas/barcelona-girona/',
             '/tienda-barcelona-tours-transfers/transfers/'                                => '/rutas/',
@@ -1582,6 +1590,22 @@ function mt_is_transactional_page( $post = null ): bool {
 		true
 	);
 }
+// ==========================================
+// CORRECCIÓN SEO: OPENGRAPH DE LA PORTADA
+// ==========================================
+add_filter( 'wpseo_opengraph_title', function( $title ) {
+	if ( is_front_page() ) {
+		return 'MeTransfers Barcelona - Traslados privados y tours exclusivos';
+	}
+	return $title;
+}, 10 );
+
+add_filter( 'wpseo_opengraph_desc', function( $desc ) {
+	if ( is_front_page() ) {
+		return 'Servicio de traslados privados, chófer por horas y tours exclusivos en Barcelona y Cataluña. Flota premium y puntualidad garantizada.';
+	}
+	return $desc;
+}, 10 );
 
 add_filter( 'wp_robots', static function ( array $robots ): array {
 	$prod_hosts = [ 'metransfers.es', 'www.metransfers.es' ];
@@ -1611,14 +1635,14 @@ add_filter( 'wp_robots', static function ( array $robots ): array {
 		return array_merge( $robots, array( 'noindex' => true, 'follow' => true ) );
 	}
 
-	// 5. Umbral de calidad para rutas
-	if ( is_singular( 'ruta' ) ) {
-		// _mt_seo_ready=1 → indexar. Si no está a 1, no indexar. Es el único control de calidad.
-		$seo_ready = get_post_meta( get_the_ID(), '_mt_seo_ready', true );
-		if ( '1' !== $seo_ready ) {
-			return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
-		}
-	}
+	// 5. Umbral de calidad para rutas (ELIMINADO para permitir indexación de todas las rutas)
+	// if ( is_singular( 'ruta' ) ) {
+	// 	// _mt_seo_ready=1 → indexar. Si no está a 1, no indexar. Es el único control de calidad.
+	// 	$seo_ready = get_post_meta( get_the_ID(), '_mt_seo_ready', true );
+	// 	if ( '1' !== $seo_ready ) {
+	// 		return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
+	// 	}
+	// }
 
 	// 6. Destinos genéricos (sin contenido diferenciado) → noindex temporal.
 	// Solo se indexan destinos con contenido curado específico (salou, lloret-de-mar).
@@ -1626,7 +1650,7 @@ add_filter( 'wp_robots', static function ( array $robots ): array {
 	if ( is_page() && ! is_front_page() ) {
 		$destination = me_transfers_get_current_destination( get_post() );
 		if ( $destination ) {
-			$specific_destinations = [ 'salou', 'lloret-de-mar' ];
+			$specific_destinations = [ 'salou', 'lloret-de-mar', 'aeropuerto', 'aeropuerto-barcelona', 'aeropuerto-de-barcelona', 'taxis-barcelona-aeropuerto', 'barcelona-airport' ];
 			if ( ! in_array( $destination['slug'], $specific_destinations, true ) ) {
 				return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
 			}
