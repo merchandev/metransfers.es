@@ -5,7 +5,7 @@ final class Seo {
 	public function register() {
 		add_filter( 'wpseo_canonical', array( __CLASS__, 'filterCanonical' ) );
 		add_action( 'wp_head', array( __CLASS__, 'renderHead' ), 2 );
-		
+
 		// Yoast SEO Translation Filters
 		add_filter( 'wpseo_title', array( __CLASS__, 'translateSeo' ), 99 );
 		add_filter( 'wpseo_metadesc', array( __CLASS__, 'translateSeo' ), 99 );
@@ -19,7 +19,7 @@ final class Seo {
 		if ( ! Language::isTranslated() || empty( $text ) ) {
 			return $text;
 		}
-		
+
 		// First try translating the exact whole string (if user manually entered a custom Yoast title/desc)
 		$translated = Translation::translate( $text );
 		if ( $translated !== $text ) {

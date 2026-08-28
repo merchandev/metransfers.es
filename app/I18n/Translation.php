@@ -84,27 +84,30 @@ final class Translation {
 			'me_transfers_get_legal_pages_catalog',
 			'me_transfers_get_service_catalog',
 			'me_transfers_get_tour_catalog',
-			'me_transfers_get_static_seo_page_titles'
+			'me_transfers_get_static_seo_page_titles',
 		);
 
 		foreach ( $catalog_functions as $func ) {
 			if ( function_exists( $func ) ) {
 				$data = $func();
 				if ( is_array( $data ) ) {
-					array_walk_recursive( $data, function( $item ) use ( &$texts ) {
-						if ( is_string( $item ) ) {
-							$texts[] = $item;
-							if ( strpos( $item, "\n\n" ) !== false ) {
-								$paragraphs = explode( "\n\n", $item );
-								foreach ( $paragraphs as $p ) {
-									$p = trim( $p );
-									if ( ! empty( $p ) ) {
-										$texts[] = $p;
+					array_walk_recursive(
+						$data,
+						function ( $item ) use ( &$texts ) {
+							if ( is_string( $item ) ) {
+								$texts[] = $item;
+								if ( strpos( $item, "\n\n" ) !== false ) {
+									$paragraphs = explode( "\n\n", $item );
+									foreach ( $paragraphs as $p ) {
+										$p = trim( $p );
+										if ( ! empty( $p ) ) {
+											$texts[] = $p;
+										}
 									}
 								}
 							}
 						}
-					});
+					);
 				}
 			}
 		}
@@ -125,7 +128,7 @@ final class Translation {
 						$texts[] = $post->{$property};
 					}
 				}
-				
+
 				// Yoast SEO Meta
 				$yoast_title = get_post_meta( $post->ID, '_yoast_wpseo_title', true );
 				if ( $yoast_title ) {
@@ -138,8 +141,14 @@ final class Translation {
 
 				// Extract custom metadata used in dynamic templates
 				$custom_meta = array(
-					'_mt_ruta_origen', '_mt_ruta_destino', '_mt_ruta_h1', '_mt_ruta_duracion',
-					'seo_destino', 'seo_tipo', 'seo_title_hero', 'seo_lead_hero'
+					'_mt_ruta_origen',
+					'_mt_ruta_destino',
+					'_mt_ruta_h1',
+					'_mt_ruta_duracion',
+					'seo_destino',
+					'seo_tipo',
+					'seo_title_hero',
+					'seo_lead_hero',
 				);
 				foreach ( $custom_meta as $key ) {
 					$val = get_post_meta( $post->ID, $key, true );
@@ -170,9 +179,9 @@ final class Translation {
 			return array();
 		}
 
-		$results = array();
+		$results            = array();
 		$texts_to_translate = array();
-		
+
 		// Filter out strings that are already translated to save API quota
 		foreach ( $texts as $key => $text ) {
 			$cache_key = self::cacheKey( $text, $language );
@@ -212,7 +221,7 @@ final class Translation {
 				error_log( 'MeTransfers i18n API Error: ' . $response->get_error_message() );
 				continue;
 			}
-			
+
 			$response_code = (int) wp_remote_retrieve_response_code( $response );
 			if ( 200 !== $response_code ) {
 				$error_body = wp_remote_retrieve_body( $response );

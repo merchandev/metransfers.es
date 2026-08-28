@@ -34,51 +34,51 @@ final class Router {
 	public static function fixedTemplate( $page ) {
 		$templates = array(
 			// Home
-			'home'                        => 'front-page.php',
+			'home'                          => 'front-page.php',
 
 			// Servicios principales
-			'aeropuerto-barcelona'        => 'template-servicio.php',
-			'traslados-aeropuerto'        => 'template-servicio.php',
-			'puerto-barcelona'            => 'template-servicio.php',
-			'traslados-puerto'            => 'template-servicio.php',
-			'conductor-privado'           => 'template-servicio.php',
-			'chofer-por-horas'            => 'template-servicio.php',
-			'traslados-corporativos'      => 'template-servicio.php',
-			'corporativo-y-eventos'       => 'template-servicio.php',
-			'tours-privados'              => 'template-tours.php',
-			'bodas-eventos'               => 'template-servicio.php',
-			'grupos'                      => 'template-servicio.php',
-			'flota'                       => 'template-flota.php',
+			'aeropuerto-barcelona'          => 'template-servicio.php',
+			'traslados-aeropuerto'          => 'template-servicio.php',
+			'puerto-barcelona'              => 'template-servicio.php',
+			'traslados-puerto'              => 'template-servicio.php',
+			'conductor-privado'             => 'template-servicio.php',
+			'chofer-por-horas'              => 'template-servicio.php',
+			'traslados-corporativos'        => 'template-servicio.php',
+			'corporativo-y-eventos'         => 'template-servicio.php',
+			'tours-privados'                => 'template-tours.php',
+			'bodas-eventos'                 => 'template-servicio.php',
+			'grupos'                        => 'template-servicio.php',
+			'flota'                         => 'template-flota.php',
 
 			// Páginas SEO manuales (plantillas dedicadas)
-			'taxis-privado-barcelona'     => 'page-taxis-privado-barcelona.php',
+			'taxis-privado-barcelona'       => 'page-taxis-privado-barcelona.php',
 			'taxis-barcelona-port-aventura' => 'page-taxis-barcelona-port-aventura.php',
-			'taxis-barcelona-salou'       => 'page-taxis-barcelona-salou.php',
-			'taxis-barcelona-costa-brava' => 'page-taxis-barcelona-costa-brava.php',
-			'taxis-barcelona-girona'      => 'page-taxis-barcelona-girona.php',
+			'taxis-barcelona-salou'         => 'page-taxis-barcelona-salou.php',
+			'taxis-barcelona-costa-brava'   => 'page-taxis-barcelona-costa-brava.php',
+			'taxis-barcelona-girona'        => 'page-taxis-barcelona-girona.php',
 
 			// Páginas SEO dinámicas (taxis-* y traslados-barcelona-* usan page-seo-dynamic.php)
 			// Se resuelven en dispatch() por prefijo, ver lógica de isSeoPage()
 
 			// Reservas y flujo de booking
-			'reservaciones'               => 'page-reservaciones.php',
-			'seleccionar-vehiculo'        => 'page.php',
-			'reservas-metransfers'        => 'page.php',
-			'pago'                        => 'page.php',
-			'reservas-hotel'              => 'page.php',
+			'reservaciones'                 => 'page-reservaciones.php',
+			'seleccionar-vehiculo'          => 'page.php',
+			'reservas-metransfers'          => 'page.php',
+			'pago'                          => 'page.php',
+			'reservas-hotel'                => 'page.php',
 
 			// Soporte / Legales
-			'contacto'                    => 'page-contacto.php',
-			'gracias'                     => 'page-gracias.php',
-			'faq'                         => 'page.php',
-			'privacidad'                  => 'page.php',
-			'terminos-y-condiciones'      => 'page.php',
-			'cookies'                     => 'page.php',
+			'contacto'                      => 'page-contacto.php',
+			'gracias'                       => 'page-gracias.php',
+			'faq'                           => 'page.php',
+			'privacidad'                    => 'page.php',
+			'terminos-y-condiciones'        => 'page.php',
+			'cookies'                       => 'page.php',
 
 			// Blog / Rutas
-			'blog'                        => 'index.php',
-			'noticias'                    => 'index.php',
-			'rutas'                       => 'archive-ruta.php',
+			'blog'                          => 'index.php',
+			'noticias'                      => 'index.php',
+			'rutas'                         => 'archive-ruta.php',
 		);
 
 		// Páginas SEO dinámicas: taxis-barcelona-* y traslados-barcelona-*
