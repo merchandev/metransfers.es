@@ -62,7 +62,7 @@ $succeeded = (int) $wpdb->get_var(
 		$journal
 	)
 );
-mt_wp_integration_assert( 5 === $succeeded, 'All five discrete migrations must be journaled as succeeded.' );
+mt_wp_integration_assert( 8 === $succeeded, 'All eight discrete migrations must be journaled as succeeded.' );
 
 mt_wp_integration_assert( has_action( \MeTransfers\Core\Outbox::CRON_HOOK ), 'The durable outbox worker must be registered.' );
 mt_wp_integration_assert( false !== wp_next_scheduled( \MeTransfers\Core\Outbox::CRON_HOOK ), 'The durable outbox worker must be scheduled.' );

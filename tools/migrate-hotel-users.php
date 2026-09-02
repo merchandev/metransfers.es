@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Migración one-shot: asocia los 17 usuarios Hotel con sus Hotel Partner
  * y configura al supervisor check@metransfers.es con acceso global.

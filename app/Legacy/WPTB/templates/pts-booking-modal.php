@@ -1,4 +1,4 @@
-﻿<?php $wptb_i18n = \MeTransfers\Booking\I18n::strings(); ?>
+<?php $wptb_i18n = \MeTransfers\Booking\I18n::strings(); ?>
 <!-- Premium Transfers Modal - Mismo estilo que WPTB Modal -->
 <div id="pts-booking-modal" class="wptb-modal-overlay is-hidden">
     <div class="wptb-modal-content wptb-modal-large">
