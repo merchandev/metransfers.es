@@ -77,11 +77,11 @@ jobs:
         shell: bash
         run: |
           set -e
-          if grep -rIl $'^\xEF\xBB\xBF' --include="*.php" --include="*.css" --include="*.js" --exclude-dir="vendor" --exclude-dir="node_modules" .; then
+          if grep -rIl $'^\xEF\xBB\xBF' --include="*.php" --include="*.css" --include="*.js" --exclude-dir=".git" --exclude-dir=".phpstan-cache" --exclude-dir="vendor" --exclude-dir="node_modules" .; then
             echo "ERROR: UTF-8 BOM detected."
             exit 1
           fi
-          if grep -rInE 'Ã.|Â.|â€|â†|â•|â”|ï¿|ðŸ|�' --include="*.php" --include="*.css" --include="*.js" --exclude-dir="vendor" --exclude-dir="node_modules" .; then
+          if grep -rInE 'Ã.|Â.|â€|â†|â•|â”|ï¿|ðŸ|�' --include="*.php" --include="*.css" --include="*.js" --exclude-dir=".git" --exclude-dir=".phpstan-cache" --exclude-dir="vendor" --exclude-dir="node_modules" .; then
             echo "ERROR: possible UTF-8 corruption detected."
             exit 1
           fi
