@@ -1,12 +1,24 @@
 # MeTransfers Platform
 
-Plataforma WordPress integrada para la web, reservas de traslados, pricing, pagos Redsys, Hotel QR, administración y migraciones de MeTransfers. El repositorio conserva adaptadores legacy dentro del tema, pero su arranque, configuración y contratos principales se gestionan desde `app/`.
+Repositorio principal y fuente única de MeTransfers: plataforma WordPress para reservas de traslados, cotización autoritativa, pagos Redsys, Hotel QR, flota, traducciones, SEO, analítica y operaciones.
+
+Este repositorio conserva íntegramente la evolución del tema, el motor de reservas y el traductor. Los antiguos repositorios independientes fueron conectados mediante merges históricos, manteniendo autores, fechas y SHA originales. Consulta [HISTORIAL.md](HISTORIAL.md) para conocer la evolución completa.
 
 ## Estado
 
-- Preparada para validación completa en **staging**.
-- Redsys usa **test/sandbox** por defecto.
-- No debe activarse Redsys Live hasta completar el checklist operativo y rotar cualquier credencial expuesta en el historial anterior del repositorio.
+- Código consolidado en un único repositorio de producción.
+- Calidad automatizada para PHP, JavaScript, WordPress 6.8.6/7.0.2, seguridad y contratos del navegador.
+- Cotización y precio calculados en servidor; el navegador no constituye una fuente de precio confiable.
+- Redsys permanece protegido por configuración y attestaciones operativas antes de permitir Live.
+
+## Componentes principales
+
+- Web pública multilingüe y páginas SEO de rutas y servicios.
+- Motor de reservas con rutas, vehículos, capacidad, precios y recibos autoritativos.
+- Gestión de hoteles, usuarios responsables, QR e importación/exportación.
+- Pagos Redsys, notificaciones, outbox, reintentos y auditoría.
+- Traducción, caché, selector de idioma e integración SEO/Yoast.
+- Administración unificada, migraciones reanudables y herramientas operativas.
 
 ## Arquitectura
 
@@ -157,6 +169,17 @@ Los eventos disponibles en `dataLayer` son `booking_start`, `route_search`, `veh
 ## Validación de staging
 
 Seguir [docs/integration/staging-compatibility-report.md](docs/integration/staging-compatibility-report.md). En staging se pueden desactivar, sin borrar, los plugins originales **MeTransfers Booking** y **Hotel QR Plugin** para probar el reemplazo integrado.
+
+## Historial consolidado
+
+La rama `main` contiene el historial único alcanzable de los proyectos que formaron MeTransfers:
+
+- tema WordPress `tema-metransfers`;
+- reservas y Hotel QR `plugin-de-reservas-metrasnfers`;
+- traducción `Traductor-MT`;
+- plataforma integrada `metransfers.es` y todas sus ramas históricas.
+
+Git contabiliza cada SHA una sola vez aunque aparezca en varias ramas o repositorios. No se recrearon ni duplicaron commits para inflar el contador. La cronología, las fases y los commits de unión están documentados en [HISTORIAL.md](HISTORIAL.md).
 
 Antes de Live deben verificarse al menos:
 
