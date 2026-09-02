@@ -11,6 +11,26 @@ function get_current_user_id() {
     return 42;
 }
 
+function absint( $value ) {
+    return abs( (int) $value );
+}
+
+function user_can( $user_id, $capability ) {
+    return false;
+}
+
+function get_user_meta( $user_id, $key, $single = false ) {
+    return 'mt_hotel_ids' === $key && 42 === (int) $user_id ? array( 7 ) : array();
+}
+
+function get_post_type( $post_id ) {
+    return 'hotel_partner';
+}
+
+function get_post_status( $post_id ) {
+    return 'publish';
+}
+
 function current_time( $type, $gmt = false ) {
     return '2026-08-19 20:00:00';
 }
@@ -21,6 +41,7 @@ function wp_json_encode( $value ) {
 
 function get_post( $post_id ) {
     return (object) array(
+		'ID'          => (int) $post_id,
         'post_type'   => 'hotel_partner',
         'post_author' => 7 === (int) $post_id ? 42 : 99,
     );
@@ -41,6 +62,7 @@ class Admin_Audit_WPDB_Mock {
 }
 
 require_once __DIR__ . '/../app/Admin/Capabilities.php';
+require_once __DIR__ . '/../app/HotelPortal/Access/HotelAccess.php';
 require_once __DIR__ . '/../app/Admin/AuditLog.php';
 
 use MeTransfers\Admin\AuditLog;

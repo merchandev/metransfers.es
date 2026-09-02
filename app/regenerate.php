@@ -21,7 +21,7 @@ if ( function_exists( 'me_transfers_sync_legal_pages' ) ) {
 // Then call the repopulate script manually
 require_once get_template_directory() . '/includes/admin-content-repopulate.php';
 
-$hub = get_page_by_path( 'destinos', 'OBJECT', 'page' );
+$hub = get_page_by_path( 'destinos', OBJECT, 'page' );
 $hub_id = $hub ? $hub->ID : 0;
 if ( ! $hub ) {
     $hub_id = wp_insert_post( array(
@@ -36,8 +36,8 @@ if ( ! $hub ) {
 if ( function_exists( 'me_transfers_get_destination_catalog' ) ) {
     $catalog = me_transfers_get_destination_catalog();
     foreach ( $catalog as $slug => $dest ) {
-        $page = get_page_by_path( 'destinos/' . $slug, 'OBJECT', 'page' );
-        if ( ! $page ) { $page = get_page_by_path( $slug, 'OBJECT', 'page' ); }
+        $page = get_page_by_path( 'destinos/' . $slug, OBJECT, 'page' );
+        if ( ! $page ) { $page = get_page_by_path( $slug, OBJECT, 'page' ); }
         if ( ! $page ) {
             wp_insert_post( array(
                 'post_type'    => 'page',
@@ -53,7 +53,7 @@ if ( function_exists( 'me_transfers_get_destination_catalog' ) ) {
 // Create services
 if ( function_exists( 'me_transfers_get_service_catalog' ) ) {
     foreach ( me_transfers_get_service_catalog() as $slug => $service ) {
-        $page = get_page_by_path( $slug, 'OBJECT', 'page' );
+        $page = get_page_by_path( $slug, OBJECT, 'page' );
         if ( ! $page ) {
             wp_insert_post( array(
                 'post_type'    => 'page',

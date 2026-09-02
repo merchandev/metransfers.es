@@ -1,0 +1,249 @@
+:root {
+    --mth-blue: #0056b3;
+    --mth-navy: #0d1b2a;
+    --mth-orange: #ff7100;
+    --mth-bg: #f3f6fa;
+    --mth-text: #172033;
+    --mth-muted: #64748b;
+    --mth-border: #dce5ee;
+    --mth-white: #fff;
+}
+
+.mt-hotel-portal-body {
+    margin: 0;
+    background: var(--mth-bg);
+    color: var(--mth-text);
+    font: 16px/1.5 Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.mt-hotel-skip-link {
+    position: fixed;
+    z-index: 9999;
+    top: 12px;
+    left: 12px;
+    transform: translateY(-160%);
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: var(--mth-navy);
+    color: #fff;
+}
+
+.mt-hotel-skip-link:focus { transform: translateY(0); }
+.mt-hotel-shell { display: grid; min-height: 100vh; grid-template-columns: 260px minmax(0, 1fr); }
+.mt-hotel-sidebar { display: flex; flex-direction: column; padding: 28px 20px; background: var(--mth-navy); color: #fff; }
+.mt-hotel-sidebar-brand { min-height: 52px; display: flex; align-items: center; margin: 0 10px 28px; text-decoration: none; }
+.mt-hotel-sidebar-brand img { display: block; width: 100%; max-width: 190px; height: auto; max-height: 58px; object-fit: contain; object-position: left center; }
+.mt-hotel-nav { display: grid; gap: 6px; }
+.mt-hotel-nav a, .mt-hotel-nav span:not(.mt-hotel-nav-label), .mt-hotel-logout { min-height: 44px; display: flex; align-items: center; padding: 0 14px; border-radius: 10px; color: #dce6ef; text-decoration: none; }
+.mt-hotel-nav a:hover, .mt-hotel-nav a:focus, .mt-hotel-logout:hover, .mt-hotel-logout:focus, .mt-hotel-sidebar-brand:hover, .mt-hotel-sidebar-brand:focus { text-decoration: none; }
+.mt-hotel-nav a.is-active { background: rgba(255,255,255,.12); color: #fff; font-weight: 700; }
+.mt-hotel-nav span:not(.mt-hotel-nav-label) { opacity: .5; }
+.mt-hotel-logout { margin-top: auto; color: #fff; }
+.mt-hotel-workspace { min-width: 0; }
+.mt-hotel-topbar { min-height: 76px; display: flex; align-items: center; gap: 24px; padding: 0 32px; border-bottom: 1px solid var(--mth-border); background: #fff; }
+.mt-hotel-menu-toggle { display: none; min-width: 44px; min-height: 44px; border: 0; background: transparent; font-size: 24px; }
+.mt-hotel-switcher, .mt-hotel-current-name { margin-right: auto; }
+.mt-hotel-switcher label, .mt-hotel-current-name span { display: block; color: var(--mth-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; }
+.mt-hotel-switcher select { min-height: 44px; border: 1px solid var(--mth-border); border-radius: 8px; background: #fff; padding: 0 34px 0 10px; }
+.mt-hotel-user { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.mt-hotel-avatar { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; background: #e8f1fb; color: var(--mth-blue); }
+.mt-hotel-main { max-width: 1200px; padding: clamp(28px, 5vw, 64px); }
+.mt-hotel-main h1 { margin: 4px 0 8px; font-size: clamp(30px, 4vw, 48px); line-height: 1.1; }
+.mt-hotel-eyebrow { margin: 0; color: var(--mth-blue); font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.mt-hotel-lead, .mt-hotel-auth-copy { color: var(--mth-muted); }
+.mt-hotel-phase-card { max-width: 720px; margin-top: 36px; padding: 24px; border: 1px solid var(--mth-border); border-radius: 16px; background: #fff; box-shadow: 0 10px 35px rgba(13,27,42,.06); }
+.mt-hotel-status-dot { display: inline-block; width: 10px; height: 10px; margin-right: 8px; border-radius: 50%; background: #18a957; }
+.mt-hotel-dashboard-stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; margin-top: 30px; }
+.mt-hotel-stat { min-width: 0; padding: 20px; border: 1px solid var(--mth-border); border-radius: 14px; background: #fff; box-shadow: 0 8px 24px rgba(13,27,42,.05); }
+.mt-hotel-stat span { display: block; color: var(--mth-muted); font-size: 13px; font-weight: 700; }
+.mt-hotel-stat strong { display: block; margin-top: 8px; color: var(--mth-navy); font-size: clamp(24px, 3vw, 34px); }
+.mt-hotel-dashboard-table-card { max-width: none; }
+.mt-hotel-card-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.mt-hotel-card-heading h2, .mt-hotel-card-heading p { margin: 0; }
+.mt-hotel-card-heading p { color: var(--mth-muted); }
+.mt-hotel-card-heading a { min-height: 44px; display: inline-flex; align-items: center; color: var(--mth-blue); font-weight: 800; white-space: nowrap; }
+.mt-hotel-table-wrap { margin-top: 20px; overflow-x: auto; }
+.mt-hotel-table { width: 100%; border-collapse: collapse; }
+.mt-hotel-table th, .mt-hotel-table td { padding: 13px 12px; border-bottom: 1px solid var(--mth-border); text-align: left; vertical-align: middle; }
+.mt-hotel-table th { color: var(--mth-muted); font-size: 12px; text-transform: uppercase; }
+.mt-hotel-table a { color: var(--mth-blue); font-weight: 800; }
+.mt-hotel-route-text { display: block; max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-hotel-badge { display: inline-flex; padding: 5px 9px; border-radius: 999px; background: #eef2f6; color: #475569; font-size: 12px; font-weight: 800; white-space: nowrap; }
+.mt-hotel-badge--confirmed, .mt-hotel-badge--completed { background: #dcfce7; color: #166534; }
+.mt-hotel-badge--pending, .mt-hotel-badge--pending_payment, .mt-hotel-badge--added-to-cart, .mt-hotel-badge--processing { background: #fff7d6; color: #854d0e; }
+.mt-hotel-badge--cancelled, .mt-hotel-badge--failed { background: #fee2e2; color: #991b1b; }
+.mt-hotel-empty { margin: 24px 0 0; padding: 24px; border-radius: 12px; background: var(--mth-bg); color: var(--mth-muted); text-align: center; }
+.mt-hotel-auth-main { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: radial-gradient(circle at top right, #e8f1fb, transparent 42%), var(--mth-bg); }
+.mt-hotel-auth-card, .mt-hotel-state-card { width: min(100%, 440px); padding: clamp(28px, 6vw, 48px); border: 1px solid var(--mth-border); border-radius: 22px; background: #fff; box-shadow: 0 24px 70px rgba(13,27,42,.12); }
+.mt-hotel-auth-card h1, .mt-hotel-state-card h1 { margin: 8px 0; font-size: 32px; }
+.mt-hotel-brand { margin-bottom: 28px; }
+.mt-hotel-brand img { display: block; width: min(100%, 260px); height: auto; max-height: 86px; object-fit: contain; object-position: left center; }
+.mt-hotel-login-form { display: grid; gap: 18px; margin-top: 28px; }
+.mt-hotel-field label { display: block; margin-bottom: 7px; font-weight: 700; }
+.mt-hotel-field input, .mt-hotel-field select { width: 100%; min-height: 48px; box-sizing: border-box; border: 1px solid var(--mth-border); border-radius: 10px; padding: 0 13px; background: #fff; font: inherit; }
+.mt-hotel-field input:focus { border-color: var(--mth-blue); outline: 3px solid rgba(0,86,179,.14); }
+.mt-hotel-password-wrap { position: relative; }
+.mt-hotel-password-wrap input { padding-right: 84px; }
+.mt-hotel-password-toggle { position: absolute; top: 2px; right: 2px; min-width: 44px; min-height: 44px; border: 0; background: transparent; color: var(--mth-blue); font-weight: 700; }
+.mt-hotel-check { display: flex; align-items: center; gap: 9px; }
+.mt-hotel-primary-button, .mt-hotel-secondary-button { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 10px; padding: 0 20px; font-weight: 800; text-decoration: none; }
+.mt-hotel-primary-button { background: var(--mth-orange); color: #fff; cursor: pointer; }
+.mt-hotel-secondary-button { margin-top: 12px; background: var(--mth-navy); color: #fff; }
+.mt-hotel-help-link { display: inline-flex; min-height: 44px; align-items: center; margin-top: 12px; color: var(--mth-blue); font-weight: 700; }
+.mt-hotel-drawer-overlay { display: none; }
+.mt-hotel-alert { margin-top: 20px; padding: 13px 15px; border-left: 4px solid #c53030; border-radius: 8px; background: #fff1f1; color: #8a1c1c; }
+.mt-hotel-alert--success { border-left-color: #16834b; background: #ecfdf3; color: #11643b; }
+.mt-hotel-users-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start; }
+.mt-hotel-users-grid .mt-hotel-phase-card { max-width: none; margin-top: 24px; }
+.mt-hotel-user-list { display: grid; gap: 10px; }
+.mt-hotel-user-row { display: flex; min-height: 54px; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--mth-border); }
+.mt-hotel-user-row span { display: block; color: var(--mth-muted); font-size: 14px; }
+.mt-hotel-users-overview { grid-row: span 2; }
+.mt-hotel-hotel-groups { display: grid; gap: 18px; }
+.mt-hotel-hotel-group { padding: 16px; border: 1px solid var(--mth-border); border-radius: 12px; }
+.mt-hotel-hotel-group-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
+.mt-hotel-hotel-group-heading h3 { margin: 0; }
+.mt-hotel-hotel-group-heading > span { color: var(--mth-muted); font-size: 13px; font-weight: 700; }
+.mt-hotel-import-grid { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 24px; align-items: start; }
+.mt-hotel-import-grid .mt-hotel-phase-card { max-width: none; margin-top: 24px; }
+.mt-hotel-file-field { display: grid; gap: 8px; }
+.mt-hotel-file-field label { font-weight: 800; }
+.mt-hotel-file-field input { min-height: 48px; padding: 10px; border: 1px dashed var(--mth-border); border-radius: 10px; background: var(--mth-bg); }
+.mt-hotel-file-field small { color: var(--mth-muted); }
+.mt-hotel-columns-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.mt-hotel-columns-list span, .mt-hotel-columns-list strong { padding: 6px 9px; border-radius: 7px; background: var(--mth-bg); font-size: 12px; }
+.mt-hotel-columns-list strong { background: #e8f1fb; color: var(--mth-blue); }
+.mt-hotel-import-note { margin-top: 24px; padding: 18px; border-left: 4px solid var(--mth-blue); border-radius: 10px; background: #e8f1fb; }
+.mt-hotel-filter { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.mt-hotel-filter input, .mt-hotel-filter select { min-height: 48px; padding: 0 12px; border: 1px solid var(--mth-border); border-radius: 10px; background: #fff; }
+.mt-hotel-filter input { min-width: min(100%, 320px); }
+.mt-hotel-form-grid { max-width: 900px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.mt-hotel-field textarea { width: 100%; box-sizing: border-box; border: 1px solid var(--mth-border); border-radius: 10px; padding: 12px; font: inherit; }
+.mt-hotel-field--full { grid-column: 1 / -1; }
+.mt-hotel-detail-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
+.mt-hotel-detail-grid > div { padding: 18px; border: 1px solid var(--mth-border); border-radius: 12px; background: #fff; }
+.mt-hotel-detail-grid span { display: block; color: var(--mth-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; }
+.mt-hotel-detail-grid strong { display: block; margin-top: 6px; overflow-wrap: anywhere; }
+.mt-hotel-stat-row { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--mth-border); }
+.mt-hotel-pagination { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.mt-hotel-pagination a { min-width: 44px; min-height: 44px; display: grid; place-items: center; border: 1px solid var(--mth-border); border-radius: 8px; background: #fff; color: var(--mth-blue); text-decoration: none; }
+.mt-hotel-pagination a.is-active { background: var(--mth-blue); color: #fff; }
+.mt-hotel-state-card { text-align: center; }
+.mt-hotel-state-icon { width: 54px; height: 54px; display: grid; place-items: center; margin: 0 auto; border-radius: 50%; background: #fff1f1; color: #b42318; font-size: 28px; font-weight: 900; }
+
+@media (max-width: 800px) {
+    .mt-hotel-shell { grid-template-columns: 1fr; }
+    .mt-hotel-sidebar { position: fixed; z-index: 1000; inset: 0 auto 0 0; width: min(82vw, 290px); box-sizing: border-box; transform: translateX(-105%); transition: transform .2s ease; }
+    .mt-hotel-sidebar.is-open { transform: translateX(0); }
+    .mt-hotel-drawer-overlay { position: fixed; z-index: 999; inset: 0; border: 0; background: rgba(13,27,42,.48); }
+    .mt-hotel-drawer-overlay.is-open { display: block; }
+    .mt-hotel-portal-body.has-open-drawer { overflow: hidden; }
+    .mt-hotel-menu-toggle { display: inline-grid; place-items: center; }
+    .mt-hotel-topbar { padding: 0 16px; gap: 12px; }
+    .mt-hotel-user > span:last-child { display: none; }
+    .mt-hotel-main { padding: 28px 20px; }
+    .mt-hotel-users-grid { grid-template-columns: 1fr; }
+    .mt-hotel-import-grid { grid-template-columns: 1fr; }
+    .mt-hotel-form-grid, .mt-hotel-detail-grid { grid-template-columns: 1fr; }
+    .mt-hotel-dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .mt-hotel-card-heading { align-items: flex-start; }
+}
+
+@media (min-width: 801px) and (max-width: 1180px) {
+    .mt-hotel-dashboard-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* ── Nueva Reserva: hotel-portal-booking.js styles ─────────────────── */
+.mt-hnb-section { margin-top: 28px; }
+.mt-hnb-section-title { margin: 0 0 20px; font-size: 18px; }
+.mt-hnb-subsection-title { margin: 20px 0 12px; font-size: 15px; color: var(--mth-muted); }
+.mt-hnb-row { margin-bottom: 18px; }
+.mt-hnb-actions { margin-top: 20px; }
+
+/* Selector ida/vuelta */
+.mt-hnb-trip-toggle { display: flex; gap: 0; margin-bottom: 20px; border: 1px solid var(--mth-border); border-radius: 10px; overflow: hidden; width: fit-content; }
+.mt-hnb-trip-btn { min-height: 40px; padding: 0 20px; border: 0; background: #fff; color: var(--mth-muted); font: inherit; font-weight: 700; cursor: pointer; transition: background .15s, color .15s; }
+.mt-hnb-trip-btn.is-active { background: var(--mth-navy); color: #fff; }
+
+/* Fila con input + botón atajo */
+.mt-hnb-input-row { display: flex; gap: 10px; }
+.mt-hnb-input-row input { flex: 1; }
+.mt-hnb-hotel-shortcut { min-height: 48px; padding: 0 14px; border: 1px solid var(--mth-border); border-radius: 10px; background: #e8f1fb; color: var(--mth-blue); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.mt-hnb-hotel-shortcut:hover { background: #d0e5f7; }
+
+/* Resumen de ruta */
+.mt-hnb-route-summary { padding: 16px; border-radius: 12px; background: var(--mth-bg); }
+.mt-hnb-route-endpoints { display: flex; align-items: center; gap: 10px; font-weight: 700; flex-wrap: wrap; }
+.mt-hnb-arrow { color: var(--mth-muted); }
+.mt-hnb-dot { color: var(--mth-muted); }
+.mt-hnb-route-meta { margin-top: 8px; color: var(--mth-muted); font-size: 14px; }
+
+/* Lista de vehículos */
+.mt-hnb-vehicles { display: grid; gap: 12px; margin-top: 12px; }
+.mt-hnb-vehicle-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; border: 2px solid var(--mth-border); border-radius: 12px; background: #fff; text-align: left; cursor: pointer; transition: border-color .15s, box-shadow .15s; font: inherit; }
+.mt-hnb-vehicle-card:hover:not(:disabled) { border-color: var(--mth-blue); box-shadow: 0 0 0 3px rgba(0,86,179,.08); }
+.mt-hnb-vehicle-card.is-selected { border-color: var(--mth-blue); background: #f0f7ff; box-shadow: 0 0 0 3px rgba(0,86,179,.12); }
+.mt-hnb-vehicle-card.is-unavailable { opacity: .5; cursor: not-allowed; }
+.mt-hnb-vehicle-info { display: flex; flex-direction: column; gap: 4px; }
+.mt-hnb-vehicle-name { font-size: 16px; }
+.mt-hnb-vehicle-meta { color: var(--mth-muted); font-size: 14px; }
+.mt-hnb-vehicle-unavailable { color: #b42318; font-size: 13px; font-weight: 700; }
+.mt-hnb-vehicle-price { font-size: 22px; font-weight: 900; color: var(--mth-navy); white-space: nowrap; }
+
+/* Resumen final */
+.mt-hnb-summary-body { padding: 18px; border-radius: 12px; background: var(--mth-bg); margin-bottom: 20px; }
+.mt-hnb-summary-route { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; flex-wrap: wrap; }
+.mt-hnb-summary-meta { margin-top: 8px; color: var(--mth-muted); font-size: 14px; display: flex; align-items: center; gap: 6px; }
+.mt-hnb-meta-small { font-size: 13px; }
+.mt-hnb-quote-total { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--mth-border); }
+.mt-hnb-quote-total span { font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--mth-muted); letter-spacing: .06em; }
+.mt-hnb-quote-total strong { font-size: 32px; color: var(--mth-navy); }
+.mt-hnb-price-note { margin: 8px 0 0; font-size: 12px; color: var(--mth-muted); }
+
+/* Status AJAX */
+.mt-hnb-status { margin-top: 16px; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 700; }
+.mt-hnb-status[hidden] { display: none; }
+.mt-hnb-status--error { background: #fff1f1; color: #8a1c1c; border-left: 3px solid #c53030; }
+.mt-hnb-status--info  { background: #e8f1fb; color: #004080; border-left: 3px solid var(--mth-blue); }
+
+/* Botón submit disabled */
+.mt-hotel-primary-button:disabled { opacity: .45; cursor: not-allowed; }
+
+/* Autocomplete field */
+.mt-hnb-autocomplete-field { margin-bottom: 18px; }
+
+@media (max-width: 600px) {
+    .mt-hnb-input-row { flex-direction: column; }
+    .mt-hnb-vehicle-card { flex-direction: column; align-items: flex-start; }
+    .mt-hnb-vehicle-price { font-size: 20px; }
+}
+
+/* ── Secciones del menú lateral ────────────────────────────────────── */
+.mt-hotel-nav { gap: 12px; }
+.mt-hotel-nav-group { display: grid; gap: 4px; border-radius: 12px; padding: 10px; }
+.mt-hotel-nav-label {
+    display: block;
+    padding: 4px 14px 8px;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    opacity: .7;
+}
+/* Sección MeTransfers – acento verde */
+.mt-hotel-nav-group--mt {
+    background: rgba(22, 163, 74, .15);
+    border: 1px solid rgba(22, 163, 74, .25);
+}
+.mt-hotel-nav-group--mt .mt-hotel-nav-label { color: #86efac; }
+.mt-hotel-nav-group--mt a.is-active { background: rgba(22, 163, 74, .35); color: #fff; }
+.mt-hotel-nav-group--mt a:hover:not(.is-active) { background: rgba(22, 163, 74, .18); }
+
+/* Sección Hotel – acento azul */
+.mt-hotel-nav-group--hotel {
+    background: rgba(59, 130, 246, .14);
+    border: 1px solid rgba(59, 130, 246, .28);
+}
+.mt-hotel-nav-group--hotel .mt-hotel-nav-label { color: #93c5fd; }
+.mt-hotel-nav-group--hotel a.is-active { background: rgba(59, 130, 246, .35); color: #fff; }
+.mt-hotel-nav-group--hotel a:hover:not(.is-active) { background: rgba(59, 130, 246, .18); }

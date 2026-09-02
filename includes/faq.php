@@ -133,7 +133,7 @@ function me_transfers_is_faq_page( $post = null ) {
  * @return string
  */
 function me_transfers_get_faq_page_url() {
-	$page = get_page_by_path( 'preguntas-frecuentes', 'OBJECT', 'page' );
+	$page = get_page_by_path( 'preguntas-frecuentes', OBJECT, 'page' );
 
 	return $page instanceof WP_Post ? get_permalink( $page ) : home_url( '/preguntas-frecuentes/' );
 }
@@ -154,7 +154,7 @@ function me_transfers_sync_faq_page() {
 		return;
 	}
 
-	$page = get_page_by_path( 'preguntas-frecuentes', 'OBJECT', 'page' );
+	$page = get_page_by_path( 'preguntas-frecuentes', OBJECT, 'page' );
 
 	if ( ! $page instanceof WP_Post ) {
 		$page_result = wp_insert_post(

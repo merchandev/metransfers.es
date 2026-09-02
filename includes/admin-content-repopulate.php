@@ -45,7 +45,7 @@ function mt_create_missing_pages_ajax() {
         'preguntas-frecuentes' => 'MeTransfers Barcelona - Preguntas Frecuentes',
     );
     foreach ( $basic_pages as $slug => $title ) {
-        $existing = get_page_by_path( $slug, 'OBJECT', 'page' );
+        $existing = get_page_by_path( $slug, OBJECT, 'page' );
         if ( ! $existing ) {
             $id = wp_insert_post( array(
                 'post_type'    => 'page',
@@ -71,7 +71,7 @@ function mt_create_missing_pages_ajax() {
         delete_option( 'me_transfers_legal_pages_sync_version' );
         me_transfers_sync_legal_pages();
         foreach ( me_transfers_get_legal_pages_catalog() as $slug => $title ) {
-            $page = get_page_by_path( $slug, 'OBJECT', 'page' );
+            $page = get_page_by_path( $slug, OBJECT, 'page' );
             if ( $page ) {
                 $log[] = '✅ Legal OK: /' . esc_html( $slug ) . '/';
             } else {
@@ -81,7 +81,7 @@ function mt_create_missing_pages_ajax() {
     }
 
     // C. HUB DE DESTINOS
-    $hub = get_page_by_path( 'destinos', 'OBJECT', 'page' );
+    $hub = get_page_by_path( 'destinos', OBJECT, 'page' );
     $hub_id = 0;
     if ( ! $hub ) {
         $hub_result = wp_insert_post( array(
@@ -110,9 +110,9 @@ function mt_create_missing_pages_ajax() {
         $destinations = me_transfers_get_destination_catalog();
         foreach ( $destinations as $dest ) {
             $dslug = $dest['slug'];
-            $existing = get_page_by_path( $dslug, 'OBJECT', 'page' );
+            $existing = get_page_by_path( $dslug, OBJECT, 'page' );
             if ( ! $existing ) {
-                $existing = get_page_by_path( 'destinos/' . $dslug, 'OBJECT', 'page' );
+                $existing = get_page_by_path( 'destinos/' . $dslug, OBJECT, 'page' );
             }
             if ( ! $existing ) {
                 $pid = wp_insert_post( array(
@@ -144,7 +144,7 @@ function mt_create_missing_pages_ajax() {
             me_transfers_sync_service_pages();
         }
         foreach ( me_transfers_get_service_catalog() as $slug => $service ) {
-            $page = get_page_by_path( $slug, 'OBJECT', 'page' );
+            $page = get_page_by_path( $slug, OBJECT, 'page' );
             if ( $page ) {
                 $log[] = '✅ Servicio OK: /' . esc_html( $slug ) . '/';
             } else {
@@ -166,8 +166,8 @@ function mt_create_missing_pages_ajax() {
     }
 
     // F. HUB DE TOURS
-    $tours_page = get_page_by_path( 'tours', 'OBJECT', 'page' );
-    if ( ! $tours_page ) { $tours_page = get_page_by_path( 'tours-privados', 'OBJECT', 'page' ); }
+    $tours_page = get_page_by_path( 'tours', OBJECT, 'page' );
+    if ( ! $tours_page ) { $tours_page = get_page_by_path( 'tours-privados', OBJECT, 'page' ); }
     if ( ! $tours_page ) {
         $tid = wp_insert_post( array(
             'post_type'    => 'page',
@@ -191,7 +191,7 @@ function mt_create_missing_pages_ajax() {
             me_transfers_sync_tour_pages();
         }
         foreach ( me_transfers_get_tour_catalog() as $slug => $tour ) {
-            $page = get_page_by_path( $slug, 'OBJECT', 'page' );
+            $page = get_page_by_path( $slug, OBJECT, 'page' );
             if ( $page ) {
                 $log[] = '✅ Tour OK: /' . esc_html( $slug ) . '/';
             } else {
@@ -238,7 +238,7 @@ function mt_create_missing_pages_ajax() {
         foreach ( $seo_types as $tkey => $tdata ) {
             $pslug = $dslug . '-' . $tkey;
             $ptitle = $dname . $tdata['suffix'];
-            $existing = get_page_by_path( $pslug, 'OBJECT', 'page' );
+            $existing = get_page_by_path( $pslug, OBJECT, 'page' );
             if ( ! $existing ) {
                 $id = wp_insert_post( array(
                     'post_type'    => 'page',

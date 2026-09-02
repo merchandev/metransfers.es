@@ -3,6 +3,9 @@
     <description>Incremental WPCS and PHP 8.2+ compatibility gate for modern, payment-sensitive code.</description>
 
     <file>app/I18n</file>
+    <file>app/Admin/Capabilities.php</file>
+    <file>app/Core/DataMigrations.php</file>
+    <file>app/HotelPortal</file>
     <file>app/Payments/Redsys/Gateway.php</file>
     <file>app/Pricing</file>
     <file>app/Core/Outbox.php</file>

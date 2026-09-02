@@ -2,20 +2,20 @@
 namespace MeTransfers\Core;
 
 final class Schema {
-    public static function installCurrent() {
-        self::installMigrationJournal();
-        self::installCoreTables();
-        self::installEventTables();
-        self::installFleetTables();
-    }
+	public static function installCurrent() {
+		self::installMigrationJournal();
+		self::installCoreTables();
+		self::installEventTables();
+		self::installFleetTables();
+	}
 
-    public static function installMigrationJournal() {
-        global $wpdb;
-        self::loadUpgradeApi();
-        $table = $wpdb->prefix . 'mt_schema_migrations';
-        $charset_collate = $wpdb->get_charset_collate();
-        self::apply(
-            "CREATE TABLE $table (
+	public static function installMigrationJournal() {
+		global $wpdb;
+		self::loadUpgradeApi();
+		$table           = $wpdb->prefix . 'mt_schema_migrations';
+		$charset_collate = $wpdb->get_charset_collate();
+		self::apply(
+			"CREATE TABLE $table (
                 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 migration_id varchar(191) NOT NULL,
                 version varchar(32) NOT NULL,
@@ -27,17 +27,17 @@ final class Schema {
                 UNIQUE KEY migration_id (migration_id),
                 KEY status_started (status, started_at)
             ) $charset_collate;"
-        );
-    }
+		);
+	}
 
-    public static function installCoreTables() {
-        global $wpdb;
-        self::loadUpgradeApi();
-        $charset_collate = $wpdb->get_charset_collate();
+	public static function installCoreTables() {
+		global $wpdb;
+		self::loadUpgradeApi();
+		$charset_collate = $wpdb->get_charset_collate();
 
-        $table_bookings = $wpdb->prefix . 'wptb_bookings';
-        self::apply(
-            "CREATE TABLE $table_bookings (
+		$table_bookings = $wpdb->prefix . 'wptb_bookings';
+		self::apply(
+			"CREATE TABLE $table_bookings (
                 id mediumint(9) NOT NULL AUTO_INCREMENT,
                 booking_date date NOT NULL,
                 booking_time time NOT NULL,
@@ -71,6 +71,8 @@ final class Schema {
                 terms_version varchar(50) DEFAULT NULL,
                 analytics_client_id varchar(100) DEFAULT NULL,
                 hotel_token varchar(255),
+                hotel_id bigint(20) unsigned DEFAULT NULL,
+                created_by_user_id bigint(20) unsigned DEFAULT NULL,
                 source varchar(50) DEFAULT 'Metransfers',
                 created_at datetime DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY  (id),
@@ -83,14 +85,19 @@ final class Schema {
                 KEY payment_intent_id (payment_intent_id),
                 UNIQUE KEY payment_idempotency_key (payment_idempotency_key),
                 KEY hotel_token (hotel_token),
+                KEY hotel_id (hotel_id),
+                KEY hotel_status_date (hotel_id, status, booking_date),
+                KEY hotel_created_at (hotel_id, created_at),
+                KEY created_by_user_id (created_by_user_id),
+                KEY source (source),
                 KEY origin (origin(50)),
                 KEY destination (destination(50))
             ) $charset_collate;"
-        );
+		);
 
-        $table_backups = $wpdb->prefix . 'wptb_backups';
-        self::apply(
-            "CREATE TABLE $table_backups (
+		$table_backups = $wpdb->prefix . 'wptb_backups';
+		self::apply(
+			"CREATE TABLE $table_backups (
                 id mediumint(9) NOT NULL AUTO_INCREMENT,
                 filename varchar(255) NOT NULL,
                 filepath text NOT NULL,
@@ -99,17 +106,17 @@ final class Schema {
                 created_at datetime DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY  (id)
             ) $charset_collate;"
-        );
-    }
+		);
+	}
 
-    public static function installEventTables() {
-        global $wpdb;
-        self::loadUpgradeApi();
-        $charset_collate = $wpdb->get_charset_collate();
+	public static function installEventTables() {
+		global $wpdb;
+		self::loadUpgradeApi();
+		$charset_collate = $wpdb->get_charset_collate();
 
-        $table_analytics = $wpdb->prefix . 'mt_analytics_outbox';
-        self::apply(
-            "CREATE TABLE $table_analytics (
+		$table_analytics = $wpdb->prefix . 'mt_analytics_outbox';
+		self::apply(
+			"CREATE TABLE $table_analytics (
                 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 event_name varchar(50) NOT NULL,
                 event_key varchar(191) NOT NULL,
@@ -127,11 +134,11 @@ final class Schema {
                 KEY status_created_at (status, created_at),
                 KEY status_available_at (status, available_at)
             ) $charset_collate;"
-        );
+		);
 
-        $table_outbox = $wpdb->prefix . 'mt_outbox';
-        self::apply(
-            "CREATE TABLE $table_outbox (
+		$table_outbox = $wpdb->prefix . 'mt_outbox';
+		self::apply(
+			"CREATE TABLE $table_outbox (
                 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 event_key varchar(191) NOT NULL,
                 event_type varchar(80) NOT NULL,
@@ -149,11 +156,11 @@ final class Schema {
                 UNIQUE KEY event_key (event_key),
                 KEY status_available (status, available_at)
             ) $charset_collate;"
-        );
+		);
 
-        $table_drafts = $wpdb->prefix . 'mt_booking_drafts';
-        self::apply(
-            "CREATE TABLE $table_drafts (
+		$table_drafts = $wpdb->prefix . 'mt_booking_drafts';
+		self::apply(
+			"CREATE TABLE $table_drafts (
                 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 token_hash char(64) NOT NULL,
                 idempotency_key char(64) NOT NULL,
@@ -168,11 +175,11 @@ final class Schema {
                 KEY expires_at (expires_at),
                 KEY payment_booking_id (payment_booking_id)
             ) $charset_collate;"
-        );
+		);
 
-        $table_admin_audit = $wpdb->prefix . 'mt_admin_audit';
-        self::apply(
-            "CREATE TABLE $table_admin_audit (
+		$table_admin_audit = $wpdb->prefix . 'mt_admin_audit';
+		self::apply(
+			"CREATE TABLE $table_admin_audit (
                 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 actor_user_id bigint(20) unsigned NOT NULL DEFAULT 0,
                 action_name varchar(80) NOT NULL,
@@ -184,17 +191,17 @@ final class Schema {
                 KEY action_created (action_name, created_at),
                 KEY actor_created (actor_user_id, created_at)
             ) $charset_collate;"
-        );
-    }
+		);
+	}
 
-    public static function installFleetTables() {
-        global $wpdb;
-        self::loadUpgradeApi();
-        $charset_collate = $wpdb->get_charset_collate();
+	public static function installFleetTables() {
+		global $wpdb;
+		self::loadUpgradeApi();
+		$charset_collate = $wpdb->get_charset_collate();
 
-        $table_types = $wpdb->prefix . 'wptb_vehicle_types';
-        self::apply(
-            "CREATE TABLE $table_types (
+		$table_types = $wpdb->prefix . 'wptb_vehicle_types';
+		self::apply(
+			"CREATE TABLE $table_types (
                 id mediumint(9) NOT NULL AUTO_INCREMENT,
                 name varchar(100) NOT NULL,
                 slug varchar(100) NOT NULL,
@@ -205,11 +212,11 @@ final class Schema {
                 PRIMARY KEY  (id),
                 UNIQUE KEY slug (slug)
             ) $charset_collate;"
-        );
+		);
 
-        $table_vehicles = $wpdb->prefix . 'wptb_vehicles';
-        self::apply(
-            "CREATE TABLE $table_vehicles (
+		$table_vehicles = $wpdb->prefix . 'wptb_vehicles';
+		self::apply(
+			"CREATE TABLE $table_vehicles (
                 id mediumint(9) NOT NULL AUTO_INCREMENT,
                 name varchar(200) NOT NULL,
                 vehicle_type_id mediumint(9) NOT NULL,
@@ -234,11 +241,11 @@ final class Schema {
                 KEY is_active (is_active),
                 KEY capacity (capacity)
             ) $charset_collate;"
-        );
+		);
 
-        $table_images = $wpdb->prefix . 'wptb_vehicle_images';
-        self::apply(
-            "CREATE TABLE $table_images (
+		$table_images = $wpdb->prefix . 'wptb_vehicle_images';
+		self::apply(
+			"CREATE TABLE $table_images (
                 id mediumint(9) NOT NULL AUTO_INCREMENT,
                 vehicle_id mediumint(9) NOT NULL,
                 image_url varchar(500) NOT NULL,
@@ -250,11 +257,11 @@ final class Schema {
                 KEY vehicle_id (vehicle_id),
                 KEY is_primary (is_primary)
             ) $charset_collate;"
-        );
+		);
 
-        $table_hotel_vehicles = $wpdb->prefix . 'wptb_hotel_vehicles';
-        self::apply(
-            "CREATE TABLE $table_hotel_vehicles (
+		$table_hotel_vehicles = $wpdb->prefix . 'wptb_hotel_vehicles';
+		self::apply(
+			"CREATE TABLE $table_hotel_vehicles (
                 id mediumint(9) NOT NULL AUTO_INCREMENT,
                 name varchar(200) NOT NULL,
                 description text,
@@ -267,21 +274,21 @@ final class Schema {
                 KEY is_active (is_active),
                 KEY display_order (display_order)
             ) $charset_collate;"
-        );
-    }
+		);
+	}
 
-    private static function loadUpgradeApi() {
-        if ( ! function_exists( 'dbDelta' ) ) {
-            require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        }
-    }
+	private static function loadUpgradeApi() {
+		if ( ! function_exists( 'dbDelta' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		}
+	}
 
-    private static function apply( $sql ) {
-        global $wpdb;
-        $wpdb->last_error = '';
-        dbDelta( $sql );
-        if ( ! empty( $wpdb->last_error ) ) {
-            throw new \RuntimeException( 'Unable to apply schema definition.' );
-        }
-    }
+	private static function apply( $sql ) {
+		global $wpdb;
+		$wpdb->last_error = '';
+		dbDelta( $sql );
+		if ( ! empty( $wpdb->last_error ) ) {
+			throw new \RuntimeException( 'Unable to apply schema definition.' );
+		}
+	}
 }

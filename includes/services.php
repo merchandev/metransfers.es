@@ -212,7 +212,7 @@ Para bodas, ofrecemos decoración del vehículo, bebidas de bienvenida y coordin
  * @return string
  */
 function me_transfers_get_service_url( $slug ) {
-	$page = get_page_by_path( $slug, 'OBJECT', 'page' );
+	$page = get_page_by_path( $slug, OBJECT, 'page' );
 	if ( $page instanceof WP_Post ) {
 		return get_permalink( $page->ID );
 	}

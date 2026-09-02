@@ -5,7 +5,7 @@ $faq_items        = me_transfers_get_faq_items();
 			$cancellation_slugs = array( 'politica-de-cancelacion', 'cancelacion', 'politica-cancelacion' );
 
 			foreach ( $cancellation_slugs as $slug ) {
-				$cancellation_page = get_page_by_path( $slug, 'OBJECT', 'page' );
+				$cancellation_page = get_page_by_path( $slug, OBJECT, 'page' );
 
 				if ( $cancellation_page instanceof WP_Post ) {
 					$cancellation_url = get_permalink( $cancellation_page );

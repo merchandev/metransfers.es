@@ -170,16 +170,13 @@ final class Router {
 			$post_id = url_to_postid( home_url( '/' . $page . '/' ) );
 			if ( ! $post_id ) {
 				// Fallback: buscar por post_name directamente
-				$found = get_page_by_path( $page, 'OBJECT', array( 'page', 'post' ) );
+				$found = get_page_by_path( $page, OBJECT, array( 'page', 'post' ) );
 				if ( $found ) {
 					$post_id = $found->ID;
 				}
 			}
 			if ( $post_id ) {
 				$original_post = get_post( $post_id );
-				if ( is_array( $original_post ) ) {
-					$original_post = new \WP_Post( (object) $original_post );
-				}
 				if ( null === $template ) {
 					$template = self::templateForPost( $original_post, $post_id );
 				}
@@ -308,12 +305,10 @@ final class Router {
 	}
 
 	private static function hydrateVirtualPage( $page ) {
+
 		$fallback = get_page_by_path( $page );
-		if ( is_array( $fallback ) ) {
-			$fallback = new \WP_Post( (object) $fallback );
-		}
 		if ( ! $fallback ) {
-			$fallback = self::virtualPost( $page );
+				$fallback = self::virtualPost( $page );
 		}
 		self::hydrateSingular( $fallback );
 		global $wp_query;

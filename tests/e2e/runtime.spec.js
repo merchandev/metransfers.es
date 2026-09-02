@@ -110,3 +110,47 @@ test('booking search only creates columns when its own container is wide enough'
   expect(positions[2].y).toBe(positions[3].y);
   expect(positions[2].y).toBeGreaterThan(positions[0].y);
 });
+
+test('hotel portal mobile drawer exposes its state accessibly', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/tests/e2e/fixtures/hotel-portal.html');
+
+  const trigger = page.getByRole('button', { name: 'Abrir menú' });
+  const sidebar = page.getByRole('complementary', { name: 'Navegación del Portal de Hoteles' });
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  await trigger.click();
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  await expect(sidebar).toHaveClass(/is-open/);
+  await page.keyboard.press('Escape');
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  await expect(trigger).toBeFocused();
+
+  await trigger.click();
+  await page.getByRole('button', { name: 'Cerrar menú' }).click();
+  await expect(sidebar).not.toHaveClass(/is-open/);
+  await expect(page.locator('body')).not.toHaveClass(/has-open-drawer/);
+});
+
+test('hotel portal keeps touch controls at least 44 pixels high', async ({ page }) => {
+  await page.setViewportSize({ width: 768, height: 900 });
+  await page.goto('/tests/e2e/fixtures/hotel-portal.html');
+
+  const menuBox = await page.getByRole('button', { name: 'Abrir menú' }).boundingBox();
+  const hotelBox = await page.getByLabel('Hotel actual').boundingBox();
+  const passwordBox = await page.getByRole('button', { name: 'Mostrar' }).boundingBox();
+  const helpBox = await page.getByRole('link', { name: '¿Has olvidado tu contraseña?' }).boundingBox();
+  expect(menuBox.height).toBeGreaterThanOrEqual(44);
+  expect(hotelBox.height).toBeGreaterThanOrEqual(44);
+  expect(passwordBox.height).toBeGreaterThanOrEqual(44);
+  expect(passwordBox.width).toBeGreaterThanOrEqual(44);
+  expect(helpBox.height).toBeGreaterThanOrEqual(44);
+});
+
+test('hotel portal password labels use localized values', async ({ page }) => {
+  await page.goto('/tests/e2e/fixtures/hotel-portal.html');
+  const passwordToggle = page.locator('.mt-hotel-password-toggle');
+  await passwordToggle.click();
+  await expect(passwordToggle).toHaveText('Esconder');
+  await passwordToggle.click();
+  await expect(passwordToggle).toHaveText('Ver');
+});

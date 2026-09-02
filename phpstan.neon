@@ -1,10 +1,13 @@
 parameters:
     level: 5
     paths:
+        - app/Admin/Capabilities.php
         - app/Booking/BookingDatePolicy.php
         - app/Booking/I18n.php
+        - app/Core/DataMigrations.php
         - app/Core/Outbox.php
         - app/Core/ReleaseGate.php
+        - app/HotelPortal
         - app/I18n
         - app/Payments/Redsys/Gateway.php
         - app/Pricing
