@@ -3,13 +3,23 @@
 namespace MeTransfers\HotelPortal\Access;
 
 final class HotelAccess {
+
+	const BLOCKED_META_KEY = 'mt_hotel_access_blocked';
+
 	public static function canEnterPortal( $user_id = 0 ) {
+
 		$user_id = $user_id ? absint( $user_id ) : get_current_user_id();
 		return $user_id
+			&& ! self::isBlocked( $user_id )
 			&& user_can( $user_id, \MeTransfers\Admin\Capabilities::HOTEL_PORTAL_ACCESS )
 			&& ! empty( self::userHotelIds( $user_id ) );
 	}
 
+	public static function isBlocked( $user_id = 0 ) {
+
+		$user_id = $user_id ? absint( $user_id ) : get_current_user_id();
+		return $user_id > 0 && '1' === (string) get_user_meta( $user_id, self::BLOCKED_META_KEY, true );
+	}
 	/**
 	 * Determina si el usuario tiene acceso global a todos los hoteles publicados.
 	 * Única definición de "supervisor Hotel" en el sistema.

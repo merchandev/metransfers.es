@@ -40,6 +40,10 @@ final class AuthController {
 			return self::genericError();
 		}
 		if ( ! HotelAccess::canEnterPortal( $user->ID ) ) {
+			if ( HotelAccess::isBlocked( $user->ID ) ) {
+				AuditLog::record( 'hotel.portal.login_blocked', 'user', (int) $user->ID );
+				return esc_html__( 'Acceso temporalmente desactivado. Contacta con soporte técnico de MeTransfers.', 'me-transfers' );
+			}
 			if ( empty( HotelAccess::userHotelIds( $user->ID ) ) ) {
 				return esc_html__( 'Tu usuario no tiene ningún hotel asignado en el sistema.', 'me-transfers' );
 			}

@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 namespace MeTransfers\Tests\Unit;
-
 use MeTransfers\HotelPortal\Auth\AdminRedirects;
 use MeTransfers\HotelPortal\Routing\Router;
 use PHPUnit\Framework\TestCase;
@@ -44,6 +43,7 @@ final class HotelPortalRoutingTest extends TestCase {
 	}
 
 	public function testNoVisiblePortalRouteUsesAPhasePlaceholder(): void {
+
 		$root   = dirname( __DIR__, 2 ) . '/app/HotelPortal';
 		$router = file_get_contents( $root . '/Routing/Router.php' );
 
@@ -52,6 +52,21 @@ final class HotelPortalRoutingTest extends TestCase {
 		self::assertStringNotContainsString( 'Sección en preparación', $router );
 	}
 
+	public function testHotelAdministrationHasAnIndependentMenuAndAccessScreen(): void {
+
+			$root  = dirname( __DIR__, 2 );
+		$menu      = file_get_contents( $root . '/app/Admin/Menu.php' );
+			$users = file_get_contents( $root . '/app/Admin/HotelUsersPage.php' );
+
+		self::assertSame( 1, substr_count( $menu, "'hotel-qr-reservations'" ) );
+			self::assertStringContainsString( "'mt-hoteles-hub'", $menu );
+		self::assertStringContainsString( "'mt-hotel-users'", $menu );
+		self::assertStringContainsString( 'Reservas de Hoteles', $menu );
+		self::assertStringContainsString( 'HotelAccess::BLOCKED_META_KEY', $users );
+		self::assertStringContainsString( 'wp_verify_nonce', $users );
+		self::assertStringContainsString( 'hotel.user.blocked', $users );
+		self::assertStringContainsString( 'hotel.user.unblocked', $users );
+	}
 	public function testOnlyNonAdminHotelRoleIsRedirectedFromWpAdmin(): void {
 		self::assertTrue( AdminRedirects::isHotelUser( (object) array( 'roles' => array( 'check_hoteles' ) ) ) );
 		self::assertFalse( AdminRedirects::isHotelUser( (object) array( 'roles' => array( 'check_hoteles', 'administrator' ) ) ) );

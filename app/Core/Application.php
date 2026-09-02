@@ -90,7 +90,7 @@ class Application {
 		if ( is_admin() ) {
 			$admin_menu = new \MeTransfers\Admin\Menu();
 			add_action( 'admin_menu', array( $admin_menu, 'register' ) );
-
+			add_action( 'admin_enqueue_scripts', array( $admin_menu, 'enqueueStyles' ) );
 			// Aviso si faltan páginas críticas del flujo de reserva
 			add_action( 'admin_notices', array( '\MeTransfers\Core\Seeds', 'adminNoticesMissingPages' ) );
 
