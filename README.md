@@ -20,6 +20,7 @@ Este árbol corresponde al proyecto final de producción y conserva el historial
 - Portal de Hoteles con dashboards independientes y responsables por hotel.
 - Gestión de Hotel QR, usuarios, importación/exportación y atribución de reservas.
 - Pantalla **Hoteles → Usuarios / Accesos** para identificar responsables, hoteles asignados, supervisores y bloquear exclusivamente su entrada al portal.
+- Importación XLSX/CSV idempotente por referencia y Token Hotel: crea filas nuevas, actualiza coincidencias y conserva precio, distancia, vehículo y atribución.
 - Traducciones, caché, selector de idioma e integración SEO/Yoast.
 - Outbox, notificaciones, analítica, auditoría y migraciones reanudables.
 

@@ -18,7 +18,13 @@ final class BookingImporterSecurityTest extends TestCase {
 		self::assertStringContainsString( 'get_current_user_id()', $importer );
 		self::assertStringContainsString( "'source'", $importer );
 		self::assertStringContainsString( "'Importación Excel'", $importer );
-		self::assertStringNotContainsString( "\$get( 'token_hotel' )", $importer );
+		self::assertStringContainsString( "\$map['token_hotel']", $importer );
+		self::assertStringContainsString( 'HotelAccess::userHotelIds()', $importer );
+		self::assertStringContainsString( '$wpdb->update', $importer );
+		self::assertStringContainsString( 'existingId', $importer );
+		self::assertStringContainsString( 'vehicleId', $importer );
+		self::assertStringContainsString( "\$get( 'precio' )", $importer );
+		self::assertStringContainsString( "\$get( 'distancia_km' )", $importer );
 		self::assertStringNotContainsString( 'Gateway', $importer );
 		self::assertStringNotContainsString( 'NotificationService', $importer );
 		self::assertStringContainsString( 'wp_verify_nonce', $importer );

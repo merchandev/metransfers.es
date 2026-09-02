@@ -73,6 +73,7 @@ final class HotelPortalMigrationTest extends TestCase {
 	}
 
 	public function testUserAssignmentBackfillOnlyFillsEmptyCanonicalMeta(): void {
+
 		$GLOBALS['mt_test_users']                          = array( 101, 102 );
 		$GLOBALS['mt_test_user_meta'][102]['mt_hotel_ids'] = array( 42 );
 
@@ -80,5 +81,19 @@ final class HotelPortalMigrationTest extends TestCase {
 
 		self::assertSame( array( 10, 11 ), $GLOBALS['mt_test_user_meta'][101]['mt_hotel_ids'] );
 		self::assertSame( array( 42 ), $GLOBALS['mt_test_user_meta'][102]['mt_hotel_ids'] );
+	}
+
+	public function testKnownAccountAndRelationshipRepairMigrationsRemainRegistered(): void {
+
+		$root           = dirname( __DIR__, 2 );
+			$migrations = file_get_contents( $root . '/app/Core/Migrations.php' );
+		$data           = file_get_contents( $root . '/app/Core/DataMigrations.php' );
+
+		self::assertStringContainsString( '20260902_001_hotel_booking_relation_repair', $migrations );
+		self::assertStringContainsString( '20260902_002_known_hotel_user_assignments', $migrations );
+		self::assertStringContainsString( 'check@metransfers.es', $data );
+		self::assertStringContainsString( 'alenti@metransfers.es', $data );
+		self::assertStringContainsString( 'urquinaonaplaza@metransfers.es', $data );
+			self::assertStringContainsString( 'HOTEL_ACCESS_ALL', $data );
 	}
 }

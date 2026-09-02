@@ -118,6 +118,16 @@ class Migrations {
 				'version'  => '6.6.0',
 				'callback' => array( DataMigrations::class, 'backfillHotelUserAssignments' ),
 			),
+			array(
+				'id'       => '20260902_001_hotel_booking_relation_repair',
+				'version'  => '6.7.0',
+				'callback' => array( DataMigrations::class, 'repairHotelBookingRelations' ),
+			),
+			array(
+				'id'       => '20260902_002_known_hotel_user_assignments',
+				'version'  => '6.7.0',
+				'callback' => array( DataMigrations::class, 'assignKnownHotelUsers' ),
+			),
 		);
 	}
 
@@ -144,7 +154,7 @@ class Migrations {
 		global $wpdb;
 		$table = $wpdb->prefix . 'mt_schema_migrations';
 		return 'succeeded' === (string) $wpdb->get_var(
-			$wpdb->prepare( "SELECT status FROM $table WHERE migration_id = %s", $migration_id )
+			$wpdb->prepare( 'SELECT status FROM %i WHERE migration_id = %s', $table, $migration_id )
 		);
 	}
 
@@ -153,9 +163,10 @@ class Migrations {
 		$table  = $wpdb->prefix . 'mt_schema_migrations';
 		$result = $wpdb->query(
 			$wpdb->prepare(
-				"INSERT INTO $table (migration_id, version, status, started_at, finished_at, error_code)
+				"INSERT INTO %i (migration_id, version, status, started_at, finished_at, error_code)
                  VALUES (%s, %s, 'running', %s, NULL, NULL)
                  ON DUPLICATE KEY UPDATE version = VALUES(version), status = 'running', started_at = VALUES(started_at), finished_at = NULL, error_code = NULL",
+				$table,
 				$migration['id'],
 				$migration['version'],
 				gmdate( 'Y-m-d H:i:s' )

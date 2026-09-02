@@ -18,8 +18,9 @@ final class HotelOperations {
 		$status   = isset( $_GET['status'] ) ? sanitize_key( wp_unslash( $_GET['status'] ) ) : '';
 		$search   = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
 		$page     = max( 1, isset( $_GET['pg'] ) ? absint( $_GET['pg'] ) : 1 );
-		$where    = 'hotel_id = %d';
-		$args     = array( $wpdb->prefix . 'wptb_bookings', $hotel_id );
+		$global   = HotelAccess::hasGlobalAccess();
+		$where    = $global ? '1=1' : 'hotel_id = %d';
+		$args     = $global ? array( $wpdb->prefix . 'wptb_bookings' ) : array( $wpdb->prefix . 'wptb_bookings', $hotel_id );
 		if ( in_array( $status, array( 'pending', 'pending_payment', 'confirmed', 'completed', 'cancelled' ), true ) ) {
 			$where .= ' AND status = %s';
 			$args[] = $status;
@@ -50,7 +51,23 @@ final class HotelOperations {
 		global $wpdb;
 		$hotel_id   = HotelAccess::requireHotel( $hotel_id );
 		$booking_id = absint( $booking_id );
+		if ( HotelAccess::hasGlobalAccess() ) {
+			return $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE id = %d LIMIT 1', $wpdb->prefix . 'wptb_bookings', $booking_id ) );
+		}
 		return $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE id = %d AND hotel_id = %d LIMIT 1', $wpdb->prefix . 'wptb_bookings', $booking_id, $hotel_id ) );
+	}
+
+	public static function vehicleName( $booking ) {
+		if ( ! empty( $booking->vehicle_id ) && class_exists( 'WPTB_Vehicle_Manager' ) ) {
+			$vehicle = \WPTB_Vehicle_Manager::get_vehicle( (int) $booking->vehicle_id );
+			if ( $vehicle && ! empty( $vehicle->name ) ) {
+				return (string) $vehicle->name;
+			}
+		}
+		if ( preg_match( '/(?:^|\R)Vehículo:\s*([^\r\n]+)/u', (string) ( $booking->notes ?? '' ), $match ) ) {
+			return trim( $match[1] );
+		}
+		return esc_html__( 'Sin vehículo', 'me-transfers' );
 	}
 
 	public static function createBooking( $hotel_id ) {

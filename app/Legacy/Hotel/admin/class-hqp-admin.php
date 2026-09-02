@@ -557,7 +557,7 @@ class HQP_Admin {
         
         ?>
         <div class="wrap">
-            <h1 class="wp-heading-inline">Reservas por Código QR de Hoteles</h1>
+            <h1 class="wp-heading-inline">Reservas de Hoteles</h1>
             <hr class="wp-header-end">
             
             <div class="tablenav top" style="margin: 20px 0;">
@@ -651,6 +651,7 @@ class HQP_Admin {
                             <th>Ruta</th>
                             <th>Vehículo</th>
                             <th>Precio</th>
+                            <th>Distancia</th>
                             <th>Desc.</th>
                             <th>Estado</th>
                         </tr>
@@ -704,10 +705,14 @@ class HQP_Admin {
                                          // manual fallback map if needed, or query
                                          $v_name = ($booking->vehicle_id == 1) ? 'Sedan' : 'Minivan';
                                     }
+                                    if ($v_name === 'N/A' && preg_match('/(?:^|\R)Vehículo:\s*([^\r\n]+)/u', (string) $booking->notes, $vehicle_match)) {
+                                        $v_name = trim($vehicle_match[1]);
+                                    }
                                     echo esc_html($v_name);
                                     ?>
                                 </td>
-                                <td><strong>—</strong></td>
+                                <td><strong><?php echo esc_html( number_format_i18n( (float) $booking->price, 2 ) . ' €' ); ?></strong></td>
+                                <td><?php echo esc_html( number_format_i18n( (float) $booking->distance_km, 2 ) . ' km' ); ?></td>
                                 <td><?php echo $hotel_info && $hotel_info['discount'] > 0 ? '<span class="hotel-tag">' . $hotel_info['discount'] . '% OFF</span>' : '—'; ?></td>
                                 <td>
                                     <?php

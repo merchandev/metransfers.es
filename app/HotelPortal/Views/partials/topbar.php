@@ -8,13 +8,20 @@ $hotel_ids     = isset( $hotel_ids ) ? array_map( 'absint', (array) $hotel_ids )
 $portal_user   = wp_get_current_user();
 $display_name  = (string) $portal_user->display_name;
 $avatar_letter = function_exists( 'mb_substr' ) ? mb_substr( $display_name, 0, 1, 'UTF-8' ) : substr( $display_name, 0, 1 );
+$global_view   = \MeTransfers\HotelPortal\Access\HotelAccess::hasGlobalAccess();
 ?>
 <header class="mt-hotel-topbar">
 	<button class="mt-hotel-menu-toggle" type="button" aria-controls="mt-hotel-sidebar" aria-expanded="false">
 		<span aria-hidden="true">☰</span>
 		<span class="screen-reader-text"><?php esc_html_e( 'Abrir menú', 'me-transfers' ); ?></span>
 	</button>
-	<?php if ( count( $hotel_ids ) > 1 ) : ?>
+	<?php
+	if ( $global_view ) :
+		?>
+		<div class="mt-hotel-current-name"><span><?php esc_html_e( 'Vista', 'me-transfers' ); ?></span><strong><?php esc_html_e( 'Todos los hoteles', 'me-transfers' ); ?></strong></div>
+		<?php
+	elseif ( count( $hotel_ids ) > 1 ) :
+		?>
 		<form method="post" class="mt-hotel-switcher">
 			<?php wp_nonce_field( 'mt_hotel_switch', 'mt_hotel_switch_nonce' ); ?>
 			<input type="hidden" name="mt_hotel_switch" value="1">

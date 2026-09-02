@@ -14,7 +14,7 @@ class Application {
 			define( 'MT_PLATFORM_VERSION', '6.9.2' );
 		}
 		if ( ! defined( 'MT_PLATFORM_DB_VERSION' ) ) {
-			define( 'MT_PLATFORM_DB_VERSION', '6.6.0' );
+			define( 'MT_PLATFORM_DB_VERSION', '6.7.0' );
 		}
 		if ( ! defined( 'MT_TERMS_VERSION' ) ) {
 			define( 'MT_TERMS_VERSION', '2026-08-18' );
