@@ -55,15 +55,14 @@ foreach ( $tables as $suffix ) {
 	mt_wp_integration_assert( $table === $found, "Database table {$table} must exist." );
 }
 
-$journal = $wpdb->prefix . 'mt_schema_migrations';
+$journal   = $wpdb->prefix . 'mt_schema_migrations';
 $succeeded = (int) $wpdb->get_var(
 	$wpdb->prepare(
 		"SELECT COUNT(*) FROM %i WHERE status = 'succeeded'",
 		$journal
 	)
 );
-mt_wp_integration_assert( 8 === $succeeded, 'All eight discrete migrations must be journaled as succeeded.' );
-
+mt_wp_integration_assert( 10 === $succeeded, 'All ten discrete migrations must be journaled as succeeded.' );
 mt_wp_integration_assert( has_action( \MeTransfers\Core\Outbox::CRON_HOOK ), 'The durable outbox worker must be registered.' );
 mt_wp_integration_assert( false !== wp_next_scheduled( \MeTransfers\Core\Outbox::CRON_HOOK ), 'The durable outbox worker must be scheduled.' );
 
@@ -71,7 +70,7 @@ $public_query_vars = apply_filters( 'query_vars', array() );
 mt_wp_integration_assert( in_array( 'mt_lang', $public_query_vars, true ), 'The language query variable must be public.' );
 mt_wp_integration_assert( in_array( 'mt_page', $public_query_vars, true ), 'The translated page query variable must be public.' );
 
-$rules = get_option( 'rewrite_rules', array() );
+$rules           = get_option( 'rewrite_rules', array() );
 $translated_rule = false;
 foreach ( array_keys( (array) $rules ) as $rule ) {
 	if ( false !== strpos( $rule, '(en|fr|de|it|pt|ca|ru|zh|ja|ar)' ) ) {

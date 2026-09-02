@@ -80,7 +80,7 @@ final class BookingSpreadsheetReader {
 				}
 				$row[ $column ] = (string) $value;
 			}
-			if ( $row ) {
+			if ( array_filter( $row, static fn( $value ) => '' !== trim( (string) $value ) ) ) {
 				$max    = max( array_keys( $row ) );
 				$rows[] = array_replace( array_fill( 0, $max + 1, '' ), $row );
 			}

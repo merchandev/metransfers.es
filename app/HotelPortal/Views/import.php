@@ -12,13 +12,13 @@ $import_result = isset( $import_result ) ? (array) $import_result : array();
 	<?php if ( $import_result ) : ?>
 		<?php if ( empty( $import_result['errors'] ) ) : ?>
 			<div class="mt-hotel-alert mt-hotel-alert--success" role="status">
-				<?php // translators: 1: imported reservations, 2: skipped duplicates. ?>
-				<?php echo esc_html( sprintf( __( '%1$d reservas importadas. %2$d duplicadas omitidas.', 'me-transfers' ), (int) $import_result['imported'], (int) $import_result['skipped'] ) ); ?>
+				<?php // translators: 1: imported reservations, 2: updated reservations. ?>
+				<?php echo esc_html( sprintf( __( '%1$d reservas creadas y %2$d actualizadas.', 'me-transfers' ), (int) $import_result['imported'], (int) ( $import_result['updated'] ?? 0 ) ) ); ?>
 			</div>
 		<?php else : ?>
 			<div class="mt-hotel-alert" role="alert">
 				<?php // translators: %d is the number of imported reservations. ?>
-				<strong><?php echo esc_html( sprintf( __( '%d reservas importadas.', 'me-transfers' ), (int) $import_result['imported'] ) ); ?></strong>
+				<strong><?php echo esc_html( sprintf( __( '%1$d reservas creadas y %2$d actualizadas.', 'me-transfers' ), (int) $import_result['imported'], (int) ( $import_result['updated'] ?? 0 ) ) ); ?></strong>
 				<ul>
 				<?php
 				foreach ( $import_result['errors'] as $import_error ) :
@@ -55,5 +55,5 @@ $import_result = isset( $import_result ) ? (array) $import_result : array();
 			</div>
 		</section>
 	</div>
-	<div class="mt-hotel-import-note"><strong><?php esc_html_e( 'Importante:', 'me-transfers' ); ?></strong> <?php esc_html_e( 'Las reservas se asignan al hotel seleccionado arriba. El token del Excel se ignora y nunca cambia el hotel de destino. La importación no genera cobros ni notificaciones.', 'me-transfers' ); ?></div>
+	<div class="mt-hotel-import-note"><strong><?php esc_html_e( 'Importante:', 'me-transfers' ); ?></strong> <?php esc_html_e( 'El supervisor puede importar un archivo con varios hoteles: cada fila se asigna mediante Token Hotel. Para un responsable normal sólo se aceptan tokens de sus hoteles. Si la referencia ya existe, sus datos se actualizan. La importación no genera cobros ni notificaciones.', 'me-transfers' ); ?></div>
 </section>

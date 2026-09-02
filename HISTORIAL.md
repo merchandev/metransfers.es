@@ -91,6 +91,9 @@ Referencias: `6d1ad71`, `be10884`, `90f5b19`, `92cf414`, `d047faa`, `1d280c8`.
 - Nueva administración central de usuarios y accesos por hotel.
 - Bloqueo reversible del Portal de Hoteles mediante `mt_hotel_access_blocked`, con nonce y auditoría.
 - Cierre de la contradicción heredada que volvía a conceder permisos administrativos al rol `check_hoteles`.
+- Reparación automática de relaciones históricas entre reservas y hoteles mediante `hotel_token`.
+- Importación idempotente: las referencias coincidentes se actualizan y los archivos globales se distribuyen por Token Hotel.
+- Recuperación de precio, distancia y vehículo en listados administrativos, más vista agregada para el supervisor global.
 
 ## Seguridad operativa
 

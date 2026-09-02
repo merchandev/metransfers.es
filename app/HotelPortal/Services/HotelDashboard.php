@@ -12,10 +12,29 @@ final class HotelDashboard {
 		$table    = $wpdb->prefix . 'wptb_bookings';
 		$today    = current_time( 'Y-m-d' );
 		$month    = current_time( 'Y-m-01' );
+		$global   = HotelAccess::hasGlobalAccess();
 
-		$summary = $wpdb->get_row(
-			$wpdb->prepare(
-				"SELECT
+		if ( $global ) {
+			$summary = $wpdb->get_row(
+				$wpdb->prepare(
+					"SELECT
+					COUNT(*) AS total,
+					SUM(CASE WHEN booking_date = %s THEN 1 ELSE 0 END) AS today_count,
+					SUM(CASE WHEN booking_date >= %s AND status NOT IN ('cancelled', 'failed') THEN 1 ELSE 0 END) AS upcoming_count,
+					SUM(CASE WHEN status IN ('pending', 'pending_payment', 'added-to-cart') THEN 1 ELSE 0 END) AS pending_count,
+					SUM(CASE WHEN status IN ('confirmed', 'completed', 'processing') THEN 1 ELSE 0 END) AS confirmed_count,
+					SUM(CASE WHEN booking_date >= %s AND status IN ('confirmed', 'completed', 'processing') THEN COALESCE(price_cents, ROUND(price * 100), 0) ELSE 0 END) AS month_revenue_cents
+				FROM %i",
+					$today,
+					$today,
+					$month,
+					$table
+				)
+			);
+		} else {
+			$summary = $wpdb->get_row(
+				$wpdb->prepare(
+					"SELECT
 					COUNT(*) AS total,
 					SUM(CASE WHEN booking_date = %s THEN 1 ELSE 0 END) AS today_count,
 					SUM(CASE WHEN booking_date >= %s AND status NOT IN ('cancelled', 'failed') THEN 1 ELSE 0 END) AS upcoming_count,
@@ -24,26 +43,38 @@ final class HotelDashboard {
 					SUM(CASE WHEN booking_date >= %s AND status IN ('confirmed', 'completed', 'processing') THEN COALESCE(price_cents, ROUND(price * 100), 0) ELSE 0 END) AS month_revenue_cents
 				FROM %i
 				WHERE hotel_id = %d",
-				$today,
-				$today,
-				$month,
-				$table,
-				$hotel_id
-			)
-		);
+					$today,
+					$today,
+					$month,
+					$table,
+					$hotel_id
+				)
+			);
+		}
 
-		$recent = $wpdb->get_results(
-			$wpdb->prepare(
-				'SELECT id, booking_date, booking_time, customer_name, origin, destination, status, price, price_cents
+		if ( $global ) {
+			$recent = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT id, booking_date, booking_time, customer_name, origin, destination, status, price, price_cents
+				FROM %i
+				ORDER BY created_at DESC, id DESC
+				LIMIT 8',
+					$table
+				)
+			);
+		} else {
+			$recent = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT id, booking_date, booking_time, customer_name, origin, destination, status, price, price_cents
 				FROM %i
 				WHERE hotel_id = %d
 				ORDER BY created_at DESC, id DESC
 				LIMIT 8',
-				$table,
-				$hotel_id
-			)
-		);
-
+					$table,
+					$hotel_id
+				)
+			);
+		}
 		return array(
 			'total'               => isset( $summary->total ) ? (int) $summary->total : 0,
 			'today'               => isset( $summary->today_count ) ? (int) $summary->today_count : 0,

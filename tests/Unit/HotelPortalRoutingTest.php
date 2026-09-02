@@ -93,6 +93,7 @@ final class HotelPortalRoutingTest extends TestCase {
 	}
 
 	public function testHotelBookingUsesOnlyAuthoritativeServerQuotes(): void {
+
 		$root       = dirname( __DIR__, 2 );
 		$operations = file_get_contents( $root . '/app/HotelPortal/Services/HotelOperations.php' );
 		$controller = file_get_contents( $root . '/app/HotelPortal/Services/HotelBookingController.php' );
@@ -106,5 +107,17 @@ final class HotelPortalRoutingTest extends TestCase {
 		self::assertStringNotContainsString( "\$get( 'price' )", $operations );
 		self::assertStringNotContainsString( 'name="price"', $view );
 		self::assertStringNotContainsString( 'booking-app.js', $portal_js );
+	}
+
+	public function testGlobalSupervisorUsesAggregateBookingViews(): void {
+
+		$root          = dirname( __DIR__, 2 );
+			$dashboard = file_get_contents( $root . '/app/HotelPortal/Services/HotelDashboard.php' );
+		$operations    = file_get_contents( $root . '/app/HotelPortal/Services/HotelOperations.php' );
+		$topbar        = file_get_contents( $root . '/app/HotelPortal/Views/partials/topbar.php' );
+
+		self::assertStringContainsString( 'HotelAccess::hasGlobalAccess()', $dashboard );
+		self::assertStringContainsString( 'HotelAccess::hasGlobalAccess()', $operations );
+		self::assertStringContainsString( 'Todos los hoteles', $topbar );
 	}
 }

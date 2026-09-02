@@ -44,8 +44,11 @@ final class BookingImporter {
 	}
 
 	public static function importRows( $hotel_id, array $rows ) {
+
 		global $wpdb;
-		$hotel_id = HotelAccess::requireHotel( $hotel_id );
+		$hotel_id       = HotelAccess::requireHotel( $hotel_id );
+		$accessible_ids = HotelAccess::userHotelIds();
+		$token_map      = self::hotelTokenMap( $accessible_ids );
 		if ( count( $rows ) < 2 ) {
 			return self::resultError( esc_html__( 'El archivo no contiene reservas.', 'me-transfers' ) );
 		}
@@ -57,20 +60,33 @@ final class BookingImporter {
 		}
 
 		$imported = 0;
+		$updated  = 0;
 		$skipped  = 0;
 		$errors   = array();
 		foreach ( $rows as $offset => $row ) {
 			if ( ! array_filter( $row, static fn( $value ) => '' !== (string) $value ) ) {
 				continue;
 			}
-			$record = self::recordFromRow( $row, $map, $hotel_id );
+			$row_hotel_id = self::hotelIdForRow( $row, $map, $hotel_id, $token_map );
+			if ( ! $row_hotel_id ) {
+				// translators: %d is the spreadsheet row number.
+				$errors[] = sprintf( esc_html__( 'Fila %d: el token no corresponde a un hotel autorizado.', 'me-transfers' ), $offset + 2 );
+				continue;
+			}
+			$record = self::recordFromRow( $row, $map, $row_hotel_id );
 			if ( isset( $record['error'] ) ) {
 				// translators: 1: spreadsheet row number, 2: validation error.
 				$errors[] = sprintf( esc_html__( 'Fila %1$d: %2$s', 'me-transfers' ), $offset + 2, $record['error'] );
 				continue;
 			}
-			if ( self::exists( $record ) ) {
-				++$skipped;
+			$existing_id = self::existingId( $record );
+			if ( $existing_id ) {
+				if ( false === $wpdb->update( $wpdb->prefix . 'wptb_bookings', $record, array( 'id' => $existing_id ) ) ) {
+					// translators: %d is the spreadsheet row number.
+					$errors[] = sprintf( esc_html__( 'Fila %d: no se pudo actualizar.', 'me-transfers' ), $offset + 2 );
+					continue;
+				}
+				++$updated;
 				continue;
 			}
 			if ( false === $wpdb->insert( $wpdb->prefix . 'wptb_bookings', $record ) ) {
@@ -87,12 +103,14 @@ final class BookingImporter {
 			$hotel_id,
 			array(
 				'imported' => $imported,
+				'updated'  => $updated,
 				'skipped'  => $skipped,
 				'errors'   => count( $errors ),
 			)
 		);
 		return array(
 			'imported' => $imported,
+			'updated'  => $updated,
 			'skipped'  => $skipped,
 			'errors'   => array_slice( $errors, 0, 20 ),
 		);
@@ -116,7 +134,7 @@ final class BookingImporter {
 		$notes       = sanitize_textarea_field( $get( 'notas_adicionales' ) );
 		$metadata    = array_filter( array( $reference ? 'Ref. externa: ' . $reference : '', $vehicle ? 'Vehículo: ' . $vehicle : '', $notes ) );
 		$price_cents = self::moneyCents( $get( 'precio' ) );
-
+		$source      = sanitize_text_field( $get( 'origen_fuente' ) );
 		return array(
 			'booking_date'       => $date,
 			'booking_time'       => $time,
@@ -132,6 +150,7 @@ final class BookingImporter {
 			'suitcases'          => absint( $get( 'equipaje' ) ),
 			'flight_number'      => sanitize_text_field( $get( 'n_vuelo' ) ),
 			'notes'              => implode( "\n", $metadata ),
+			'vehicle_id'         => self::vehicleId( $vehicle ),
 			'trip_type'          => 'one_way',
 			'status'             => self::statusValue( $get( 'estado' ) ),
 			'payment_method'     => '',
@@ -139,14 +158,29 @@ final class BookingImporter {
 			'hotel_token'        => get_post_meta( $hotel_id, '_hqp_token', true ),
 			'hotel_id'           => absint( $hotel_id ),
 			'created_by_user_id' => get_current_user_id(),
-			'source'             => 'Importación Excel',
+			'source'             => '' !== $source ? substr( $source, 0, 50 ) : 'Importación Excel',
 			'created_at'         => self::dateTimeValue( $get( 'hora_de_registro' ) ),
 		);
 	}
 
-	private static function exists( array $record ) {
+	private static function existingId( array $record ) {
+
 		global $wpdb;
-		return (bool) $wpdb->get_var(
+		$reference = self::referenceFromNotes( (string) $record['notes'] );
+		if ( '' !== $reference ) {
+			$by_reference = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					'SELECT id FROM %i WHERE notes LIKE %s ORDER BY id ASC LIMIT 1',
+					$wpdb->prefix . 'wptb_bookings',
+					'Ref. externa: ' . $wpdb->esc_like( $reference ) . '%'
+				)
+			);
+			if ( $by_reference ) {
+				return $by_reference;
+			}
+		}
+
+		return (int) $wpdb->get_var(
 			$wpdb->prepare(
 				'SELECT id FROM %i WHERE hotel_id = %d AND booking_date = %s AND booking_time = %s AND customer_email = %s AND origin = %s AND destination = %s LIMIT 1',
 				$wpdb->prefix . 'wptb_bookings',
@@ -160,6 +194,49 @@ final class BookingImporter {
 		);
 	}
 
+	private static function hotelTokenMap( array $hotel_ids ) {
+
+		$map = array();
+		foreach ( $hotel_ids as $hotel_id ) {
+			$hotel_id = absint( $hotel_id );
+			$token    = trim( (string) get_post_meta( $hotel_id, '_hqp_token', true ) );
+			if ( $hotel_id && '' !== $token ) {
+				$map[ $token ] = $hotel_id;
+			}
+		}
+		return $map;
+	}
+
+	private static function hotelIdForRow( array $row, array $map, $fallback_hotel_id, array $token_map ) {
+
+		$token = isset( $map['token_hotel'], $row[ $map['token_hotel'] ] ) ? trim( (string) $row[ $map['token_hotel'] ] ) : '';
+		if ( '' === $token ) {
+			return absint( $fallback_hotel_id );
+		}
+		return isset( $token_map[ $token ] ) ? absint( $token_map[ $token ] ) : 0;
+	}
+
+	private static function referenceFromNotes( $notes ) {
+
+		return preg_match( '/^Ref\. externa: ([^\r\n]+)/', (string) $notes, $match ) ? trim( $match[1] ) : '';
+	}
+
+	private static function vehicleId( $vehicle_name ) {
+
+			global $wpdb;
+		$vehicle_name = trim( (string) $vehicle_name );
+		if ( '' === $vehicle_name ) {
+			return null;
+		}
+		$vehicle_id = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT id FROM %i WHERE LOWER(name) = LOWER(%s) LIMIT 1',
+				$wpdb->prefix . 'wptb_vehicles',
+				$vehicle_name
+			)
+		);
+		return $vehicle_id ? absint( $vehicle_id ) : null;
+	}
 	private static function normalizeHeader( $header ) {
 		$header = remove_accents( strtolower( trim( (string) $header ) ) );
 		$header = str_replace( array( '€', '(', ')', '/', 'º', '°' ), '', $header );
@@ -219,6 +296,7 @@ final class BookingImporter {
 	private static function resultError( $message ) {
 		return array(
 			'imported' => 0,
+			'updated'  => 0,
 			'skipped'  => 0,
 			'errors'   => array( $message ),
 		);
