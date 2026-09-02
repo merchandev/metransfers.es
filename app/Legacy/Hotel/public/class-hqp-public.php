@@ -295,12 +295,29 @@ class HQP_Public {
             return;
         }
         
-        $distance_km = 0;
-        $duration_minutes = 0;
         $route = \MeTransfers\Booking\RouteDistance::calculate( $origin, $destination );
-        if ( empty( $route['error'] ) ) {
-            $distance_km = (float) $route['distance_km'];
-            $duration_minutes = (int) $route['duration_minutes'];
+        if ( ! empty( $route['error'] ) ) {
+            error_log( 'HQP route distance failed: ' . sanitize_text_field( (string) $route['error'] ) );
+            wp_send_json_error(
+                array(
+                    'code'    => 'route_distance_unavailable',
+                    'message' => 'No se pudo calcular la distancia de la ruta. Revisa el origen y el destino o contacta con soporte.',
+                )
+            );
+            return;
+        }
+
+        $distance_km = isset( $route['distance_km'] ) ? (float) $route['distance_km'] : 0.0;
+        $duration_minutes = isset( $route['duration_minutes'] ) ? (int) $route['duration_minutes'] : 0;
+        if ( $distance_km <= 0 ) {
+            error_log( 'HQP route distance failed: provider returned a non-positive distance.' );
+            wp_send_json_error(
+                array(
+                    'code'    => 'route_distance_unavailable',
+                    'message' => 'No se pudo calcular la distancia de la ruta. Revisa el origen y el destino o contacta con soporte.',
+                )
+            );
+            return;
         }
         
         $booking_data = array_merge( array(
