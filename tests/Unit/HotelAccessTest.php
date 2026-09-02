@@ -49,6 +49,7 @@ final class HotelAccessTest extends TestCase {
 	}
 
 	public function testPortalEntryRequiresCapabilityAndAnActiveAssignment(): void {
+
 		$GLOBALS['mt_test_user_caps'][101][ Capabilities::HOTEL_PORTAL_ACCESS ] = true;
 		$GLOBALS['mt_test_user_meta'][101]['mt_hotel_ids']                      = array( 10 );
 
@@ -56,6 +57,16 @@ final class HotelAccessTest extends TestCase {
 		self::assertFalse( HotelAccess::canEnterPortal( 102 ) );
 	}
 
+	public function testExplicitlyBlockedUserCannotEnterPortal(): void {
+
+			$GLOBALS['mt_test_user_caps'][101][ Capabilities::HOTEL_PORTAL_ACCESS ] = true;
+		$GLOBALS['mt_test_user_meta'][101]['mt_hotel_ids']                          = array( 10 );
+		$GLOBALS['mt_test_user_meta'][101][ HotelAccess::BLOCKED_META_KEY ]         = '1';
+
+		self::assertTrue( HotelAccess::isBlocked( 101 ) );
+		self::assertFalse( HotelAccess::canEnterPortal( 101 ) );
+			self::assertFalse( HotelAccess::isBlocked( 102 ) );
+	}
 	public function testPrimaryHotelMustRemainInsideAuthorizedScope(): void {
 		$GLOBALS['mt_test_user_meta'][103]['mt_hotel_ids']        = array( 10, 11 );
 		$GLOBALS['mt_test_user_meta'][103]['mt_primary_hotel_id'] = 11;

@@ -360,52 +360,8 @@ function me_transfers_get_section_url( $section = 'panel' ) {
    ROL PERSONALIZADO: CHECKHOTELES Y RESTRICCION DE MENUS
    ========================================================================== */
 
-// 1. Crear el nuevo rol
-add_action( 'after_switch_theme', 'me_transfers_create_checkhoteles_role' );
-
-// Fallback: crear rol si no existe aun (primera instalacion sin cambio de tema),
-// protegido por transient de larga duracion para no repetirse en cada request.
-add_action( 'init', function() {
-    $role = get_role( 'check_hoteles' );
-    if ( $role ) {
-        if ( ! $role->has_cap( \MeTransfers\Admin\Capabilities::MANAGE_HOTELS ) ) {
-            $role->add_cap( \MeTransfers\Admin\Capabilities::MANAGE_HOTELS );
-        }
-        if ( ! $role->has_cap( 'edit_posts' ) ) {
-            $role->add_cap( 'edit_posts' );
-        }
-    }
-
-    if ( ! $role && ! get_transient( 'me_transfers_role_created' ) ) {
-        me_transfers_create_checkhoteles_role();
-        set_transient( 'me_transfers_role_created', true, DAY_IN_SECONDS * 365 );
-    }
-} );
-function me_transfers_create_checkhoteles_role() {
-    $role = get_role( 'check_hoteles' );
-    if ( ! $role ) {
-        $role = add_role( 'check_hoteles', 'CheckHoteles', array(
-            'read' => true,
-        ));
-    }
-
-    if ( $role ) {
-        // Eliminar permisos excesivos
-        $role->remove_cap( 'manage_options' );
-        $role->remove_cap( 'edit_others_posts' );
-        $role->remove_cap( 'edit_published_posts' );
-        $role->remove_cap( 'publish_posts' );
-        
-        // Añadir capacidades específicas
-        $role->add_cap( 'read_transfer_requests' );
-        $role->add_cap( 'edit_transfer_requests' );
-        $role->add_cap( 'read_tour_bookings' );
-        $role->add_cap( 'export_transfer_requests' );
-        $role->add_cap( \MeTransfers\Admin\Capabilities::MANAGE_HOTELS );
-    }
-}
-
-// 2. Ocultar menús no deseados en el panel izquierdo
+// Compatibilidad visual del escritorio heredado. Las capacidades del rol
+// check_hoteles se administran exclusivamente en Admin\Capabilities.
 add_action('admin_menu', 'me_transfers_hide_menus_checkhoteles', 999);
 function me_transfers_hide_menus_checkhoteles() {
     $user = wp_get_current_user();
@@ -442,10 +398,6 @@ function me_transfers_hide_menus_checkhoteles() {
                 remove_menu_page( $menu_slug );
             }
         }
-    } else {
-        // Para todos los demás (administradores, operadores), ocultar el menú
-        // duplicado de hoteles que solo sirve como ancla de permisos para CheckHoteles.
-        remove_menu_page( 'mt-hoteles-hub' );
     }
 }
 

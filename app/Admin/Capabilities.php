@@ -92,6 +92,11 @@ final class Capabilities {
 					self::HOTEL_MANAGE_USERS,
 					self::HOTEL_ACCESS_ALL,
 					self::HOTEL_IMPORT_BOOKINGS,
+					'edit_posts',
+					'read_transfer_requests',
+					'edit_transfer_requests',
+					'read_tour_bookings',
+					'export_transfer_requests',
 					'manage_options',
 				)
 			);

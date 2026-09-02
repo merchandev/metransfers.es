@@ -87,6 +87,10 @@ Referencias: `6d1ad71`, `be10884`, `90f5b19`, `92cf414`, `d047faa`, `1d280c8`.
 - Endpoint autenticado de cotización y recotización obligatoria antes de guardar.
 - Precio, distancia, duración y vehículo persistidos desde la respuesta del servidor.
 - Logo, navegación responsive y secciones operativas sin placeholders.
+- Separación del escritorio administrativo en Reservas y Hoteles, conservando los slugs históricos.
+- Nueva administración central de usuarios y accesos por hotel.
+- Bloqueo reversible del Portal de Hoteles mediante `mt_hotel_access_blocked`, con nonce y auditoría.
+- Cierre de la contradicción heredada que volvía a conceder permisos administrativos al rol `check_hoteles`.
 
 ## Seguridad operativa
 

@@ -8,6 +8,7 @@ Este árbol corresponde al proyecto final de producción y conserva el historial
 
 - Proyecto consolidado en un único repositorio.
 - Portal privado `/hoteles/` aislado por hotel, con usuarios, reservas, clientes, estadísticas e importación Excel.
+- Administración separada en los menús **Reservas** y **Hoteles**, con control reversible de acceso para cada responsable.
 - Cotización, capacidad, distancia y precio validados en servidor.
 - Calidad automatizada con PHPUnit, PHPStan, WPCS, ESLint, Playwright y WordPress real.
 - Redsys Live sólo debe habilitarse con credenciales configuradas fuera de Git y attestaciones operativas completas.
@@ -18,6 +19,7 @@ Este árbol corresponde al proyecto final de producción y conserva el historial
 - Motor de reservas con rutas, vehículos, capacidad, tarifas, pagos y recibos autoritativos.
 - Portal de Hoteles con dashboards independientes y responsables por hotel.
 - Gestión de Hotel QR, usuarios, importación/exportación y atribución de reservas.
+- Pantalla **Hoteles → Usuarios / Accesos** para identificar responsables, hoteles asignados, supervisores y bloquear exclusivamente su entrada al portal.
 - Traducciones, caché, selector de idioma e integración SEO/Yoast.
 - Outbox, notificaciones, analítica, auditoría y migraciones reanudables.
 

@@ -103,7 +103,11 @@ final class Router {
 			exit;
 		}
 		if ( ! HotelAccess::canEnterPortal() ) {
-			$this->renderForbidden();
+			$this->renderForbidden(
+				HotelAccess::isBlocked()
+					? esc_html__( 'Tu acceso al Portal de Hoteles está desactivado. Contacta con soporte técnico de MeTransfers.', 'me-transfers' )
+					: ''
+			);
 			return;
 		}
 
@@ -256,13 +260,14 @@ final class Router {
 		exit;
 	}
 
-	private function renderForbidden() {
+	private function renderForbidden( $message = '' ) {
+
 		status_header( 403 );
 		$this->render(
 			'forbidden',
 			array(
 				'page_title' => esc_html__( 'Acceso no disponible', 'me-transfers' ),
-				'message'    => esc_html__( 'Tu usuario no tiene acceso a un hotel activo. Contacta con MeTransfers.', 'me-transfers' ),
+				'message'    => $message ? (string) $message : esc_html__( 'Tu usuario no tiene acceso a un hotel activo. Contacta con MeTransfers.', 'me-transfers' ),
 			)
 		);
 	}
