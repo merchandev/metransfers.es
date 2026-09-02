@@ -44,7 +44,7 @@ function me_transfers_sync_legal_pages() {
 	}
 
 	foreach ( me_transfers_get_legal_pages_catalog() as $slug => $title ) {
-		$page = get_page_by_path( $slug, 'OBJECT', 'page' );
+		$page = get_page_by_path( $slug, OBJECT, 'page' );
 
 		if ( ! $page instanceof WP_Post ) {
 			$page_result = wp_insert_post(
@@ -153,7 +153,7 @@ function me_transfers_repair_legal_titles_utf8() {
 	$catalog = me_transfers_get_legal_pages_catalog();
 
 	foreach ( $catalog as $slug => $correct_title ) {
-		$page = get_page_by_path( $slug, 'OBJECT', 'page' );
+		$page = get_page_by_path( $slug, OBJECT, 'page' );
 
 		if ( ! $page instanceof WP_Post ) {
 			continue;

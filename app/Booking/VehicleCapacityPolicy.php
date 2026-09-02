@@ -12,10 +12,10 @@ final class VehicleCapacityPolicy {
         $max_per_person = 2;
         $max_suitcases = $passengers * $max_per_person;
         $max_carry_ons = $passengers * $max_per_person;
-        $valid = $vehicle
-            && $passengers <= $passenger_capacity
-            && ( $suitcases + $carry_ons ) <= $luggage_capacity
-            && $suitcases <= $max_suitcases
+		$valid = $vehicle
+			&& $passengers <= $passenger_capacity
+			&& ( $suitcases + $carry_ons ) <= $luggage_capacity
+			&& $suitcases <= $max_suitcases
             && $carry_ons <= $max_carry_ons;
 
         return array(

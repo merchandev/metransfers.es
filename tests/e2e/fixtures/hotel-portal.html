@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/assets/css/hotel-portal.css">
+  <title>Hotel Portal fixture</title>
+</head>
+<body class="mt-hotel-portal-body">
+  <div class="mt-hotel-shell">
+    <aside id="mt-hotel-sidebar" class="mt-hotel-sidebar" aria-label="Navegación del Portal de Hoteles">
+      <a class="mt-hotel-sidebar-brand" href="#">MeTransfers</a>
+      <nav class="mt-hotel-nav"><a class="is-active" href="#">Dashboard</a><span>Reservas</span></nav>
+    </aside>
+    <button class="mt-hotel-drawer-overlay" type="button" aria-label="Cerrar menú" tabindex="-1"></button>
+    <div class="mt-hotel-workspace">
+      <header class="mt-hotel-topbar">
+        <button class="mt-hotel-menu-toggle" type="button" aria-controls="mt-hotel-sidebar" aria-expanded="false"><span aria-hidden="true">☰</span><span class="screen-reader-text">Abrir menú</span></button>
+        <form class="mt-hotel-switcher">
+          <label for="mt-hotel-current">Hotel actual</label>
+          <select id="mt-hotel-current" data-auto-submit><option>Hotel Miramar</option><option>Hotel Center</option></select>
+        </form>
+      </header>
+      <main class="mt-hotel-main"><h1>Dashboard</h1><div class="mt-hotel-phase-card">Acceso seguro configurado</div></main>
+    </div>
+  </div>
+  <div class="mt-hotel-auth-card">
+    <div class="mt-hotel-password-wrap"><input id="mt-hotel-password" type="password"><button class="mt-hotel-password-toggle" type="button" aria-controls="mt-hotel-password">Mostrar</button></div>
+    <a class="mt-hotel-help-link" href="#help">¿Has olvidado tu contraseña?</a>
+  </div>
+  <script>window.mtHotelPortal = { showPassword: 'Ver', hidePassword: 'Esconder' };</script>
+  <script src="/assets/js/hotel-portal.js"></script>
+</body>
+</html>

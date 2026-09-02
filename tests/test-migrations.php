@@ -1,6 +1,6 @@
 <?php
 
-define( 'MT_PLATFORM_DB_VERSION', '6.5.0' );
+define( 'MT_PLATFORM_DB_VERSION', '6.6.0' );
 
 $GLOBALS['mt_migration_options'] = array( 'mt_platform_db_version' => '6.4.0' );
 
@@ -70,8 +70,8 @@ class Test_Migrations extends \MeTransfers\Core\Migrations {
 $calls = array();
 $runner = new Test_Migrations(
     array(
-        array( 'id' => '001_schema', 'version' => '6.5.0', 'callback' => function() use ( &$calls ) { $calls[] = 'schema'; } ),
-        array( 'id' => '002_backfill', 'version' => '6.5.0', 'callback' => function() use ( &$calls ) { $calls[] = 'backfill'; } ),
+        array( 'id' => '001_schema', 'version' => '6.6.0', 'callback' => function() use ( &$calls ) { $calls[] = 'schema'; } ),
+        array( 'id' => '002_backfill', 'version' => '6.6.0', 'callback' => function() use ( &$calls ) { $calls[] = 'backfill'; } ),
     )
 );
 
@@ -79,7 +79,7 @@ assert_migration( true === $runner->run(), 'A migration batch should complete wh
 assert_migration( array( 'schema', 'backfill' ) === $calls, 'Discrete migrations must execute in declared order.' );
 assert_migration( $runner->journal_ready, 'The migration journal must exist before callbacks run.' );
 assert_migration( 1 === $runner->lock_attempts && 1 === $runner->lock_releases, 'The migration lock must always be released.' );
-assert_migration( '6.5.0' === get_option( 'mt_platform_db_version' ), 'The DB version must advance only after the whole batch succeeds.' );
+assert_migration( '6.6.0' === get_option( 'mt_platform_db_version' ), 'The DB version must advance only after the whole batch succeeds.' );
 
 $runner->run();
 assert_migration( array( 'schema', 'backfill' ) === $calls, 'Completed versions must not execute again.' );
@@ -88,7 +88,7 @@ $GLOBALS['mt_migration_options']['mt_platform_db_version'] = '6.4.0';
 $blocked_calls = 0;
 $blocked = new Test_Migrations(
     array(
-        array( 'id' => '003_blocked', 'version' => '6.5.0', 'callback' => function() use ( &$blocked_calls ) { ++$blocked_calls; } ),
+        array( 'id' => '003_blocked', 'version' => '6.6.0', 'callback' => function() use ( &$blocked_calls ) { ++$blocked_calls; } ),
     )
 );
 $blocked->lock_available = false;
@@ -98,10 +98,10 @@ $first_calls = 0;
 $retry_calls = 0;
 $retry = new Test_Migrations(
     array(
-        array( 'id' => '004_first', 'version' => '6.5.0', 'callback' => function() use ( &$first_calls ) { ++$first_calls; } ),
+        array( 'id' => '004_first', 'version' => '6.6.0', 'callback' => function() use ( &$first_calls ) { ++$first_calls; } ),
         array(
             'id'       => '005_retry',
-            'version'  => '6.5.0',
+            'version'  => '6.6.0',
             'callback' => function() use ( &$retry_calls ) {
                 ++$retry_calls;
                 if ( 1 === $retry_calls ) {
@@ -123,7 +123,7 @@ assert_migration( 'succeeded' === $retry->journal['004_first'] && 'failed' === $
 
 assert_migration( true === $retry->run(), 'A failed migration must be resumable.' );
 assert_migration( 1 === $first_calls && 2 === $retry_calls, 'Resume must skip successful steps and retry only the failed step.' );
-assert_migration( '6.5.0' === get_option( 'mt_platform_db_version' ), 'A resumed successful batch must advance the DB version.' );
+assert_migration( '6.6.0' === get_option( 'mt_platform_db_version' ), 'A resumed successful batch must advance the DB version.' );
 assert_migration( 2 === $retry->lock_releases, 'The lock must be released after both failure and success.' );
 
 class Test_Schema_WPDB {
@@ -156,6 +156,9 @@ $seed_source = file_get_contents( $root . '/app/Core/Seeds.php' );
 $activator_source = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-activator.php' );
 assert_migration( false !== strpos( $migration_source, 'SELECT GET_LOCK' ) && false !== strpos( $migration_source, 'SELECT RELEASE_LOCK' ), 'Production migrations must use a connection-scoped advisory lock.' );
 assert_migration( false !== strpos( $schema_source, 'mt_schema_migrations' ) && false !== strpos( $schema_source, 'UNIQUE KEY migration_id' ), 'The schema must include a unique migration journal.' );
+assert_migration( false !== strpos( $schema_source, 'hotel_id bigint(20) unsigned DEFAULT NULL' ) && false !== strpos( $schema_source, 'created_by_user_id bigint(20) unsigned DEFAULT NULL' ), 'The booking schema must persist Hotel ownership and creator attribution.' );
+assert_migration( false !== strpos( $schema_source, 'KEY hotel_status_date (hotel_id, status, booking_date)' ), 'The booking schema must index Hotel-scoped operational queries.' );
+assert_migration( false !== strpos( $migration_source, '20260901_001_hotel_portal_booking_schema' ) && false !== strpos( $migration_source, '20260901_003_hotel_user_assignments' ), 'Hotel Portal migration identifiers must remain registered and immutable.' );
 assert_migration( false === strpos( $migration_source, 'wp_insert_post' ) && false !== strpos( $seed_source, 'ensurePage' ), 'Content seeds must not run inside schema migration callbacks.' );
 assert_migration( false === strpos( $activator_source, 'dbDelta(' ) && false === strpos( $activator_source, 'CREATE TABLE' ), 'The legacy activator must remain a compatibility facade rather than own schema SQL.' );
 

@@ -303,7 +303,7 @@ class HQP_Public {
             $duration_minutes = (int) $route['duration_minutes'];
         }
         
-        $booking_data = array(
+        $booking_data = array_merge( array(
             'booking_date'   => $date,
             'booking_time'   => $time,
             'origin'         => $origin,
@@ -324,10 +324,12 @@ class HQP_Public {
             'payment_method' => 'redsys',
             'booking_locale' => $language,
             'created_at'     => current_time( 'mysql' ),
-            'hotel_token'    => get_post_meta( $hotel_id, '_hqp_token', true ),
-        );
+        ), \MeTransfers\HotelPortal\Services\HotelBookingAttribution::forQrBooking(
+            $hotel_id,
+            get_post_meta( $hotel_id, '_hqp_token', true )
+        ) );
 
-        $format_db = array( '%s', '%s', '%s', '%s', '%f', '%d', '%f', '%d', '%s', '%s', '%s', '%d', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s' );
+        $format_db = array( '%s', '%s', '%s', '%s', '%f', '%d', '%f', '%d', '%s', '%s', '%s', '%d', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s' );
 
         $result = $wpdb->insert( $table_name, $booking_data, $format_db );
         $booking_id = $wpdb->insert_id;

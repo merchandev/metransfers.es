@@ -1,24 +1,25 @@
 # MeTransfers Platform
 
-Repositorio principal y fuente única de MeTransfers: plataforma WordPress para reservas de traslados, cotización autoritativa, pagos Redsys, Hotel QR, flota, traducciones, SEO, analítica y operaciones.
+Repositorio principal y fuente única de MeTransfers: plataforma WordPress para reservas, cotización autoritativa, pagos Redsys, Portal de Hoteles, Hotel QR, flota, traducciones, SEO, analítica y operaciones.
 
-Este repositorio conserva íntegramente la evolución del tema, el motor de reservas y el traductor. Los antiguos repositorios independientes fueron conectados mediante merges históricos, manteniendo autores, fechas y SHA originales. Consulta [HISTORIAL.md](HISTORIAL.md) para conocer la evolución completa.
+Este árbol corresponde al proyecto final de producción y conserva el historial consolidado del tema, el motor de reservas y el traductor. Consulta [HISTORIAL.md](HISTORIAL.md) para conocer la evolución completa.
 
 ## Estado
 
-- Código consolidado en un único repositorio de producción.
-- Calidad automatizada para PHP, JavaScript, WordPress 6.8.6/7.0.2, seguridad y contratos del navegador.
-- Cotización y precio calculados en servidor; el navegador no constituye una fuente de precio confiable.
-- Redsys permanece protegido por configuración y attestaciones operativas antes de permitir Live.
+- Proyecto consolidado en un único repositorio.
+- Portal privado `/hoteles/` aislado por hotel, con usuarios, reservas, clientes, estadísticas e importación Excel.
+- Cotización, capacidad, distancia y precio validados en servidor.
+- Calidad automatizada con PHPUnit, PHPStan, WPCS, ESLint, Playwright y WordPress real.
+- Redsys Live sólo debe habilitarse con credenciales configuradas fuera de Git y attestaciones operativas completas.
 
 ## Componentes principales
 
-- Web pública multilingüe y páginas SEO de rutas y servicios.
-- Motor de reservas con rutas, vehículos, capacidad, precios y recibos autoritativos.
-- Gestión de hoteles, usuarios responsables, QR e importación/exportación.
-- Pagos Redsys, notificaciones, outbox, reintentos y auditoría.
-- Traducción, caché, selector de idioma e integración SEO/Yoast.
-- Administración unificada, migraciones reanudables y herramientas operativas.
+- Web pública multilingüe y páginas SEO de rutas, destinos, tours y servicios.
+- Motor de reservas con rutas, vehículos, capacidad, tarifas, pagos y recibos autoritativos.
+- Portal de Hoteles con dashboards independientes y responsables por hotel.
+- Gestión de Hotel QR, usuarios, importación/exportación y atribución de reservas.
+- Traducciones, caché, selector de idioma e integración SEO/Yoast.
+- Outbox, notificaciones, analítica, auditoría y migraciones reanudables.
 
 ## Arquitectura
 
@@ -30,6 +31,7 @@ app/
 ├── Core/                  Bootstrap, assets, settings, migraciones y outbox genérico
 ├── Payments/Redsys/       Generación y verificación de pagos
 ├── Pricing/               Cálculo de tarifas
+├── HotelPortal/           Portal privado y operaciones por hotel
 └── Legacy/
     ├── WPTB/              Adaptador del booking original
     └── Hotel/            Adaptador de Hotel QR
@@ -170,17 +172,6 @@ Los eventos disponibles en `dataLayer` son `booking_start`, `route_search`, `veh
 
 Seguir [docs/integration/staging-compatibility-report.md](docs/integration/staging-compatibility-report.md). En staging se pueden desactivar, sin borrar, los plugins originales **MeTransfers Booking** y **Hotel QR Plugin** para probar el reemplazo integrado.
 
-## Historial consolidado
-
-La rama `main` contiene el historial único alcanzable de los proyectos que formaron MeTransfers:
-
-- tema WordPress `tema-metransfers`;
-- reservas y Hotel QR `plugin-de-reservas-metrasnfers`;
-- traducción `Traductor-MT`;
-- plataforma integrada `metransfers.es` y todas sus ramas históricas.
-
-Git contabiliza cada SHA una sola vez aunque aparezca en varias ramas o repositorios. No se recrearon ni duplicaron commits para inflar el contador. La cronología, las fases y los commits de unión están documentados en [HISTORIAL.md](HISTORIAL.md).
-
 Antes de Live deben verificarse al menos:
 
 - Redsys Sandbox: pago autorizado, IPN, retorno, recarga e IPN duplicado;
@@ -208,6 +199,11 @@ Si falla el booking integrado: reactivar los plugins originales, restaurar la ve
 - Mantener logs de base de datos y pasarela fuera de respuestas AJAX públicas.
 - Revisar alertas de Gitleaks y rotar el secreto afectado; borrar el valor del HEAD no invalida su exposición histórica.
 - Proteger `main` y exigir el workflow de calidad antes de fusionar.
+- No conservar scripts de diagnóstico que escriban credenciales o endpoints privados en `wp_options`.
+
+## Historial consolidado
+
+La rama `main` conserva los commits únicos del tema WordPress, el plugin de reservas/Hotel QR, Traductor MT, las ramas de endurecimiento y esta versión final. Git contabiliza cada SHA una sola vez aunque haya aparecido en varios repositorios o ramas. Véase [HISTORIAL.md](HISTORIAL.md).
 
 ## Propiedad intelectual
 

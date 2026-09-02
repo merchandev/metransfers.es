@@ -25,14 +25,19 @@ $zonas = array(
 );
 
 // ─── Obtener TODAS las rutas publicadas ────────────────────────────────────
-$args = array(
+$all_rutas = get_posts( array(
     'post_type'      => 'ruta',
-    'posts_per_page' => -1, // Mostrar todas en la pgina de archivo principal
     'post_status'    => 'publish',
-    'orderby'        => 'menu_order title',
+    'posts_per_page' => -1,
+    'orderby'        => 'title',
     'order'          => 'ASC',
-);
-$all_rutas = get_posts( $args );
+    'meta_query'     => array(
+        array(
+            'key'   => '_mt_seo_ready',
+            'value' => '1',
+        ),
+    ),
+) );
 
 // Indexar por slug para acceso rápido
 $rutas_by_slug = array();
@@ -161,10 +166,10 @@ $total = count( $all_rutas );
                         <?php if ( $duracion || $pax ) : ?>
                         <div class="ruta-card__meta">
                             <?php if ( $duracion ) : ?><span>⏱ <?php echo esc_html( mt_translate( $duracion  )); ?></span><?php endif; ?>
-                            <?php if ( $pax ) : ?><span>👤 Máx. <?php echo esc_html( mt_translate( $pax  )); ?> pax</span><?php endif; ?>
+                            <?php if ( $pax ) : ?><span>👤 <?php echo esc_html( sprintf( mt_translate( 'Máx. %s pax' ), $pax ) ); ?></span><?php endif; ?>
                         </div>
                         <?php endif; ?>
-                        <div class="ruta-card__cta">Ver ruta <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+                        <div class="ruta-card__cta"><?php echo mt_translate( 'Ver ruta' ); ?> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </a>
                     <?php endforeach; ?>
                 </div>

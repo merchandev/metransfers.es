@@ -52,6 +52,10 @@ final class Seo {
 	}
 
 	public static function filterCanonical( $canonical ) {
+
+		if ( \MeTransfers\HotelPortal\HotelPortal::isPortalRequest() ) {
+				return $canonical;
+		}
 		return self::canonicalForRequest(
 			$canonical,
 			isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/',
@@ -76,6 +80,10 @@ final class Seo {
 	}
 
 	public static function renderHead() {
+
+		if ( \MeTransfers\HotelPortal\HotelPortal::isPortalRequest() ) {
+			return;
+		}
 		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
 		if ( ! defined( 'WPSEO_VERSION' ) && Language::isTranslated() ) {
 			echo '<link rel="canonical" href="' . esc_url( self::canonicalForRequest( '', $request_uri, Language::get() ) ) . '" />' . "\n";

@@ -352,7 +352,7 @@
 			<div class="footer-col js-footer-accordion">
 				<button type="button" class="footer-col-title" aria-expanded="false" aria-controls="footer-services-links"><?php echo mt_translate("Servicios"); ?></button>
 				<ul id="footer-services-links" class="footer-links-list">
-					<li><a href="<?php echo esc_url( mt_localized_url( 'transfer-aeropuerto-barcelona' ) ); ?>"><?php echo mt_translate("Aeropuerto"); ?></a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-aeropuerto' ) ); ?>"><?php echo mt_translate("Aeropuerto"); ?></a></li>
 					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-puerto' ) ); ?>"><?php echo mt_translate("Puerto"); ?></a></li>
 					<li><a href="<?php echo esc_url( mt_localized_url( 'chofer-por-horas' ) ); ?>"><?php echo mt_translate("Por horas"); ?></a></li>
 					<li><a href="<?php echo esc_url( mt_localized_url( 'corporativo-y-eventos' ) ); ?>"><?php echo mt_translate("Empresas"); ?></a></li>

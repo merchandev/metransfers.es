@@ -155,7 +155,7 @@ function me_transfers_get_current_destination( $post = null ) {
  * @return WP_Post|false
  */
 function me_transfers_get_destinations_hub_page() {
-	$page = get_page_by_path( 'destinos', 'OBJECT', 'page' );
+	$page = get_page_by_path( 'destinos', OBJECT, 'page' );
 
 	return $page instanceof WP_Post ? $page : false;
 }
@@ -175,10 +175,10 @@ function me_transfers_find_destination_page( $slug ) {
 		return $cache[ $slug ];
 	}
 
-	$page = get_page_by_path( $slug, 'OBJECT', 'page' );
+	$page = get_page_by_path( $slug, OBJECT, 'page' );
 
 	if ( ! $page ) {
-		$page = get_page_by_path( 'destinos/' . $slug, 'OBJECT', 'page' );
+		$page = get_page_by_path( 'destinos/' . $slug, OBJECT, 'page' );
 	}
 
 	$cache[ $slug ] = $page instanceof WP_Post ? $page : false;
@@ -237,7 +237,7 @@ function me_transfers_sync_destination_pages() {
 
 	if ( ! $hub_id ) {
 		// Do not recreate the hub if it was intentionally trashed.
-		$hub_trashed = get_page_by_path( 'destinos__trashed', 'OBJECT', 'page' );
+		$hub_trashed = get_page_by_path( 'destinos__trashed', OBJECT, 'page' );
 		if ( ! $hub_trashed ) {
 			$hub_result = wp_insert_post(
 				array(
@@ -267,8 +267,8 @@ function me_transfers_sync_destination_pages() {
 	}
 
 	foreach ( me_transfers_get_destination_catalog() as $destination ) {
-		$top_level_page = get_page_by_path( $destination['slug'], 'OBJECT', 'page' );
-		$child_page     = get_page_by_path( 'destinos/' . $destination['slug'], 'OBJECT', 'page' );
+		$top_level_page = get_page_by_path( $destination['slug'], OBJECT, 'page' );
+		$child_page     = get_page_by_path( 'destinos/' . $destination['slug'], OBJECT, 'page' );
 		$page_id        = 0;
 
 		if ( $top_level_page instanceof WP_Post ) {
@@ -277,7 +277,7 @@ function me_transfers_sync_destination_pages() {
 			$page_id = (int) $child_page->ID;
 		} elseif ( $hub_id > 0 ) {
 			// Do not recreate the destination page if it was intentionally trashed.
-			$dest_trashed = get_page_by_path( $destination['slug'] . '__trashed', 'OBJECT', 'page' );
+			$dest_trashed = get_page_by_path( $destination['slug'] . '__trashed', OBJECT, 'page' );
 			if ( $dest_trashed ) {
 				continue;
 			}
