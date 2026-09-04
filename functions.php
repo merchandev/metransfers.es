@@ -46,27 +46,7 @@ if ( is_admin() ) {
     require_once get_template_directory() . '/includes/auto-migration-v5.php';
 }
 
-add_action( 'template_redirect', function() {
 
-    if (
-        is_404()
-        && 'destinos' === trim(
-            wp_parse_url(
-                $_SERVER['REQUEST_URI'] ?? '',
-                PHP_URL_PATH
-            ),
-            '/'
-        )
-    ) {
-        wp_safe_redirect(
-            home_url( '/#destinos' ),
-            301
-        );
-
-        exit;
-    }
-
-} );
 
 // Migration safety switch — set to false once initial migration is done.
 if ( ! defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) ) {
@@ -967,6 +947,9 @@ function me_transfers_custom_redirects() {
             // El redirect de Tax Free se ha retirado temporalmente
             // porque en producción entraba en conflicto semántico.
 
+            // Auditoría SEO: redirigir /destinos/ a la página de /rutas/ que sí tiene el listado
+            '/destinos/'                                                                  => '/rutas/',
+
             // Antiguas landings /taxis-* y /traslados-*
             '/transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v/' => '/grupos/',
             '/traslados-privados/'                                                        => '/taxis-privado-barcelona/',
@@ -1139,7 +1122,7 @@ function mt_ajax_save_lead() {
         update_post_meta( $post_id, '_mt_gdpr_version',      $gdpr_version );
 
         // Enviar notificación por email
-        $to      = get_option( 'admin_email', 'info@metransfers.es' );
+        $to      = 'info@metransfers.es';
         $subject = 'Nueva consulta web: ' . $nombre;
 
         $body  = "Nueva consulta desde la web de MeTransfers.\n\n";
@@ -1374,7 +1357,9 @@ if ( ! defined( 'WPSEO_VERSION' ) ) {
 add_filter( 'wpseo_title', function( $title ) {
 
     if ( is_front_page() || is_home() ) {
-        return 'Transfer Aeropuerto Barcelona y Traslados Privados | MeTransfers';
+        return function_exists( 'mt_translate' ) 
+            ? mt_translate( 'Transfer Aeropuerto Barcelona y Traslados Privados | MeTransfers' ) 
+            : 'Transfer Aeropuerto Barcelona y Traslados Privados | MeTransfers';
     }
 
     return $title;
@@ -1735,7 +1720,9 @@ add_filter( 'wpseo_sitemap_exclude_author', '__return_true' );
 add_filter( 'wpseo_metadesc', function( $description ) {
 
     if ( is_front_page() || is_home() ) {
-        return 'Reserva tu transfer privado desde o hacia el Aeropuerto de Barcelona, centro, hotel o puerto. Chófer profesional, precio cerrado y atención personalizada 24/7.';
+        return function_exists( 'mt_translate' )
+            ? mt_translate( 'Reserva tu transfer privado desde o hacia el Aeropuerto de Barcelona, centro, hotel o puerto. Chófer profesional, precio cerrado y atención personalizada 24/7.' )
+            : 'Reserva tu transfer privado desde o hacia el Aeropuerto de Barcelona, centro, hotel o puerto. Chófer profesional, precio cerrado y atención personalizada 24/7.';
     }
 
     return $description;

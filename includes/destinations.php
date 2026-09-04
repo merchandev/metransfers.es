@@ -194,7 +194,7 @@ function me_transfers_find_destination_page( $slug ) {
 function me_transfers_get_destinations_hub_url() {
 	$page = me_transfers_get_destinations_hub_page();
 
-	return $page ? get_permalink( $page ) : home_url( '/destinos/' );
+	return $page ? get_permalink( $page ) : home_url( '/rutas/' );
 }
 
 /**
