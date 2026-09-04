@@ -94,7 +94,9 @@ Referencias: `6d1ad71`, `be10884`, `90f5b19`, `92cf414`, `d047faa`, `1d280c8`.
 - Reparación automática de relaciones históricas entre reservas y hoteles mediante `hotel_token`.
 - Importación idempotente: las referencias coincidentes se actualizan y los archivos globales se distribuyen por Token Hotel.
 - Recuperación de precio, distancia y vehículo en listados administrativos, más vista agregada para el supervisor global.
-
+- Cierre definitivo de seguridad y aislamiento del portal (Roles `mt_hotel_access_all`, `mt_hotel_import_bookings`, Supervisor).
+- Correcciones de Auditoría SEO: Redirección 301 de `/destinos/` a `/rutas/` y soporte multi-idioma nativo para metadatos Yoast SEO en portada.
+- Enrutamiento forzado de formularios web (leads) hacia `info@metransfers.es` ignorando el correo de administración de WordPress.
 ## Seguridad operativa
 
 - Las claves Redsys, Maps, SMTP y webhooks no se almacenan en Git.
