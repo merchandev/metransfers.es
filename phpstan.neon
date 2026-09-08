@@ -1,4 +1,6 @@
 parameters:
+    parallel:
+        maximumNumberOfProcesses: 1
     level: 5
     paths:
         - app/Admin/Capabilities.php
