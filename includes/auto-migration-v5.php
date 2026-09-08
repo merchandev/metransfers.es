@@ -10,8 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Hook into admin_init
-add_action( 'admin_init', 'mt_auto_generate_all_pages_once_v7' );
+// Hook into admin_init (disabled to prevent automatic SEO page generation)
+// add_action( 'admin_init', 'mt_auto_generate_all_pages_once_v7' );
 function mt_auto_generate_all_pages_once_v7() {
     if ( get_option( 'mt_auto_generated_pages_v10' ) ) {
         return;
@@ -378,40 +378,7 @@ function mt_force_yoast_green_and_image( $page_id, $focus_kw, $meta_desc, $title
     // 2. Standard Yoast Post Meta
     update_post_meta( $page_id, '_yoast_wpseo_focuskw', $focus_kw );
     update_post_meta( $page_id, '_yoast_wpseo_metadesc', $meta_desc );
-    update_post_meta( $page_id, '_yoast_wpseo_linkdex', 90 );
-    update_post_meta( $page_id, '_yoast_wpseo_content_score', '90' );
-    update_post_meta( $page_id, '_yoast_wpseo_word_count', 450 );
-    update_post_meta( $page_id, '_yoast_wpseo_estimated-reading-time-minutes', 3 );
     update_post_meta( $page_id, '_yoast_wpseo_opengraph-image', $img_url );
     update_post_meta( $page_id, '_yoast_wpseo_twitter-image', $img_url );
 
-    // 3. Force Yoast Indexables Table
-    $table = $wpdb->prefix . 'yoast_indexable';
-    if ( $wpdb->get_var("SHOW TABLES LIKE '$table'") == $table ) {
-        $existing = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM $table WHERE object_id = %d AND object_type = 'post'", $page_id ) );
-        
-        $post = get_post($page_id);
-        $data = array(
-            'object_id'                   => $page_id,
-            'object_type'                 => 'post',
-            'object_sub_type'             => 'page',
-            'primary_focus_keyword_score' => 90,
-            'readability_score'           => 90,
-            'title'                       => $title,
-            'description'                 => $meta_desc,
-            'open_graph_image'            => $img_url,
-            'twitter_image'               => $img_url,
-            'primary_focus_keyword'       => $focus_kw,
-            'is_robots_noindex'           => 0,
-            'object_last_modified'        => $post->post_modified_gmt,
-        );
-        
-        if ( $existing ) {
-            $wpdb->update( $table, $data, array( 'id' => $existing->id ) );
-        } else {
-            // Need to set missing defaults if inserting manually
-            $data['permalink'] = get_permalink( $page_id );
-            $wpdb->insert( $table, $data );
-        }
-    }
 }

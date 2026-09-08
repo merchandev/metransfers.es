@@ -9,6 +9,7 @@ parameters:
         - app/Core/ReleaseGate.php
         - app/HotelPortal
         - app/I18n
+        - app/SEO
         - app/Payments/Redsys/Gateway.php
         - app/Pricing
     scanFiles:

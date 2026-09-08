@@ -75,13 +75,17 @@ final class Seo {
 			}
 			$links[ self::hreflang( $language ) ] = Language::urlForLanguage( $language, $slug );
 		}
-		$links['x-default'] = Language::urlForLanguage( 'es', $slug );
+		if ( isset( $links['es'] ) ) {
+			$links['x-default'] = $links['es'];
+		}
 		return $links;
 	}
 
 	public static function renderHead() {
-
 		if ( \MeTransfers\HotelPortal\HotelPortal::isPortalRequest() ) {
+			return;
+		}
+		if ( ! \MeTransfers\SEO\Indexability::isIndexableRequest() ) {
 			return;
 		}
 		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
@@ -89,6 +93,16 @@ final class Seo {
 			echo '<link rel="canonical" href="' . esc_url( self::canonicalForRequest( '', $request_uri, Language::get() ) ) . '" />' . "\n";
 		}
 		$seo_languages = defined( 'MT_SEO_LANGS' ) ? MT_SEO_LANGS : array( 'es' );
+		$seo_languages = array_values( array_filter( $seo_languages, array( \MeTransfers\SEO\Indexability::class, 'isIndexableLanguage' ) ) );
+		// Resolve the Spanish source before advertising any localized counterpart.
+		$path = Language::pathWithoutLanguage( $request_uri );
+		if ( ! in_array( trim( $path, '/' ), array( '', 'rutas', 'blog' ), true ) ) {
+			$post_id = url_to_postid( home_url( '/' . trim( $path, '/' ) . '/' ) );
+			if ( ! $post_id || ! \MeTransfers\SEO\Indexability::isIndexable( $post_id ) ) {
+				return;
+			}
+			$seo_languages = \MeTransfers\SEO\Indexability::languagesForPost( $post_id, $seo_languages );
+		}
 		foreach ( self::alternatesForRequest( $request_uri, $seo_languages ) as $language => $url ) {
 			echo '<link rel="alternate" hreflang="' . esc_attr( $language ) . '" href="' . esc_url( $url ) . '" />' . "\n";
 		}

@@ -75,6 +75,10 @@ class Application {
 		$seeds = new \MeTransfers\Core\Seeds();
 		$seeds->register();
 
+		$redirects = new \MeTransfers\SEO\Redirects();
+		$redirects->register();
+		( new \MeTransfers\SEO\Policy() )->register();
+
 		$outbox = new \MeTransfers\Core\Outbox();
 		$outbox->register();
 

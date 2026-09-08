@@ -943,44 +943,7 @@ function me_transfers_custom_redirects() {
         // 301 — URL antigua tiene sustituto semánticamente equivalente.
         // Se ejecuta ANTES de comprobar is_404() para interceptar URLs que aún devuelven 200
         // -----------------------------------------------------------------
-        $redirects_301 = array(
-            // El redirect de Tax Free se ha retirado temporalmente
-            // porque en producción entraba en conflicto semántico.
-
-            // Auditoría SEO: redirigir /destinos/ a la página de /rutas/ que sí tiene el listado
-            '/destinos/'                                                                  => '/rutas/',
-
-            // Antiguas landings /taxis-* y /traslados-*
-            '/transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v/' => '/grupos/',
-            '/traslados-privados/'                                                        => '/taxis-privado-barcelona/',
-            '/transfer-puerto-barcelona/'                                                 => '/traslados-puerto/',
-            '/empresas/'                                                                  => '/corporativo-y-eventos/',
-            '/traslados-aeropuerto/'                                                      => '/transfer-aeropuerto-barcelona/',
-            // '/taxis-barcelona-port-aventura/'                                             => '/rutas/barcelona-portaventura/',
-            '/taxis-barcelona-salou/'                                                     => '/rutas/barcelona-salou/',
-            '/taxis-barcelona-costa-brava/'                                               => '/destinos/costa-brava/',
-            '/taxis-barcelona-girona/'                                                    => '/rutas/barcelona-girona/',
-            '/taxis-barcelona-tossa-de-mar/'                                              => '/rutas/barcelona-tossa-de-mar/',
-            '/traslados-barcelona-tossa-de-mar/'                                          => '/rutas/barcelona-tossa-de-mar/',
-            '/traslados-barcelona-andorra/'                                               => '/rutas/barcelona-andorra/',
-            '/taxis-barcelona-andorra/'                                                   => '/rutas/barcelona-andorra/',
-            '/taxis-barcelona-cadaques/'                                                  => '/rutas/barcelona-cadaques/',
-            '/traslados-barcelona-cadaques/'                                              => '/rutas/barcelona-cadaques/',
-
-            // Antiguas URLs WooCommerce con sustituto equivalente
-            '/tienda-barcelona-tours-transfers/transfers/traslado-a-andorra/'             => '/rutas/barcelona-andorra/',
-            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-portaventura/'  => '/taxis-barcelona-port-aventura/',
-            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-a-portaventura/'=> '/taxis-barcelona-port-aventura/',
-            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-salou/'         => '/rutas/barcelona-salou/',
-            '/tienda-barcelona-tours-transfers/transfers/transfer-privado-girona/'        => '/rutas/barcelona-girona/',
-            '/tienda-barcelona-tours-transfers/transfers/'                                => '/rutas/',
-            '/tienda-barcelona-tours-transfers/'                                          => '/',
-        );
-
-        if ( isset( $redirects_301[ $path ] ) ) {
-            wp_safe_redirect( home_url( $redirects_301[ $path ] ), 301 );
-            exit;
-        }
+        // 301 redirects are handled by MeTransfers\SEO\Redirects at priority 0.
 
         // -----------------------------------------------------------------
         // 410 Patrón wildcard: URL WooCommerce sin sustituto equivalente
@@ -1035,7 +998,7 @@ function me_transfers_custom_redirects() {
         }
 
         // NOTA: El smart redirect automático fue eliminado para evitar 301 incorrectos.
-        // Para recuperar una URL específica, añade la redirección manual en $redirects_301.
+        // Para recuperar una URL especifica, usar app/SEO/LegacyUrlMap.php.
     }
 }
 
@@ -1357,8 +1320,13 @@ if ( ! defined( 'WPSEO_VERSION' ) ) {
 add_filter( 'wpseo_title', function( $title ) {
 
     if ( is_front_page() || is_home() ) {
+<<<<<<< HEAD
         return function_exists( 'mt_translate' ) 
             ? mt_translate( 'Transfer Aeropuerto Barcelona y Traslados Privados | MeTransfers' ) 
+=======
+        return function_exists( 'mt_translate' )
+            ? mt_translate( 'Transfer Aeropuerto Barcelona y Traslados Privados | MeTransfers' )
+>>>>>>> a6211cb (fix(seo): unify indexability and language-aware legacy redirects)
             : 'Transfer Aeropuerto Barcelona y Traslados Privados | MeTransfers';
     }
 
@@ -1592,27 +1560,6 @@ add_filter( 'wp_robots', static function ( array $robots ): array {
 		return array_merge( $robots, array( 'noindex' => true, 'follow' => true ) );
 	}
 
-	// 5. Umbral de calidad para rutas (ELIMINADO para permitir indexación de todas las rutas)
-	// if ( is_singular( 'ruta' ) ) {
-	// 	// _mt_seo_ready=1 → indexar. Si no está a 1, no indexar. Es el único control de calidad.
-	// 	$seo_ready = get_post_meta( get_the_ID(), '_mt_seo_ready', true );
-	// 	if ( '1' !== $seo_ready ) {
-	// 		return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
-	// 	}
-	// }
-
-	// 6. Destinos genéricos (sin contenido diferenciado) → noindex temporal.
-	// Solo se indexan destinos con contenido curado específico (salou, lloret-de-mar).
-	// Ampliar la lista $specific_destinations cuando un destino tenga contenido real único.
-	if ( is_page() && ! is_front_page() ) {
-		$destination = me_transfers_get_current_destination( get_post() );
-		if ( $destination ) {
-			$specific_destinations = [ 'salou', 'lloret-de-mar', 'aeropuerto', 'aeropuerto-barcelona', 'aeropuerto-de-barcelona', 'taxis-barcelona-aeropuerto', 'barcelona-airport' ];
-			if ( ! in_array( $destination['slug'], $specific_destinations, true ) ) {
-				return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
-			}
-		}
-	}
 
 	return $robots;
 }, 99 );
@@ -1620,78 +1567,7 @@ add_filter( 'wp_robots', static function ( array $robots ): array {
 // ==========================================
 // YOAST SEO: Excluir rutas de baja calidad y destinos genéricos del sitemap
 // ==========================================
-add_filter( 'wpseo_exclude_from_sitemap_by_post_ids', function( $excluded ) {
-	// El funnel es técnico y queda excluido en cualquier idioma.
-	foreach ( array( 'seleccionar-vehiculo', 'reservas-metransfers', 'pago', 'finalizar-pago', 'reservas-hotel' ) as $slug ) {
-		$page = get_page_by_path( $slug );
-		if ( $page ) {
-			$excluded[] = (int) $page->ID;
-		}
-	}
-
-	// 1. Excluir rutas que no están listas para SEO
-	$args = array(
-		'post_type'      => 'ruta',
-		'posts_per_page' => -1,
-		'fields'         => 'ids',
-		'meta_query'     => array(
-			'relation' => 'OR',
-			array(
-				'key'     => '_mt_seo_ready',
-				'compare' => 'NOT EXISTS',
-			),
-			array(
-				'key'     => '_mt_seo_ready',
-				'value'   => '1',
-				'compare' => '!=',
-			),
-		),
-	);
-	$poor_routes = get_posts( $args );
-
-	if ( ! empty( $poor_routes ) ) {
-		$excluded = array_merge( $excluded, $poor_routes );
-	}
-
-	// 2. Excluir destinos genéricos
-	$args_pages = array(
-		'post_type'      => 'page',
-		'posts_per_page' => -1,
-		'fields'         => 'ids',
-	);
-	$pages = get_posts( $args_pages );
-	
-	$specific_destinations = [ 'salou', 'lloret-de-mar' ];
-	$generic_destination_ids = array();
-	
-	foreach ( $pages as $page_id ) {
-		$destination = me_transfers_get_current_destination( $page_id );
-		if ( $destination && ! in_array( $destination['slug'], $specific_destinations, true ) ) {
-			$generic_destination_ids[] = $page_id;
-		}
-	}
-
-	if ( ! empty( $generic_destination_ids ) ) {
-		$excluded = array_merge( $excluded, $generic_destination_ids );
-	}
-	
-	return array_values( array_unique( array_map( 'intval', $excluded ) ) );
-} );
-
-add_filter( 'wp_sitemaps_posts_query_args', function( $args, $post_type ) {
-	if ( 'page' !== $post_type ) {
-		return $args;
-	}
-	$excluded = array();
-	foreach ( array( 'seleccionar-vehiculo', 'reservas-metransfers', 'pago', 'finalizar-pago', 'reservas-hotel' ) as $slug ) {
-		$page = get_page_by_path( $slug );
-		if ( $page ) {
-			$excluded[] = (int) $page->ID;
-		}
-	}
-	$args['post__not_in'] = array_values( array_unique( array_merge( isset( $args['post__not_in'] ) ? (array) $args['post__not_in'] : array(), $excluded ) ) );
-	return $args;
-}, 10, 2 );
+// Post exclusions are owned by MeTransfers\SEO\Policy.
 
 // Excluir taxonomías y tipos de contenido irrelevantes del Sitemap
 add_filter( 'wpseo_sitemap_exclude_taxonomy', function( $exclude, $taxonomy ) {

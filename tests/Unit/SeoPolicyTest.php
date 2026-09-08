@@ -1,0 +1,126 @@
+<?php
+declare(strict_types=1);
+
+namespace MeTransfers\Tests\Unit;
+
+use MeTransfers\SEO\Indexability;
+use MeTransfers\SEO\LegacyUrlMap;
+use MeTransfers\SEO\Policy;
+use MeTransfers\SEO\Redirects;
+use PHPUnit\Framework\TestCase;
+
+require_once dirname( __DIR__ ) . '/Support/SeoWordPress.php';
+
+final class SeoPolicyTest extends TestCase {
+	protected function setUp(): void {
+		$GLOBALS['mt_seo_posts']       = array(
+			1 => (object) array(
+				'ID'          => 1,
+				'post_status' => 'publish',
+				'post_type'   => 'ruta',
+				'post_name'   => 'barcelona-salou',
+			),
+		);
+		$GLOBALS['mt_test_post_meta']  = array();
+		$GLOBALS['mt_seo_options']     = array();
+		$GLOBALS['mt_seo_404']         = false;
+		$GLOBALS['mt_seo_environment'] = 'production';
+		$GLOBALS['mt_test_get_posts']  = static function () {
+			return array_values( $GLOBALS['mt_seo_posts'] );
+		};
+	}
+
+	protected function tearDown(): void {
+		unset( $GLOBALS['mt_test_get_posts'], $GLOBALS['mt_test_post_meta'], $GLOBALS['mt_seo_posts'], $GLOBALS['mt_seo_options'], $GLOBALS['mt_seo_404'], $GLOBALS['mt_seo_environment'] );
+	}
+
+	public function testAllLegacyAliasesResolveInOneHopAndPreserveLanguage(): void {
+		foreach ( LegacyUrlMap::getMap() as $source => $target ) {
+			foreach ( array( 'es', 'en' ) as $language ) {
+				$prefix = 'es' === $language ? '/' : '/en/';
+				$result = Redirects::targetForRequest( $prefix . $source . '/?utm_source=test', array( 'es', 'en' ) );
+				self::assertSame( rtrim( $prefix . $target, '/' ) . '/?utm_source=test', $result );
+				self::assertNull( Redirects::targetForRequest( $result, array( 'es', 'en' ) ) );
+			}
+		}
+	}
+
+	public function testUnknownPathsAndLanguagesAreNotRedirected(): void {
+		self::assertNull( Redirects::targetForRequest( '/unknown/', array( 'es', 'en' ) ) );
+		self::assertNull( Redirects::targetForRequest( '/xx/empresas/', array( 'es', 'en' ) ) );
+		self::assertSame( '/corporativo-y-eventos/', Redirects::targetForRequest( '/es/empresas', array( 'es', 'en' ) ) );
+	}
+
+	public function testUnreviewedRouteIsExcludedEverywhere(): void {
+		self::assertFalse( Indexability::isIndexable( 1 ) );
+		self::assertSame( array( 1 ), Policy::excludedPosts( array() ) );
+		self::assertSame( array( 'noindex' => true ), Policy::robots( array( 'index' => true ) ) );
+		self::assertSame( array( 'index' => 'noindex' ), Policy::yoastRobots( array( 'index' => 'index' ) ) );
+		self::assertSame( array( 9, 1 ), Policy::sitemapQuery( array( 'post__not_in' => array( 9 ) ), 'ruta' )['post__not_in'] );
+	}
+
+	public function testReviewedRouteIsEligibleEverywhere(): void {
+		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_ready'] = '1';
+		self::assertTrue( Indexability::isIndexable( 1 ) );
+		self::assertTrue( Indexability::isIndexableRequest() );
+		self::assertSame( array(), Policy::excludedPosts( array() ) );
+		self::assertSame( array( 'index' => true ), Policy::robots( array( 'index' => true ) ) );
+	}
+
+	public function testManualNoindexAndCanonicalOverrideReadiness(): void {
+		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_ready'] = '1';
+		foreach ( array(
+			'_mt_seo_noindex'                  => '1',
+			'_yoast_wpseo_meta-robots-noindex' => '1',
+			'_yoast_wpseo_canonical'           => 'https://example.test/another/',
+		) as $key => $value ) {
+			$GLOBALS['mt_test_post_meta'][1][ $key ] = $value;
+			self::assertFalse( Indexability::isIndexable( 1 ) );
+			unset( $GLOBALS['mt_test_post_meta'][1][ $key ] );
+		}
+	}
+
+	public function testLegacyAndTransactionalPagesStayExcluded(): void {
+		$GLOBALS['mt_seo_posts'][1]->post_type = 'page';
+		foreach ( array( 'salou-traslados', 'pago', 'finalizar-pago', 'reservaciones', 'gracias' ) as $slug ) {
+			$GLOBALS['mt_seo_posts'][1]->post_name = $slug;
+			self::assertFalse( Indexability::isIndexable( 1 ) );
+		}
+	}
+
+	public function testStagingPrivateSiteAnd404CannotBeIndexed(): void {
+		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_ready'] = '1';
+		$GLOBALS['mt_seo_environment']                    = 'staging';
+		self::assertFalse( Indexability::isIndexableRequest() );
+		$GLOBALS['mt_seo_environment']            = 'production';
+		$GLOBALS['mt_seo_options']['blog_public'] = '0';
+		self::assertFalse( Indexability::isIndexableRequest() );
+		$GLOBALS['mt_seo_options'] = array();
+		$GLOBALS['mt_seo_404']     = true;
+		self::assertFalse( Indexability::isIndexableRequest() );
+	}
+
+	public function testAutoloadPathsMatchCaseOnLinux(): void {
+		foreach ( array( Indexability::class, LegacyUrlMap::class, Policy::class, Redirects::class ) as $class ) {
+			$parts = explode( '\\', $class );
+			self::assertSame( 'SEO', $parts[1] );
+			self::assertContains( $parts[1], scandir( dirname( __DIR__, 2 ) . '/app' ) );
+			self::assertFileExists( dirname( __DIR__, 2 ) . '/app/' . $parts[1] . '/' . $parts[2] . '.php' );
+		}
+	}
+
+	public function testHreflangRequiresReadyPostAndApprovedActiveLanguage(): void {
+		self::assertSame( array(), Indexability::languagesForPost( 1, array( 'es', 'xx' ) ) );
+		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_ready'] = '1';
+		self::assertSame( array( 'es' ), Indexability::languagesForPost( 1, array( 'es', 'xx' ) ) );
+		$GLOBALS['mt_test_post_meta'][1]['_yoast_wpseo_meta-robots-noindex'] = '1';
+		self::assertSame( array(), Indexability::languagesForPost( 1, array( 'es' ) ) );
+	}
+
+	public function testDestinationsUseOneConservativeWhitelist(): void {
+		self::assertTrue( Indexability::isIndexableDestination( 'salou' ) );
+		self::assertTrue( Indexability::isIndexableDestination( 'lloret-de-mar' ) );
+		self::assertFalse( Indexability::isIndexableDestination( 'andorra' ) );
+		self::assertFalse( Indexability::isIndexableDestination( 'unknown' ) );
+	}
+}
