@@ -34,7 +34,7 @@ if ( ! defined( 'MT_ACTIVE_LANGS' ) ) {
 
 if ( ! defined( 'MT_SEO_LANGS' ) ) {
     // A language enters this allowlist only after human SEO/content acceptance.
-    define( 'MT_SEO_LANGS', array( 'es', 'en', 'fr', 'ru', 'zh', 'de', 'it', 'pt', 'ca' ) );
+    define( 'MT_SEO_LANGS', array( 'es', 'en' ) );
 }
 
 function mt_get_current_lang(): string {
@@ -62,7 +62,7 @@ function mt_translate_batch_remote( array $texts, string $lang ): array {
 }
 
 function mt_localized_url( string $path = '' ): string {
-    return \MeTransfers\I18n\Language::url( $path );
+    return \MeTransfers\SEO\Links::normalize( \MeTransfers\I18n\Language::url( $path ) );
 }
 
 function gct_render_language_switcher(): void {

@@ -932,75 +932,7 @@ add_action( 'wp_head', function() {
     // No emitir <meta robots> aquí para evitar doble directiva conflictiva.
 }, 1 );
 
-// 3. Motor de Redirecciones 301 y 410 (SEO URL Recovery)
-add_action( 'template_redirect', 'me_transfers_custom_redirects', 1 );
-function me_transfers_custom_redirects() {
-    if ( ! is_admin() ) {
-        $path = wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/' ), PHP_URL_PATH );
-        $path = trailingslashit( '/' . trim( $path, '/' ) );
-
-        // -----------------------------------------------------------------
-        // 301 — URL antigua tiene sustituto semánticamente equivalente.
-        // Se ejecuta ANTES de comprobar is_404() para interceptar URLs que aún devuelven 200
-        // -----------------------------------------------------------------
-        // 301 redirects are handled by MeTransfers\SEO\Redirects at priority 0.
-
-        // -----------------------------------------------------------------
-        // 410 Patrón wildcard: URL WooCommerce sin sustituto equivalente
-        // Se ejecuta ANTES de comprobar is_404() para evitar soft 404
-        // -----------------------------------------------------------------
-        if ( str_starts_with( $path, '/tienda-barcelona-tours-transfers/' ) ) {
-            global $wp_query;
-            $wp_query->set_404();
-            status_header( 410 );
-            nocache_headers();
-            return;
-        }
-
-        // -----------------------------------------------------------------
-        // 410 — Contenido eliminado sin sustituto directo.
-        // Google lo procesa más rápido que un 404 para limpiar el índice.
-        // Se ejecuta ANTES de comprobar is_404()
-        // -----------------------------------------------------------------
-        $gone_urls = array(
-            '/taxis-barcelona-taull/',
-            '/taxis-barcelona-vielha/',
-            '/taxis-barcelona-besalu/',
-            '/taxis-barcelona-bagur/',
-            '/taxis-barcelona-delta-del-ebro/',
-            '/taxis-barcelona-peniscola/',
-            '/taxis-barcelona-morella/',
-            '/taxis-barcelona-altea/',
-            '/taxis-barcelona-valderrobres/',
-            '/taxis-barcelona-alquezar/',
-            '/taxis-barcelona-colliure/',
-            '/taxis-barcelona-carcasona/',
-            '/traslados-barcelona-taull/',
-            '/traslados-barcelona-vielha/',
-            '/traslados-barcelona-besalu/',
-            '/traslados-barcelona-bagur/',
-            '/traslados-barcelona-delta-del-ebro/',
-            '/traslados-barcelona-peniscola/',
-            '/traslados-barcelona-morella/',
-            '/traslados-barcelona-altea/',
-            '/traslados-barcelona-valderrobres/',
-            '/traslados-barcelona-alquezar/',
-            '/traslados-barcelona-colliure/',
-            '/traslados-barcelona-carcasona/',
-        );
-
-        if ( in_array( $path, $gone_urls, true ) ) {
-            global $wp_query;
-            $wp_query->set_404();
-            status_header( 410 );
-            nocache_headers();
-            return;
-        }
-
-        // NOTA: El smart redirect automático fue eliminado para evitar 301 incorrectos.
-        // Para recuperar una URL especifica, usar app/SEO/LegacyUrlMap.php.
-    }
-}
+// SEO routing and robots are owned by app/SEO. Unreviewed URLs use native 404 handling.
 
 // Herramienta nativa para construir y publicar rutas de la Fase 1
 require_once get_template_directory() . '/includes/admin-route-builder.php';
@@ -1527,37 +1459,7 @@ add_filter( 'wpseo_opengraph_desc', function( $desc ) {
 	return $desc;
 }, 10 );
 
-add_filter( 'wp_robots', static function ( array $robots ): array {
-	$prod_hosts = [ 'metransfers.es', 'www.metransfers.es' ];
-	$current_host = wp_parse_url( home_url(), PHP_URL_HOST );
-	
-	// 1. Staging / Environment check
-	if ( ! in_array( $current_host, $prod_hosts, true ) || ( function_exists( 'wp_get_environment_type' ) && wp_get_environment_type() !== 'production' ) ) {
-		return array_merge( $robots, [ 'noindex' => true, 'nofollow' => true, 'noarchive' => true ] );
-	}
-	
-	// 2. Archivos contaminantes (tags, search, author, date, attachment)
-	if ( is_tag() || is_search() || is_author() || is_date() || is_attachment() ) {
-		return array_merge( $robots, [ 'noindex' => true, 'follow' => true ] );
-	}
-
-	// 3. El embudo transaccional nunca debe competir en resultados orgánicos.
-	if ( is_singular( 'page' ) && mt_is_transactional_page( get_queried_object_id() ) ) {
-		return array_merge( $robots, array( 'noindex' => true, 'follow' => true, 'noarchive' => true ) );
-	}
-	
-	// 4. Internacionalización incompleta (idiomas aún no aprobados para SEO)
-	if (
-	    function_exists( 'mt_lang' )
-	    && defined( 'MT_SEO_LANGS' )
-	    && ! in_array( mt_lang(), MT_SEO_LANGS, true )
-	) {
-		return array_merge( $robots, array( 'noindex' => true, 'follow' => true ) );
-	}
-
-
-	return $robots;
-}, 99 );
+// SEO routing and robots are owned by app/SEO. Unreviewed URLs use native 404 handling.
 
 // ==========================================
 // YOAST SEO: Excluir rutas de baja calidad y destinos genéricos del sitemap

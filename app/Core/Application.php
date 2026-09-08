@@ -78,6 +78,8 @@ class Application {
 		$redirects = new \MeTransfers\SEO\Redirects();
 		$redirects->register();
 		( new \MeTransfers\SEO\Policy() )->register();
+		( new \MeTransfers\SEO\Meta() )->register();
+		( new \MeTransfers\SEO\Links() )->register();
 
 		$outbox = new \MeTransfers\Core\Outbox();
 		$outbox->register();

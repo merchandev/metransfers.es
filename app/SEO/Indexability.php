@@ -13,7 +13,8 @@ final class Indexability {
 	 * - No es 404, 410 ni está marcado como noindex.
 	 * - No es una página transaccional (checkout, gracias, reservas-hotel)
 	 */
-	public static function isIndexable( $post = null ): bool {
+	public static function isIndexable( $post = null, bool $check_redirect = true ): bool {
+
 		$post = get_post( $post );
 		if ( ! $post || 'publish' !== $post->post_status ) {
 			return false;
@@ -35,7 +36,7 @@ final class Indexability {
 
 		// Filtrar si es un alias legacy que debe ser redirigido
 		$path = trim( (string) parse_url( get_permalink( $post ), PHP_URL_PATH ), '/' );
-		if ( LegacyUrlMap::hasRedirect( $path ) ) {
+		if ( $check_redirect && Redirects::verifiedTarget( '/' . $path . '/' ) !== null ) {
 			return false;
 		}
 
@@ -56,7 +57,9 @@ final class Indexability {
 
 		// Si es una ruta, debe estar lista para SEO (fallback para lógica previa)
 		if ( 'ruta' === $post->post_type ) {
-			if ( '1' !== get_post_meta( $post->ID, '_mt_seo_ready', true ) ) {
+			$ready = get_post_meta( $post->ID, '_mt_seo_ready', true );
+			// Missing legacy metadata is not an editorial rejection. Enforcement is opt-in.
+			if ( '1' !== $ready && ( '' !== $ready || get_option( 'mt_seo_enforce_route_readiness', false ) ) ) {
 				return false;
 			}
 		}
@@ -74,13 +77,26 @@ final class Indexability {
 	}
 
 	public static function languagesForPost( $post, array $languages ): array {
+
 		return self::isIndexable( $post )
-			? array_values( array_filter( $languages, array( __CLASS__, 'isIndexableLanguage' ) ) )
-			: array();
+			? array_values(
+				array_filter(
+					$languages,
+					static function ( $language ) use ( $post ) {
+						return Variants::isApproved( $post, $language );
+					}
+				)
+			)
+		: array();
 	}
 
+	public static function isProduction(): bool {
+
+		return wp_get_environment_type() === 'production'
+			&& in_array( parse_url( home_url(), PHP_URL_HOST ), apply_filters( 'mt_seo_production_hosts', array( 'metransfers.es', 'www.metransfers.es' ) ), true );
+	}
 	public static function isIndexableRequest(): bool {
-		if ( '0' === (string) get_option( 'blog_public', '1' ) || wp_get_environment_type() !== 'production' ) {
+		if ( '0' === (string) get_option( 'blog_public', '1' ) || ! self::isProduction() ) {
 			return false;
 		}
 		if ( is_404() || is_search() || is_tag() || is_author() || is_date() || is_attachment() ) {
@@ -88,6 +104,11 @@ final class Indexability {
 		}
 		if ( ! self::isIndexableLanguage( \MeTransfers\I18n\Language::get() ) ) {
 			return false;
+		}
+		if ( \MeTransfers\I18n\Language::isTranslated() ) {
+			$path = \MeTransfers\I18n\Language::pathWithoutLanguage( $_SERVER['REQUEST_URI'] ?? '/' );
+			$post = UrlPolicy::postForPath( $path );
+			return $post && self::isIndexable( $post ) && Variants::isApproved( $post, \MeTransfers\I18n\Language::get() );
 		}
 		return ! is_singular() || self::isIndexable( get_queried_object_id() );
 	}

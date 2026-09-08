@@ -13,6 +13,13 @@ final class Policy {
 		if ( ! Indexability::isIndexableRequest() ) {
 			unset( $robots['index'] );
 			$robots['noindex'] = true;
+			if ( ! Indexability::isProduction() ) {
+				unset( $robots['follow'] );
+				$robots['nofollow']  = true;
+				$robots['noarchive'] = true;
+			} elseif ( empty( $robots['nofollow'] ) ) {
+				$robots['follow'] = true;
+			}
 		}
 		return $robots;
 	}
@@ -20,6 +27,10 @@ final class Policy {
 	public static function yoastRobots( array $robots ): array {
 		if ( ! Indexability::isIndexableRequest() ) {
 			$robots['index'] = 'noindex';
+			if ( ! Indexability::isProduction() ) {
+				$robots['follow']  = 'nofollow';
+				$robots['archive'] = 'noarchive';
+			}
 		}
 		return $robots;
 	}

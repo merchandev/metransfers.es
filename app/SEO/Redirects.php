@@ -33,14 +33,27 @@ final class Redirects {
 	}
 
 	public function processRedirects() {
+
 		if ( is_admin() || wp_doing_ajax() || ! in_array( $_SERVER['REQUEST_METHOD'] ?? 'GET', array( 'GET', 'HEAD' ), true ) ) {
 			return;
 		}
 		$request = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
-		$target  = self::targetForRequest( $request, defined( 'MT_ACTIVE_LANGS' ) ? MT_ACTIVE_LANGS : array( 'es' ) );
+		$target  = self::verifiedTarget( $request );
 		if ( null !== $target ) {
 			wp_safe_redirect( home_url( $target ), 301 );
 			exit;
 		}
+	}
+
+	public static function verifiedTarget( string $request ): ?string {
+
+		$languages  = defined( 'MT_ACTIVE_LANGS' ) ? MT_ACTIVE_LANGS : array( 'es' );
+			$target = self::targetForRequest( $request, $languages );
+		if ( null === $target ) {
+			return null;
+		}
+		$language = \MeTransfers\I18n\Language::detectFromUri( $target, $languages );
+		$path     = \MeTransfers\I18n\Language::pathWithoutLanguage( $target );
+		return UrlPolicy::eligibleTarget( $path, $language ) ? $target : null;
 	}
 }

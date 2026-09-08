@@ -4,6 +4,7 @@ namespace MeTransfers\I18n;
 final class Seo {
 	public function register() {
 		add_filter( 'wpseo_canonical', array( __CLASS__, 'filterCanonical' ) );
+		add_filter( 'get_canonical_url', array( __CLASS__, 'filterCanonical' ) );
 		add_action( 'wp_head', array( __CLASS__, 'renderHead' ), 2 );
 
 		// Yoast SEO Translation Filters
@@ -89,13 +90,17 @@ final class Seo {
 			return;
 		}
 		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
-		if ( ! defined( 'WPSEO_VERSION' ) && Language::isTranslated() ) {
-			echo '<link rel="canonical" href="' . esc_url( self::canonicalForRequest( '', $request_uri, Language::get() ) ) . '" />' . "\n";
+		if ( ! defined( 'WPSEO_VERSION' ) && is_post_type_archive( 'ruta' ) ) {
+			echo '<link rel="canonical" href="' . esc_url( Language::urlForLanguage( Language::get(), 'rutas' ) ) . '" />' . "\n";
 		}
 		$seo_languages = defined( 'MT_SEO_LANGS' ) ? MT_SEO_LANGS : array( 'es' );
 		$seo_languages = array_values( array_filter( $seo_languages, array( \MeTransfers\SEO\Indexability::class, 'isIndexableLanguage' ) ) );
 		// Resolve the Spanish source before advertising any localized counterpart.
 		$path = Language::pathWithoutLanguage( $request_uri );
+		if ( in_array( trim( $path, '/' ), array( '', 'rutas', 'blog' ), true ) ) {
+			// Hubs have no per-post translation approval yet.
+			$seo_languages = array( 'es' );
+		}
 		if ( ! in_array( trim( $path, '/' ), array( '', 'rutas', 'blog' ), true ) ) {
 			$post_id = url_to_postid( home_url( '/' . trim( $path, '/' ) . '/' ) );
 			if ( ! $post_id || ! \MeTransfers\SEO\Indexability::isIndexable( $post_id ) ) {

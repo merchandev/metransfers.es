@@ -172,7 +172,7 @@ function mt_auto_generate_all_pages_once_v7() {
             $c .= "</ul>\n<!-- /wp:list -->";
             wp_update_post( array( 'ID' => $hub->ID, 'post_content' => $c ) );
             
-            mt_force_yoast_green_and_image( $hub->ID, 'Destinos de traslados desde Barcelona', 'Descubre nuestros más de 38 destinos de traslados privados desde Barcelona. Viaja en vehículos Mercedes con chófer a España y sur de Francia.', get_the_title($hub->ID) );
+            mt_apply_legacy_seo_meta_and_image( $hub->ID, 'Destinos de traslados desde Barcelona', 'Descubre nuestros más de 38 destinos de traslados privados desde Barcelona. Viaja en vehículos Mercedes con chófer a España y sur de Francia.', get_the_title($hub->ID) );
         }
 
         foreach ( $catalog as $slug => $dest ) {
@@ -194,7 +194,7 @@ function mt_auto_generate_all_pages_once_v7() {
                 wp_update_post( array( 'ID' => $page->ID, 'post_content' => $c ) );
                 
                 $desc = ! empty( $dest['summary'] ) ? mb_substr( strip_tags( $dest['summary'] ), 0, 150 ) . '...' : 'Reserva tu traslado privado a ' . $title . ' desde Barcelona. Precios cerrados y chófer premium.';
-                mt_force_yoast_green_and_image( $page->ID, $kw, $desc, get_the_title($page->ID) );
+                mt_apply_legacy_seo_meta_and_image( $page->ID, $kw, $desc, get_the_title($page->ID) );
             }
         }
     }
@@ -233,7 +233,7 @@ function mt_auto_generate_all_pages_once_v7() {
                 wp_update_post( array( 'ID' => $page->ID, 'post_content' => $c ) );
                 
                 $desc = ! empty( $service['hero_desc'] ) ? mb_substr( strip_tags( $service['hero_desc'] ), 0, 150 ) . '...' : 'Descubre nuestro servicio de ' . $service['title'] . ' en Barcelona. Transporte VIP y exclusivo.';
-                mt_force_yoast_green_and_image( $page->ID, $service['title'], $desc, get_the_title($page->ID) );
+                mt_apply_legacy_seo_meta_and_image( $page->ID, $service['title'], $desc, get_the_title($page->ID) );
             }
         }
     }
@@ -274,7 +274,7 @@ function mt_auto_generate_all_pages_once_v7() {
                 wp_update_post( array( 'ID' => $page->ID, 'post_content' => $c ) );
                 
                 $desc = ! empty( $tour['desc'] ) ? mb_substr( strip_tags( $tour['desc'] ), 0, 150 ) . '...' : 'Reserva el mejor ' . $tour['title'] . ' privado desde Barcelona.';
-                mt_force_yoast_green_and_image( $page->ID, $tour['title'], $desc, get_the_title($page->ID) );
+                mt_apply_legacy_seo_meta_and_image( $page->ID, $tour['title'], $desc, get_the_title($page->ID) );
             }
         }
 
@@ -290,7 +290,7 @@ function mt_auto_generate_all_pages_once_v7() {
             $c .= "</ul>\n<!-- /wp:list -->";
             wp_update_post( array( 'ID' => $tp->ID, 'post_content' => $c ) );
             
-            mt_force_yoast_green_and_image( $tp->ID, 'Tours privados desde Barcelona', 'Explora los mejores destinos con nuestros tours privados desde Barcelona. Viaja en vehículos Mercedes con chófer profesional y precios cerrados.', get_the_title($tp->ID) );
+            mt_apply_legacy_seo_meta_and_image( $tp->ID, 'Tours privados desde Barcelona', 'Explora los mejores destinos con nuestros tours privados desde Barcelona. Viaja en vehículos Mercedes con chófer profesional y precios cerrados.', get_the_title($tp->ID) );
         }
     }
 
@@ -326,7 +326,7 @@ function mt_auto_generate_all_pages_once_v7() {
                 wp_update_post( array( 'ID' => $page->ID, 'post_content' => $c ) );
                 
                 $desc = 'Reserva tus ' . $kw . ' desde Barcelona. Servicio premium, precios cerrados y recogida en el Aeropuerto. Viaja en vehículos Mercedes de alta gama.';
-                mt_force_yoast_green_and_image( $page->ID, $kw, $desc, get_the_title($page->ID) );
+                mt_apply_legacy_seo_meta_and_image( $page->ID, $kw, $desc, get_the_title($page->ID) );
             }
         }
     }
@@ -335,7 +335,7 @@ function mt_auto_generate_all_pages_once_v7() {
         foreach ( me_transfers_get_legal_pages_catalog() as $slug => $title ) {
             $page = get_page_by_path( $slug );
             if ( $page ) {
-                mt_force_yoast_green_and_image( $page->ID, $title, 'Página de ' . $title . ' oficial de MeTransfers Barcelona. Consulta nuestras normativas y políticas corporativas.', get_the_title($page->ID) );
+                mt_apply_legacy_seo_meta_and_image( $page->ID, $title, 'Página de ' . $title . ' oficial de MeTransfers Barcelona. Consulta nuestras normativas y políticas corporativas.', get_the_title($page->ID) );
             }
         }
     }
@@ -343,7 +343,7 @@ function mt_auto_generate_all_pages_once_v7() {
     foreach ( $basic_pages as $slug => $title ) {
         $page = get_page_by_path( $slug );
         if ( $page ) {
-            mt_force_yoast_green_and_image( $page->ID, $title, 'Información sobre ' . $title . ' en MeTransfers Barcelona.', get_the_title($page->ID) );
+            mt_apply_legacy_seo_meta_and_image( $page->ID, $title, 'Información sobre ' . $title . ' en MeTransfers Barcelona.', get_the_title($page->ID) );
         }
     }
 
@@ -355,7 +355,7 @@ function mt_auto_generate_all_pages_once_v7() {
  * Helper function to forcefully write Green SEO metrics into Yoast Indexables table
  * and assign the requested Featured Image and Social OpenGraph Image.
  */
-function mt_force_yoast_green_and_image( $page_id, $focus_kw, $meta_desc, $title ) {
+function mt_apply_legacy_seo_meta_and_image( $page_id, $focus_kw, $meta_desc, $title ) {
     global $wpdb;
     
     // The image requested by user

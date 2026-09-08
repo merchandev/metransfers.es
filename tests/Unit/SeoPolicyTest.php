@@ -15,14 +15,17 @@ final class SeoPolicyTest extends TestCase {
 	protected function setUp(): void {
 		$GLOBALS['mt_seo_posts']       = array(
 			1 => (object) array(
-				'ID'          => 1,
-				'post_status' => 'publish',
-				'post_type'   => 'ruta',
-				'post_name'   => 'barcelona-salou',
+				'ID'            => 1,
+				'post_status'   => 'publish',
+				'post_type'     => 'ruta',
+				'post_name'     => 'barcelona-salou',
+				'post_title'    => 'Barcelona - Salou',
+				'post_content'  => 'Contenido de Salou.',
+				'post_modified' => '2026-09-08 10:00:00',
 			),
 		);
 		$GLOBALS['mt_test_post_meta']  = array();
-		$GLOBALS['mt_seo_options']     = array();
+		$GLOBALS['mt_seo_options']     = array( 'mt_seo_enforce_route_readiness' => true );
 		$GLOBALS['mt_seo_404']         = false;
 		$GLOBALS['mt_seo_environment'] = 'production';
 		$GLOBALS['mt_test_get_posts']  = static function () {
@@ -54,7 +57,13 @@ final class SeoPolicyTest extends TestCase {
 	public function testUnreviewedRouteIsExcludedEverywhere(): void {
 		self::assertFalse( Indexability::isIndexable( 1 ) );
 		self::assertSame( array( 1 ), Policy::excludedPosts( array() ) );
-		self::assertSame( array( 'noindex' => true ), Policy::robots( array( 'index' => true ) ) );
+		self::assertSame(
+			array(
+				'noindex' => true,
+				'follow'  => true,
+			),
+			Policy::robots( array( 'index' => true ) )
+		);
 		self::assertSame( array( 'index' => 'noindex' ), Policy::yoastRobots( array( 'index' => 'index' ) ) );
 		self::assertSame( array( 9, 1 ), Policy::sitemapQuery( array( 'post__not_in' => array( 9 ) ), 'ruta' )['post__not_in'] );
 	}
@@ -81,7 +90,15 @@ final class SeoPolicyTest extends TestCase {
 	}
 
 	public function testLegacyAndTransactionalPagesStayExcluded(): void {
-		$GLOBALS['mt_seo_posts'][1]->post_type = 'page';
+
+		$GLOBALS['mt_seo_posts'][2]                       = (object) array(
+			'ID'          => 2,
+			'post_status' => 'publish',
+			'post_type'   => 'ruta',
+			'post_name'   => 'barcelona-salou',
+		);
+		$GLOBALS['mt_test_post_meta'][2]['_mt_seo_ready'] = '1';
+		$GLOBALS['mt_seo_posts'][1]->post_type            = 'page';
 		foreach ( array( 'salou-traslados', 'pago', 'finalizar-pago', 'reservaciones', 'gracias' ) as $slug ) {
 			$GLOBALS['mt_seo_posts'][1]->post_name = $slug;
 			self::assertFalse( Indexability::isIndexable( 1 ) );
@@ -122,5 +139,57 @@ final class SeoPolicyTest extends TestCase {
 		self::assertTrue( Indexability::isIndexableDestination( 'lloret-de-mar' ) );
 		self::assertFalse( Indexability::isIndexableDestination( 'andorra' ) );
 		self::assertFalse( Indexability::isIndexableDestination( 'unknown' ) );
+	}
+
+	public function testMissingLegacyReadinessIsPreservedButCannotReceiveNewRedirects(): void {
+		$GLOBALS['mt_seo_options'] = array();
+		self::assertTrue( Indexability::isIndexable( 1 ) );
+		self::assertNull( Redirects::verifiedTarget( '/taxis-barcelona-salou/' ) );
+		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_ready'] = '0';
+		self::assertFalse( Indexability::isIndexable( 1 ) );
+	}
+
+	public function testRedirectTargetsMustExistBeReadyAndSelfCanonical(): void {
+		self::assertNull( Redirects::verifiedTarget( '/taxis-barcelona-cadaques/' ) );
+		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_ready'] = '1';
+		self::assertSame( '/rutas/barcelona-salou/', Redirects::verifiedTarget( '/taxis-barcelona-salou/' ) );
+		$GLOBALS['mt_test_post_meta'][1]['_yoast_wpseo_canonical'] = 'https://example.test/other/';
+		self::assertNull( Redirects::verifiedTarget( '/taxis-barcelona-salou/' ) );
+	}
+
+	public function testCostaBravaIsSuspendedUntilAnEquivalentTargetIsReady(): void {
+		foreach ( array( 'costa-brava-taxis', 'costa-brava-traslados', 'taxis-barcelona-costa-brava' ) as $slug ) {
+			self::assertNull( Redirects::targetForRequest( '/' . $slug . '/', array( 'es', 'en' ) ) );
+		}
+	}
+
+	public function testVariantApprovalIsPerUrlAndInvalidatedByContentChanges(): void {
+		$post = $GLOBALS['mt_seo_posts'][1];
+		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_ready'] = '1';
+		self::assertSame( array( 'es' ), Indexability::languagesForPost( 1, array( 'es', 'en' ) ) );
+		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_variant_en'] = array(
+			'translated_reviewed' => true,
+			'http_status'         => 200,
+			'canonical'           => 'https://example.test/en/rutas/barcelona-salou/',
+			'source_hash'         => \MeTransfers\SEO\Variants::fingerprint( $post ),
+		);
+		self::assertSame( array( 'es', 'en' ), Indexability::languagesForPost( 1, array( 'es', 'en' ) ) );
+		$post->post_content = 'Contenido nuevo sin revisar';
+		self::assertSame( array( 'es' ), Indexability::languagesForPost( 1, array( 'es', 'en' ) ) );
+	}
+
+	public function testInternalLinksResolveOnlyVerifiedTargetsAndKeepFragments(): void {
+		$url = 'https://metransfers.es/taxis-barcelona-salou/?utm_source=menu#faq';
+		self::assertSame( $url, \MeTransfers\SEO\Links::normalize( $url ) );
+		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_ready'] = '1';
+		self::assertSame( 'https://metransfers.es/rutas/barcelona-salou/?utm_source=menu#faq', \MeTransfers\SEO\Links::normalize( $url ) );
+		self::assertSame( 'https://other.test/taxis-barcelona-salou/', \MeTransfers\SEO\Links::normalize( 'https://other.test/taxis-barcelona-salou/' ) );
+	}
+
+	public function testRouteMetadataHasUsefulFallbacks(): void {
+		$GLOBALS['mt_test_post_meta'][1]['_mt_ruta_origen']  = 'Barcelona centro';
+		$GLOBALS['mt_test_post_meta'][1]['_mt_ruta_destino'] = 'Salou';
+		self::assertSame( 'Transfer Barcelona - Salou | MeTransfers', \MeTransfers\SEO\Meta::routeText( $GLOBALS['mt_seo_posts'][1], 'title' ) );
+		self::assertStringContainsString( 'Barcelona a Salou', \MeTransfers\SEO\Meta::routeText( $GLOBALS['mt_seo_posts'][1], 'description' ) );
 	}
 }

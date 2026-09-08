@@ -71,7 +71,8 @@ assert_readiness( false === strpos( $i18n_runtime, '<style' ) && false === strpo
 assert_readiness( 1 === substr_count( $public_controller, 'function send_whatsapp_alert(' ), 'Only the deprecated WhatsApp facade may remain in the legacy controller.' );
 assert_readiness( false === strpos( $public_controller, 'reservas@barcelonatours.email' ), 'Notification senders must not be hardcoded.' );
 assert_readiness( false !== strpos( $notification_service, "Settings::get( 'smtp_from'" ), 'Notification sender must come from platform settings.' );
-assert_readiness( false !== strpos( $functions, 'mt_is_transactional_page' ) && false !== strpos( $functions, "'noindex' => true" ), 'Transactional pages must be noindex.' );
+$seo_policy = file_get_contents( $root . '/app/SEO/Policy.php' );
+assert_readiness( false !== strpos( $seo_policy, "'wp_robots'" ) && false !== strpos( $seo_policy, "\$robots['noindex'] = true" ), 'Central SEO policy must register transactional noindex handling; behavior is covered by SeoPolicyTest.' );
 assert_readiness( false !== strpos( $assets, "'mt-site-tracking'" ), 'Phone and WhatsApp tracking must be enqueued globally.' );
 assert_readiness( false === strpos( $public_controller, "wp_enqueue_style( 'wptb-main-style'" ), 'Legacy funnel CSS must not be enqueued.' );
 assert_readiness( false !== strpos( $outbox, "'analytics.purchase'" ) && false !== strpos( $outbox, 'Outbox::enqueue' ), 'Financial purchase tracking must use the generic durable outbox.' );

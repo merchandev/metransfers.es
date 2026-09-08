@@ -1,72 +1,83 @@
-# Correcciones SEO: validacion y despliegue
+# Transicion SEO conservadora
 
-Fecha: 2026-09-08. Rama: seo/indexation-cleanup-2026-09.
+Fecha: 2026-09-08. La rama contiene codigo y borradores; no ejecuta migraciones al activar el tema.
 
-## Cambios de codigo
+## Protecciones implementadas
 
-- Namespace MeTransfers\SEO coherente con app/SEO para sistemas Linux.
-- Redirector antes del router y de las redirecciones antiguas; conserva idioma,
-  parametros y barra final. Resuelve cadenas del mapa y rechaza ciclos.
-- Una politica para listado, robots WordPress/Yoast y ambos sitemaps.
-- Una ruta publicada requiere _mt_seo_ready=1. Un noindex manual, una canonical
-  externa, una pagina protegida o un alias prevalecen sobre esa marca.
-- Hreflang se omite en solicitudes no indexables y sin fuente publicada valida;
-  los idiomas deben pertenecer a MT_ACTIVE_LANGS y MT_SEO_LANGS.
-- Eliminadas puntuaciones, recuentos artificiales y SQL directo a Yoast de la
-  migracion. El hook automatico sigue desactivado.
-- No se han modificado reservas, Redsys ni los archivos del portal de hoteles.
+- La ausencia historica de _mt_seo_ready no activa noindex. Una marca explicita
+  distinta de 1 sigue excluyendo la ruta. mt_seo_enforce_route_readiness permite
+  activar la politica estricta SOLO despues de revisar el inventario completo.
+- Ninguna de las 56 rutas se marca automaticamente como preparada.
+- Los 301 se ejecutan solo si el destino existe, esta publicado, no tiene noindex,
+  usa self-canonical y, si es una ruta, tiene _mt_seo_ready=1. Si no cumple,
+  se conserva el tratamiento normal de la URL origen, sin excluirla por alias.
+- Los tres aliases de Costa Brava quedan suspendidos. No se inventa una ruta
+  barcelona-costa-brava ni se redirige a un destino marcado noindex.
+- Se retiran las listas y el wildcard 410 sin revision individual. Las paginas
+  publicadas recuperan su respuesta normal; si no existen siguen siendo 404.
+  Esto no restaura contenido borrado ni garantiza recuperar rankings.
+- Robots, sitemap y listado usan la politica central. Staging conserva
+  noindex/nofollow/noarchive. Los idiomas SEO iniciales son ES y EN.
+- EN necesita aprobacion por publicacion. La ficha _mt_seo_variant_en contiene
+  translated_reviewed=true, http_status=200, canonical exacta y source_hash
+  calculado mediante Variants::fingerprint(). Revisar HTTP, canonical y texto
+  completo en staging antes de registrar esa aprobacion. No se aprueba EN en masa.
+- La huella invalida la aprobacion cuando cambia el contenido, titulo,
+  fecha de modificacion, metadatos SEO o plantilla supervisada.
+- Las variantes sin aprobar reciben noindex y no aparecen en hreflang. Los hubs
+  no anuncian traducciones mientras no tengan un mecanismo propio de aprobacion.
+- Yoast recibe titles y descriptions de ruta y de /rutas/, respetando overrides
+  editoriales. Los enlaces de menu, contenido y mt_localized_url resuelven los
+  aliases solo cuando el destino cumple la politica.
+- Las migraciones automaticas y los hacks de puntuaciones Yoast siguen desactivados.
 
-## Datos que requieren revision antes del despliegue
+## Revision de datos reales
 
-No se ha cambiado ninguna publicacion ni metadato de produccion. Si ninguna
-ruta tiene _mt_seo_ready=1, el listado seguira vacio. No activar esa marca en
-masa: revisar contenido, canonical y traducciones de las rutas prioritarias.
-Este cambio hace que las rutas no revisadas tambien queden fuera del sitemap
-y reciban noindex, como exige el documento de auditoria.
+Lectura de WordPress realizada en esta sesion: Salou (29108), Andorra (29142)
+y Cadaques (29138) estan publicados, pero no contienen texto ni marca SEO.
+Se prepararon borradores individuales con texto, FAQ, H1, title y descripcion
+en seo-priority-routes.json. editorial_approved permanece false: no se
+presentan como contenido aprobado ni se ha escrito en produccion.
 
-Antes de desplegar, comprobar especialmente que los destinos de los 301 de
-Salou, Cadaques y Andorra existen y tienen contenido aprobado y marca de
-preparacion. Mantener las redirecciones historicas estables.
+Revisar los borradores con el negocio y confirmar sus condiciones. Despues,
+aprobar cada fila individualmente. La herramienta comprueba ID, slug,
+publicacion, contenido y fecha de modificacion originales antes de escribir.
 
-MT_SEO_LANGS conserva los idiomas previamente configurados salvo nl, que no
-estaba activo. Su pertenencia a la lista no demuestra una traduccion humana
-completa: revisar editorialmente cada idioma antes de considerarlo aprobado.
-La whitelist de destinos sigue siendo salou y lloret-de-mar. Andorra requiere
-decidir entre contenido diferenciado o consolidacion con su ruta.
+Dry run en una copia de WordPress:
 
-## Verificacion en WordPress
+    wp eval-file tools/seo-approve-routes.php docs/seo-priority-routes.json
 
-1. Hacer copia de seguridad del tema y la base de datos.
-2. Validar los metadatos de las rutas prioritarias en una copia de WordPress.
-3. Desplegar el tema incluyendo app/SEO y purgar caches del sitio y de Yoast.
-4. Comprobar Home, /rutas/, rutas prioritarias, servicios y versiones EN.
-5. Probar /en/empresas/, /en/transfer-puerto-barcelona/ y todos los aliases:
-   un 301 directo a una URL 200, indexable y self-canonical.
-6. Comprobar sitemap sin aliases, noindex ni rutas no preparadas; revisar
-   canonical, robots y reciprocidad de hreflang en las respuestas reales.
-7. Solo despues, planificar la limpieza controlada de paginas WordPress.
+Aplicacion explicita, solo despues de revisar y aprobar las filas:
 
-Las peticiones HTTP automatizadas desde este entorno recibieron un CAPTCHA
-de SiteGround (202); no constituyen una verificacion de los redirects reales.
-No se ha desplegado ni solicitado indexacion a Google.
+    wp eval-file tools/seo-approve-routes.php docs/seo-priority-routes.json --apply
+
+La herramienta crea primero una copia de los posts y metadatos en la opcion
+mt_seo_backup_2026-09-08-priority-routes, rehusa sobrescribirla y modifica
+unicamente las tres rutas seleccionadas. No activa la exigencia global.
+
+No activar mt_seo_enforce_route_readiness hasta que cada ruta publicada tenga
+una decision editorial explicita. No crear redirects para las URLs con autoridad
+de Vielha, Peniscola o Delta del Ebro sin preparar primero equivalentes reales.
+
+## Validacion
+
+Pruebas unitarias: transicion de readiness, destinos inexistentes/noindex,
+aliases suspendidos, aprobacion por variante, canonical, robots, sitemap,
+enlaces y metadatos. Playwright comprueba el cierre desde la zona visible del
+overlay: se corrigio el punto de clic del test, sin cambiar el portal.
+
+GitHub CI incluye pruebas HTTP contra WordPress 6.8.6 y 7.0.2, primero con el
+sitemap nativo y despues con Yoast 26.9: 301 directo a 200, canonical, robots,
+hub, sitemap y reciprocidad de hreflang tras aprobacion. La aprobacion de idioma
+de las fixtures solo prueba el mecanismo; no sustituye la revision linguistica.
+
+Tras publicar codigo, purgar cache y repetir la validacion con las URLs reales.
+El CAPTCHA de SiteGround puede impedir las peticiones automatizadas.
+No se ha aplicado la migracion editorial ni solicitado indexacion en Google.
 
 ## Rollback
 
-Restaurar el paquete de tema anterior completo y purgar caches. Estas
-correcciones no escriben metadatos ni ejecutan migraciones de contenido.
-Si se revisan metadatos durante el despliegue, registrar sus valores previos
-para poder restaurarlos por separado. No borrar paginas durante esta fase.
-
-## Resultados locales
-
-- PHPUnit: 63 pruebas, 367 aserciones, todas correctas.
-- PHPStan: sin errores; ejecutado sin paralelismo y con limite de 2 GB porque
-  los workers superaban el limite original de 1 GB en este entorno Windows.
-- ESLint, sintaxis PHP y git diff --check: correctos.
-- PHPCS de las clases SEO, Seo.php y las nuevas pruebas: correcto. La pasada
-  global encuentra finales CRLF en archivos existentes fuera de estos cambios.
-- Playwright: 10 pruebas correctas y 1 fallo en runtime.spec.js:129; la barra
-  lateral del portal intercepta el clic de cierre del menu. Los archivos de
-  esa funcionalidad y sus fixtures no han cambiado en esta correccion SEO.
-- Las pruebas de navegador existentes usan fixtures, no un WordPress completo.
-  Sigue siendo necesaria la validacion HTTP post-deploy indicada arriba.
+Restaurar el paquete de tema anterior y purgar cache. No se escriben datos
+automaticamente al desplegar. Si se ejecuto la migracion explicita, recuperar
+los posts y metadatos del backup antes de revertir su contenido. La herramienta
+conserva el snapshot completo incluso si una escritura posterior falla.

@@ -15,7 +15,6 @@ final class LegacyUrlMap {
 		'transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v' => 'grupos',
 		'traslados-privados'                         => 'taxis-privado-barcelona',
 		'traslados-aeropuerto'                       => 'transfer-aeropuerto-barcelona',
-		'taxis-barcelona-costa-brava'                => 'destinos/costa-brava',
 		'taxis-barcelona-tossa-de-mar'               => 'rutas/barcelona-tossa-de-mar',
 		'traslados-barcelona-tossa-de-mar'           => 'rutas/barcelona-tossa-de-mar',
 		'traslados-barcelona-andorra'                => 'rutas/barcelona-andorra',
@@ -37,8 +36,7 @@ final class LegacyUrlMap {
 		'andorra-taxis'                              => 'rutas/barcelona-andorra',
 		'andorra-traslados'                          => 'rutas/barcelona-andorra',
 
-		'costa-brava-taxis'                          => 'rutas/barcelona-costa-brava',
-		'costa-brava-traslados'                      => 'rutas/barcelona-costa-brava',
+		// Costa Brava aliases remain published until an equivalent target is approved.
 
 		'lloret-de-mar-taxis'                        => 'rutas/barcelona-lloret-de-mar',
 		'lloret-de-mar-traslados'                    => 'rutas/barcelona-lloret-de-mar',
