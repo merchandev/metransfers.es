@@ -118,8 +118,8 @@ class Assets {
 				'taxis-privado-barcelona',
 			);
 			if ( in_array( $mt_page, $search_pages, true )
-				|| 0 === strpos( $mt_page, 'taxis-barcelona-' )
-				|| 0 === strpos( $mt_page, 'traslados-barcelona-' ) ) {
+				|| 0 === strpos( $mt_page, 'taxis-' )
+				|| 0 === strpos( $mt_page, 'traslados-' ) ) {
 				return 'search';
 			}
 			// Para páginas i18n no mapeadas, verificar el post real hidratado
@@ -185,7 +185,7 @@ class Assets {
 		}
 
 		if ( 'page' === $post->post_type
-			&& ( 0 === strpos( $post->post_name, 'taxis-' ) || 'reservaciones' === $post->post_name ) ) {
+			&& ( 0 === strpos( $post->post_name, 'taxis-' ) || 0 === strpos( $post->post_name, 'traslados-' ) || 'reservaciones' === $post->post_name ) ) {
 			return 'search';
 		}
 
