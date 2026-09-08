@@ -1320,13 +1320,8 @@ if ( ! defined( 'WPSEO_VERSION' ) ) {
 add_filter( 'wpseo_title', function( $title ) {
 
     if ( is_front_page() || is_home() ) {
-<<<<<<< HEAD
-        return function_exists( 'mt_translate' ) 
-            ? mt_translate( 'Transfer Aeropuerto Barcelona y Traslados Privados | MeTransfers' ) 
-=======
         return function_exists( 'mt_translate' )
             ? mt_translate( 'Transfer Aeropuerto Barcelona y Traslados Privados | MeTransfers' )
->>>>>>> a6211cb (fix(seo): unify indexability and language-aware legacy redirects)
             : 'Transfer Aeropuerto Barcelona y Traslados Privados | MeTransfers';
     }
 
