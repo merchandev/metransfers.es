@@ -126,7 +126,10 @@ test('hotel portal mobile drawer exposes its state accessibly', async ({ page })
   await expect(trigger).toBeFocused();
 
   await trigger.click();
-  await page.getByRole('button', { name: 'Cerrar menú' }).click();
+  // The sidebar intentionally covers the left part of the overlay.
+  const overlay = page.getByRole('button', { name: 'Cerrar menú' });
+  const overlayBox = await overlay.boundingBox();
+  await overlay.click({ position: { x: overlayBox.width - 12, y: 24 } });
   await expect(sidebar).not.toHaveClass(/is-open/);
   await expect(page.locator('body')).not.toHaveClass(/has-open-drawer/);
 });

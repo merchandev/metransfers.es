@@ -175,6 +175,29 @@ jobs:
       - name: Run WordPress behavioral smoke
         run: wp eval-file "$GITHUB_WORKSPACE/tests/Integration/wordpress-smoke.php" --path=/tmp/wordpress
 
+      - name: Prepare isolated SEO HTTP fixture
+        shell: bash
+        run: |
+          set -euxo pipefail
+          wp config set WP_ENVIRONMENT_TYPE production --path=/tmp/wordpress
+          wp config set MT_SEO_INTEGRATION true --raw --path=/tmp/wordpress
+          wp option update home http://127.0.0.1:8080 --path=/tmp/wordpress
+          wp option update siteurl http://127.0.0.1:8080 --path=/tmp/wordpress
+          mkdir -p /tmp/wordpress/wp-content/mu-plugins
+          ln -s "$GITHUB_WORKSPACE/tests/Integration/seo-fixture-plugin.php" /tmp/wordpress/wp-content/mu-plugins/seo-fixture.php
+          wp eval-file "$GITHUB_WORKSPACE/tests/Integration/seo-fixture.php" --path=/tmp/wordpress
+          wp server --host=127.0.0.1 --port=8080 --path=/tmp/wordpress > /tmp/seo-http.log 2>&1 &
+          for attempt in $(seq 1 30); do curl -s http://127.0.0.1:8080/ > /dev/null && break; sleep 1; done
+
+      - name: Test SEO through WordPress core HTTP
+        run: wp eval-file "$GITHUB_WORKSPACE/tests/Integration/seo-http-smoke.php" core --path=/tmp/wordpress
+
+      - name: Test SEO through Yoast HTTP
+        run: |
+          wp plugin install wordpress-seo --version=26.9 --activate --path=/tmp/wordpress
+          wp rewrite flush --path=/tmp/wordpress
+          wp eval-file "$GITHUB_WORKSPACE/tests/Integration/seo-http-smoke.php" yoast --path=/tmp/wordpress
+
   security:
     name: Secret scan
     runs-on: ubuntu-latest

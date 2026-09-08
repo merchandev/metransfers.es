@@ -10,8 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Hook into admin_init
-add_action( 'admin_init', 'mt_auto_generate_all_pages_once_v7' );
+// Hook into admin_init (disabled to prevent automatic SEO page generation)
+// add_action( 'admin_init', 'mt_auto_generate_all_pages_once_v7' );
 function mt_auto_generate_all_pages_once_v7() {
     if ( get_option( 'mt_auto_generated_pages_v10' ) ) {
         return;
@@ -172,7 +172,7 @@ function mt_auto_generate_all_pages_once_v7() {
             $c .= "</ul>\n<!-- /wp:list -->";
             wp_update_post( array( 'ID' => $hub->ID, 'post_content' => $c ) );
             
-            mt_force_yoast_green_and_image( $hub->ID, 'Destinos de traslados desde Barcelona', 'Descubre nuestros más de 38 destinos de traslados privados desde Barcelona. Viaja en vehículos Mercedes con chófer a España y sur de Francia.', get_the_title($hub->ID) );
+            mt_apply_legacy_seo_meta_and_image( $hub->ID, 'Destinos de traslados desde Barcelona', 'Descubre nuestros más de 38 destinos de traslados privados desde Barcelona. Viaja en vehículos Mercedes con chófer a España y sur de Francia.', get_the_title($hub->ID) );
         }
 
         foreach ( $catalog as $slug => $dest ) {
@@ -194,7 +194,7 @@ function mt_auto_generate_all_pages_once_v7() {
                 wp_update_post( array( 'ID' => $page->ID, 'post_content' => $c ) );
                 
                 $desc = ! empty( $dest['summary'] ) ? mb_substr( strip_tags( $dest['summary'] ), 0, 150 ) . '...' : 'Reserva tu traslado privado a ' . $title . ' desde Barcelona. Precios cerrados y chófer premium.';
-                mt_force_yoast_green_and_image( $page->ID, $kw, $desc, get_the_title($page->ID) );
+                mt_apply_legacy_seo_meta_and_image( $page->ID, $kw, $desc, get_the_title($page->ID) );
             }
         }
     }
@@ -233,7 +233,7 @@ function mt_auto_generate_all_pages_once_v7() {
                 wp_update_post( array( 'ID' => $page->ID, 'post_content' => $c ) );
                 
                 $desc = ! empty( $service['hero_desc'] ) ? mb_substr( strip_tags( $service['hero_desc'] ), 0, 150 ) . '...' : 'Descubre nuestro servicio de ' . $service['title'] . ' en Barcelona. Transporte VIP y exclusivo.';
-                mt_force_yoast_green_and_image( $page->ID, $service['title'], $desc, get_the_title($page->ID) );
+                mt_apply_legacy_seo_meta_and_image( $page->ID, $service['title'], $desc, get_the_title($page->ID) );
             }
         }
     }
@@ -274,7 +274,7 @@ function mt_auto_generate_all_pages_once_v7() {
                 wp_update_post( array( 'ID' => $page->ID, 'post_content' => $c ) );
                 
                 $desc = ! empty( $tour['desc'] ) ? mb_substr( strip_tags( $tour['desc'] ), 0, 150 ) . '...' : 'Reserva el mejor ' . $tour['title'] . ' privado desde Barcelona.';
-                mt_force_yoast_green_and_image( $page->ID, $tour['title'], $desc, get_the_title($page->ID) );
+                mt_apply_legacy_seo_meta_and_image( $page->ID, $tour['title'], $desc, get_the_title($page->ID) );
             }
         }
 
@@ -290,7 +290,7 @@ function mt_auto_generate_all_pages_once_v7() {
             $c .= "</ul>\n<!-- /wp:list -->";
             wp_update_post( array( 'ID' => $tp->ID, 'post_content' => $c ) );
             
-            mt_force_yoast_green_and_image( $tp->ID, 'Tours privados desde Barcelona', 'Explora los mejores destinos con nuestros tours privados desde Barcelona. Viaja en vehículos Mercedes con chófer profesional y precios cerrados.', get_the_title($tp->ID) );
+            mt_apply_legacy_seo_meta_and_image( $tp->ID, 'Tours privados desde Barcelona', 'Explora los mejores destinos con nuestros tours privados desde Barcelona. Viaja en vehículos Mercedes con chófer profesional y precios cerrados.', get_the_title($tp->ID) );
         }
     }
 
@@ -326,7 +326,7 @@ function mt_auto_generate_all_pages_once_v7() {
                 wp_update_post( array( 'ID' => $page->ID, 'post_content' => $c ) );
                 
                 $desc = 'Reserva tus ' . $kw . ' desde Barcelona. Servicio premium, precios cerrados y recogida en el Aeropuerto. Viaja en vehículos Mercedes de alta gama.';
-                mt_force_yoast_green_and_image( $page->ID, $kw, $desc, get_the_title($page->ID) );
+                mt_apply_legacy_seo_meta_and_image( $page->ID, $kw, $desc, get_the_title($page->ID) );
             }
         }
     }
@@ -335,7 +335,7 @@ function mt_auto_generate_all_pages_once_v7() {
         foreach ( me_transfers_get_legal_pages_catalog() as $slug => $title ) {
             $page = get_page_by_path( $slug );
             if ( $page ) {
-                mt_force_yoast_green_and_image( $page->ID, $title, 'Página de ' . $title . ' oficial de MeTransfers Barcelona. Consulta nuestras normativas y políticas corporativas.', get_the_title($page->ID) );
+                mt_apply_legacy_seo_meta_and_image( $page->ID, $title, 'Página de ' . $title . ' oficial de MeTransfers Barcelona. Consulta nuestras normativas y políticas corporativas.', get_the_title($page->ID) );
             }
         }
     }
@@ -343,7 +343,7 @@ function mt_auto_generate_all_pages_once_v7() {
     foreach ( $basic_pages as $slug => $title ) {
         $page = get_page_by_path( $slug );
         if ( $page ) {
-            mt_force_yoast_green_and_image( $page->ID, $title, 'Información sobre ' . $title . ' en MeTransfers Barcelona.', get_the_title($page->ID) );
+            mt_apply_legacy_seo_meta_and_image( $page->ID, $title, 'Información sobre ' . $title . ' en MeTransfers Barcelona.', get_the_title($page->ID) );
         }
     }
 
@@ -355,7 +355,7 @@ function mt_auto_generate_all_pages_once_v7() {
  * Helper function to forcefully write Green SEO metrics into Yoast Indexables table
  * and assign the requested Featured Image and Social OpenGraph Image.
  */
-function mt_force_yoast_green_and_image( $page_id, $focus_kw, $meta_desc, $title ) {
+function mt_apply_legacy_seo_meta_and_image( $page_id, $focus_kw, $meta_desc, $title ) {
     global $wpdb;
     
     // The image requested by user
@@ -378,40 +378,7 @@ function mt_force_yoast_green_and_image( $page_id, $focus_kw, $meta_desc, $title
     // 2. Standard Yoast Post Meta
     update_post_meta( $page_id, '_yoast_wpseo_focuskw', $focus_kw );
     update_post_meta( $page_id, '_yoast_wpseo_metadesc', $meta_desc );
-    update_post_meta( $page_id, '_yoast_wpseo_linkdex', 90 );
-    update_post_meta( $page_id, '_yoast_wpseo_content_score', '90' );
-    update_post_meta( $page_id, '_yoast_wpseo_word_count', 450 );
-    update_post_meta( $page_id, '_yoast_wpseo_estimated-reading-time-minutes', 3 );
     update_post_meta( $page_id, '_yoast_wpseo_opengraph-image', $img_url );
     update_post_meta( $page_id, '_yoast_wpseo_twitter-image', $img_url );
 
-    // 3. Force Yoast Indexables Table
-    $table = $wpdb->prefix . 'yoast_indexable';
-    if ( $wpdb->get_var("SHOW TABLES LIKE '$table'") == $table ) {
-        $existing = $wpdb->get_row( $wpdb->prepare( "SELECT id FROM $table WHERE object_id = %d AND object_type = 'post'", $page_id ) );
-        
-        $post = get_post($page_id);
-        $data = array(
-            'object_id'                   => $page_id,
-            'object_type'                 => 'post',
-            'object_sub_type'             => 'page',
-            'primary_focus_keyword_score' => 90,
-            'readability_score'           => 90,
-            'title'                       => $title,
-            'description'                 => $meta_desc,
-            'open_graph_image'            => $img_url,
-            'twitter_image'               => $img_url,
-            'primary_focus_keyword'       => $focus_kw,
-            'is_robots_noindex'           => 0,
-            'object_last_modified'        => $post->post_modified_gmt,
-        );
-        
-        if ( $existing ) {
-            $wpdb->update( $table, $data, array( 'id' => $existing->id ) );
-        } else {
-            // Need to set missing defaults if inserting manually
-            $data['permalink'] = get_permalink( $page_id );
-            $wpdb->insert( $table, $data );
-        }
-    }
 }

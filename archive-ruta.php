@@ -7,6 +7,7 @@
  */
 
 get_header();
+use MeTransfers\SEO\Indexability;
 
 // ─── Catálogo de destinos agrupados por zona ───────────────────────────────
 $zonas = array(
@@ -24,25 +25,23 @@ $zonas = array(
     ),
 );
 
-// ─── Obtener TODAS las rutas publicadas ────────────────────────────────────
-$all_rutas = get_posts( array(
+// ─── Obtener TODAS las rutas publicadas y filtrar por Indexability ───────
+$raw_rutas = get_posts( array(
     'post_type'      => 'ruta',
     'post_status'    => 'publish',
     'posts_per_page' => -1,
     'orderby'        => 'title',
     'order'          => 'ASC',
-    'meta_query'     => array(
-        array(
-            'key'   => '_mt_seo_ready',
-            'value' => '1',
-        ),
-    ),
 ) );
 
-// Indexar por slug para acceso rápido
+$all_rutas = array();
 $rutas_by_slug = array();
-foreach ( $all_rutas as $r ) {
-    $rutas_by_slug[ $r->post_name ] = $r;
+
+foreach ( $raw_rutas as $r ) {
+    if ( Indexability::isIndexable( $r ) ) {
+        $all_rutas[] = $r;
+        $rutas_by_slug[ $r->post_name ] = $r;
+    }
 }
 
 // ─── Agrupar rutas por destino ─────────────────────────────────────────────
