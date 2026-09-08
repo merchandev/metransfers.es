@@ -93,6 +93,12 @@ $total = count( $all_rutas );
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                     <input type="text" id="ruta-search" placeholder="<?php echo esc_attr( mt_translate( 'Busca tu destino: Salou, Sitges, Lloret…' ) ); ?>" autocomplete="off">
                 </div>
+                <div class="rutas-hero__pills">
+                    <button class="ruta-pill" data-filter="costa dorada"><?php echo mt_translate( 'Costa Dorada' ); ?></button>
+                    <button class="ruta-pill" data-filter="costa brava"><?php echo mt_translate( 'Costa Brava' ); ?></button>
+                    <button class="ruta-pill" data-filter="sitges">Sitges</button>
+                    <button class="ruta-pill" data-filter="andorra">Andorra</button>
+                </div>
             </div>
         </div>
     </section>
@@ -205,9 +211,21 @@ $total = count( $all_rutas );
 <script>
 (function(){
     var input  = document.getElementById('ruta-search');
+    var list   = document.getElementById('rutas-lista');
+    var pills  = document.querySelectorAll('.ruta-pill');
     if (!input) return;
-    input.addEventListener('input', function(){
-        var q = this.value.trim().toLowerCase();
+    
+    var hasScrolled = false;
+
+    function filterRoutes(query) {
+        var q = query.trim().toLowerCase();
+        
+        // Auto-scroll to results on first search
+        if (q.length > 0 && !hasScrolled && list && window.scrollY < (list.offsetTop - 150)) {
+            list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            hasScrolled = true;
+        }
+
         document.querySelectorAll('.ruta-card').forEach(function(card){
             var hay = card.dataset.search.indexOf(q) !== -1;
             card.style.display = hay || !q ? '' : 'none';
@@ -216,6 +234,29 @@ $total = count( $all_rutas );
         document.querySelectorAll('.rutas-grupo').forEach(function(grupo){
             var visible = grupo.querySelectorAll('.ruta-card:not([style*="display: none"])').length;
             grupo.style.display = visible ? '' : 'none';
+        });
+    }
+
+    input.addEventListener('input', function(){
+        pills.forEach(p => p.classList.remove('active'));
+        filterRoutes(this.value);
+    });
+
+    pills.forEach(function(pill){
+        pill.addEventListener('click', function(e){
+            e.preventDefault();
+            var isActive = this.classList.contains('active');
+            pills.forEach(p => p.classList.remove('active'));
+            
+            if (isActive) {
+                input.value = '';
+                filterRoutes('');
+            } else {
+                this.classList.add('active');
+                var val = this.getAttribute('data-filter');
+                input.value = val;
+                filterRoutes(val);
+            }
         });
     });
 })();

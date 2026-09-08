@@ -1,5 +1,7 @@
 # 🗺️ Estructura Completa de Páginas de MeTransfers
 
+> Documento histórico, no inventario del sitio publicado. La creación automática descrita abajo está parcialmente desactivada y varios slugs no existen en WordPress. Consultar la [auditoría del 8 de septiembre de 2026](docs/page-structure-audit-2026-09-08.md) y el [inventario real](docs/page-structure-inventory-2026-09-08.md) antes de crear páginas o cambiar redirecciones.
+
 A continuación tienes el mapa completo de todas las páginas que tu tema instala y gestiona automáticamente. Todas ellas han sido actualizadas para incluir los prefijos de SEO enfocados en captación de origen (Barcelona).
 
 ### 1. 💼 Páginas de Servicios Principales

@@ -19,6 +19,20 @@ final class Links {
 		$query    = parse_url( $url, PHP_URL_QUERY );
 		$target   = Redirects::verifiedTarget( $path . ( $query ? '?' . $query : '' ) );
 		$fragment = parse_url( $url, PHP_URL_FRAGMENT );
+		// Navigation can link to a published page without approving it for SEO.
+		$navigation = array(
+			'taxis-privado-barcelona'     => 'traslados-privados',
+			'taxis-barcelona-costa-brava' => 'destinos/costa-brava',
+			'taxis-barcelona-salou'       => 'rutas/barcelona-salou',
+			'taxis-barcelona-girona'      => 'rutas/barcelona-girona',
+		);
+		$key = trim( $path, '/' );
+		if ( null === $target && isset( $navigation[ $key ] ) ) {
+			$post = get_page_by_path( $navigation[ $key ], OBJECT, array( 'page', 'ruta' ) );
+			if ( $post && 'publish' === $post->post_status && empty( $post->post_password ) ) {
+				return get_permalink( $post ) . ( $query ? '?' . $query : '' ) . ( $fragment ? '#' . $fragment : '' );
+			}
+		}
 		return null === $target ? $url : home_url( $target ) . ( $fragment ? '#' . $fragment : '' );
 	}
 

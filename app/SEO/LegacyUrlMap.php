@@ -13,7 +13,7 @@ final class LegacyUrlMap {
 	private static $redirects = array(
 		'destinos'                                   => 'rutas',
 		'transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v' => 'grupos',
-		'traslados-privados'                         => 'taxis-privado-barcelona',
+		'taxis-privado-barcelona'                   => 'traslados-privados',
 		'traslados-aeropuerto'                       => 'transfer-aeropuerto-barcelona',
 		'taxis-barcelona-tossa-de-mar'               => 'rutas/barcelona-tossa-de-mar',
 		'traslados-barcelona-tossa-de-mar'           => 'rutas/barcelona-tossa-de-mar',

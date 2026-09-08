@@ -115,6 +115,15 @@ Referencias de implementación: `0d22e95`, `c80ebad`, `b0280ff`, `868d254`. Inte
 
 **Alcance y pendientes:** actualizar GitHub no acredita el despliegue del tema. La inspección de WordPress fue de solo lectura; los borradores mantienen `editorial_approved: false`. No se ha aplicado la migración editorial, aprobado idiomas en masa ni solicitado indexación a Google. Tras desplegar, deben purgarse las cachés y verificarse las URLs reales.
 
+### Septiembre de 2026 — Mejoras UX y Correcciones (Catálogo de Rutas y Reservas)
+
+- **Formulario WPTB:** Corrección en `app/Core/Assets.php` para cargar recursos del motor de reservas en URLs con prefijo `traslados-`.
+- **Catálogo de Rutas (`/rutas/`):** Reducción de la altura del hero para mejorar la visibilidad inicial "above the fold" en dispositivos de escritorio y móviles.
+- **Buscador interactivo:** Implementación de auto-scroll fluido al teclear y píldoras de filtrado rápido (Costa Dorada, Costa Brava, etc.) añadidas al header de rutas.
+- **Diseño UI:** Mejora visual en las tarjetas `.ruta-card` integrando glassmorphism, sombras profundas, bordes suavizados y decoraciones de gradiente dinámicas en hover.
+- **GSAP Animaciones:** Corrección en `functions.php` para ejecutar `ScrollTrigger` en `is_post_type_archive('ruta')`.
+
+
 ## Seguridad operativa
 
 - Las claves Redsys, Maps, SMTP y webhooks no se almacenan en Git.
