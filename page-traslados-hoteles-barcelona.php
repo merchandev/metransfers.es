@@ -1,7 +1,7 @@
 <?php
 /** Template Name: Traslados Hoteles Barcelona */
 get_template_part( 'template-parts/transfer-hub', null, array(
-    'title' => 'Traslados privados a hoteles de Barcelona',
+    'title' => 'Traslados privados desde y hacia hoteles de Barcelona',
     'intro' => 'Solicita tu traslado entre el hotel y el aeropuerto, el puerto, la estación o tu próximo destino. Prepara las direcciones y los horarios para confirmar un servicio adaptado a tu estancia en Barcelona.',
     'sections' => array(
         'Del aeropuerto o la estación a tu alojamiento' => 'Comunica el nombre y la dirección completa del hotel, junto con los datos del vuelo o tren. Si te alojas en un apartamento, incluye las instrucciones de acceso. El equipo acordará contigo el punto de encuentro.',

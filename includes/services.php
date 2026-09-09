@@ -21,11 +21,11 @@ function me_transfers_get_service_catalog() {
 		// ─── 1. TRASLADOS AL AEROPUERTO ─────────────────────────────────────────────
 		'transfer-aeropuerto-barcelona' => array(
 			'title'       => 'MeTransfers Barcelona - Traslado al Aeropuerto desde Barcelona',
-			'h1'          => 'Traslado privado al Aeropuerto de Barcelona',
-			'subtitle'    => 'Te recogemos en Barcelona y te llevamos a El Prat',
+			'h1'          => 'Transfer privado desde y hacia el Aeropuerto de Barcelona',
+			'subtitle'    => 'Recogidas en T1/T2, hoteles, puerto, Sants y direcciones de Barcelona',
 			'slug'        => 'transfer-aeropuerto-barcelona',
 			'badge'       => 'Aeropuerto El Prat · 24/7',
-			'hero_desc'   => 'Te recogemos en tu hotel u oficina en Barcelona y te llevamos directamente al Aeropuerto El Prat. Seguimiento de vuelo en tiempo real, tarifa fija y hasta 60 min de cortesía en aeropuerto en llegadas.',
+			'hero_desc'   => 'Reserva un transfer privado desde o hacia el Aeropuerto de Barcelona-El Prat. Coordinamos recogidas en T1/T2 y traslados directos a hoteles, Puerto de Barcelona, Estación de Sants, domicilios y otros destinos.',
 			'desc_long'   => 'Salir desde Barcelona hacia el aeropuerto nunca fue tan sencillo. En MeTransfers calculamos el tiempo de salida desde tu domicilio, hotel u oficina con margen suficiente para que llegues tranquilo, sin carreras y con energía para tu viaje.
 
 Y si llegas a El Prat, un chófer uniformado (idiomas bajo petición) te recibirá en la zona de llegadas con un cartel personalizado con tu nombre o el de tu empresa. Monitoreamos tu vuelo en tiempo real — sin importar retrasos o adelantos de última hora. Te asistirá con el equipaje y te acompañará directamente a tu vehículo premium estacionado a pie de terminal. El trayecto al hotel, oficina o destino final se convierte en el primer momento de descanso tras el vuelo.',
@@ -50,11 +50,11 @@ Y si llegas a El Prat, un chófer uniformado (idiomas bajo petición) te recibir
 		// ─── 2. TRASLADOS AL PUERTO ──────────────────────────────────────────────────
 		'traslados-puerto' => array(
 			'title'       => 'MeTransfers Barcelona - Traslado al Puerto de Barcelona desde la ciudad',
-			'h1'          => 'Traslado privado al Puerto de Barcelona',
-			'subtitle'    => 'Te recogemos en tu hotel en Barcelona y te llevamos al Puerto',
+			'h1'          => 'Transfer privado desde y hacia el Puerto de Barcelona',
+			'subtitle'    => 'Cruceros: hotel, aeropuerto, Sants y otros destinos',
 			'slug'        => 'traslados-puerto',
 			'badge'       => 'Puerto de Barcelona · Cruceros y ferries',
-			'hero_desc'   => 'Te recogemos en tu hotel, apartamento o cualquier dirección en Barcelona y te llevamos a las terminales de cruceros del Port de Barcelona. Coordinación puntual y asistencia con el equipaje.',
+			'hero_desc'   => 'Organizamos traslados privados desde y hacia las terminales de cruceros del Puerto de Barcelona, con recogida o llegada en hoteles, Aeropuerto BCN, Estación de Sants y direcciones acordadas.',
 			'desc_long'   => 'Salir hacia el Puerto de Barcelona con todo el equipaje de un crucero puede convertirse en un calvario si no tienes transporte privado. MeTransfers te recoge directamente en tu hotel o alojamiento en Barcelona y te lleva sin prisas hasta la terminal de embarque que te corresponda.
 
 Operamos en todas las terminales activas de cruceros y ferris del Port de Barcelona. Indícanos el barco o la terminal y confirmaremos el punto exacto de recogida. Nos anticipamos al tráfico y a los tiempos de embarque para que llegues con margen suficiente y sin prisas.
@@ -112,7 +112,7 @@ El conductor permanece a tu disposición exclusiva durante el tiempo contratado 
 		// ─── 4. CORPORATIVO Y EVENTOS ────────────────────────────────────────────────
 		'corporativo-y-eventos' => array(
 			'title'       => 'MeTransfers Barcelona - Transporte Corporativo y Eventos desde Barcelona',
-			'h1'          => 'Transporte corporativo y eventos en Barcelona',
+			'h1'          => 'Transporte corporativo y transfers para empresas en Barcelona',
 			'subtitle'    => 'Logística impecable para empresas y grandes eventos en Barcelona',
 			'slug'        => 'corporativo-y-eventos',
 			'badge'       => 'MWC · ISE · Congresos · Empresas',
@@ -143,7 +143,7 @@ Tanto si necesitas coordinar 3 traslados ejecutivos como 50 delegados en rotaci�
 		// ─── 5. TOURS PRIVADOS ───────────────────────────────────────────────────────
 		'tours-privados' => array(
 			'title'       => 'MeTransfers Barcelona - Tours Privados desde Barcelona',
-			'h1'          => 'Tours privados desde Barcelona',
+			'h1'          => 'Tours privados desde Barcelona con chófer',
 			'subtitle'    => 'Salimos desde tu hotel en Barcelona hacia los mejores destinos',
 			'slug'        => 'tours-privados',
 			'badge'       => 'Montserrat · Costa Brava · Girona · Andorra',
@@ -174,7 +174,7 @@ Desde Barcelona, operamos excursiones de medio día (4 horas), día completo (8 
 		// ─── 6. GRUPOS Y CELEBRACIONES ──────────────────────────────────────────────
 		'grupos' => array(
 			'title'       => 'MeTransfers Barcelona - Transporte para Grupos desde Barcelona',
-			'h1'          => 'Transporte para grupos y celebraciones',
+			'h1'          => 'Traslados privados para grupos en Barcelona',
 			'subtitle'    => 'Movilidad coordinada desde Barcelona para grupos, bodas y celebraciones',
 			'slug'        => 'grupos',
 			'badge'       => 'Bodas · Despedidas · Grupos Privados',

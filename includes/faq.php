@@ -108,6 +108,63 @@ function me_transfers_get_faq_items() {
             ),
         ),
 
+
+        array(
+            'question' => '¿Hacen recogidas en hoteles y apartamentos de Barcelona?',
+            'answer'   => array(
+                'Sí. Podemos coordinar recogidas y llegadas en hoteles, aparthoteles, apartamentos y otras direcciones de Barcelona.',
+                'Facilita la dirección completa y cualquier indicación de acceso para confirmar el punto de encuentro antes del servicio.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Realizan traslados al Puerto de Barcelona y terminales de cruceros?',
+            'answer'   => array(
+                'Sí. Organizamos traslados privados desde y hacia el Puerto de Barcelona, incluyendo conexiones con hoteles, Aeropuerto BCN, Estación de Sants y otros destinos.',
+                'Indica el barco, la terminal si la conoces, el horario y el equipaje para coordinar la recogida.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Pueden recogerme en la Estación de Sants?',
+            'answer'   => array(
+                'Sí. Puedes solicitar una recogida privada en Barcelona Sants para ir a tu hotel, al aeropuerto, al puerto o a otra ciudad.',
+                'Comparte la fecha, la hora prevista de llegada del tren y el destino final para confirmar el servicio.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Puedo reservar un traslado desde Barcelona a otra ciudad de España?',
+            'answer'   => array(
+                'Sí. Puedes solicitar trayectos privados de larga distancia desde Barcelona hacia otras ciudades y destinos de España.',
+                'Indica origen, destino, fecha, pasajeros, equipaje y cualquier parada para que el equipo confirme disponibilidad y presupuesto.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Puedo viajar con equipaje voluminoso?',
+            'answer'   => array(
+                'Sí, siempre que se confirme previamente la capacidad del vehículo asignado.',
+                'Indica el número y tamaño de maletas, carritos, material deportivo u otros bultos especiales antes de cerrar la reserva.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Organizan traslados para grupos?',
+            'answer'   => array(
+                'Sí. Coordinamos traslados para familias, grupos privados, delegaciones y eventos con uno o varios vehículos según el número de pasajeros.',
+                'Facilita pasajeros, equipaje, puntos de recogida y horarios para preparar una propuesta adecuada.',
+            ),
+        ),
+
+        array(
+            'question' => '¿Trabajan con empresas, congresos y eventos?',
+            'answer'   => array(
+                'Sí. MeTransfers organiza servicios corporativos para reuniones, ferias, congresos, delegaciones y eventos en Barcelona.',
+                'Podemos coordinar varios vehículos y diferentes horarios a partir de la información facilitada por la empresa u organizador.',
+            ),
+        ),
+
     );
 }
 
