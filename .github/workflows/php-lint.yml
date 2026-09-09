@@ -19,6 +19,23 @@ env:
   COMPOSER_NO_INTERACTION: 1
 
 jobs:
+  release-package:
+    name: Verified production package
+    needs: [ php-quality, javascript-quality, wordpress-integration, security ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build and inspect runtime archive
+        shell: pwsh
+        run: ./tools/build-release.ps1 -OutputPath metransfers.zip
+      - name: Upload production theme
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: metransfers-theme
+          path: metransfers.zip
+          if-no-files-found: error
+
   php-quality:
     name: PHP quality and regression
     runs-on: ubuntu-latest
@@ -132,7 +149,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        wordpress: [ '6.8.6', '7.0.2' ]
+        wordpress: [ '6.8.6', '7.0.2', '7.1' ]
     services:
       mariadb:
         image: mariadb:11.4

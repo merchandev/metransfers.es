@@ -30,12 +30,6 @@ function mt_create_main_menu() {
                 'menu-item-type'    => 'custom',
             ));
 
-            $services = [
-                'taxis-privado-barcelona' => 'Aeropuerto',
-                'taxis-barcelona-costa-brava' => 'Costa Brava',
-            ]; // Wait, I need the actual pages for the submenus
-            // Let's just use custom links that point to the pages if they exist, or just use paths.
-            // Actually, better to just create custom links with home_url() appended.
             
             $add_item = function( $parent_id, $title, $path ) use ( $menu_id ) {
                 wp_update_nav_menu_item( $menu_id, 0, array(
@@ -53,7 +47,7 @@ function mt_create_main_menu() {
             $add_item( $servicios_id, 'Por horas', 'chofer-por-horas' );
             $add_item( $servicios_id, 'Empresas y Eventos', 'corporativo-y-eventos' );
             $add_item( $servicios_id, 'Grupos', 'grupos' );
-            $add_item( $servicios_id, 'Traslados privados', 'taxis-privado-barcelona' );
+            $add_item( $servicios_id, 'Traslados privados', 'traslados-privados' );
 
             // 2. RUTAS Y DESTINOS
             $rutas_id = wp_update_nav_menu_item( $menu_id, 0, array(
@@ -62,10 +56,10 @@ function mt_create_main_menu() {
                 'menu-item-status'  => 'publish',
                 'menu-item-type'    => 'custom',
             ));
-            $add_item( $rutas_id, 'Costa Brava', 'taxis-barcelona-costa-brava' );
-            $add_item( $rutas_id, 'Salou', 'taxis-barcelona-salou' );
+            $add_item( $rutas_id, 'Costa Brava', 'destinos/costa-brava' );
+            $add_item( $rutas_id, 'Salou', 'rutas/barcelona-salou' );
             $add_item( $rutas_id, 'PortAventura', 'taxis-barcelona-port-aventura' );
-            $add_item( $rutas_id, 'Girona', 'taxis-barcelona-girona' );
+            $add_item( $rutas_id, 'Girona', 'rutas/barcelona-girona' );
             $add_item( $rutas_id, 'Ver todas las rutas', 'rutas' );
 
             // 3. NOSOTROS

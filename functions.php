@@ -232,7 +232,7 @@ function me_transfers_scripts() {
 	$main_deps = array();
 
 	// GSAP Library (Condicional para performance)
-	if ( is_front_page() || is_page_template( 'template-tours.php' ) || is_singular( 'tour' ) || is_singular( 'ruta' ) ) {
+	if ( is_front_page() || is_page_template( 'template-tours.php' ) || is_singular( 'tour' ) || is_singular( 'ruta' ) || is_post_type_archive( 'ruta' ) ) {
 		wp_enqueue_script( 'gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js', array(), '3.12.5', true );
 		wp_enqueue_script( 'gsap-scroll-trigger', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js', array('gsap'), '3.12.5', true );
 		$main_deps = array('gsap', 'gsap-scroll-trigger');
@@ -924,7 +924,7 @@ add_action( 'wp_head', function() {
     if ( ( is_front_page() || is_home() ) && ! defined( 'WPSEO_VERSION' ) && ! function_exists( 'the_seo_framework' ) ) {
         echo '<meta name="description" content="' .
             esc_attr(
-                'Reserva tu transfer privado desde o hacia el Aeropuerto de Barcelona, centro, hotel o puerto. Chófer profesional, precio cerrado y atención personalizada 24/7.'
+                mt_home_blog_seo_text( 'description' )
             ) .
             '">' . "\n";
     }
@@ -1249,12 +1249,23 @@ if ( ! defined( 'WPSEO_VERSION' ) ) {
     }, 99 );
 }
 
+function mt_home_blog_seo_text( $field ) {
+    $translated_blog = in_array( (string) get_query_var( 'mt_page' ), array( 'blog', 'noticias' ), true );
+    $text = \MeTransfers\SEO\SiteMetadata::text( is_front_page() && ! $translated_blog, is_home(), $field );
+    return function_exists( 'mt_translate' ) ? mt_translate( $text ) : $text;
+}
+
+add_filter( 'pre_get_document_title', function( $title ) {
+    if ( ! defined( 'WPSEO_VERSION' ) && ( is_front_page() || is_home() ) ) {
+        return mt_home_blog_seo_text( 'title' );
+    }
+    return $title;
+}, 20 );
+
 add_filter( 'wpseo_title', function( $title ) {
 
     if ( is_front_page() || is_home() ) {
-        return function_exists( 'mt_translate' )
-            ? mt_translate( 'Transfer Aeropuerto Barcelona y Traslados Privados | MeTransfers' )
-            : 'Transfer Aeropuerto Barcelona y Traslados Privados | MeTransfers';
+        return mt_home_blog_seo_text( 'title' );
     }
 
     return $title;
@@ -1493,9 +1504,7 @@ add_filter( 'wpseo_sitemap_exclude_author', '__return_true' );
 add_filter( 'wpseo_metadesc', function( $description ) {
 
     if ( is_front_page() || is_home() ) {
-        return function_exists( 'mt_translate' )
-            ? mt_translate( 'Reserva tu transfer privado desde o hacia el Aeropuerto de Barcelona, centro, hotel o puerto. Chófer profesional, precio cerrado y atención personalizada 24/7.' )
-            : 'Reserva tu transfer privado desde o hacia el Aeropuerto de Barcelona, centro, hotel o puerto. Chófer profesional, precio cerrado y atención personalizada 24/7.';
+        return mt_home_blog_seo_text( 'description' );
     }
 
     return $description;
