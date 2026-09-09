@@ -352,7 +352,7 @@
 			<div class="footer-col js-footer-accordion">
 				<button type="button" class="footer-col-title" aria-expanded="false" aria-controls="footer-services-links"><?php echo mt_translate("Servicios"); ?></button>
 				<ul id="footer-services-links" class="footer-links-list">
-					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-aeropuerto' ) ); ?>"><?php echo mt_translate("Aeropuerto"); ?></a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'transfer-aeropuerto-barcelona' ) ); ?>"><?php echo mt_translate("Aeropuerto"); ?></a></li>
 					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-puerto' ) ); ?>"><?php echo mt_translate("Puerto"); ?></a></li>
 					<li><a href="<?php echo esc_url( mt_localized_url( 'chofer-por-horas' ) ); ?>"><?php echo mt_translate("Por horas"); ?></a></li>
 					<li><a href="<?php echo esc_url( mt_localized_url( 'corporativo-y-eventos' ) ); ?>"><?php echo mt_translate("Empresas"); ?></a></li>
@@ -364,10 +364,10 @@
 			<div class="footer-col js-footer-accordion">
 				<button type="button" class="footer-col-title" aria-expanded="false" aria-controls="footer-destinations-links"><?php echo mt_translate("Destinos y rutas"); ?></button>
 				<ul id="footer-destinations-links" class="footer-links-list">
-					<li><a href="<?php echo esc_url( mt_localized_url( 'taxis-privado-barcelona' ) ); ?>"><?php echo mt_translate("Traslados privados Barcelona"); ?></a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'traslados-privados' ) ); ?>"><?php echo mt_translate("Traslados privados Barcelona"); ?></a></li>
 					<li><a href="<?php echo esc_url( mt_localized_url( 'destinos/costa-brava' ) ); ?>"><?php echo mt_translate("Costa Brava"); ?></a></li>
 					<li><a href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-salou' ) ); ?>"><?php echo mt_translate("Salou"); ?></a></li>
-					<li><a href="<?php echo esc_url( mt_localized_url( 'taxis-barcelona-port-aventura' ) ); ?>"><?php echo mt_translate("PortAventura"); ?></a></li>
+					<li><a href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-portaventura' ) ); ?>"><?php echo mt_translate("PortAventura"); ?></a></li>
 					<li><a href="<?php echo esc_url( mt_localized_url( 'rutas/barcelona-girona' ) ); ?>"><?php echo mt_translate("Girona"); ?></a></li>
 					<li><a href="<?php echo esc_url( get_post_type_archive_link( 'ruta' ) ); ?>"><?php echo mt_translate("Todas las rutas"); ?></a></li>
 				</ul>

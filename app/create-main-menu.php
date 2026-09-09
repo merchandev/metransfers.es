@@ -58,7 +58,7 @@ function mt_create_main_menu() {
             ));
             $add_item( $rutas_id, 'Costa Brava', 'destinos/costa-brava' );
             $add_item( $rutas_id, 'Salou', 'rutas/barcelona-salou' );
-            $add_item( $rutas_id, 'PortAventura', 'taxis-barcelona-port-aventura' );
+            $add_item( $rutas_id, 'PortAventura', 'rutas/barcelona-portaventura' );
             $add_item( $rutas_id, 'Girona', 'rutas/barcelona-girona' );
             $add_item( $rutas_id, 'Ver todas las rutas', 'rutas' );
 

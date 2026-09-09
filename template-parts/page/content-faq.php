@@ -36,9 +36,9 @@ $faq_items        = me_transfers_get_faq_items();
 			<section class="faq-page-hero">
 				<div class="container faq-page-hero__inner">
 					<span class="faq-page-kicker"><?php esc_html_e( 'Centro de ayuda', 'me-transfers' ); ?></span>
-					<h1 class="faq-page-title">Preguntas Frecuentes</h1>
+					<h1 class="faq-page-title">Preguntas frecuentes sobre traslados privados en Barcelona</h1>
 					<p class="faq-page-summary">
-						Encuentra respuestas claras y rápidas a las dudas más comunes sobre nuestros servicios de transporte privado. Desde reservas y tarifas hasta detalles sobre nuestras rutas y vehículos, aquí encontrarás toda la información que necesitas para planificar tu traslado con metransfers.es. ¿Tienes más preguntas frecuentes? Contáctanos y estaremos encantados de ayudarte.
+						Consulta respuestas sobre reservas, Aeropuerto de Barcelona, Puerto de Barcelona, Estación de Sants, hoteles, equipaje, grupos, empresas, pagos y traslados de larga distancia. Si tu caso no aparece aquí, contacta con MeTransfers para confirmar los detalles de tu servicio.
 					</p>
 				</div>
 			</section>
