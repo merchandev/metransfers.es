@@ -9,8 +9,58 @@ use MeTransfers\I18n\Router;
 use MeTransfers\I18n\Seo;
 use PHPUnit\Framework\TestCase;
 
+require_once dirname( __DIR__ ) . '/Support/RouterWordPress.php';
+
 final class I18nRoutingTest extends TestCase {
 	private const LANGUAGES = array( 'es', 'en', 'zh' );
+
+	public function testOnlyPublicUnprotectedPostsCanBeHydrated(): void {
+		foreach ( array( 'draft', 'private', 'trash', 'pending', 'future' ) as $status ) {
+			self::assertFalse(
+				Router::isPublicPost(
+					(object) array(
+						'post_status'   => $status,
+						'post_password' => '',
+					)
+				),
+				$status
+			);
+		}
+		self::assertFalse( Router::isPublicPost( null ) );
+		self::assertFalse(
+			Router::isPublicPost(
+				(object) array(
+					'post_status'   => 'publish',
+					'post_password' => '0',
+				)
+			)
+		);
+		self::assertFalse(
+			Router::isPublicPost(
+				(object) array(
+					'post_status'   => 'publish',
+					'post_password' => 'secret',
+				)
+			)
+		);
+		self::assertFalse(
+			Router::isPublicPost(
+				(object) array(
+					'post_status'       => 'publish',
+					'post_password'     => '',
+					'publicly_viewable' => false,
+				)
+			)
+		);
+		self::assertTrue(
+			Router::isPublicPost(
+				(object) array(
+					'post_status'   => 'publish',
+					'post_password' => '',
+				)
+			)
+		);
+	}
 
 	public function testSpanishRemainsUnprefixed(): void {
 		self::assertSame( 'es', Language::detectFromUri( '/es/pago/', self::LANGUAGES ) );

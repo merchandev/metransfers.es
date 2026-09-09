@@ -52,6 +52,7 @@ final class Router {
 
 			// Páginas SEO manuales (plantillas dedicadas)
 			'taxis-privado-barcelona'       => 'page-taxis-privado-barcelona.php',
+			'traslados-privados'            => 'page-traslados-privados.php',
 			'taxis-barcelona-port-aventura' => 'page-taxis-barcelona-port-aventura.php',
 			'taxis-barcelona-salou'         => 'page-taxis-barcelona-salou.php',
 			'taxis-barcelona-costa-brava'   => 'page-taxis-barcelona-costa-brava.php',
@@ -177,6 +178,10 @@ final class Router {
 			}
 			if ( $post_id ) {
 				$original_post = get_post( $post_id );
+				if ( ! self::isPublicPost( $original_post ) ) {
+					self::setNotFound();
+					return;
+				}
 				if ( null === $template ) {
 					$template = self::templateForPost( $original_post, $post_id );
 				}
@@ -197,7 +202,10 @@ final class Router {
 		if ( $original_post ) {
 			self::hydrateSingular( $original_post );
 		} elseif ( ! in_array( $page, array( 'blog', 'noticias', 'rutas' ), true ) ) {
-			self::hydrateVirtualPage( $page );
+			if ( ! self::hydrateVirtualPage( $page ) ) {
+				self::setNotFound();
+				return;
+			}
 		}
 
 		status_header( 200 );
@@ -243,6 +251,12 @@ final class Router {
 		}
 		if ( 'ruta' === $post->post_type ) {
 			return 'single-ruta.php';
+		}
+		if ( 'page' === $post->post_type ) {
+			$dedicated = 'page-' . $post->post_name . '.php';
+			if ( file_exists( get_template_directory() . '/' . $dedicated ) ) {
+				return $dedicated;
+			}
 		}
 		return 'post' === $post->post_type ? 'single.php' : 'page.php';
 	}
@@ -304,16 +318,33 @@ final class Router {
 		setup_postdata( $post );
 	}
 
-	private static function hydrateVirtualPage( $page ) {
+	public static function isPublicPost( $post ): bool {
+		return $post
+			&& 'publish' === $post->post_status
+			&& '' === (string) ( $post->post_password ?? '' )
+			&& is_post_publicly_viewable( $post );
+	}
 
-		$fallback = get_page_by_path( $page );
+	private static function hydrateVirtualPage( $page ): bool {
+
+		$front_id = 'home' === $page ? (int) get_option( 'page_on_front' ) : 0;
+		$fallback = $front_id ? get_post( $front_id ) : get_page_by_path( $page );
+		if ( $fallback && ! self::isPublicPost( $fallback ) ) {
+			return false;
+		}
 		if ( ! $fallback ) {
-				$fallback = self::virtualPost( $page );
+			// Trashing a page can change its slug. Never resurrect its old URL
+			// merely because a dedicated template still exists in the theme.
+			if ( 'home' !== $page ) {
+				return false;
+			}
+			$fallback = self::virtualPost( $page );
 		}
 		self::hydrateSingular( $fallback );
 		global $wp_query;
 		$wp_query->is_home       = 'home' === $page;
 		$wp_query->is_front_page = 'home' === $page;
+		return true;
 	}
 
 	private static function virtualPost( $page ) {

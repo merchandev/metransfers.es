@@ -19,6 +19,22 @@ final class Links {
 		$query    = parse_url( $url, PHP_URL_QUERY );
 		$target   = Redirects::verifiedTarget( $path . ( $query ? '?' . $query : '' ) );
 		$fragment = parse_url( $url, PHP_URL_FRAGMENT );
+		// Navigation can link to a published page without approving it for SEO.
+		$navigation = array(
+			'taxis-privado-barcelona'     => 'traslados-privados',
+			'taxis-barcelona-costa-brava' => 'destinos/costa-brava',
+			'taxis-barcelona-salou'       => 'rutas/barcelona-salou',
+			'taxis-barcelona-girona'      => 'rutas/barcelona-girona',
+		);
+		$key        = \MeTransfers\I18n\Language::pathWithoutLanguage( $path );
+		if ( null === $target && isset( $navigation[ $key ] ) ) {
+			$post = UrlPolicy::postForPath( $navigation[ $key ] );
+			if ( $post && 'publish' === $post->post_status && '' === (string) ( $post->post_password ?? '' ) ) {
+				$language = \MeTransfers\I18n\Language::detectFromUri( $path, defined( 'MT_ACTIVE_LANGS' ) ? MT_ACTIVE_LANGS : array( 'es' ) );
+				$link     = 'es' === $language ? get_permalink( $post ) : \MeTransfers\I18n\Language::urlForLanguage( $language, $navigation[ $key ] );
+				return $link . ( $query ? '?' . $query : '' ) . ( $fragment ? '#' . $fragment : '' );
+			}
+		}
 		return null === $target ? $url : home_url( $target ) . ( $fragment ? '#' . $fragment : '' );
 	}
 

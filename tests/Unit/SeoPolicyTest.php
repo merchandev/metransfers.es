@@ -180,7 +180,7 @@ final class SeoPolicyTest extends TestCase {
 
 	public function testInternalLinksResolveOnlyVerifiedTargetsAndKeepFragments(): void {
 		$url = 'https://metransfers.es/taxis-barcelona-salou/?utm_source=menu#faq';
-		self::assertSame( $url, \MeTransfers\SEO\Links::normalize( $url ) );
+		self::assertSame( 'https://example.test/rutas/barcelona-salou/?utm_source=menu#faq', \MeTransfers\SEO\Links::normalize( $url ) );
 		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_ready'] = '1';
 		self::assertSame( 'https://metransfers.es/rutas/barcelona-salou/?utm_source=menu#faq', \MeTransfers\SEO\Links::normalize( $url ) );
 		self::assertSame( 'https://other.test/taxis-barcelona-salou/', \MeTransfers\SEO\Links::normalize( 'https://other.test/taxis-barcelona-salou/' ) );
@@ -191,5 +191,22 @@ final class SeoPolicyTest extends TestCase {
 		$GLOBALS['mt_test_post_meta'][1]['_mt_ruta_destino'] = 'Salou';
 		self::assertSame( 'Transfer Barcelona - Salou | MeTransfers', \MeTransfers\SEO\Meta::routeText( $GLOBALS['mt_seo_posts'][1], 'title' ) );
 		self::assertStringContainsString( 'Barcelona a Salou', \MeTransfers\SEO\Meta::routeText( $GLOBALS['mt_seo_posts'][1], 'description' ) );
+	}
+
+	public function testNavigationDoesNotLinkToDraftOrMissingTargets(): void {
+		$url                                     = 'https://metransfers.es/taxis-barcelona-salou/';
+		$GLOBALS['mt_seo_posts'][1]->post_status = 'draft';
+		self::assertSame( $url, \MeTransfers\SEO\Links::normalize( $url ) );
+		unset( $GLOBALS['mt_seo_posts'][1] );
+		self::assertSame( $url, \MeTransfers\SEO\Links::normalize( $url ) );
+		self::assertSame( '/traslados-privados/', Redirects::targetForRequest( '/taxis-privado-barcelona/', array( 'es' ) ) );
+		self::assertNull( Redirects::targetForRequest( '/traslados-privados/', array( 'es' ) ) );
+	}
+
+	public function testUnreviewedNavigationPreservesEnglishQueryAndFragment(): void {
+		$url = 'https://metransfers.es/en/taxis-barcelona-salou/?utm_source=menu#faq';
+		self::assertSame( 'https://example.test/en/rutas/barcelona-salou/?utm_source=menu#faq', \MeTransfers\SEO\Links::normalize( $url ) );
+		$GLOBALS['mt_seo_posts'][1]->post_password = '0';
+		self::assertSame( $url, \MeTransfers\SEO\Links::normalize( $url ) );
 	}
 }

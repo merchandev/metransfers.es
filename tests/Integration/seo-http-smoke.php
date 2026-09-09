@@ -60,4 +60,26 @@ mt_seo_assert( home_url( '/rutas/barcelona-salou/' ) === mt_seo_attr( $english_b
 $spanish = wp_remote_retrieve_body( mt_seo_fetch( '/rutas/barcelona-salou/' ) );
 mt_seo_assert( home_url( '/en/rutas/barcelona-salou/' ) === mt_seo_attr( $spanish, '//link[@hreflang="en"]', 'href' ), 'Spanish must reciprocate approved English.' );
 delete_post_meta( $salou->ID, '_mt_seo_variant_en' );
+
+// Exercise both real-post dispatch and fixed-template virtual hydration anonymously.
+foreach ( array( 'mt-router-visibility', 'contacto' ) as $slug ) {
+	$existing = get_page_by_path( $slug );
+	$id = $existing ? $existing->ID : wp_insert_post( array( 'post_type' => 'page', 'post_name' => $slug, 'post_title' => $slug, 'post_status' => 'publish' ) );
+	foreach ( array( 'draft', 'private', 'trash', 'publish' ) as $status ) {
+		wp_update_post( array( 'ID' => $id, 'post_status' => $status, 'post_password' => '', 'post_content' => 'MT_PRIVATE_CONTENT_SENTINEL' ) );
+		$response = mt_seo_fetch( '/en/' . $slug . '/' );
+		mt_seo_assert( ( 'publish' === $status ? 200 : 404 ) === wp_remote_retrieve_response_code( $response ), 'Router visibility: ' . $slug . ' ' . $status );
+		if ( 'publish' !== $status ) {
+			mt_seo_assert( false === strpos( wp_remote_retrieve_body( $response ), 'MT_PRIVATE_CONTENT_SENTINEL' ), 'Router must not leak protected content.' );
+		}
+	}
+	wp_update_post( array( 'ID' => $id, 'post_password' => 'integration-secret' ) );
+	mt_seo_assert( 404 === wp_remote_retrieve_response_code( mt_seo_fetch( '/en/' . $slug . '/' ) ), 'Password-protected page must not be hydrated.' );
+	wp_update_post( array( 'ID' => $id, 'post_password' => '' ) );
+}
+mt_seo_assert( 404 === wp_remote_retrieve_response_code( mt_seo_fetch( '/en/taxis-barcelona-mt-nonexistent-fixture/' ) ), 'Missing SEO page must not become a virtual landing.' );
+
+$home_body = wp_remote_retrieve_body( mt_seo_fetch( '/' ) );
+$blog_body = wp_remote_retrieve_body( mt_seo_fetch( '/en/blog/' ) );
+mt_seo_assert( mt_seo_attr( $home_body, '//meta[@name="description"]', 'content' ) !== mt_seo_attr( $blog_body, '//meta[@name="description"]', 'content' ), 'Home and Blog need distinct descriptions.' );
 WP_CLI::success( 'SEO HTTP contracts passed with ' . ( $yoast ? 'Yoast' : 'WordPress core' ) . '.' );

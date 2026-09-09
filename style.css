@@ -9995,6 +9995,29 @@ body .page-banner__meta {
     width: 100%;
 }
 .rutas-search-box input::placeholder { color: rgba(255,255,255,.5); }
+.rutas-hero__pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+.ruta-pill {
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 100px;
+    padding: 0.4rem 1rem;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    backdrop-filter: blur(4px);
+}
+.ruta-pill:hover, .ruta-pill.active {
+    background: rgba(255,255,255,.25);
+    border-color: rgba(255,255,255,.6);
+}
 
 /* Stats bar */
 .rutas-statsbar {
@@ -10073,15 +10096,16 @@ body .page-banner__meta {
     gap: 1rem;
 }
 .ruta-card {
-    background: #fff;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 1.25rem 1.25rem 1rem;
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    padding: 1.5rem 1.25rem 1.25rem;
     text-decoration: none;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    transition: box-shadow .2s, transform .2s, border-color .2s;
+    gap: 0.75rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,.03);
+    transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
 }
@@ -10089,16 +10113,16 @@ body .page-banner__meta {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 3px;
+    height: 4px;
     background: linear-gradient(90deg, #004E9A, #0072d6);
     transform: scaleX(0);
-    transition: transform .25s;
+    transition: transform .3s ease;
     transform-origin: left;
 }
 .ruta-card:hover {
-    box-shadow: 0 8px 32px rgba(0,78,154,.1);
-    transform: translateY(-3px);
-    border-color: #c7deff;
+    box-shadow: 0 12px 40px rgba(0,78,154,.12);
+    transform: translateY(-5px);
+    border-color: #e2e8f0;
 }
 .ruta-card:hover::before { transform: scaleX(1); }
 
@@ -10192,12 +10216,12 @@ body .page-banner__meta {
 }
 /* Archive hero mismo alto que home */
 .rutas-archive .rutas-hero {
-    min-height: 100svh !important;
+    min-height: 55vh !important;
 }
 .rutas-hero__inner {
     padding-top: 120px !important;
-    padding-bottom: 5rem !important;
-    min-height: 100svh;
+    padding-bottom: 4rem !important;
+    min-height: 55vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
