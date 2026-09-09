@@ -333,10 +333,12 @@ final class Router {
 			return false;
 		}
 		if ( ! $fallback ) {
-			if ( 'page-seo-dynamic.php' === self::fixedTemplate( $page ) ) {
+			// Trashing a page can change its slug. Never resurrect its old URL
+			// merely because a dedicated template still exists in the theme.
+			if ( 'home' !== $page ) {
 				return false;
 			}
-				$fallback = self::virtualPost( $page );
+			$fallback = self::virtualPost( $page );
 		}
 		self::hydrateSingular( $fallback );
 		global $wp_query;
