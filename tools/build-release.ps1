@@ -16,8 +16,8 @@ try {
         $names = @($archive.Entries | ForEach-Object FullName)
         $unexpected = @($names | Where-Object { $_ -match '^metransfers/(\.git/|\.github/|vendor/|node_modules/|\.phpstan-cache/|\.phpunit.cache/|test-results/|tests/|tools/|docs/|fix_[^/]*\.php$)' })
         if ($unexpected.Count) { throw ('Unexpected development files: ' + ($unexpected -join ', ')) }
-        foreach ($required in @('style.css', 'functions.php', 'index.php', 'app/Bootstrap.php')) {
-            if ($names -notcontains "metransfers/$required") { throw "Missing runtime file: $required" }
+        foreach ($required in @('style.css', 'functions.php', 'index.php', 'app/bootstrap.php')) {
+            if ($names -cnotcontains "metransfers/$required") { throw "Missing runtime file: $required" }
         }
     } finally { $archive.Dispose() }
     Write-Output "Commit: $commit"

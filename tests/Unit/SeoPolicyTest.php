@@ -202,4 +202,11 @@ final class SeoPolicyTest extends TestCase {
 		self::assertSame( '/traslados-privados/', Redirects::targetForRequest( '/taxis-privado-barcelona/', array( 'es' ) ) );
 		self::assertNull( Redirects::targetForRequest( '/traslados-privados/', array( 'es' ) ) );
 	}
+
+	public function testUnreviewedNavigationPreservesEnglishQueryAndFragment(): void {
+		$url = 'https://metransfers.es/en/taxis-barcelona-salou/?utm_source=menu#faq';
+		self::assertSame( 'https://example.test/en/rutas/barcelona-salou/?utm_source=menu#faq', \MeTransfers\SEO\Links::normalize( $url ) );
+		$GLOBALS['mt_seo_posts'][1]->post_password = '0';
+		self::assertSame( $url, \MeTransfers\SEO\Links::normalize( $url ) );
+	}
 }

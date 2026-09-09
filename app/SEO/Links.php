@@ -29,7 +29,7 @@ final class Links {
 		$key        = \MeTransfers\I18n\Language::pathWithoutLanguage( $path );
 		if ( null === $target && isset( $navigation[ $key ] ) ) {
 			$post = UrlPolicy::postForPath( $navigation[ $key ] );
-			if ( $post && 'publish' === $post->post_status && empty( $post->post_password ) ) {
+			if ( $post && 'publish' === $post->post_status && '' === (string) ( $post->post_password ?? '' ) ) {
 				$language = \MeTransfers\I18n\Language::detectFromUri( $path, defined( 'MT_ACTIVE_LANGS' ) ? MT_ACTIVE_LANGS : array( 'es' ) );
 				$link     = 'es' === $language ? get_permalink( $post ) : \MeTransfers\I18n\Language::urlForLanguage( $language, $navigation[ $key ] );
 				return $link . ( $query ? '?' . $query : '' ) . ( $fragment ? '#' . $fragment : '' );
