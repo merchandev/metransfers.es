@@ -144,8 +144,8 @@ final class Translation {
 					'seo_lead_hero',
 				);
 				foreach ( $custom_meta as $key ) {
-					$val = get_post_meta( $post->ID, $key, true );
-					if ( $val && is_string( $val ) ) {
+					$val = trim( (string) get_post_meta( $post->ID, $key, true ) );
+					if ( '' !== $val ) {
 						$texts[] = $val;
 					}
 				}
