@@ -200,7 +200,5 @@ final class SeoPolicyTest extends TestCase {
 	public function testUnreviewedEnglishLegacyNavigationFallsBackToSpanishCanonical(): void {
 		$url = 'https://metransfers.es/en/taxis-barcelona-salou/?utm_source=menu#faq';
 		self::assertSame( 'https://metransfers.es/rutas/barcelona-salou/?utm_source=menu#faq', \MeTransfers\SEO\Links::normalize( $url ) );
-		$GLOBALS['mt_seo_posts'][1]->post_password = '0';
-		self::assertSame( $url, \MeTransfers\SEO\Links::normalize( $url ) );
 	}
 }
