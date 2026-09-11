@@ -1,5 +1,12 @@
 <?php
 
+// Keep the runtime theme version aligned with the WordPress style.css header.
+// functions.php retains a guarded legacy fallback, so defining it here makes
+// 5.0.5 authoritative from the earliest application bootstrap stage.
+if ( ! defined( 'ME_TRANSFERS_VERSION' ) ) {
+	define( 'ME_TRANSFERS_VERSION', '5.0.5' );
+}
+
 // Basic PSR-4 Autoloader for MeTransfers App
 spl_autoload_register(function ($class) {
     // project-specific namespace prefix
