@@ -6,9 +6,18 @@ $fixtures = array(
 	array( 'ruta', 'barcelona-salou', '1' ),
 	array( 'ruta', 'barcelona-andorra', '0' ),
 	array( 'ruta', 'barcelona-cadaques', '' ),
+	array( 'ruta', 'barcelona-reus', '' ),
+	array( 'ruta', 'barcelona-montserrat', '' ),
 	array( 'page', 'taxis-barcelona-salou', '' ),
 	array( 'page', 'taxis-barcelona-vielha', '' ),
 	array( 'page', 'costa-brava-taxis', '' ),
+	array( 'page', 'reus-taxis', '' ),
+	array( 'page', 'reus-traslados', '' ),
+	array( 'page', 'montserrat-taxis', '' ),
+	array( 'page', 'montserrat-traslados', '' ),
+	array( 'page', 'barcelona-taxis', '' ),
+	array( 'page', 'barcelona-traslados', '' ),
+	array( 'page', 'destinos-salou-fixture', '' ),
 );
 foreach ( $fixtures as $fixture ) {
 	$id = wp_insert_post( array( 'post_type' => $fixture[0], 'post_name' => $fixture[1], 'post_title' => $fixture[1], 'post_content' => '<p>Contenido editorial de prueba.</p>', 'post_status' => 'publish' ), true );
