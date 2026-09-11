@@ -73,11 +73,17 @@ mt_wp_integration_assert( in_array( 'mt_page', $public_query_vars, true ), 'The 
 $rules           = get_option( 'rewrite_rules', array() );
 $translated_rule = false;
 foreach ( array_keys( (array) $rules ) as $rule ) {
-	if ( false !== strpos( $rule, '(en|fr|de|it|pt|ca|ru|zh|ja|ar)' ) ) {
+	if ( false !== strpos( $rule, '^(en)' ) ) {
 		$translated_rule = true;
 		break;
 	}
 }
-mt_wp_integration_assert( $translated_rule, 'Translated rewrite rules must be generated.' );
+mt_wp_integration_assert( $translated_rule, 'English rewrite rules must be generated.' );
+
+foreach ( array( 'fr', 'de', 'it', 'pt', 'ca', 'ru', 'zh', 'ja', 'ar' ) as $retired ) {
+	foreach ( array_keys( (array) $rules ) as $rule ) {
+		mt_wp_integration_assert( false === strpos( $rule, $retired . '|' ) && false === strpos( $rule, '|' . $retired ), "Retired language {$retired} must not remain in active rewrite rules." );
+	}
+}
 
 echo "WordPress {$wp_version} integration smoke passed.\n";
