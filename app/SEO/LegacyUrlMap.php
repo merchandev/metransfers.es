@@ -35,7 +35,7 @@ final class LegacyUrlMap {
 	);
 
 	/**
-	 * Destinos históricos que deben consolidarse bajo /rutas/barcelona-*/.
+	 * Destinos históricos que deben consolidarse bajo rutas canónicas de Barcelona.
 	 * El valor es el slug canónico del CPT ruta, sin el prefijo /rutas/.
 	 *
 	 * @var array<string,string>
