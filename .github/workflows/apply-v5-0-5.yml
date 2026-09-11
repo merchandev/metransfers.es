@@ -1,0 +1,53 @@
+name: Apply v5.0.5 release fixes
+
+on:
+  push:
+    branches:
+      - release/5.0.5-seo-final-work7
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: release/5.0.5-seo-final-work7
+          fetch-depth: 0
+
+      - name: Apply version and PHPCS fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          style = Path('style.css')
+          text = style.read_text(encoding='utf-8')
+          old = 'Version:     4.3.3'
+          new = 'Version:     5.0.5'
+          if old not in text and new not in text:
+              raise SystemExit('Expected theme version header was not found')
+          style.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          seo = Path('app/I18n/Seo.php')
+          text = seo.read_text(encoding='utf-8')
+          text = text.replace("\t\t$is_indexable = \\MeTransfers\\SEO\\Indexability::isIndexableRequest();", "\t\t$is_indexable  = \\MeTransfers\\SEO\\Indexability::isIndexableRequest();", 1)
+          seo.write_text(text, encoding='utf-8')
+          PY
+
+          rm -f .github/workflows/apply-v5-0-5.yml
+
+      - name: Commit final release state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add style.css app/I18n/Seo.php .github/workflows/apply-v5-0-5.yml
+          git commit -m "release(theme): bump to 5.0.5 and fix SEO quality gate"
+          git push origin HEAD:release/5.0.5-seo-final-work7
