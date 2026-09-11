@@ -80,10 +80,26 @@ final class Seo {
 		if ( \MeTransfers\HotelPortal\HotelPortal::isPortalRequest() ) {
 			return;
 		}
-		if ( ! \MeTransfers\SEO\Indexability::isIndexableRequest() ) {
+
+		$request_uri  = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
+		$is_indexable = \MeTransfers\SEO\Indexability::isIndexableRequest();
+
+		// Las variantes EN-US protegidas siguen en noindex hasta aprobación
+		// editorial, pero deben declarar un canonical propio estable. Esto evita
+		// que queden como documentos 200 sin canonical mientras se revisan.
+		if ( ! $is_indexable ) {
+			$language = Language::get();
+			if ( Language::isTranslated() && \MeTransfers\SEO\Indexability::isIndexableLanguage( $language ) ) {
+				$path    = Language::pathWithoutLanguage( $request_uri );
+				$trimmed = trim( $path, '/' );
+				$post    = '' === $trimmed ? true : \MeTransfers\SEO\UrlPolicy::postForPath( $path );
+				if ( $post ) {
+					echo '<link rel="canonical" href="' . esc_url( Language::urlForLanguage( $language, $trimmed ) ) . '" />' . "\n";
+				}
+			}
 			return;
 		}
-		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
+
 		if ( ! defined( 'WPSEO_VERSION' ) && is_post_type_archive( 'ruta' ) ) {
 			echo '<link rel="canonical" href="' . esc_url( Language::urlForLanguage( Language::get(), 'rutas' ) ) . '" />' . "\n";
 		}

@@ -2,8 +2,9 @@
 namespace MeTransfers\SEO;
 
 final class RouteBootstrap {
-	private const VERSION = '2026-09-11-v1';
-	private const OPTION  = 'mt_seo_route_bootstrap_version';
+	private const VERSION     = '2026-09-11-v2';
+	private const OPTION      = 'mt_seo_route_bootstrap_version';
+	private const LOCK_OPTION = 'mt_seo_route_bootstrap_lock';
 
 	public function register(): void {
 		add_action( 'init', array( __CLASS__, 'ensureCanonicalRoutes' ), 25 );
@@ -11,7 +12,8 @@ final class RouteBootstrap {
 
 	/**
 	 * Canonical routes required to absorb legacy destination URLs that still
-	 * have historical Google signals. Existing routes are never overwritten.
+	 * have historical Google signals. Existing routes are never overwritten;
+	 * missing SEO/route metadata is repaired in place.
 	 *
 	 * @return array<string,string>
 	 */
@@ -69,10 +71,18 @@ final class RouteBootstrap {
 			return;
 		}
 
+		// Evita carreras cuando varias peticiones llegan justo después del deploy.
+		$lock_time = (int) get_option( self::LOCK_OPTION, 0 );
+		if ( $lock_time > 0 && ( time() - $lock_time ) < 120 ) {
+			return;
+		}
+		update_option( self::LOCK_OPTION, time(), false );
+
 		$created = 0;
 		foreach ( self::catalog() as $slug => $destination ) {
 			$existing = get_page_by_path( $slug, OBJECT, 'ruta' );
 			if ( $existing ) {
+				self::repairRouteMetadata( (int) $existing->ID, $destination );
 				continue;
 			}
 
@@ -94,26 +104,39 @@ final class RouteBootstrap {
 				continue;
 			}
 
-			update_post_meta( $post_id, '_mt_ruta_origen', 'Barcelona centro' );
-			update_post_meta( $post_id, '_mt_ruta_destino', $destination );
-			update_post_meta( $post_id, '_mt_ruta_h1', 'Traslado privado de Barcelona a ' . $destination );
-			update_post_meta( $post_id, '_mt_seo_ready', '1' );
-			update_post_meta( $post_id, '_mt_route_bootstrap', self::VERSION );
-			update_post_meta( $post_id, '_yoast_wpseo_title', 'Transfer Barcelona - ' . $destination . ' | MeTransfers' );
-			update_post_meta(
-				$post_id,
-				'_yoast_wpseo_metadesc',
-				sprintf(
-					'Reserva tu traslado privado de Barcelona a %1$s con recogida puerta a puerta, vehículo privado y conductor profesional. Consulta disponibilidad con MeTransfers.',
-					$destination
-				)
-			);
+			self::repairRouteMetadata( (int) $post_id, $destination );
 			++$created;
 		}
 
 		update_option( self::OPTION, self::VERSION, false );
+		delete_option( self::LOCK_OPTION );
 		if ( $created > 0 ) {
 			flush_rewrite_rules( false );
+		}
+	}
+
+	private static function repairRouteMetadata( int $post_id, string $destination ): void {
+		$meta = array(
+			'_mt_ruta_origen'       => 'Barcelona centro',
+			'_mt_ruta_destino'      => $destination,
+			'_mt_ruta_h1'           => 'Traslado privado de Barcelona a ' . $destination,
+			'_mt_route_bootstrap'   => self::VERSION,
+			'_yoast_wpseo_title'    => 'Transfer Barcelona - ' . $destination . ' | MeTransfers',
+			'_yoast_wpseo_metadesc' => sprintf(
+				'Transfer privado de Barcelona a %1$s con recogida puerta a puerta, vehículo privado y chófer profesional. Reserva con MeTransfers.',
+				$destination
+			),
+		);
+
+		foreach ( $meta as $key => $value ) {
+			if ( '' === (string) get_post_meta( $post_id, $key, true ) ) {
+				update_post_meta( $post_id, $key, $value );
+			}
+		}
+
+		// Nunca reactivamos una ruta deshabilitada explícitamente por un editor.
+		if ( '' === (string) get_post_meta( $post_id, '_mt_seo_ready', true ) ) {
+			update_post_meta( $post_id, '_mt_seo_ready', '1' );
 		}
 	}
 }
