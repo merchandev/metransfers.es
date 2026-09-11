@@ -119,8 +119,9 @@ final class Translation {
 			);
 			foreach ( $posts as $post ) {
 				foreach ( array( 'post_title', 'post_excerpt', 'post_content' ) as $property ) {
-					if ( isset( $post->{$property} ) && is_string( $post->{$property} ) ) {
-						$texts[] = $post->{$property};
+					$value = trim( (string) $post->{$property} );
+					if ( '' !== $value ) {
+						$texts[] = $value;
 					}
 				}
 
