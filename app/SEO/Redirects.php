@@ -7,6 +7,13 @@ final class Redirects {
 
 	public function register() {
 		add_action( 'template_redirect', array( $this, 'processRedirects' ), 0 );
+		add_filter( 'redirect_canonical', array( __CLASS__, 'protectLocalizedCanonical' ), 10, 2 );
+	}
+
+	public static function protectLocalizedCanonical( $redirect_url, $requested_url ) {
+		$languages = defined( 'MT_ACTIVE_LANGS' ) ? MT_ACTIVE_LANGS : array( 'es' );
+		$match     = \MeTransfers\I18n\Router::matchRequest( (string) $requested_url, $languages );
+		return null !== $match ? false : $redirect_url;
 	}
 
 	public static function targetForRequest( string $request_uri, array $languages ): ?string {
