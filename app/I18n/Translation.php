@@ -203,7 +203,7 @@ final class Translation {
 				$chars    = 0;
 			}
 			$chunk[ $key ] = $text;
-			$chars          += $length;
+			$chars        += $length;
 		}
 		if ( ! empty( $chunk ) ) {
 			$chunks[] = $chunk;
@@ -319,7 +319,13 @@ final class Translation {
 		$quote = substr( $literal, 0, 1 );
 		$value = substr( $literal, 1, -1 );
 		if ( "'" === $quote ) {
-			return strtr( $value, array( '\\\\' => '\\', "\\'" => '\'' ) );
+			return strtr(
+				$value,
+				array(
+					'\\\\' => '\\',
+					"\\'"  => '\'',
+				)
+			);
 		}
 		return stripcslashes( $value );
 	}
