@@ -33,7 +33,10 @@ final class Router {
 
 	public static function fixedTemplate( $page ) {
 		$templates = array(
+			// Home
 			'home'                          => 'front-page.php',
+
+			// Servicios principales
 			'aeropuerto-barcelona'          => 'template-servicio.php',
 			'traslados-aeropuerto'          => 'template-servicio.php',
 			'puerto-barcelona'              => 'template-servicio.php',
@@ -46,23 +49,31 @@ final class Router {
 			'bodas-eventos'                 => 'template-servicio.php',
 			'grupos'                        => 'template-servicio.php',
 			'flota'                         => 'template-flota.php',
+
+			// Páginas SEO manuales (plantillas dedicadas)
 			'taxis-privado-barcelona'       => 'page-taxis-privado-barcelona.php',
 			'traslados-privados'            => 'page-traslados-privados.php',
 			'taxis-barcelona-port-aventura' => 'page-taxis-barcelona-port-aventura.php',
 			'taxis-barcelona-salou'         => 'page-taxis-barcelona-salou.php',
 			'taxis-barcelona-costa-brava'   => 'page-taxis-barcelona-costa-brava.php',
 			'taxis-barcelona-girona'        => 'page-taxis-barcelona-girona.php',
+
+			// Reservas y flujo de booking
 			'reservaciones'                 => 'page-reservaciones.php',
 			'seleccionar-vehiculo'          => 'page.php',
 			'reservas-metransfers'          => 'page.php',
 			'pago'                          => 'page.php',
 			'reservas-hotel'                => 'page.php',
+
+			// Soporte / Legales
 			'contacto'                      => 'page-contacto.php',
 			'gracias'                       => 'page-gracias.php',
 			'faq'                           => 'page.php',
 			'privacidad'                    => 'page.php',
 			'terminos-y-condiciones'        => 'page.php',
 			'cookies'                       => 'page.php',
+
+			// Blog / Rutas
 			'blog'                          => 'index.php',
 			'noticias'                      => 'index.php',
 			'rutas'                         => 'archive-ruta.php',
@@ -102,17 +113,8 @@ final class Router {
 				$languages
 			)
 		);
-
 		add_rewrite_rule( '^(' . $pattern . ')/?$', 'index.php?mt_lang=$matches[1]&mt_page=home', 'top' );
 		add_rewrite_rule( '^(' . $pattern . ')/(.+?)/?$', 'index.php?mt_lang=$matches[1]&mt_page=$matches[2]', 'top' );
-	}
-
-	public static function maybeFlushRules() {
-		if ( self::RULES_VERSION === get_option( 'mt_i18n_rules_version' ) ) {
-			return;
-		}
-		flush_rewrite_rules( false );
-		update_option( 'mt_i18n_rules_version', self::RULES_VERSION, false );
 	}
 
 	public static function registerQueryVars( $variables ) {
@@ -121,118 +123,253 @@ final class Router {
 		return array_values( array_unique( $variables ) );
 	}
 
+	public static function maybeFlushRules() {
+		if ( self::RULES_VERSION === get_option( 'mt_i18n_rules_flushed' ) ) {
+			return;
+		}
+		flush_rewrite_rules();
+		update_option( 'mt_i18n_rules_flushed', self::RULES_VERSION, false );
+	}
+
 	public static function dispatch() {
-		$language = sanitize_key( (string) get_query_var( 'mt_lang' ) );
-		$page     = trim( (string) get_query_var( 'mt_page' ), '/' );
-		if ( ! $language || ! $page || ! defined( 'MT_ACTIVE_LANGS' ) || ! in_array( $language, MT_ACTIVE_LANGS, true ) || 'es' === $language ) {
+		$language = (string) get_query_var( 'mt_lang' );
+		if ( ! $language || ! in_array( $language, MT_ACTIVE_LANGS, true ) || 'es' === $language ) {
 			return;
 		}
-
 		Language::set( $language );
-		if ( 'home' === $page ) {
-			self::hydrateFrontPage();
+		$page          = trim( (string) get_query_var( 'mt_page', 'home' ), '/' );
+		$page          = '' !== $page ? $page : 'home';
+		$template      = self::fixedTemplate( $page );
+		$original_post = null;
+
+		$booking_flow_pages = array(
+			'seleccionar-vehiculo',
+			'reservas-metransfers',
+			'pago',
+			'reservas-hotel',
+			'gracias',
+			'faq',
+			'privacidad',
+			'terminos-y-condiciones',
+			'cookies',
+			'contacto',
+		);
+
+		if ( in_array( $page, array( 'blog', 'noticias' ), true ) ) {
+			self::hydrateArchive( 'post' );
+		} elseif ( 'rutas' === $page ) {
+			self::hydrateArchive( 'ruta' );
+		} elseif ( in_array( $page, $booking_flow_pages, true ) || null === $template ) {
+			$post_id = url_to_postid( home_url( '/' . $page . '/' ) );
+			if ( ! $post_id ) {
+				$found = get_page_by_path( $page, OBJECT, array( 'page', 'post' ) );
+				if ( $found ) {
+					$post_id = $found->ID;
+				}
+			}
+			if ( $post_id ) {
+				$original_post = get_post( $post_id );
+				if ( ! self::isPublicPost( $original_post ) ) {
+					self::setNotFound();
+					return;
+				}
+				if ( null === $template ) {
+					$template = self::templateForPost( $original_post, $post_id );
+				}
+			}
+		}
+
+		if ( null === $template ) {
+			self::setNotFound();
 			return;
 		}
 
-		if ( 'rutas' === $page ) {
-			self::hydrateRouteArchive();
+		$full_path = get_template_directory() . '/' . $template;
+		if ( ! file_exists( $full_path ) ) {
+			self::setNotFound();
 			return;
 		}
 
-		$post = self::postForTranslatedPath( $page );
-		if ( $post && self::isPublicPost( $post ) ) {
-			self::hydratePost( $post );
-			return;
+		if ( $original_post ) {
+			self::hydrateSingular( $original_post );
+		} elseif ( ! in_array( $page, array( 'blog', 'noticias', 'rutas' ), true ) ) {
+			if ( ! self::hydrateVirtualPage( $page ) ) {
+				self::setNotFound();
+				return;
+			}
 		}
 
+		status_header( 200 );
+		add_filter(
+			'template_include',
+			static function () use ( $full_path ) {
+				return $full_path;
+			},
+			99
+		);
+	}
+
+	public static function localizeMenuLink( $attributes, $menu_item = null, $args = null ) {
+		if ( ! Language::isTranslated() || empty( $attributes['href'] ) ) {
+			return $attributes;
+		}
+		$href      = $attributes['href'];
+		$home_host = wp_parse_url( home_url( '/' ), PHP_URL_HOST );
+		$href_host = wp_parse_url( $href, PHP_URL_HOST );
+		if ( $href_host && $home_host && strtolower( $href_host ) !== strtolower( $home_host ) ) {
+			return $attributes;
+		}
+
+		$path               = Language::pathWithoutLanguage( $href );
+		$localized          = Language::url( $path );
+		$fragment           = wp_parse_url( $href, PHP_URL_FRAGMENT );
+		$attributes['href'] = $fragment ? $localized . '#' . $fragment : $localized;
+		return $attributes;
+	}
+
+	public static function translateMenuTitle( $title, $item = null, $args = null, $depth = 0 ) {
+		return Translation::translate( $title );
+	}
+
+	private static function templateForPost( $post, $post_id ) {
+		if ( ! $post ) {
+			return null;
+		}
+		$custom = get_page_template_slug( $post_id );
+		if ( $custom && file_exists( get_template_directory() . '/' . $custom ) ) {
+			return $custom;
+		}
+		if ( 'ruta' === $post->post_type ) {
+			return 'single-ruta.php';
+		}
+		if ( 'page' === $post->post_type ) {
+			$dedicated = 'page-' . $post->post_name . '.php';
+			if ( file_exists( get_template_directory() . '/' . $dedicated ) ) {
+				return $dedicated;
+			}
+		}
+		return 'post' === $post->post_type ? 'single.php' : 'page.php';
+	}
+
+	private static function hydrateArchive( $post_type ) {
 		global $wp_query;
-		if ( $wp_query ) {
-			$wp_query->set_404();
+		$paged                          = max( 1, (int) get_query_var( 'paged', 1 ) );
+		$query                          = new \WP_Query(
+			array(
+				'post_type'   => $post_type,
+				'post_status' => 'publish',
+				'paged'       => $paged,
+			)
+		);
+		$wp_query->posts                = $query->posts;
+		$wp_query->post_count           = $query->post_count;
+		$wp_query->found_posts          = $query->found_posts;
+		$wp_query->max_num_pages        = $query->max_num_pages;
+		$wp_query->current_post         = -1;
+		$wp_query->is_404               = false;
+		$wp_query->is_home              = 'post' === $post_type;
+		$wp_query->is_archive           = 'ruta' === $post_type;
+		$wp_query->is_post_type_archive = 'ruta' === $post_type;
+		$wp_query->is_singular          = false;
+		$wp_query->is_single            = false;
+		$wp_query->is_page              = false;
+		$wp_query->is_front_page        = false;
+
+		if ( 'post' === $post_type ) {
+			$blog_id = (int) get_option( 'page_for_posts' );
+			if ( $blog_id ) {
+				$blog_post                   = get_post( $blog_id );
+				$wp_query->queried_object    = $blog_post;
+				$wp_query->queried_object_id = $blog_id;
+			}
+		} else {
+			$wp_query->queried_object = get_post_type_object( 'ruta' );
 		}
-		status_header( 404 );
-		nocache_headers();
+	}
+
+	private static function hydrateSingular( $original_post ) {
+		global $post, $wp_query;
+		$post                           = $original_post;
+		$wp_query->queried_object       = $original_post;
+		$wp_query->queried_object_id    = $original_post->ID;
+		$wp_query->post                 = $original_post;
+		$wp_query->posts                = array( $original_post );
+		$wp_query->post_count           = 1;
+		$wp_query->found_posts          = 1;
+		$wp_query->current_post         = -1;
+		$wp_query->is_404               = false;
+		$wp_query->is_home              = false;
+		$wp_query->is_archive           = false;
+		$wp_query->is_post_type_archive = false;
+		$wp_query->is_front_page        = false;
+		$wp_query->is_page              = 'page' === $original_post->post_type;
+		$wp_query->is_singular          = true;
+		$wp_query->is_single            = 'page' !== $original_post->post_type;
+		setup_postdata( $post );
 	}
 
 	public static function isPublicPost( $post ): bool {
-		if ( ! $post || 'publish' !== ( $post->post_status ?? '' ) || ! empty( $post->post_password ) ) {
+		return $post
+			&& 'publish' === $post->post_status
+			&& '' === (string) ( $post->post_password ?? '' )
+			&& is_post_publicly_viewable( $post );
+	}
+
+	private static function hydrateVirtualPage( $page ): bool {
+		$front_id = 'home' === $page ? (int) get_option( 'page_on_front' ) : 0;
+		$fallback = $front_id ? get_post( $front_id ) : get_page_by_path( $page );
+		if ( $fallback && ! self::isPublicPost( $fallback ) ) {
 			return false;
 		}
-		if ( function_exists( 'is_post_publicly_viewable' ) ) {
-			return is_post_publicly_viewable( $post );
+		if ( ! $fallback ) {
+			if ( 'home' !== $page ) {
+				return false;
+			}
+			$fallback = self::virtualPost( $page );
 		}
-		return ! isset( $post->publicly_viewable ) || (bool) $post->publicly_viewable;
-	}
-
-	private static function postForTranslatedPath( string $page ) {
-		$id = url_to_postid( home_url( '/' . trim( $page, '/' ) . '/' ) );
-		if ( $id ) {
-			return get_post( $id );
-		}
-		return get_page_by_path( trim( $page, '/' ), OBJECT, array( 'page', 'post', 'ruta' ) );
-	}
-
-	private static function hydrateFrontPage(): void {
-		$page_id = (int) get_option( 'page_on_front' );
-		$post    = $page_id ? get_post( $page_id ) : null;
-		if ( $post && self::isPublicPost( $post ) ) {
-			self::hydratePost( $post, true );
-		}
-	}
-
-	private static function hydrateRouteArchive(): void {
+		self::hydrateSingular( $fallback );
 		global $wp_query;
-		if ( ! $wp_query ) {
-			return;
-		}
-		$wp_query->is_404               = false;
-		$wp_query->is_archive           = true;
-		$wp_query->is_post_type_archive = true;
-		$wp_query->is_singular          = false;
-		$wp_query->set( 'post_type', 'ruta' );
-		status_header( 200 );
+		$wp_query->is_home       = 'home' === $page;
+		$wp_query->is_front_page = 'home' === $page;
+		return true;
 	}
 
-	private static function hydratePost( $post, bool $front_page = false ): void {
-		global $wp_query, $wp_the_query;
-		if ( ! $wp_query ) {
-			return;
-		}
-		$wp_query->posts             = array( $post );
-		$wp_query->post              = $post;
-		$wp_query->post_count        = 1;
-		$wp_query->found_posts       = 1;
-		$wp_query->max_num_pages     = 1;
-		$wp_query->is_404            = false;
-		$wp_query->is_singular       = true;
-		$wp_query->is_page           = 'page' === $post->post_type;
-		$wp_query->is_single         = 'page' !== $post->post_type;
-		$wp_query->is_home           = false;
-		$wp_query->is_front_page     = $front_page;
-		$wp_query->queried_object    = $post;
-		$wp_query->queried_object_id = (int) $post->ID;
-		$wp_query->set( 'p', (int) $post->ID );
-		$wp_query->set( 'page_id', 'page' === $post->post_type ? (int) $post->ID : 0 );
-		$wp_query->set( 'post_type', $post->post_type );
-		$wp_the_query    = $wp_query;
-		$GLOBALS['post'] = $post;
-		setup_postdata( $post );
-		status_header( 200 );
+	private static function virtualPost( $page ) {
+		$now = current_time( 'mysql' );
+		return new \WP_Post(
+			(object) array(
+				'ID'                    => 0,
+				'post_author'           => 1,
+				'post_date'             => $now,
+				'post_date_gmt'         => current_time( 'mysql', true ),
+				'post_content'          => '',
+				'post_title'            => ucfirst( str_replace( '-', ' ', $page ) ),
+				'post_excerpt'          => '',
+				'post_status'           => 'publish',
+				'comment_status'        => 'closed',
+				'ping_status'           => 'closed',
+				'post_password'         => '',
+				'post_name'             => $page,
+				'to_ping'               => '',
+				'pinged'                => '',
+				'post_modified'         => $now,
+				'post_modified_gmt'     => current_time( 'mysql', true ),
+				'post_content_filtered' => '',
+				'post_parent'           => 0,
+				'guid'                  => home_url( '/' . $page . '/' ),
+				'menu_order'            => 0,
+				'post_type'             => 'page',
+				'post_mime_type'        => '',
+				'comment_count'         => 0,
+				'filter'                => 'raw',
+			)
+		);
 	}
 
-	public static function localizeMenuLink( $atts, $menu_item, $args ) {
-		if ( ! Language::isTranslated() || empty( $atts['href'] ) || ! is_string( $atts['href'] ) ) {
-			return $atts;
-		}
-		$host = (string) parse_url( $atts['href'], PHP_URL_HOST );
-		if ( $host && strtolower( $host ) !== strtolower( (string) parse_url( home_url(), PHP_URL_HOST ) ) ) {
-			return $atts;
-		}
-		$path         = trim( (string) parse_url( $atts['href'], PHP_URL_PATH ), '/' );
-		$atts['href'] = Language::urlForLanguage( Language::get(), $path );
-		return $atts;
-	}
-
-	public static function translateMenuTitle( $title, $menu_item = null, $args = null, $depth = null ) {
-		return Translation::translate( $title );
+	private static function setNotFound() {
+		global $wp_query;
+		$wp_query->set_404();
+		status_header( 404 );
+		nocache_headers();
 	}
 }
