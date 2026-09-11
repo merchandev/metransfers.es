@@ -81,8 +81,8 @@ final class Seo {
 			return;
 		}
 
-		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
-		$is_indexable  = \MeTransfers\SEO\Indexability::isIndexableRequest();
+		$request_uri  = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
+		$is_indexable = \MeTransfers\SEO\Indexability::isIndexableRequest();
 
 		// Las variantes EN-US protegidas siguen en noindex hasta aprobación
 		// editorial, pero deben declarar un canonical propio estable. Esto evita
