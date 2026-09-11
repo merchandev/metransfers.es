@@ -17,7 +17,7 @@ final class RouteBootstrap {
 	 */
 	public static function catalog(): array {
 		return array(
-			'barcelona-portaventura'           => 'PortAventura',
+			'barcelona-portaventura'            => 'PortAventura',
 			'barcelona-costa-brava'             => 'Costa Brava',
 			'barcelona-perpignan'               => 'Perpignan',
 			'barcelona-granollers'              => 'Granollers',
