@@ -2,109 +2,154 @@
 namespace MeTransfers\SEO;
 
 final class LegacyUrlMap {
-
 	/**
-	 * Mapeo de URLs antiguas hacia las nuevas URLs (principalmente rutas).
-	 * No incluyen prefijos de idioma, ya que el sistema Language-Aware
-	 * los manejará dinámicamente.
+	 * Aliases que no siguen el patrón geográfico normal.
+	 * Paths sin barra inicial/final ni prefijo de idioma.
 	 *
-	 * Formato: 'slug-antiguo' => 'slug-nuevo'
+	 * @var array<string,string>
 	 */
 	private static $redirects = array(
 		'destinos'                                   => 'rutas',
 		'transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v' => 'grupos',
 		'taxis-privado-barcelona'                    => 'traslados-privados',
 		'traslados-aeropuerto'                       => 'transfer-aeropuerto-barcelona',
-
-		// Hub/pages antiguas de destino con reemplazo exacto en /rutas/.
-		'destinos/salou'                             => 'rutas/barcelona-salou',
-		'destinos/lloret-de-mar'                     => 'rutas/barcelona-lloret-de-mar',
-		'destinos/reus'                              => 'rutas/barcelona-reus',
-		'destinos/girona'                            => 'rutas/barcelona-girona',
-		'destinos/andorra'                           => 'rutas/barcelona-andorra',
-		'destinos/sitges'                            => 'rutas/barcelona-sitges',
-		'destinos/tarragona'                         => 'rutas/barcelona-tarragona',
-		'destinos/montserrat'                        => 'rutas/barcelona-montserrat',
-		'destinos/cadaques'                          => 'rutas/barcelona-cadaques',
-		'destinos/tossa-de-mar'                      => 'rutas/barcelona-tossa-de-mar',
-		'destinos/cambrils'                          => 'rutas/barcelona-cambrils',
-		'destinos/calella'                           => 'rutas/barcelona-calella',
-		'destinos/roses'                             => 'rutas/barcelona-roses',
-		'destinos/baqueira-beret'                    => 'rutas/barcelona-baqueira-beret',
-		'destinos/blanes'                            => 'rutas/barcelona-blanes',
-		'destinos/platja-daro'                       => 'rutas/barcelona-platja-daro',
-		'destinos/vilanova'                          => 'rutas/barcelona-vilanova',
-		'destinos/calafell'                          => 'rutas/barcelona-calafell',
-		'destinos/la-pineda'                         => 'rutas/barcelona-la-pineda',
-		'destinos/la-molina'                         => 'rutas/barcelona-la-molina',
-
-		// Aliases históricos de rutas con reemplazo exacto.
-		'taxis-barcelona-tossa-de-mar'               => 'rutas/barcelona-tossa-de-mar',
-		'traslados-barcelona-tossa-de-mar'           => 'rutas/barcelona-tossa-de-mar',
-		'traslados-barcelona-andorra'                => 'rutas/barcelona-andorra',
-		'taxis-barcelona-andorra'                    => 'rutas/barcelona-andorra',
-		'traslados-barcelona-cadaques'               => 'rutas/barcelona-cadaques',
+		'aeropuerto-barcelona'                       => 'transfer-aeropuerto-barcelona',
+		'transfer-puerto-barcelona'                  => 'traslados-puerto',
+		'puerto-barcelona'                           => 'traslados-puerto',
+		'conductor-privado'                          => 'chofer-por-horas',
+		'traslados-corporativos'                     => 'corporativo-y-eventos',
+		'empresas'                                   => 'corporativo-y-eventos',
+		'faq'                                        => 'preguntas-frecuentes',
+		'privacidad'                                 => 'politica-de-privacidad',
+		'bodas-eventos'                              => 'grupos',
+		'noticias'                                   => 'blog',
+		'barcelona-taxis'                            => 'traslados-privados',
+		'barcelona-traslados'                        => 'traslados-privados',
 		'tienda-barcelona-tours-transfers/transfers/traslado-a-andorra' => 'rutas/barcelona-andorra',
-		'tienda-barcelona-tours-transfers/transfers/transfer-privado-portaventura' => 'taxis-barcelona-port-aventura',
-		'tienda-barcelona-tours-transfers/transfers/transfer-privado-a-portaventura' => 'taxis-barcelona-port-aventura',
+		'tienda-barcelona-tours-transfers/transfers/transfer-privado-portaventura' => 'rutas/barcelona-portaventura',
+		'tienda-barcelona-tours-transfers/transfers/transfer-privado-a-portaventura' => 'rutas/barcelona-portaventura',
 		'tienda-barcelona-tours-transfers/transfers/transfer-privado-salou' => 'rutas/barcelona-salou',
 		'tienda-barcelona-tours-transfers/transfers/transfer-privado-girona' => 'rutas/barcelona-girona',
 		'tienda-barcelona-tours-transfers/transfers' => 'rutas',
 		'tienda-barcelona-tours-transfers'           => '',
-		'taxis-barcelona-salou'                      => 'rutas/barcelona-salou',
-		'salou-taxis'                                => 'rutas/barcelona-salou',
-		'salou-traslados'                            => 'rutas/barcelona-salou',
-		'taxis-barcelona-cadaques'                   => 'rutas/barcelona-cadaques',
-		'andorra-taxis'                              => 'rutas/barcelona-andorra',
-		'andorra-traslados'                          => 'rutas/barcelona-andorra',
-		'lloret-de-mar-taxis'                        => 'rutas/barcelona-lloret-de-mar',
-		'lloret-de-mar-traslados'                    => 'rutas/barcelona-lloret-de-mar',
-		'sitges-taxis'                               => 'rutas/barcelona-sitges',
-		'sitges-traslados'                           => 'rutas/barcelona-sitges',
-		'taxis-barcelona-sitges'                     => 'rutas/barcelona-sitges',
-		'tarragona-taxis'                            => 'rutas/barcelona-tarragona',
-		'tarragona-traslados'                        => 'rutas/barcelona-tarragona',
-		'girona-taxis'                               => 'rutas/barcelona-girona',
-		'girona-traslados'                           => 'rutas/barcelona-girona',
-		'taxis-barcelona-girona'                     => 'rutas/barcelona-girona',
-		'reus-taxis'                                 => 'rutas/barcelona-reus',
-		'reus-traslados'                             => 'rutas/barcelona-reus',
-		'montserrat-taxis'                           => 'rutas/barcelona-montserrat',
-		'montserrat-traslados'                       => 'rutas/barcelona-montserrat',
-
-		// Duplicados genéricos de la antigua arquitectura.
-		'barcelona-taxis'                            => 'traslados-privados',
-		'barcelona-traslados'                        => 'traslados-privados',
-
-		// Costa Brava, Perpignan, Granollers, Mataró, Badalona y Hospitalet
-		// se mantienen hasta disponer de una ruta final equivalente aprobada.
-
-		// 404s identificados a corregir (transaccionales / fijos)
-		'transfer-puerto-barcelona'                  => 'traslados-puerto',
-		'empresas'                                   => 'corporativo-y-eventos',
 	);
 
 	/**
-	 * Comprueba si un slug antiguo tiene redirección configurada.
+	 * Destinos históricos que deben consolidarse bajo /rutas/barcelona-*/.
+	 * El valor es el slug canónico del CPT ruta, sin el prefijo /rutas/.
+	 *
+	 * @var array<string,string>
 	 */
+	private static $destination_routes = array(
+		'salou'                   => 'barcelona-salou',
+		'lloret-de-mar'           => 'barcelona-lloret-de-mar',
+		'sitges'                  => 'barcelona-sitges',
+		'tarragona'               => 'barcelona-tarragona',
+		'reus'                    => 'barcelona-reus',
+		'girona'                  => 'barcelona-girona',
+		'andorra'                 => 'barcelona-andorra',
+		'montserrat'              => 'barcelona-montserrat',
+		'cadaques'                => 'barcelona-cadaques',
+		'tossa-de-mar'            => 'barcelona-tossa-de-mar',
+		'cambrils'                => 'barcelona-cambrils',
+		'calella'                 => 'barcelona-calella',
+		'roses'                   => 'barcelona-roses',
+		'baqueira-beret'          => 'barcelona-baqueira-beret',
+		'blanes'                  => 'barcelona-blanes',
+		'platja-daro'             => 'barcelona-platja-daro',
+		'vilanova'                => 'barcelona-vilanova',
+		'calafell'                => 'barcelona-calafell',
+		'la-pineda'               => 'barcelona-la-pineda',
+		'la-molina'               => 'barcelona-la-molina',
+		'portaventura'            => 'barcelona-portaventura',
+		'port-aventura'           => 'barcelona-portaventura',
+		'costa-brava'             => 'barcelona-costa-brava',
+		'perpignan'               => 'barcelona-perpignan',
+		'granollers'              => 'barcelona-granollers',
+		'mataro'                  => 'barcelona-mataro',
+		'badalona'                => 'barcelona-badalona',
+		'hospitalet'              => 'barcelona-hospitalet',
+		'pineda-de-mar'           => 'barcelona-pineda-de-mar',
+		'sevilla'                 => 'barcelona-sevilla',
+		'vigo'                    => 'barcelona-vigo',
+		'benidorm'                => 'barcelona-benidorm',
+		'bilbao'                  => 'barcelona-bilbao',
+		'san-sebastian'           => 'barcelona-san-sebastian',
+		'malgrat'                 => 'barcelona-malgrat',
+		'granada'                 => 'barcelona-granada',
+		'valencia'                => 'barcelona-valencia',
+		'santiago-de-compostela'  => 'barcelona-santiago-de-compostela',
+		'lourdes'                 => 'barcelona-lourdes',
+		'vall-de-nuria'           => 'barcelona-vall-de-nuria',
+		'almeria'                 => 'barcelona-almeria',
+		'figueres'                => 'barcelona-figueres',
+		'camping-el-delfin-verde' => 'barcelona-camping-el-delfin-verde',
+		'marbella'                => 'barcelona-marbella',
+		'santa-susanna'           => 'barcelona-santa-susanna',
+		'begur'                   => 'barcelona-begur',
+		'bagur'                   => 'barcelona-begur',
+		'calella-de-palafrugell'  => 'barcelona-calella-de-palafrugell',
+		'cap-de-creus'            => 'barcelona-cap-de-creus',
+		'la-escala'               => 'barcelona-la-escala',
+		'palamos'                 => 'barcelona-palamos',
+		'madrid'                  => 'barcelona-madrid',
+		'vielha'                  => 'barcelona-vielha',
+		'peniscola'               => 'barcelona-peniscola',
+		'delta-del-ebro'          => 'barcelona-delta-del-ebro',
+		'taull'                   => 'barcelona-taull',
+		'besalu'                  => 'barcelona-besalu',
+		'morella'                 => 'barcelona-morella',
+		'altea'                   => 'barcelona-altea',
+		'valderrobres'            => 'barcelona-valderrobres',
+		'alquezar'                => 'barcelona-alquezar',
+		'colliure'                => 'barcelona-collioure',
+		'carcasona'               => 'barcelona-carcassonne',
+		'carcassonne'             => 'barcelona-carcassonne',
+	);
+
 	public static function hasRedirect( string $slug ): bool {
-		$slug = trim( $slug, '/' );
-		return isset( self::$redirects[ $slug ] );
+		return null !== self::getTarget( $slug );
 	}
 
-	/**
-	 * Devuelve el nuevo path (sin idioma) para un slug antiguo.
-	 * Si no existe, devuelve null.
-	 */
 	public static function getTarget( string $slug ): ?string {
-		$slug = trim( $slug, '/' );
-		return self::$redirects[ $slug ] ?? null;
+		$slug = trim( strtolower( $slug ), '/' );
+		if ( array_key_exists( $slug, self::$redirects ) ) {
+			return self::$redirects[ $slug ];
+		}
+
+		if ( 0 === strpos( $slug, 'destinos/' ) ) {
+			$destination = substr( $slug, strlen( 'destinos/' ) );
+			return self::routeTargetForDestination( $destination );
+		}
+
+		if ( preg_match( '/^(?:taxis|traslados)-barcelona-(.+)$/', $slug, $matches ) ) {
+			return self::routeTargetForDestination( $matches[1] );
+		}
+
+		if ( preg_match( '/^(.+)-(?:taxis|traslados)$/', $slug, $matches ) ) {
+			return self::routeTargetForDestination( $matches[1] );
+		}
+
+		return null;
 	}
 
-	/**
-	 * Devuelve todo el mapa.
-	 */
 	public static function getMap(): array {
-		return self::$redirects;
+		$map = self::$redirects;
+		foreach ( self::$destination_routes as $destination => $route ) {
+			$map[ 'destinos/' . $destination ] = 'rutas/' . $route;
+		}
+		return $map;
+	}
+
+	public static function destinationRoutes(): array {
+		return self::$destination_routes;
+	}
+
+	private static function routeTargetForDestination( string $destination ): ?string {
+		$destination = trim( strtolower( $destination ), '/' );
+		if ( isset( self::$destination_routes[ $destination ] ) ) {
+			return 'rutas/' . self::$destination_routes[ $destination ];
+		}
+		return null;
 	}
 }
