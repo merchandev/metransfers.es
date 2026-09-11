@@ -2,17 +2,40 @@
 namespace MeTransfers\SEO;
 
 final class Redirects {
+	/** @var string[] */
+	private const RETIRED_LANGUAGES = array( 'fr', 'de', 'it', 'pt', 'ca', 'ru', 'zh', 'ja', 'ar' );
+
 	public function register() {
 		add_action( 'template_redirect', array( $this, 'processRedirects' ), 0 );
+		add_filter( 'redirect_canonical', array( __CLASS__, 'protectLocalizedCanonical' ), 10, 2 );
+	}
+
+	public static function protectLocalizedCanonical( $redirect_url, $requested_url ) {
+		$languages = defined( 'MT_ACTIVE_LANGS' ) ? MT_ACTIVE_LANGS : array( 'es' );
+		$match     = \MeTransfers\I18n\Router::matchRequest( (string) $requested_url, $languages );
+		return null !== $match ? false : $redirect_url;
 	}
 
 	public static function targetForRequest( string $request_uri, array $languages ): ?string {
 		$path     = trim( (string) parse_url( $request_uri, PHP_URL_PATH ), '/' );
-		$segments = explode( '/', $path );
+		$segments = '' === $path ? array() : explode( '/', $path );
 		$language = 'es';
-		if ( in_array( $segments[0], $languages, true ) ) {
+
+		if ( ! empty( $segments ) && in_array( $segments[0], self::RETIRED_LANGUAGES, true ) ) {
+			array_shift( $segments );
+			$slug   = implode( '/', $segments );
+			$target = LegacyUrlMap::getTarget( $slug );
+			$target = null !== $target ? $target : $slug;
+			$query  = parse_url( $request_uri, PHP_URL_QUERY );
+			$url    = '/' . trim( $target, '/' );
+			$url    = '/' === $url ? '/' : $url . '/';
+			return $url . ( is_string( $query ) && '' !== $query ? '?' . $query : '' );
+		}
+
+		if ( ! empty( $segments ) && in_array( $segments[0], $languages, true ) ) {
 			$language = array_shift( $segments );
 		}
+
 		$slug   = implode( '/', $segments );
 		$target = LegacyUrlMap::getTarget( $slug );
 		$seen   = array( $slug );
@@ -33,7 +56,6 @@ final class Redirects {
 	}
 
 	public function processRedirects() {
-
 		if ( is_admin() || wp_doing_ajax() || ! in_array( $_SERVER['REQUEST_METHOD'] ?? 'GET', array( 'GET', 'HEAD' ), true ) ) {
 			return;
 		}
@@ -46,14 +68,27 @@ final class Redirects {
 	}
 
 	public static function verifiedTarget( string $request ): ?string {
-
-		$languages  = defined( 'MT_ACTIVE_LANGS' ) ? MT_ACTIVE_LANGS : array( 'es' );
-			$target = self::targetForRequest( $request, $languages );
+		$languages = defined( 'MT_ACTIVE_LANGS' ) ? MT_ACTIVE_LANGS : array( 'es' );
+		$target    = self::targetForRequest( $request, $languages );
 		if ( null === $target ) {
 			return null;
 		}
-		$language = \MeTransfers\I18n\Language::detectFromUri( $target, $languages );
-		$path     = \MeTransfers\I18n\Language::pathWithoutLanguage( $target );
-		return UrlPolicy::eligibleTarget( $path, $language ) ? $target : null;
+
+		$path        = \MeTransfers\I18n\Language::pathWithoutLanguage( $target );
+		$target_lang = \MeTransfers\I18n\Language::detectFromUri( $target, $languages );
+		if ( UrlPolicy::eligibleTarget( $path, $target_lang ) ) {
+			return $target;
+		}
+
+		// Una variante traducida no aprobada nunca debe convertir un alias
+		// histórico válido en 404. Se consolida hacia el canónico español.
+		if ( 'es' !== $target_lang && UrlPolicy::eligibleTarget( $path, 'es' ) ) {
+			$query = parse_url( $target, PHP_URL_QUERY );
+			$url   = '/' . trim( $path, '/' );
+			$url   = '/' === $url ? '/' : $url . '/';
+			return $url . ( is_string( $query ) && '' !== $query ? '?' . $query : '' );
+		}
+
+		return null;
 	}
 }

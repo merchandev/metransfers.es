@@ -14,7 +14,9 @@ if ( ! defined( 'MT_LANGS' ) ) {
         'MT_LANGS',
         array(
             'es' => array( 'label' => 'ES', 'name' => 'Español', 'google_code' => 'es' ),
-            'en' => array( 'label' => 'EN', 'name' => 'English', 'google_code' => 'en' ),
+            'en' => array( 'label' => 'EN', 'name' => 'English (US)', 'google_code' => 'en' ),
+            // Idiomas retirados: se conservan solo para reconocer URLs históricas
+            // y poder consolidarlas mediante 301 hacia el canónico español.
             'fr' => array( 'label' => 'FR', 'name' => 'Français', 'google_code' => 'fr' ),
             'de' => array( 'label' => 'DE', 'name' => 'Deutsch', 'google_code' => 'de' ),
             'it' => array( 'label' => 'IT', 'name' => 'Italiano', 'google_code' => 'it' ),
@@ -29,11 +31,11 @@ if ( ! defined( 'MT_LANGS' ) ) {
 }
 
 if ( ! defined( 'MT_ACTIVE_LANGS' ) ) {
-    define( 'MT_ACTIVE_LANGS', array( 'es', 'en', 'fr', 'de', 'it', 'pt', 'ca', 'ru', 'zh', 'ja', 'ar' ) );
+    define( 'MT_ACTIVE_LANGS', array( 'es', 'en' ) );
 }
 
 if ( ! defined( 'MT_SEO_LANGS' ) ) {
-    // A language enters this allowlist only after human SEO/content acceptance.
+    // EN solo se anuncia/indexa cuando la variante concreta ha sido revisada.
     define( 'MT_SEO_LANGS', array( 'es', 'en' ) );
 }
 

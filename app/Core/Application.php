@@ -11,7 +11,7 @@ class Application {
 		self::$booted = true;
 
 		if ( ! defined( 'MT_PLATFORM_VERSION' ) ) {
-			define( 'MT_PLATFORM_VERSION', '6.9.2' );
+			define( 'MT_PLATFORM_VERSION', '6.9.3' );
 		}
 		if ( ! defined( 'MT_PLATFORM_DB_VERSION' ) ) {
 			define( 'MT_PLATFORM_DB_VERSION', '6.7.0' );
@@ -48,7 +48,6 @@ class Application {
 
 		self::loadLegacyModules();
 
-		// Boot modern components
 		$capabilities = new \MeTransfers\Admin\Capabilities();
 		$capabilities->register();
 
@@ -75,6 +74,7 @@ class Application {
 		$seeds = new \MeTransfers\Core\Seeds();
 		$seeds->register();
 
+		( new \MeTransfers\SEO\RouteBootstrap() )->register();
 		$redirects = new \MeTransfers\SEO\Redirects();
 		$redirects->register();
 		( new \MeTransfers\SEO\Policy() )->register();
@@ -97,10 +97,7 @@ class Application {
 			$admin_menu = new \MeTransfers\Admin\Menu();
 			add_action( 'admin_menu', array( $admin_menu, 'register' ) );
 			add_action( 'admin_enqueue_scripts', array( $admin_menu, 'enqueueStyles' ) );
-			// Aviso si faltan páginas críticas del flujo de reserva
 			add_action( 'admin_notices', array( '\MeTransfers\Core\Seeds', 'adminNoticesMissingPages' ) );
-
-			// Endpoint para crear páginas faltantes con un clic desde el aviso
 			add_action(
 				'admin_init',
 				static function () {
@@ -126,9 +123,6 @@ class Application {
 		if ( file_exists( HQP_PLUGIN_DIR . 'hotel-qr-plugin.php' ) ) {
 			require_once HQP_PLUGIN_DIR . 'hotel-qr-plugin.php';
 		}
-
-		// The former Unified_Integration shim is intentionally not loaded. Its
-		// responsibilities now live in the dedicated booking and hotel modules.
 	}
 
 	public static function renderBookingPluginConflictNotice() {

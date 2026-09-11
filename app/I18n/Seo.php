@@ -7,7 +7,6 @@ final class Seo {
 		add_filter( 'get_canonical_url', array( __CLASS__, 'filterCanonical' ) );
 		add_action( 'wp_head', array( __CLASS__, 'renderHead' ), 2 );
 
-		// Yoast SEO Translation Filters
 		add_filter( 'wpseo_title', array( __CLASS__, 'translateSeo' ), 99 );
 		add_filter( 'wpseo_metadesc', array( __CLASS__, 'translateSeo' ), 99 );
 		add_filter( 'wpseo_opengraph_title', array( __CLASS__, 'translateSeo' ), 99 );
@@ -21,14 +20,11 @@ final class Seo {
 			return $text;
 		}
 
-		// First try translating the exact whole string (if user manually entered a custom Yoast title/desc)
 		$translated = Translation::translate( $text );
 		if ( $translated !== $text ) {
 			return $translated;
 		}
 
-		// If it's a generated Yoast title (e.g. "Page Name - Site Name"), it won't be in the exact cache.
-		// We split by common separators and translate the individual pieces (which ARE in the cache).
 		$separators = array( ' - ', ' | ', ' &ndash; ', ' &mdash; ', ' &#8211; ', ' &#8212; ', ' / ', ' &raquo; ' );
 		foreach ( $separators as $sep ) {
 			if ( strpos( $text, $sep ) !== false ) {
@@ -39,7 +35,6 @@ final class Seo {
 				return implode( $sep, $parts );
 			}
 		}
-
 		return $text;
 	}
 
@@ -53,9 +48,8 @@ final class Seo {
 	}
 
 	public static function filterCanonical( $canonical ) {
-
 		if ( \MeTransfers\HotelPortal\HotelPortal::isPortalRequest() ) {
-				return $canonical;
+			return $canonical;
 		}
 		return self::canonicalForRequest(
 			$canonical,
@@ -76,8 +70,8 @@ final class Seo {
 			}
 			$links[ self::hreflang( $language ) ] = Language::urlForLanguage( $language, $slug );
 		}
-		if ( isset( $links['es'] ) ) {
-			$links['x-default'] = $links['es'];
+		if ( isset( $links['es-ES'] ) ) {
+			$links['x-default'] = $links['es-ES'];
 		}
 		return $links;
 	}
@@ -93,27 +87,35 @@ final class Seo {
 		if ( ! defined( 'WPSEO_VERSION' ) && is_post_type_archive( 'ruta' ) ) {
 			echo '<link rel="canonical" href="' . esc_url( Language::urlForLanguage( Language::get(), 'rutas' ) ) . '" />' . "\n";
 		}
+
 		$seo_languages = defined( 'MT_SEO_LANGS' ) ? MT_SEO_LANGS : array( 'es' );
 		$seo_languages = array_values( array_filter( $seo_languages, array( \MeTransfers\SEO\Indexability::class, 'isIndexableLanguage' ) ) );
-		// Resolve the Spanish source before advertising any localized counterpart.
-		$path = Language::pathWithoutLanguage( $request_uri );
-		if ( in_array( trim( $path, '/' ), array( '', 'rutas', 'blog' ), true ) ) {
-			// Hubs have no per-post translation approval yet.
+		$path          = Language::pathWithoutLanguage( $request_uri );
+		$trimmed       = trim( $path, '/' );
+
+		// Los hubs permanecen ES hasta disponer de una revisión editorial EN-US
+		// completa. Así nunca anunciamos hreflang hacia contenido parcial.
+		if ( in_array( $trimmed, array( '', 'rutas', 'blog' ), true ) ) {
 			$seo_languages = array( 'es' );
-		}
-		if ( ! in_array( trim( $path, '/' ), array( '', 'rutas', 'blog' ), true ) ) {
-			$post_id = url_to_postid( home_url( '/' . trim( $path, '/' ) . '/' ) );
+		} else {
+			$post_id = url_to_postid( home_url( '/' . $trimmed . '/' ) );
 			if ( ! $post_id || ! \MeTransfers\SEO\Indexability::isIndexable( $post_id ) ) {
 				return;
 			}
 			$seo_languages = \MeTransfers\SEO\Indexability::languagesForPost( $post_id, $seo_languages );
 		}
+
 		foreach ( self::alternatesForRequest( $request_uri, $seo_languages ) as $language => $url ) {
 			echo '<link rel="alternate" hreflang="' . esc_attr( $language ) . '" href="' . esc_url( $url ) . '" />' . "\n";
 		}
 	}
 
 	private static function hreflang( $language ) {
-		return 'zh' === $language ? 'zh-Hans' : $language;
+		$map = array(
+			'es' => 'es-ES',
+			'en' => 'en-US',
+			'zh' => 'zh-Hans',
+		);
+		return $map[ $language ] ?? $language;
 	}
 }

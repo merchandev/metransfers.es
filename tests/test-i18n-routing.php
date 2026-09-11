@@ -73,9 +73,10 @@ assert_i18n_routing(
     'Yoast canonical filtering must leave Spanish canonical URLs unchanged.'
 );
 $alternates = Seo::alternatesForRequest( '/en/rutas/barcelona-salou/', array( 'es', 'en', 'zh' ) );
-assert_i18n_routing( 'https://example.test/rutas/barcelona-salou/' === $alternates['es'], 'Spanish hreflang must be unprefixed.' );
+assert_i18n_routing( 'https://example.test/rutas/barcelona-salou/' === $alternates['es-ES'], 'Spanish hreflang must use es-ES and remain unprefixed.' );
+assert_i18n_routing( 'https://example.test/en/rutas/barcelona-salou/' === $alternates['en-US'], 'English hreflang must use en-US and preserve the /en/ prefix.' );
 assert_i18n_routing( 'https://example.test/zh/rutas/barcelona-salou/' === $alternates['zh-Hans'], 'Chinese hreflang must use zh-Hans with the zh URL prefix.' );
-assert_i18n_routing( $alternates['es'] === $alternates['x-default'], 'x-default must point to the Spanish canonical.' );
+assert_i18n_routing( $alternates['es-ES'] === $alternates['x-default'], 'x-default must point to the Spanish canonical.' );
 
 $root = dirname( __DIR__ );
 $facade = file_get_contents( $root . '/includes/i18n.php' );

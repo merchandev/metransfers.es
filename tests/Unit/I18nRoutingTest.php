@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 require_once dirname( __DIR__ ) . '/Support/RouterWordPress.php';
 
 final class I18nRoutingTest extends TestCase {
-	private const LANGUAGES = array( 'es', 'en', 'zh' );
+	private const LANGUAGES = array( 'es', 'en' );
 
 	public function testOnlyPublicUnprotectedPostsCanBeHydrated(): void {
 		foreach ( array( 'draft', 'private', 'trash', 'pending', 'future' ) as $status ) {
@@ -77,6 +77,11 @@ final class I18nRoutingTest extends TestCase {
 		);
 	}
 
+	public function testRetiredLanguagesAreNotActiveRoutes(): void {
+		self::assertNull( Router::matchRequest( '/fr/rutas/barcelona-salou/', self::LANGUAGES ) );
+		self::assertSame( 'es', Language::detectFromUri( '/fr/rutas/barcelona-salou/', self::LANGUAGES ) );
+	}
+
 	public function testUnknownVirtualRoutesDoNotReceiveFallbackTemplates(): void {
 		self::assertNull( Router::fixedTemplate( 'unknown-route' ) );
 		self::assertSame( 'archive-ruta.php', Router::fixedTemplate( 'rutas' ) );
@@ -89,10 +94,11 @@ final class I18nRoutingTest extends TestCase {
 		);
 	}
 
-	public function testChineseHreflangUsesZhHans(): void {
-		$alternates = Seo::alternatesForRequest( '/en/rutas/', self::LANGUAGES );
+	public function testRegionalHreflangUsesSpanishAndUsEnglish(): void {
+		$alternates = Seo::alternatesForRequest( '/en/traslados-privados/', self::LANGUAGES );
 
-		self::assertSame( 'https://example.test/zh/rutas/', $alternates['zh-Hans'] );
-		self::assertSame( $alternates['es'], $alternates['x-default'] );
+		self::assertSame( 'https://example.test/traslados-privados/', $alternates['es-ES'] );
+		self::assertSame( 'https://example.test/en/traslados-privados/', $alternates['en-US'] );
+		self::assertSame( $alternates['es-ES'], $alternates['x-default'] );
 	}
 }

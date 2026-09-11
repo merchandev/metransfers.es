@@ -23,10 +23,11 @@ final class UrlPolicy {
 		if ( ! $post || ! Indexability::isIndexable( $post, false ) ) {
 			return false;
 		}
-		// A transition exemption preserves URLs; it must not authorize consolidation.
-		if ( 'ruta' === $post->post_type && '1' !== get_post_meta( $post->ID, '_mt_seo_ready', true ) ) {
-			return false;
-		}
+
+		// Indexability is the single source of truth for route readiness.
+		// Historical routes without _mt_seo_ready are grandfathered; only an
+		// explicit rejection/noindex may block them. Keeping a second, stricter
+		// check here previously caused valid legacy URLs to fall through to 404.
 		return Variants::isApproved( $post, $language );
 	}
 }

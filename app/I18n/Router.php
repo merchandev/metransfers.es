@@ -2,7 +2,7 @@
 namespace MeTransfers\I18n;
 
 final class Router {
-	const RULES_VERSION = 'v6-full-route-map';
+	const RULES_VERSION = 'v7-es-en-us-only';
 
 	public function register() {
 		add_action( 'init', array( __CLASS__, 'registerRewriteRules' ), 5 );
@@ -58,9 +58,6 @@ final class Router {
 			'taxis-barcelona-costa-brava'   => 'page-taxis-barcelona-costa-brava.php',
 			'taxis-barcelona-girona'        => 'page-taxis-barcelona-girona.php',
 
-			// Páginas SEO dinámicas (taxis-* y traslados-barcelona-* usan page-seo-dynamic.php)
-			// Se resuelven en dispatch() por prefijo, ver lógica de isSeoPage()
-
 			// Reservas y flujo de booking
 			'reservaciones'                 => 'page-reservaciones.php',
 			'seleccionar-vehiculo'          => 'page.php',
@@ -82,8 +79,6 @@ final class Router {
 			'rutas'                         => 'archive-ruta.php',
 		);
 
-		// Páginas SEO dinámicas: taxis-barcelona-* y traslados-barcelona-*
-		// usan la plantilla dinámica unificada.
 		if ( isset( $templates[ $page ] ) ) {
 			return $templates[ $page ];
 		}
@@ -147,8 +142,6 @@ final class Router {
 		$template      = self::fixedTemplate( $page );
 		$original_post = null;
 
-		// Páginas del flujo de booking: buscar el post real en WordPress por slug
-		// para que booking_phase() pueda leer el post_content y detectar shortcodes.
 		$booking_flow_pages = array(
 			'seleccionar-vehiculo',
 			'reservas-metransfers',
@@ -167,10 +160,8 @@ final class Router {
 		} elseif ( 'rutas' === $page ) {
 			self::hydrateArchive( 'ruta' );
 		} elseif ( in_array( $page, $booking_flow_pages, true ) || null === $template ) {
-			// Intentar primero obtener el post real por slug exacto
 			$post_id = url_to_postid( home_url( '/' . $page . '/' ) );
 			if ( ! $post_id ) {
-				// Fallback: buscar por post_name directamente
 				$found = get_page_by_path( $page, OBJECT, array( 'page', 'post' ) );
 				if ( $found ) {
 					$post_id = $found->ID;
@@ -217,7 +208,6 @@ final class Router {
 			99
 		);
 	}
-
 
 	public static function localizeMenuLink( $attributes, $menu_item = null, $args = null ) {
 		if ( ! Language::isTranslated() || empty( $attributes['href'] ) ) {
@@ -326,15 +316,12 @@ final class Router {
 	}
 
 	private static function hydrateVirtualPage( $page ): bool {
-
 		$front_id = 'home' === $page ? (int) get_option( 'page_on_front' ) : 0;
 		$fallback = $front_id ? get_post( $front_id ) : get_page_by_path( $page );
 		if ( $fallback && ! self::isPublicPost( $fallback ) ) {
 			return false;
 		}
 		if ( ! $fallback ) {
-			// Trashing a page can change its slug. Never resurrect its old URL
-			// merely because a dedicated template still exists in the theme.
 			if ( 'home' !== $page ) {
 				return false;
 			}

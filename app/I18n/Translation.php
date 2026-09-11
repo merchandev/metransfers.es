@@ -5,6 +5,9 @@ use MeTransfers\Admin\Capabilities;
 use MeTransfers\Core\Settings;
 
 final class Translation {
+	private const REMOTE_MAX_ITEMS = 25;
+	private const REMOTE_MAX_CHARS = 18000;
+
 	public static function register() {
 		add_filter( 'the_content', array( __CLASS__, 'translate' ), 99 );
 		add_filter( 'the_title', array( __CLASS__, 'translateTitle' ), 99, 2 );
@@ -47,13 +50,6 @@ final class Translation {
 		return $results;
 	}
 
-	/**
-	 * Build the complete source catalog used by the admin prebuilder.
-	 *
-	 * Booking labels are included explicitly, while literal mt_translate()
-	 * calls are discovered from theme PHP files. Published WordPress content is
-	 * included because the_content/the_title are translated from the same cache.
-	 */
 	public static function sourceCatalog() {
 		$texts = array_values( \MeTransfers\Booking\I18n::sourceStrings() );
 		$root  = function_exists( 'get_template_directory' ) ? get_template_directory() : dirname( __DIR__, 2 );
@@ -96,12 +92,11 @@ final class Translation {
 						function ( $item ) use ( &$texts ) {
 							if ( is_string( $item ) ) {
 								$texts[] = $item;
-								if ( strpos( $item, "\n\n" ) !== false ) {
-									$paragraphs = explode( "\n\n", $item );
-									foreach ( $paragraphs as $p ) {
-										$p = trim( $p );
-										if ( ! empty( $p ) ) {
-											$texts[] = $p;
+								if ( false !== strpos( $item, "\n\n" ) ) {
+									foreach ( explode( "\n\n", $item ) as $paragraph ) {
+										$paragraph = trim( $paragraph );
+										if ( '' !== $paragraph ) {
+											$texts[] = $paragraph;
 										}
 									}
 								}
@@ -124,12 +119,12 @@ final class Translation {
 			);
 			foreach ( $posts as $post ) {
 				foreach ( array( 'post_title', 'post_excerpt', 'post_content' ) as $property ) {
-					if ( isset( $post->{$property} ) ) {
-						$texts[] = $post->{$property};
+					$value = trim( (string) $post->{$property} );
+					if ( '' !== $value ) {
+						$texts[] = $value;
 					}
 				}
 
-				// Yoast SEO Meta
 				$yoast_title = get_post_meta( $post->ID, '_yoast_wpseo_title', true );
 				if ( $yoast_title ) {
 					$texts[] = $yoast_title;
@@ -139,7 +134,6 @@ final class Translation {
 					$texts[] = $yoast_desc;
 				}
 
-				// Extract custom metadata used in dynamic templates
 				$custom_meta = array(
 					'_mt_ruta_origen',
 					'_mt_ruta_destino',
@@ -151,8 +145,8 @@ final class Translation {
 					'seo_lead_hero',
 				);
 				foreach ( $custom_meta as $key ) {
-					$val = get_post_meta( $post->ID, $key, true );
-					if ( $val && is_string( $val ) ) {
+					$val = trim( (string) get_post_meta( $post->ID, $key, true ) );
+					if ( '' !== $val ) {
 						$texts[] = $val;
 					}
 				}
@@ -161,7 +155,6 @@ final class Translation {
 
 		$texts = array_map( 'trim', array_filter( $texts, 'is_string' ) );
 		$texts = array_filter( $texts );
-
 		return array_values( array_unique( $texts ) );
 	}
 
@@ -181,8 +174,6 @@ final class Translation {
 
 		$results            = array();
 		$texts_to_translate = array();
-
-		// Filter out strings that are already translated to save API quota
 		foreach ( $texts as $key => $text ) {
 			$cache_key = self::cacheKey( $text, $language );
 			$cached    = get_option( $cache_key, null );
@@ -193,56 +184,99 @@ final class Translation {
 			}
 		}
 
-		if ( empty( $texts_to_translate ) ) {
-			return $results;
+		foreach ( self::remoteChunks( $texts_to_translate ) as $chunk ) {
+			$results += self::translateRemoteChunk( $chunk, $language, $api_key );
+		}
+		ksort( $results );
+		return $results;
+	}
+
+	private static function remoteChunks( array $texts ): array {
+		$chunks = array();
+		$chunk  = array();
+		$chars  = 0;
+		foreach ( $texts as $key => $text ) {
+			$length = strlen( (string) $text );
+			if ( ! empty( $chunk ) && ( count( $chunk ) >= self::REMOTE_MAX_ITEMS || $chars + $length > self::REMOTE_MAX_CHARS ) ) {
+				$chunks[] = $chunk;
+				$chunk    = array();
+				$chars    = 0;
+			}
+			$chunk[ $key ] = $text;
+			$chars        += $length;
+		}
+		if ( ! empty( $chunk ) ) {
+			$chunks[] = $chunk;
+		}
+		return $chunks;
+	}
+
+	private static function translateRemoteChunk( array $chunk, string $language, string $api_key ): array {
+		if ( empty( $chunk ) ) {
+			return array();
 		}
 
-		foreach ( array_chunk( $texts_to_translate, 100, true ) as $chunk ) {
-			$response = wp_remote_post(
-				'https://translation.googleapis.com/language/translate/v2',
-				array(
-					'headers' => array(
-						'Content-Type'   => 'application/json',
-						'X-Goog-Api-Key' => $api_key,
-						'Referer'        => home_url( '/' ),
-					),
-					'body'    => wp_json_encode(
-						array(
-							'q'      => array_values( $chunk ),
-							'source' => 'es',
-							'target' => MT_LANGS[ $language ]['google_code'],
-							'format' => 'html',
-						)
-					),
-					'timeout' => 30,
-				)
-			);
-			if ( is_wp_error( $response ) ) {
-				error_log( 'MeTransfers i18n API Error: ' . $response->get_error_message() );
+		$response = wp_remote_post(
+			'https://translation.googleapis.com/language/translate/v2',
+			array(
+				'headers' => array(
+					'Content-Type'   => 'application/json',
+					'X-Goog-Api-Key' => $api_key,
+					'Referer'        => home_url( '/' ),
+				),
+				'body'    => wp_json_encode(
+					array(
+						'q'      => array_values( $chunk ),
+						'source' => 'es',
+						'target' => MT_LANGS[ $language ]['google_code'],
+						'format' => 'html',
+					)
+				),
+				'timeout' => 45,
+			)
+		);
+
+		if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
+			$message = is_wp_error( $response )
+				? $response->get_error_message()
+				: 'HTTP ' . (int) wp_remote_retrieve_response_code( $response ) . ': ' . wp_remote_retrieve_body( $response );
+			error_log( 'MeTransfers i18n API Error: ' . $message );
+			return self::retryRemoteChunk( $chunk, $language, $api_key );
+		}
+
+		$body         = json_decode( wp_remote_retrieve_body( $response ), true );
+		$translations = isset( $body['data']['translations'] ) && is_array( $body['data']['translations'] )
+			? $body['data']['translations']
+			: array();
+		$keys         = array_keys( $chunk );
+		if ( count( $translations ) !== count( $keys ) ) {
+			error_log( 'MeTransfers i18n API returned an incomplete batch; retrying in smaller chunks.' );
+			return self::retryRemoteChunk( $chunk, $language, $api_key );
+		}
+
+		$results = array();
+		foreach ( $translations as $index => $translation ) {
+			if ( ! isset( $keys[ $index ], $translation['translatedText'] ) ) {
 				continue;
 			}
+			$key       = $keys[ $index ];
+			$decoded   = html_entity_decode( $translation['translatedText'], ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+			$cache_key = self::cacheKey( $chunk[ $key ], $language );
+			update_option( $cache_key, $decoded, false );
+			wp_cache_set( $cache_key, $decoded, 'mt_i18n', 3600 );
+			$results[ $key ] = $decoded;
+		}
+		return $results;
+	}
 
-			$response_code = (int) wp_remote_retrieve_response_code( $response );
-			if ( 200 !== $response_code ) {
-				$error_body = wp_remote_retrieve_body( $response );
-				error_log( 'MeTransfers i18n API HTTP ' . $response_code . ' Error: ' . $error_body );
-				continue;
-			}
-
-			$body         = json_decode( wp_remote_retrieve_body( $response ), true );
-			$translations = isset( $body['data']['translations'] ) ? $body['data']['translations'] : array();
-			$keys         = array_keys( $chunk );
-			foreach ( $translations as $index => $translation ) {
-				if ( ! isset( $keys[ $index ], $translation['translatedText'] ) ) {
-					continue;
-				}
-				$key       = $keys[ $index ];
-				$decoded   = html_entity_decode( $translation['translatedText'], ENT_QUOTES | ENT_HTML5, 'UTF-8' );
-				$cache_key = self::cacheKey( $chunk[ $key ], $language );
-				update_option( $cache_key, $decoded, false );
-				wp_cache_set( $cache_key, $decoded, 'mt_i18n', 3600 );
-				$results[ $key ] = $decoded;
-			}
+	private static function retryRemoteChunk( array $chunk, string $language, string $api_key ): array {
+		if ( count( $chunk ) <= 1 ) {
+			return array();
+		}
+		$size    = (int) ceil( count( $chunk ) / 2 );
+		$results = array();
+		foreach ( array_chunk( $chunk, $size, true ) as $smaller ) {
+			$results += self::translateRemoteChunk( $smaller, $language, $api_key );
 		}
 		return $results;
 	}
@@ -263,7 +297,6 @@ final class Translation {
 			if ( ! is_array( $token ) || T_STRING !== $token[0] || 'mt_translate' !== strtolower( $token[1] ) ) {
 				continue;
 			}
-
 			$cursor = $index + 1;
 			while ( $cursor < $count && is_array( $tokens[ $cursor ] ) && in_array( $tokens[ $cursor ][0], array( T_WHITESPACE, T_COMMENT, T_DOC_COMMENT ), true ) ) {
 				++$cursor;
@@ -279,7 +312,6 @@ final class Translation {
 				$results[] = self::decodePhpStringLiteral( $tokens[ $cursor ][1] );
 			}
 		}
-
 		return $results;
 	}
 
