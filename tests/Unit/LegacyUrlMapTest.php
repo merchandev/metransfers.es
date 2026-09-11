@@ -18,14 +18,14 @@ final class LegacyUrlMapTest extends TestCase {
 
 	public static function exactLegacyRedirects(): array {
 		return array(
-			'reus taxis' => array( 'reus-taxis', 'rutas/barcelona-reus' ),
-			'reus transfers' => array( 'reus-traslados', 'rutas/barcelona-reus' ),
-			'montserrat taxis' => array( 'montserrat-taxis', 'rutas/barcelona-montserrat' ),
-			'montserrat transfers' => array( 'montserrat-traslados', 'rutas/barcelona-montserrat' ),
-			'salou destination' => array( 'destinos/salou', 'rutas/barcelona-salou' ),
-			'lloret destination' => array( 'destinos/lloret-de-mar', 'rutas/barcelona-lloret-de-mar' ),
-			'cadaques destination' => array( 'destinos/cadaques', 'rutas/barcelona-cadaques' ),
-			'barcelona taxis generic' => array( 'barcelona-taxis', 'traslados-privados' ),
+			'reus taxis'                  => array( 'reus-taxis', 'rutas/barcelona-reus' ),
+			'reus transfers'              => array( 'reus-traslados', 'rutas/barcelona-reus' ),
+			'montserrat taxis'            => array( 'montserrat-taxis', 'rutas/barcelona-montserrat' ),
+			'montserrat transfers'        => array( 'montserrat-traslados', 'rutas/barcelona-montserrat' ),
+			'salou destination'           => array( 'destinos/salou', 'rutas/barcelona-salou' ),
+			'lloret destination'          => array( 'destinos/lloret-de-mar', 'rutas/barcelona-lloret-de-mar' ),
+			'cadaques destination'        => array( 'destinos/cadaques', 'rutas/barcelona-cadaques' ),
+			'barcelona taxis generic'     => array( 'barcelona-taxis', 'traslados-privados' ),
 			'barcelona transfers generic' => array( 'barcelona-traslados', 'traslados-privados' ),
 		);
 	}
