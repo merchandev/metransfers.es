@@ -46,3 +46,6 @@ vendor/
 .phpstan-cache/
 test-results/
 playwright-report/
+
+# Local release packages and visual verification
+/output/

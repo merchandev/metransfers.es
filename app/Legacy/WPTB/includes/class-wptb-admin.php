@@ -126,7 +126,18 @@ class WPTB_Admin {
 
     public function sanitize_redsys_secret( $value ) {
         $value = sanitize_text_field( $value );
-        return '' !== $value ? $value : get_option( 'wptb_redsys_secret_key', '' );
+        if ( '' !== $value ) {
+            return $value;
+        }
+
+        // Preserve the current key. Older installations may still use
+        // wptb_redsys_key, so migrate that value only when the current key is empty.
+        $current = (string) get_option( 'wptb_redsys_secret_key', '' );
+        if ( '' !== $current ) {
+            return $current;
+        }
+
+        return (string) get_option( 'wptb_redsys_key', '' );
     }
 
     public function sanitize_google_server_key( $value ) {
@@ -1071,6 +1082,20 @@ class WPTB_Admin {
 
                 <h2 style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd;">💳 Redsys</h2>
                 <p class="description">También puedes definir estos valores mediante constantes <code>MT_REDSYS_*</code> en <code>wp-config.php</code>; las constantes tienen prioridad.</p>
+                <?php
+                $mt_redsys_gateway = new \MeTransfers\Payments\Redsys\Gateway();
+                $mt_redsys_status  = $mt_redsys_gateway->configuration_status();
+                ?>
+                <div class="notice inline <?php echo ! empty( $mt_redsys_status['configured'] ) ? 'notice-success' : 'notice-error'; ?>" style="margin:16px 0 18px;padding:10px 14px;">
+                    <?php if ( ! empty( $mt_redsys_status['configured'] ) ) : ?>
+                        <p style="margin:0;"><strong>Redsys está configurado para pagos.</strong> Entorno efectivo: <code><?php echo esc_html( $mt_redsys_status['environment'] ); ?></code>.</p>
+                    <?php else : ?>
+                        <p style="margin:0;"><strong>Redsys no puede iniciar pagos.</strong> Falta o es inválido: <?php echo esc_html( implode( ', ', $mt_redsys_status['missing'] ) ); ?>.</p>
+                    <?php endif; ?>
+                    <?php if ( ! empty( $mt_redsys_status['configured'] ) && 'live' === $mt_redsys_status['environment'] && empty( $mt_redsys_status['release_gate_ready'] ) ) : ?>
+                        <p style="margin:8px 0 0;"><strong>Aviso de despliegue:</strong> quedan comprobaciones internas pendientes (<?php echo esc_html( implode( ', ', $mt_redsys_status['release_gate_missing'] ) ); ?>). Este aviso ya no bloquea el TPV ni el formulario de hoteles.</p>
+                    <?php endif; ?>
+                </div>
                 <table class="form-table">
                     <tr>
                         <th scope="row">Código de comercio</th>

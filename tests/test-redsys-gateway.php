@@ -145,9 +145,9 @@ if ( empty( $denied['valid'] ) || ! empty( $denied['authorized'] ) ) {
 }
 
 $test_options['wptb_redsys_environment'] = 'live';
-$blocked_live_gateway = new \MeTransfers\Payments\Redsys\Gateway();
-if ( $blocked_live_gateway->is_configured() ) {
-    fwrite( STDERR, "FAILED: live Redsys must be blocked without operational attestations.\n" );
+$configured_live_gateway = new \MeTransfers\Payments\Redsys\Gateway();
+if ( ! $configured_live_gateway->is_configured() || $configured_live_gateway->is_live_ready() ) {
+    fwrite( STDERR, "FAILED: valid credentials must allow configuration while missing operational attestations remain visible.\n" );
     exit( 1 );
 }
 
@@ -156,10 +156,28 @@ $test_options['mt_smtp_credentials_rotated_at'] = '2026-08-19T10:00:00+00:00';
 $test_options['mt_maps_credentials_rotated_at'] = '2026-08-19T10:00:00+00:00';
 $test_options['mt_redsys_sandbox_verified_at'] = '2026-08-19T10:00:00+00:00';
 $live_gateway = new \MeTransfers\Payments\Redsys\Gateway();
+if ( ! $live_gateway->is_live_ready() ) {
+    fwrite( STDERR, "FAILED: completed operational attestations must satisfy the readiness diagnostic.\n" );
+    exit( 1 );
+}
 $live_form = $live_gateway->generate_payment_form( 124, 100, '000000000124', 'Cliente Test' );
 if ( 'https://sis.redsys.es/sis/realizarPago' !== $live_form['url'] ) {
     fwrite( STDERR, "FAILED: live environment must use the Redsys production endpoint.\n" );
     exit( 1 );
+}
+
+$test_options['wptb_redsys_secret_key'] = '';
+$missing_key_gateway = new \MeTransfers\Payments\Redsys\Gateway();
+if ( $missing_key_gateway->is_configured() ) {
+    fwrite( STDERR, "FAILED: missing payment credentials must block configuration.\n" );
+    exit( 1 );
+}
+try {
+    $missing_key_gateway->generate_payment_form( 124, 100, '000000000124', 'Cliente Test' );
+    fwrite( STDERR, "FAILED: missing payment credentials must prevent payment form creation.\n" );
+    exit( 1 );
+} catch ( \Exception $exception ) {
+    // No payment form is produced without credentials, even with attestations.
 }
 
 echo "Redsys gateway tests passed.\n";

@@ -2,6 +2,18 @@
 
 Este documento registra la evolución funcional y técnica del proyecto final. El detalle exacto de cada cambio, autor, fecha y relación entre commits puede consultarse con `git log --all`.
 
+## Última actualización — 14 de septiembre de 2026 (2026-09-14)
+
+- Sincronización completa del tema revisado en la carpeta del Escritorio, conservando sus modificaciones de configuración, Redsys y rutas. La versión del código local es **4.0.4**.
+- Integración del hablador, su imagen de fondo y las fuentes PDF dentro del tema. Descarga del QR y del flyer desde la administración de hoteles, sin instalar otro plugin.
+- Disponibilidad de vehículos calculada por estado activo, capacidad real y tarifa fija del hotel; se elimina el filtro previo Sedán/Minivan que ocultaba opciones válidas. Una tarifa explícita de cero o vacía continúa deshabilitando ese vehículo.
+- Identificación explícita del hotel en las peticiones AJAX, reconstrucción de rutas autorizadas en el servidor y confirmación del importe en céntimos antes de crear la reserva.
+- Formulario con fondos claros, contraste corregido frente a las reglas globales del tema, mensajes visibles, selector de pasajeros según capacidad y navegación por teclado. Las consultas canceladas no sustituyen resultados recientes y el botón de pago evita envíos repetidos.
+- Las tarifas fijas de hoteles no dependen de que Maps devuelva distancia: cuando falla, se registra la incidencia y se conserva la ruta autorizada y el precio del servidor. Redsys comprueba su configuración; las comprobaciones operativas siguen disponibles como diagnóstico administrativo.
+- Revisión local de sintaxis PHP y del flujo de reserva en escritorio y móvil. Pruebas de disponibilidad, capacidad, tarifas, token, rutas y cambios de precio, sin reservas ni cobros reales.
+
+Integración de esta actualización: [PR #41](https://github.com/merchandev/metransfers.es/pull/41). La publicación del código en GitHub no implica que el tema se haya desplegado en WordPress.
+
 ## Repositorios consolidados
 
 | Origen histórico | Contenido integrado |
