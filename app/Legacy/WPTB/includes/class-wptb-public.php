@@ -54,7 +54,7 @@ class WPTB_Public {
         
         // 2. GOOGLE MAPS API
         $api_key = \MeTransfers\Core\Settings::get( 'google_maps_api_key', '' );
-        $maps_phases = array( 'search', 'details', 'payment', 'hotel' );
+        $maps_phases = array( 'search', 'details', 'payment' );
 
         if ( ! empty( $api_key ) && in_array( $phase, $maps_phases, true ) ) {
             $maps_url = add_query_arg(
@@ -81,7 +81,7 @@ class WPTB_Public {
 
 
         // 3. BOOKING APP (search, vehicle and details only)
-        $booking_phases = array( 'search', 'vehicle', 'details', 'hotel' );
+        $booking_phases = array( 'search', 'vehicle', 'details' );
         $booking_enqueued = in_array( $phase, $booking_phases, true );
         if ( $booking_enqueued ) {
             $deps = array( 'jquery', 'mt-booking-tracking' );
@@ -811,6 +811,8 @@ class WPTB_Public {
 
             $gateway = new \MeTransfers\Payments\Redsys\Gateway();
             if ( ! $gateway->is_configured() ) {
+                $payment_status = $gateway->configuration_status();
+                error_log( 'MeTransfers Redsys configuration incomplete: ' . implode( ', ', $payment_status['missing'] ) );
                 throw new \RuntimeException( 'Redsys is not configured.' );
             }
 
