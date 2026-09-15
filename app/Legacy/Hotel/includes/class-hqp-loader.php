@@ -42,15 +42,21 @@ class HQP_Loader {
 
         // Cookie & Logic
         add_action( 'init', array( $plugin_public, 'check_url_token' ) );
-        add_action( 'wp_enqueue_scripts', array( $plugin_public, 'enqueue_scripts' ) );
+        // The hotel shortcode enqueues its dedicated assets itself. Do not load the
+        // legacy booking interceptor or the generic booking app on QR pages.
         
         // Shortcodes and Content
         add_action( 'init', array( $plugin_public, 'register_shortcodes' ) );
 
-        // Specialized HQP Booking AJAX
+        // Dedicated hotel AJAX names avoid collisions with old external hotel plugins.
+        add_action( 'wp_ajax_mt_hotel_get_fixed_pricing', array( $plugin_public, 'ajax_get_fixed_pricing' ) );
+        add_action( 'wp_ajax_nopriv_mt_hotel_get_fixed_pricing', array( $plugin_public, 'ajax_get_fixed_pricing' ) );
+        add_action( 'wp_ajax_mt_hotel_create_booking', array( $plugin_public, 'ajax_create_booking' ) );
+        add_action( 'wp_ajax_nopriv_mt_hotel_create_booking', array( $plugin_public, 'ajax_create_booking' ) );
+
+        // Backward compatibility for already-cached copies of the previous form.
         add_action( 'wp_ajax_hqp_get_fixed_pricing', array( $plugin_public, 'ajax_get_fixed_pricing' ) );
         add_action( 'wp_ajax_nopriv_hqp_get_fixed_pricing', array( $plugin_public, 'ajax_get_fixed_pricing' ) );
-
         add_action( 'wp_ajax_hqp_create_booking', array( $plugin_public, 'ajax_create_booking' ) );
         add_action( 'wp_ajax_nopriv_hqp_create_booking', array( $plugin_public, 'ajax_create_booking' ) );
 

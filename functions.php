@@ -55,7 +55,7 @@ if ( ! defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) ) {
 
 // Centralized Versioning
 if ( ! defined( 'ME_TRANSFERS_VERSION' ) ) {
-	define( 'ME_TRANSFERS_VERSION', '4.3.12' );
+	define( 'ME_TRANSFERS_VERSION', '4.0.3' );
 }
 
 // Auto-purge SiteGround Cache after theme update to prevent cached errors

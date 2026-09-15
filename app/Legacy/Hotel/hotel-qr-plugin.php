@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'HQP_VERSION' ) ) {
-    define( 'HQP_VERSION', '1.0.0' );
+    define( 'HQP_VERSION', '4.0.3' );
 }
 if ( ! defined( 'HQP_PLUGIN_DIR' ) ) {
     define( 'HQP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
