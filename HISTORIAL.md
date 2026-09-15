@@ -172,3 +172,76 @@ git rev-list --count main
 - No duplicar commits para aumentar el contador de GitHub.
 - Conservar autores, fechas, mensajes, tags y relaciones entre commits.
 - Incorporar cambios mediante revisión y controles automáticos.
+
+## 14 de septiembre de 2026 — Sincronización de cambios locales
+
+Origen: instantánea local `1fb47798598ea9dc275282943d0983c3511371bd`, creada el 14/09/2026 a las 20:03:40 (America/Caracas). Comparación e integración sobre `317052e9b9f4298acec021ffb44d074e0e2ff08e` de `origin/main`. La fecha corresponde al guardado local; no existe un historial individual que permita fechar cada edición.
+
+### Reservas y tarifas de hoteles
+
+- Nuevo servicio `HotelFixedPricing`: flota activa compartida por administración y reserva pública, disponibilidad por capacidad, tarifas positivas por vehículo, compatibilidad con precios antiguos de sedán/van y descuentos calculados en céntimos.
+- Actualización del controlador público de Hotel QR, validación del token, consulta de tarifas y creación de reservas.
+- Renovación de la plantilla, estilos CSS y JavaScript del formulario de hoteles.
+- Acciones AJAX dedicadas `mt_hotel_get_fixed_pricing` y `mt_hotel_create_booking`, conservando los nombres antiguos para formularios en caché.
+- Carga independiente de recursos del formulario QR; el motor genérico y Google Maps dejan de cargarse para la fase hotel.
+- Administración de hoteles conectada al servicio compartido de flota y reparación de la página de reservas cuando falta el shortcode, conservando su contenido.
+
+### Materiales QR
+
+- Nuevo controlador compartido `HQP_Materials` para descarga de QR PNG y hablador PDF, con autorización por hotel, nonce, validación de imágenes y registro de auditoría.
+- Incorporación del fondo `HABLADOR - METRANSFERS.png`, fuentes Helvetica y Helvetica Bold y su licencia.
+- Actualización de las instrucciones de materiales y delegación de las descargas desde la administración.
+
+### Redsys
+
+- Preferencia por `wptb_redsys_secret_key`, con compatibilidad y conservación de la clave antigua.
+- Validación de comercio, terminal, moneda y entorno; separación entre configuración del pago y comprobaciones operativas de despliegue.
+- Nuevo diagnóstico de configuración y avisos administrativos sin mostrar el secreto; registro de campos ausentes al iniciar el pago.
+
+### Versiones y diferencias SEO conservadas de la copia local
+
+- Plataforma: `6.9.3` → `6.9.4`. Hotel QR: `1.0.0` → `4.0.3`.
+- El tema vuelve de `5.0.5` a `4.0.3`; el fallback de `functions.php` pasa de `4.3.12` a `4.0.3` y se elimina la definición anticipada `5.0.5` del bootstrap.
+- El renderizado SEO vuelve a omitir canonical en solicitudes no indexables, incluidas las variantes traducidas antes contempladas.
+- `RouteBootstrap` vuelve de `2026-09-11-v2` a `2026-09-11-v1`: se retiran el bloqueo de concurrencia y la reparación de metadatos de rutas existentes; se conservan los metadatos al crear nuevas rutas.
+- Estas diferencias son parte de la instantánea solicitada, no mejoras verificadas; pueden revertir correcciones de SEO y versionado previamente publicadas.
+
+### Integración Git
+
+- Los archivos locales nuevos y modificados se integran en `main` conservando el historial remoto.
+- Se recuperan documentación, pruebas, configuración de calidad y herramientas presentes en GitHub y ausentes en la instantánea local.
+- La rama local `master` conserva la instantánea original como respaldo.
+
+### Archivos de la instantánea modificados o añadidos
+- `app/Core/Application.php`
+- `app/Core/Settings.php`
+- `app/HotelPortal/Services/HotelFixedPricing.php`
+- `app/I18n/Seo.php`
+- `app/Legacy/Hotel/admin/class-hqp-admin.php`
+- `app/Legacy/Hotel/assets/HABLADOR - METRANSFERS.png`
+- `app/Legacy/Hotel/assets/README.txt`
+- `app/Legacy/Hotel/hotel-qr-plugin.php`
+- `app/Legacy/Hotel/includes/class-hqp-loader.php`
+- `app/Legacy/Hotel/includes/class-hqp-materials.php`
+- `app/Legacy/Hotel/includes/font/LICENSE.txt`
+- `app/Legacy/Hotel/includes/font/helvetica.php`
+- `app/Legacy/Hotel/includes/font/helveticab.php`
+- `app/Legacy/Hotel/public/class-hqp-public.php`
+- `app/Legacy/Hotel/public/css/hqp-booking.css`
+- `app/Legacy/Hotel/public/js/hqp-booking.js`
+- `app/Legacy/Hotel/public/partials/hqp-booking-form.php`
+- `app/Legacy/WPTB/includes/class-wptb-admin.php`
+- `app/Legacy/WPTB/includes/class-wptb-public.php`
+- `app/Payments/Redsys/Gateway.php`
+- `app/SEO/RouteBootstrap.php`
+- `app/bootstrap.php`
+- `functions.php`
+- `style.css`
+
+### Validación de esta sincronización
+
+- Sintaxis PHP: 224 archivos revisados sin errores.
+- Sintaxis del JavaScript modificado: `node --check` correcto.
+- `git diff --cached --check`: correcto.
+- Suite legacy: 15 de 16 scripts correctos. `tests/test-redsys-gateway.php` falla con `live Redsys must be blocked without operational attestations`: la expectativa anterior contradice la separación entre configuración y preparación operativa introducida en esta instantánea. Se conserva el test y se documenta el fallo, sin ocultarlo.
+- No se ejecutaron las suites dependientes de Composer, ESLint, Playwright ni la integración con WordPress en esta sesión. No se verificaron pagos reales ni el despliegue del sitio.

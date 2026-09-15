@@ -107,8 +107,7 @@ class HQP_Admin {
         $sedan_id = get_post_meta( $post->ID, '_hqp_sedan_id', true );
         $van_id = get_post_meta( $post->ID, '_hqp_van_id', true );
         
-        global $wpdb;
-        $vehicles = $wpdb->get_results("SELECT id, name, capacity FROM {$wpdb->prefix}wptb_vehicles WHERE is_active = 1 ORDER BY display_order ASC");
+        $vehicles = \MeTransfers\HotelPortal\Services\HotelFixedPricing::activeVehicles();
 
         wp_nonce_field( 'hqp_save_hotel_details', 'hqp_nonce' );
         ?>
@@ -301,8 +300,7 @@ class HQP_Admin {
             update_post_meta( $post_id, '_hqp_contact_email', sanitize_email( $_POST['hqp_contact_email'] ) );
         }
 
-        global $wpdb;
-        $vehicles = $wpdb->get_results("SELECT id FROM {$wpdb->prefix}wptb_vehicles WHERE is_active = 1");
+        $vehicles = \MeTransfers\HotelPortal\Services\HotelFixedPricing::activeVehicles();
         if ( $vehicles ) {
             foreach ( $vehicles as $v ) {
                 $key_post = 'hqp_price_vehicle_' . $v->id;
@@ -316,142 +314,14 @@ class HQP_Admin {
     }
 
     public function download_qr_code() {
-        if ( ! isset( $_GET['post_id'] ) || ! isset( $_GET['nonce'] ) ) {
-            wp_die( 'Faltan parámetros.' );
-        }
-
-        $post_id = intval( $_GET['post_id'] );
-        if ( ! wp_verify_nonce( $_GET['nonce'], 'hqp_download_qr_' . $post_id ) ) {
-            wp_die( 'Enlace caducado o inválido.' );
-        }
-
-        if ( ! current_user_can( 'edit_post', $post_id ) ) {
-            wp_die( 'Permisos insuficientes.' );
-        }
-
-        $token = get_post_meta( $post_id, '_hqp_token', true );
-        if ( ! $token ) wp_die( 'Token no encontrado.' );
-
-        $url = home_url( '/reservas-hotel/?promo=' . $token );
-        $qr_api = 'https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=' . urlencode( $url ); // High Res for download
-
-        // Fetch Image
-        $response = wp_remote_get( $qr_api );
-        if ( is_wp_error( $response ) ) {
-            wp_die( 'Error al generar QR: ' . $response->get_error_message() );
-        }
-
-        $image_data = wp_remote_retrieve_body( $response );
-        $response_code = (int) wp_remote_retrieve_response_code( $response );
-        $content_type = (string) wp_remote_retrieve_header( $response, 'content-type' );
-        if ( 200 !== $response_code || 0 !== strpos( strtolower( $content_type ), 'image/png' ) || '' === $image_data ) {
-            wp_die( 'El proveedor de QR devolvió una respuesta inválida.' );
-        }
-        $filename = sanitize_file_name( 'qr-hotel-' . get_the_title( $post_id ) . '.png' );
-
-        $inline = isset( $_GET['inline'] ) && '1' === (string) wp_unslash( $_GET['inline'] );
-        if ( ! $inline ) {
-            \MeTransfers\Admin\AuditLog::record( 'hotel.qr_downloaded', 'hotel', $post_id );
-        }
-
-        header( 'Content-Description: File Transfer' );
-        header( 'Content-Type: image/png' );
-        header( 'Content-Disposition: ' . ( $inline ? 'inline' : 'attachment' ) . '; filename="' . $filename . '"' );
-        header( 'Expires: 0' );
-        header( 'Cache-Control: must-revalidate' );
-        header( 'Pragma: public' );
-        header( 'Content-Length: ' . strlen( $image_data ) );
-
-        echo $image_data;
-        exit;
+        require_once dirname( __DIR__ ) . '/includes/class-hqp-materials.php';
+        HQP_Materials::download( 'qr' );
     }
 
-    /**
-     * Descarga el Flyer PDF con el QR sobre el fondo (formato hablador)
-     */
+    /** Descarga el hablador del hotel en PDF. */
     public function download_flyer_pdf() {
-        if ( ! isset( $_GET['post_id'] ) || ! isset( $_GET['nonce'] ) ) {
-            wp_die( 'Faltan parámetros.' );
-        }
-
-        $post_id = intval( $_GET['post_id'] );
-        if ( ! wp_verify_nonce( $_GET['nonce'], 'hqp_download_flyer_' . $post_id ) ) {
-            wp_die( 'Enlace caducado o inválido.' );
-        }
-
-        if ( ! current_user_can( 'edit_post', $post_id ) ) {
-            wp_die( 'Permisos insuficientes.' );
-        }
-
-        $token = get_post_meta( $post_id, '_hqp_token', true );
-        if ( ! $token ) wp_die( 'Token no encontrado.' );
-
-        // Buscar imagen flyer hotel
-        $bg_name = 'HABLADOR - METRANSFERS.png';
-        $plugin_dir = defined( 'CBP_PLUGIN_DIR' ) ? CBP_PLUGIN_DIR : '';
-        $hotel_module_dir = defined( 'HQP_PLUGIN_DIR' ) ? HQP_PLUGIN_DIR . 'assets/' : '';
-        $bg_image_path = $plugin_dir ? $plugin_dir . $bg_name : '';
-        if ( empty( $bg_image_path ) || ! file_exists( $bg_image_path ) ) {
-            $bg_image_path = $hotel_module_dir . $bg_name;
-        }
-        if ( ! file_exists( $bg_image_path ) ) {
-            wp_die(
-                'No se encuentra el archivo de fondo: ' . esc_html( $bg_name ) . '<br><br>' .
-                'Coloca la imagen en una de estas ubicaciones:<br>' .
-                '------------ Raíz del plugin: <code>' . esc_html( $plugin_dir ) . '</code><br>' .
-                '------------ Módulo hotel: <code>' . esc_html( $hotel_module_dir ) . '</code>'
-            );
-        }
-
-        $url    = home_url( '/reservas-hotel/?promo=' . $token );
-        $qr_api = 'https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=' . urlencode( $url );
-
-        $qr_response = wp_remote_get( $qr_api );
-        if ( is_wp_error( $qr_response ) ) {
-            wp_die( 'Error al descargar QR: ' . $qr_response->get_error_message() );
-        }
-        $qr_body = wp_remote_retrieve_body( $qr_response );
-        if ( 200 !== (int) wp_remote_retrieve_response_code( $qr_response )
-            || '' === $qr_body
-            || 0 !== strpos( strtolower( (string) wp_remote_retrieve_header( $qr_response, 'content-type' ) ), 'image/png' ) ) {
-            wp_die( 'El proveedor de QR devolvió una respuesta inválida.' );
-        }
-        $tmp_qr = wp_tempnam( 'hqp_qr_' . $post_id . '.png' );
-        if ( ! $tmp_qr || false === file_put_contents( $tmp_qr, $qr_body ) ) {
-            wp_die( 'No se pudo preparar temporalmente el código QR.' );
-        }
-
-        if ( ! class_exists( 'FPDF' ) ) {
-            require_once HQP_PLUGIN_DIR . 'includes/fpdf.php';
-        }
-
-        $pdf = new FPDF( 'P', 'mm', 'A4' );
-        $pdf->AddPage();
-
-        // Fondo A4 (210x297 mm)
-        $pdf->Image( $bg_image_path, 0, 0, 210, 297 );
-
-        // Posici— — — — — — — — ón del QR dentro del cuadro blanco izquierdo del hablador
-        $qr_rect = apply_filters( 'hqp_flyer_qr_rect', array(
-            'x'    => 14,   // mm
-            'y'    => 130,  // mm
-            'size' => 70,   // mm
-        ) );
-        $qr_x    = isset( $qr_rect['x'] ) ? floatval( $qr_rect['x'] ) : 14;
-        $qr_y    = isset( $qr_rect['y'] ) ? floatval( $qr_rect['y'] ) : 130;
-        $qr_size = isset( $qr_rect['size'] ) ? floatval( $qr_rect['size'] ) : 70;
-
-        // QR del plugin sobre el fondo, en el espacio designado
-        if ( file_exists( $tmp_qr ) && filesize( $tmp_qr ) > 0 ) {
-            $pdf->Image( $tmp_qr, $qr_x, $qr_y, $qr_size, $qr_size, 'PNG' );
-        }
-
-        wp_delete_file( $tmp_qr );
-
-        $filename = 'Flyer-Hotel-' . sanitize_title( get_the_title( $post_id ) ) . '.pdf';
-        \MeTransfers\Admin\AuditLog::record( 'hotel.flyer_generated', 'hotel', $post_id );
-        $pdf->Output( 'D', $filename );
-        exit;
+        require_once dirname( __DIR__ ) . '/includes/class-hqp-materials.php';
+        HQP_Materials::download( 'flyer' );
     }
 
     /**
@@ -745,13 +615,27 @@ class HQP_Admin {
         $page = get_page_by_path( $page_slug );
 
         if ( ! $page ) {
-            $page_id = wp_insert_post( array(
-                'post_title'    => $page_title,
-                'post_name'     => $page_slug,
-                'post_content'  => $page_content,
-                'post_status'   => 'publish',
-                'post_type'     => 'page',
-                'comment_status'=> 'closed'
+            wp_insert_post( array(
+                'post_title'     => $page_title,
+                'post_name'      => $page_slug,
+                'post_content'   => $page_content,
+                'post_status'    => 'publish',
+                'post_type'      => 'page',
+                'comment_status' => 'closed',
+            ) );
+            return;
+        }
+
+        // Repair the dedicated QR landing page if an editor removed the
+        // shortcode. Existing content is preserved and the form is appended.
+        if ( ! has_shortcode( (string) $page->post_content, 'hqp_booking_form' ) && current_user_can( 'edit_post', $page->ID ) ) {
+            $content = trim( (string) $page->post_content );
+            $content = '' === $content ? $page_content : $content . "
+
+" . $page_content;
+            wp_update_post( array(
+                'ID'           => (int) $page->ID,
+                'post_content' => $content,
             ) );
         }
     }

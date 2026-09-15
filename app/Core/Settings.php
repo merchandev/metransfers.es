@@ -20,7 +20,8 @@ class Settings {
 		),
 		'redsys_secret'                 => array(
 			'constants' => array( 'MT_REDSYS_SECRET', 'MT_REDSYS_SECRET_KEY' ),
-			'options'   => array( 'wptb_redsys_key', 'wptb_redsys_secret_key' ),
+			// Prefer the current option. The legacy key remains as a fallback for old installs.
+			'options'   => array( 'wptb_redsys_secret_key', 'wptb_redsys_key' ),
 		),
 		'redsys_terminal'               => array(
 			'constants' => array( 'MT_REDSYS_TERMINAL' ),

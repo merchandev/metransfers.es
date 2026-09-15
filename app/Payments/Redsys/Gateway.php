@@ -19,15 +19,82 @@ class Gateway {
 		$this->environment   = strtolower( (string) Settings::get( 'redsys_environment', 'test' ) );
 	}
 
+	/**
+	 * Runtime payment configuration.
+	 *
+	 * This deliberately checks only the values Redsys needs to create and verify
+	 * payments. The operational release checklist in ReleaseGate is advisory and
+	 * must never make a valid production TPV look "not configured" to guests.
+	 */
 	public function is_configured() {
-		$credentials = ! empty( $this->merchant_code ) && ! empty( $this->secret_key );
-		if ( ! $credentials ) {
+		if ( '' === trim( $this->merchant_code ) || '' === trim( $this->secret_key ) ) {
 			return false;
 		}
-		if ( in_array( $this->environment, array( 'live', 'production' ), true ) ) {
-			return ReleaseGate::redsysLiveReady();
+
+		if ( ! preg_match( '/^[0-9A-Za-z]{4,20}$/', trim( $this->merchant_code ) ) ) {
+			return false;
 		}
-		return true;
+
+		$terminal = (int) $this->terminal;
+		if ( $terminal < 1 || $terminal > 999 ) {
+			return false;
+		}
+
+		if ( ! preg_match( '/^[0-9]{3}$/', trim( $this->currency ) ) ) {
+			return false;
+		}
+
+		return in_array( $this->environment, array( 'test', 'live', 'production' ), true );
+	}
+
+	/**
+	 * Optional deployment-readiness signal for administrators.
+	 * It is intentionally separate from is_configured() so operational
+	 * attestations cannot disable customer payments.
+	 */
+	public function is_live_ready() {
+		if ( ! $this->is_configured() ) {
+			return false;
+		}
+
+		if ( ! in_array( $this->environment, array( 'live', 'production' ), true ) ) {
+			return true;
+		}
+
+		return ReleaseGate::redsysLiveReady();
+	}
+
+	/**
+	 * Safe diagnostics for the admin UI/logs. Never exposes the secret.
+	 */
+	public function configuration_status() {
+		$missing = array();
+
+		if ( '' === trim( $this->merchant_code ) ) {
+			$missing[] = 'Código de comercio';
+		}
+		if ( '' === trim( $this->secret_key ) ) {
+			$missing[] = 'Clave secreta';
+		}
+		if ( (int) $this->terminal < 1 || (int) $this->terminal > 999 ) {
+			$missing[] = 'Terminal válido';
+		}
+		if ( ! preg_match( '/^[0-9]{3}$/', trim( $this->currency ) ) ) {
+			$missing[] = 'Moneda ISO numérica de 3 dígitos';
+		}
+		if ( ! in_array( $this->environment, array( 'test', 'live', 'production' ), true ) ) {
+			$missing[] = 'Entorno Redsys válido';
+		}
+
+		return array(
+			'configured'            => empty( $missing ) && $this->is_configured(),
+			'environment'           => $this->environment,
+			'missing'               => $missing,
+			'release_gate_ready'    => $this->is_live_ready(),
+			'release_gate_missing'  => in_array( $this->environment, array( 'live', 'production' ), true )
+				? ReleaseGate::missingRequirements()
+				: array(),
+		);
 	}
 
 	public function generate_payment_form( $booking_id, $amount_cents, $order_id, $customer_name, $language = 'es' ) {
