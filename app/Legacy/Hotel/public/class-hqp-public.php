@@ -300,17 +300,29 @@ class HQP_Public {
         $origin      = $hotel_route['origin'];
         $destination = $hotel_route['destination'];
 
-        // Distance is useful operational metadata but never determines a hotel fixed fare.
-        // A Maps outage or a missing server key must not block an otherwise valid hotel booking.
-        $distance_km     = 0.0;
-        $duration_minutes = 0;
         $route = \MeTransfers\Booking\RouteDistance::calculate( $origin, $destination );
-        if ( empty( $route['error'] ) && ! empty( $route['distance_km'] ) ) {
-            $distance_km      = max( 0.0, (float) $route['distance_km'] );
-            $duration_minutes = isset( $route['duration_minutes'] ) ? max( 0, (int) $route['duration_minutes'] ) : 0;
-        } else {
-            $route_error = isset( $route['error'] ) ? sanitize_text_field( (string) $route['error'] ) : 'distance unavailable';
-            error_log( 'HQP route metrics unavailable; fixed-fare booking continues: ' . $route_error );
+        if ( ! empty( $route['error'] ) ) {
+            error_log( 'HQP route distance failed: ' . sanitize_text_field( (string) $route['error'] ) );
+            wp_send_json_error(
+                array(
+                    'code'    => 'route_distance_unavailable',
+                    'message' => 'No se pudo calcular la distancia de la ruta. Revisa el origen y el destino o contacta con soporte.',
+                )
+            );
+            return;
+        }
+
+        $distance_km = isset( $route['distance_km'] ) ? (float) $route['distance_km'] : 0.0;
+        $duration_minutes = isset( $route['duration_minutes'] ) ? (int) $route['duration_minutes'] : 0;
+        if ( $distance_km <= 0 ) {
+            error_log( 'HQP route distance failed: provider returned a non-positive distance.' );
+            wp_send_json_error(
+                array(
+                    'code'    => 'route_distance_unavailable',
+                    'message' => 'No se pudo calcular la distancia de la ruta. Revisa el origen y el destino o contacta con soporte.',
+                )
+            );
+            return;
         }
         
         $booking_data = array_merge( array(
