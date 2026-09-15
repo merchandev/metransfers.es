@@ -1,0 +1,161 @@
+.mt-lang-switcher {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.mt-lang-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    height: 40px;
+    padding: 0 .9rem;
+    background: rgba(255, 255, 255, .07);
+    border: 1px solid rgba(255, 255, 255, .15);
+    border-radius: 8px;
+    color: #fff;
+    font-size: .85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s, border-color .2s;
+    letter-spacing: .03em;
+    white-space: nowrap;
+}
+
+.mt-lang-trigger:hover,
+.mt-lang-trigger[aria-expanded="true"] {
+    background: rgba(255, 255, 255, .15);
+    border-color: rgba(255, 255, 255, .3);
+}
+
+.mt-lang-menu {
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(320px, 85vw);
+    height: 100%;
+    padding: 4.5rem 1.5rem 2rem;
+    margin: 0;
+    overflow-y: auto;
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 999999;
+    background: #004e9a;
+    border-left: 1px solid rgba(255, 255, 255, .12);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, .5);
+    transform: translateX(100%);
+    transition: transform .4s cubic-bezier(.4, 0, .2, 1), visibility 0s linear .4s;
+}
+
+.mt-lang-menu.open {
+    visibility: visible;
+    transform: translateX(0);
+    transition-delay: 0s, 0s;
+}
+
+.mt-lang-menu ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.mt-lang-menu li {
+    margin-bottom: .15rem;
+}
+
+.mt-lang-menu li a {
+    display: flex;
+    align-items: center;
+    padding: .8rem .9rem;
+    color: rgba(255, 255, 255, .92);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .2s, color .2s;
+}
+
+.mt-lang-menu li a:hover,
+.mt-lang-menu li a:focus,
+.mt-lang-menu li.active a {
+    color: #fff;
+    background: rgba(255, 255, 255, .15);
+}
+
+.mt-lang-menu li a:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+}
+
+.mt-lang-menu li.active a {
+    font-weight: 700;
+}
+
+.mt-lang-code {
+    min-width: 2rem;
+    padding: 2px 6px;
+    margin-right: .75rem;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, .15);
+    font-size: .8rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.mt-lang-check {
+    margin-left: auto;
+    color: #fff;
+    font-size: .85rem;
+}
+
+.mt-lang-close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: #fff;
+    background: rgba(255, 255, 255, .1);
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background .2s;
+}
+
+.mt-lang-close:hover {
+    background: rgba(255, 255, 255, .2);
+}
+
+.mt-lang-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 999998;
+    visibility: hidden;
+    opacity: 0;
+    background: rgba(0, 0, 0, .65);
+    backdrop-filter: blur(5px);
+    transition: opacity .32s, visibility .32s;
+}
+
+.mt-lang-backdrop.open {
+    visibility: visible;
+    opacity: 1;
+}
+
+@media (max-width: 991px) {
+    body.mt-lang-open {
+        overflow: hidden;
+    }
+
+    .mt-lang-trigger span {
+        display: none;
+    }
+
+    .mt-lang-trigger {
+        padding: 0 .6rem;
+    }
+}

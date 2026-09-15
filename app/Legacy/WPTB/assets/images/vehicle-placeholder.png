@@ -1,0 +1,27 @@
+<!-- Placeholder SVG for vehicles without images -->
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5f5f5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0e0e0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="800" height="600" fill="url(#grad)"/>
+  
+  <!-- Simple car icon -->
+  <g transform="translate(400, 300)">
+    <!-- Car body -->
+    <rect x="-120" y="-40" width="240" height="60" rx="8" fill="#999"/>
+    <!-- Car windows -->
+    <rect x="-100" y="-70" width="80" height="35" rx="4" fill="#999"/>
+    <rect x="20" y="-70" width="80" height="35" rx="4" fill="#999"/>
+    <!-- Wheels -->
+    <circle cx="-80" cy="30" r="20" fill="#666"/>
+    <circle cx="80" cy="30" r="20" fill="#666"/>
+    <circle cx="-80" cy="30" r="10" fill="#888"/>
+    <circle cx="80" cy="30" r="10" fill="#888"/>
+  </g>
+  
+  <text x="400" y="500" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#999">Sin imagen disponible</text>
+</svg>

@@ -1,0 +1,10 @@
+.mt-i18n-actions {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    flex-wrap: wrap;
+}
+
+.mt-i18n-language-table {
+    max-width: 760px;
+}

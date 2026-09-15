@@ -1,0 +1,267 @@
+/* ============================================
+   CHECKOUT - WIDE PREMIUM REDESIGN
+   ============================================ */
+
+/* Break out of WordPress content width constraint */
+#wptb-plugin-container.wptb-iso {
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.booking-details {
+    width: 100% !important;
+    max-width: none !important;
+    background: #FFFFFF !important;
+    border-radius: 24px !important;
+    padding: 56px !important;
+    margin-top: 24px !important;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.08) !important;
+    border: 1px solid #E5E7EB !important;
+    color: #111827 !important;
+    display: block !important;
+}
+
+/* Inner containers transparent */
+.booking-step,
+.booking-layout-wrapper,
+.form-content {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    color: #111827 !important;
+}
+
+/* LAYOUT: wide two-column */
+.booking-layout-wrapper {
+    display: flex !important;
+    gap: 40px !important;
+    align-items: flex-start !important;
+    flex-wrap: nowrap !important;
+}
+
+/* SIDEBAR */
+.summary-sidebar {
+    flex: 0 0 340px !important;
+    width: 340px !important;
+    position: sticky !important;
+    top: 24px !important;
+}
+
+.contact-summary.sticky-summary {
+    background: #F9FAFB !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 20px !important;
+    padding: 32px !important;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05) !important;
+    color: #111827 !important;
+}
+
+.contact-summary.sticky-summary h3 {
+    color: #111827 !important;
+    font-size: 16px !important;
+    margin-top: 0 !important;
+    margin-bottom: 18px !important;
+    padding-bottom: 14px !important;
+    border-bottom: 1px solid #E5E7EB !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+}
+
+.contact-summary.sticky-summary p {
+    color: #4B5563 !important;
+    font-size: 14px !important;
+    margin: 10px 0 !important;
+}
+
+.contact-summary.sticky-summary p strong {
+    color: #111827 !important;
+}
+
+.contact-summary.sticky-summary h2 {
+    color: #111827 !important;
+    margin-top: 24px !important;
+    margin-bottom: 0 !important;
+    padding-top: 18px !important;
+    border-top: 1px solid #E5E7EB !important;
+}
+
+/* CONTENT AREA */
+.form-content {
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+/* MAP */
+#map-canvas {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    margin-bottom: 32px !important;
+    border: 1px solid #E5E7EB !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+}
+
+/* PAYMENT HEADING */
+.booking-step h2 {
+    color: #111827 !important;
+    margin-bottom: 32px !important;
+    font-weight: 700 !important;
+}
+
+/* INPUTS */
+.wptb-iso input,
+.wptb-iso select,
+.wptb-iso textarea,
+.booking-step input,
+.booking-step select,
+.booking-step textarea {
+    background: #F9FAFB !important;
+    color: #111827 !important;
+    border: 1px solid #D1D5DB !important;
+    padding: 16px 20px !important;
+    border-radius: 12px !important;
+    font-size: 15px !important;
+    margin-bottom: 8px !important;
+    transition: all 0.2s ease !important;
+}
+.wptb-iso input:focus, .wptb-iso select:focus, .wptb-iso textarea:focus,
+.booking-step input:focus, .booking-step select:focus, .booking-step textarea:focus {
+    background: #FFFFFF !important;
+    border-color: #000000 !important;
+    box-shadow: 0 0 0 1px #000000 !important;
+    outline: none !important;
+}
+.wptb-iso input::placeholder { color: #9CA3AF !important; }
+
+/* SPACING BETWEEN FORM GROUPS */
+.wptb-form-group, .wptb-input-group {
+    margin-bottom: 24px !important;
+}
+
+/* ===== TERMS ===== */
+.wptb-terms-wrapper {
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    margin-top: 16px;
+}
+.wptb-terms-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    cursor: pointer;
+    user-select: none;
+}
+.wptb-terms-label input[type="checkbox"] {
+    position: absolute; opacity: 0; width: 0; height: 0;
+    margin: 0 !important; padding: 0 !important;
+    border: none !important; background: transparent !important;
+}
+.wptb-terms-checkmark {
+    flex-shrink: 0; width: 24px; height: 24px; min-width: 24px;
+    border: 2px solid #D1D5DB; border-radius: 6px;
+    background: #FFFFFF; display: inline-flex;
+    align-items: center; justify-content: center;
+    transition: background 0.2s, border-color 0.2s; margin-top: 0;
+}
+.wptb-terms-checkmark::after {
+    content: ''; display: none; width: 6px; height: 11px;
+    border: 2px solid #ffffff; border-top: none; border-left: none;
+    transform: rotate(45deg) translateY(-1px);
+}
+.wptb-terms-label input[type="checkbox"]:checked + .wptb-terms-checkmark {
+    background: #000000; border-color: #000000;
+}
+.wptb-terms-label input[type="checkbox"]:checked + .wptb-terms-checkmark::after { display: block; }
+.wptb-terms-wrapper.has-error .wptb-terms-checkmark { border-color: #EF4444 !important; animation: wptb-shake 0.4s ease; }
+@keyframes wptb-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-4px); }
+    40% { transform: translateX(4px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+}
+.wptb-terms-text { color: #4B5563; font-size: 14px; line-height: 1.6; text-transform: none !important; }
+.wptb-terms-link { color: #111827 !important; text-decoration: underline !important; font-weight: 600; }
+.wptb-terms-link:hover { color: #000000 !important; }
+.wptb-required-star { color: #e74c3c; font-weight: bold; margin-left: 2px; }
+.wptb-terms-error { color: #e74c3c !important; font-size: 13px; margin: 8px 0 0 36px !important; font-weight: 500; }
+
+/* ===== BUTTONS ===== */
+.form-actions {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 16px !important;
+    width: 100% !important;
+    margin-top: 20px !important;
+    align-items: center !important;
+    background: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+    order: 2 !important;
+}
+.form-actions button {
+    display: flex !important; justify-content: center !important; align-items: center !important;
+    padding: 16px 24px !important; min-height: 56px !important; border-radius: 14px !important;
+    font-size: 15px !important; font-weight: 700 !important; cursor: pointer !important;
+    transition: all 0.25s ease !important; text-transform: uppercase !important;
+    letter-spacing: 1.5px !important; flex: 1 !important;
+    box-shadow: none !important; text-shadow: none !important;
+    line-height: normal !important; margin: 0 !important;
+}
+.btn-primary {
+    background: #111827 !important;
+    color: #ffffff !important; border: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+.btn-primary:hover {
+    background: #000000 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+    opacity: 1 !important;
+}
+.btn-secondary {
+    background: #FFFFFF !important;
+    color: #111827 !important;
+    border: 1.5px solid #D1D5DB !important;
+}
+.btn-secondary:hover {
+    background: #F9FAFB !important;
+    border-color: #9CA3AF !important;
+    color: #000000 !important;
+    transform: translateY(-1px) !important;
+}
+#submit-payment.terms-not-accepted {
+    opacity: 0.4; cursor: not-allowed !important;
+    transform: none !important; box-shadow: none !important;
+}
+
+/* DETAIL VALUES */
+.d-label { color: #6B7280; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+.d-value { color: #111827; font-weight: 500; }
+.d-value.highlight { color: #111827; font-weight: 700; font-size: 20px; }
+
+/* SUCCESS */
+.booking-success-dark {
+    display: flex; justify-content: center; align-items: center;
+    padding: 60px 20px; background: transparent;
+    border-radius: 20px; color: #111827; min-height: 400px; margin-top: 24px;
+}
+.success-card {
+    background: #FFFFFF; width: 100%; max-width: 540px;
+    border-radius: 24px; padding: 48px; box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    text-align: center; border: 1px solid #E5E7EB;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .booking-details { padding: 28px 20px !important; }
+    .booking-layout-wrapper { flex-direction: column !important; gap: 24px !important; }
+    .summary-sidebar { flex: none !important; width: 100% !important; position: relative !important; top: 0 !important; }
+}
+@media (max-width: 600px) {
+    .form-actions { flex-direction: column !important; gap: 12px !important; }
+    .form-actions button { width: 100% !important; }
+}

@@ -1,0 +1,278 @@
+/* ===== MODAL VEHICLE SELECTION (PROFESSIONAL LUXURY STYLE) ===== */
+.wptb-modal-large {
+    max-width: 700px !important;
+}
+
+.wptb-modal-step-header {
+    margin-bottom: 25px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    padding-bottom: 20px !important;
+    border-bottom: 1px solid #E5E7EB !important;
+}
+
+.wptb-modal-step-header h3 {
+    color: #111827 !important;
+    font-size: 22px !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    flex: 1 !important;
+}
+
+.wptb-back-btn {
+    background: transparent !important;
+    border: 1px solid #D1D5DB !important;
+    color: #4B5563 !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+.wptb-back-btn:hover {
+    background: #F3F4F6 !important;
+    color: #111827 !important;
+    border-color: #9CA3AF !important;
+    transform: translateX(-3px) !important;
+}
+
+/* Trip Type Selector */
+.trip-type-selector {
+    display: flex !important;
+    gap: 10px !important;
+    margin-bottom: 25px !important;
+    justify-content: center !important;
+}
+
+.trip-type-btn-modal {
+    padding: 12px 30px !important;
+    background: #FFFFFF !important;
+    border: 1px solid #D1D5DB !important;
+    color: #4B5563 !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+}
+
+.trip-type-btn-modal:hover {
+    border-color: #0066CC !important;
+    color: #0066CC !important;
+    background: #F9FAFB !important;
+}
+
+.trip-type-btn-modal.active {
+    background: #0066CC !important;
+    border-color: #0066CC !important;
+    color: #fff !important;
+    box-shadow: 0 4px 6px rgba(0, 102, 204, 0.2) !important;
+}
+
+/* Vehicles Grid */
+.wptb-modal-vehicles-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-top: 20px !important;
+    max-height: 420px !important;
+    overflow-y: auto !important;
+    padding-right: 5px !important;
+}
+
+/* Custom Scrollbar */
+.wptb-modal-vehicles-grid::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+.wptb-modal-vehicles-grid::-webkit-scrollbar-track {
+    background: #F3F4F6 !important;
+    border-radius: 10px !important;
+}
+
+.wptb-modal-vehicles-grid::-webkit-scrollbar-thumb {
+    background: #D1D5DB !important;
+    border-radius: 10px !important;
+}
+
+/* Vehicle Button - Professional Card Style */
+.wptb-modal-vehicle-btn {
+    background: #FFFFFF !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 18px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+
+
+.wptb-modal-vehicle-btn:hover {
+    border-color: #D1D5DB !important;
+    background: #F9FAFB !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.wptb-modal-vehicle-btn.selected {
+    border-color: #0066CC !important;
+    background: #F0F7FF !important;
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2), 0 4px 12px rgba(0, 102, 204, 0.1) !important;
+    transform: scale(1.02) !important;
+}
+
+/* Vehicle Icon */
+.vehicle-icon {
+    width: 70px !important;
+    height: 70px !important;
+    flex-shrink: 0 !important;
+    background: #F9FAFB !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    padding: 8px !important;
+}
+
+.vehicle-icon img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    filter: brightness(1.1) !important;
+}
+
+/* Vehicle Info */
+.vehicle-info-compact {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+}
+
+.vehicle-info-compact strong {
+    color: #111827 !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px !important;
+}
+
+.vehicle-capacity {
+    color: #4B5563 !important;
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+}
+
+.vehicle-price-compact {
+    color: #111827 !important;
+    font-weight: 800 !important;
+    font-size: 17px !important;
+    margin-top: 4px !important;
+}
+
+/* Loading State */
+.loading-spinner {
+    text-align: center !important;
+    padding: 40px 20px !important;
+    color: #004B68 !important;
+    font-size: 16px !important;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .wptb-modal-vehicle-btn {
+        padding: 15px !important;
+        gap: 12px !important;
+    }
+
+    .vehicle-icon {
+        font-size: 32px !important;
+    }
+
+    .vehicle-info-compact strong {
+        font-size: 16px !important;
+    }
+
+    .wptb-modal-step-header h3 {
+        font-size: 18px !important;
+    }
+}
+
+#wptb-booking-modal .booking-form,
+#wptb-booking-modal .wptb-search-panel {
+    background: #FFFFFF !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 24px !important;
+    box-shadow: 0 18px 45px rgba(17, 24, 39, 0.10) !important;
+    padding: 24px !important;
+    margin: 0 !important;
+}
+
+#wptb-booking-modal .wptb-main-search-form {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+    align-items: end !important;
+}
+
+#wptb-booking-modal .floating-label {
+    position: relative !important;
+    min-width: 0 !important;
+}
+
+#wptb-booking-modal .floating-label label {
+    position: absolute !important;
+    top: 8px !important;
+    left: 16px !important;
+    z-index: 2 !important;
+    color: #607086 !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+}
+
+#wptb-booking-modal input[type="text"],
+#wptb-booking-modal input[type="date"],
+#wptb-booking-modal input[type="time"] {
+    width: 100% !important;
+    min-height: 58px !important;
+    padding: 24px 16px 10px !important;
+    border: 1px solid rgba(0, 86, 179, 0.16) !important;
+    border-radius: 16px !important;
+    background: #F8FBFF !important;
+    color: #07162F !important;
+    box-shadow: none !important;
+}
+
+#wptb-booking-modal input:focus {
+    border-color: #0056B3 !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.13) !important;
+    outline: none !important;
+}
+
+#wptb-booking-modal .wptb-main-search-submit {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    min-height: 54px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: linear-gradient(135deg, #0056B3 0%, #003F8F 100%) !important;
+    color: #FFFFFF !important;
+    font-weight: 800 !important;
+    cursor: pointer !important;
+    box-shadow: 0 12px 26px rgba(0, 86, 179, 0.22) !important;
+}
