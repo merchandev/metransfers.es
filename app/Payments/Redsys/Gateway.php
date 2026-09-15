@@ -87,11 +87,11 @@ class Gateway {
 		}
 
 		return array(
-			'configured'            => empty( $missing ) && $this->is_configured(),
-			'environment'           => $this->environment,
-			'missing'               => $missing,
-			'release_gate_ready'    => $this->is_live_ready(),
-			'release_gate_missing'  => in_array( $this->environment, array( 'live', 'production' ), true )
+			'configured'           => empty( $missing ) && $this->is_configured(),
+			'environment'          => $this->environment,
+			'missing'              => $missing,
+			'release_gate_ready'   => $this->is_live_ready(),
+			'release_gate_missing' => in_array( $this->environment, array( 'live', 'production' ), true )
 				? ReleaseGate::missingRequirements()
 				: array(),
 		);

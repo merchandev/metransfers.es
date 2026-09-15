@@ -146,8 +146,8 @@ if ( empty( $denied['valid'] ) || ! empty( $denied['authorized'] ) ) {
 
 $test_options['wptb_redsys_environment'] = 'live';
 $blocked_live_gateway = new \MeTransfers\Payments\Redsys\Gateway();
-if ( $blocked_live_gateway->is_configured() ) {
-    fwrite( STDERR, "FAILED: live Redsys must be blocked without operational attestations.\n" );
+if ( ! $blocked_live_gateway->is_configured() || $blocked_live_gateway->is_live_ready() ) {
+    fwrite( STDERR, "FAILED: live Redsys must accept valid configuration while reporting missing operational attestations.\n" );
     exit( 1 );
 }
 
@@ -157,7 +157,7 @@ $test_options['mt_maps_credentials_rotated_at'] = '2026-08-19T10:00:00+00:00';
 $test_options['mt_redsys_sandbox_verified_at'] = '2026-08-19T10:00:00+00:00';
 $live_gateway = new \MeTransfers\Payments\Redsys\Gateway();
 $live_form = $live_gateway->generate_payment_form( 124, 100, '000000000124', 'Cliente Test' );
-if ( 'https://sis.redsys.es/sis/realizarPago' !== $live_form['url'] ) {
+if ( ! $live_gateway->is_live_ready() || 'https://sis.redsys.es/sis/realizarPago' !== $live_form['url'] ) {
     fwrite( STDERR, "FAILED: live environment must use the Redsys production endpoint.\n" );
     exit( 1 );
 }

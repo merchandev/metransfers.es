@@ -245,3 +245,11 @@ Origen: instantánea local `1fb47798598ea9dc275282943d0983c3511371bd`, creada el
 - `git diff --cached --check`: correcto.
 - Suite legacy: 15 de 16 scripts correctos. `tests/test-redsys-gateway.php` falla con `live Redsys must be blocked without operational attestations`: la expectativa anterior contradice la separación entre configuración y preparación operativa introducida en esta instantánea. Se conserva el test y se documenta el fallo, sin ocultarlo.
 - No se ejecutaron las suites dependientes de Composer, ESLint, Playwright ni la integración con WordPress en esta sesión. No se verificaron pagos reales ni el despliegue del sitio.
+
+## 14 de septiembre de 2026 — Corrección del Quality Gate
+
+- Corregida la regresión de Hotel QR que permitía guardar reservas con distancia cero: si el proveedor falla o devuelve una distancia no positiva, se responde con `route_distance_unavailable` antes de persistir la reserva. Las tarifas siguen siendo fijas; la disponibilidad del cálculo de ruta vuelve a ser necesaria para reservar.
+- Actualizada la prueba de Redsys para verificar que una configuración válida permite pagos mientras `is_live_ready()` informa de las comprobaciones operativas pendientes, y que estas se reconocen al completarse.
+- Ajustados `HotelFixedPricing` y `Gateway` a WordPress Coding Standards; consulta de flota mediante `$wpdb->prepare()` y placeholder de identificador `%i`.
+- Validación local: 97 pruebas PHPUnit (655 aserciones), PHPStan, WPCS y 16 scripts legacy correctos. PHPUnit mantiene un aviso de deprecación preexistente.
+- Aclaración: `php-lint` sí existe en el workflow y agrega los resultados del Quality Gate; su fallo anterior era consecuencia de la prueba PHP fallida.
