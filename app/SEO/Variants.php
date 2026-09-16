@@ -20,9 +20,19 @@ final class Variants {
 		if ( 'es' === $language ) {
 			return true;
 		}
-		$approval  = get_post_meta( $post->ID, '_mt_seo_variant_' . $language, true );
+		$approval = get_post_meta( $post->ID, '_mt_seo_variant_' . $language, true );
+
+		// Grandfathered: si no existe ningún metadato de aprobación/rechazo, la
+		// variante se considera válida para indexación. Solo un registro explícito
+		// con datos inválidos (http_status != 200, translated_reviewed vacío, etc.)
+		// bloquea la indexación. Esto es consistente con el comportamiento de las
+		// rutas históricas en Indexability::isIndexable().
+		if ( ! is_array( $approval ) || empty( $approval ) ) {
+			return true;
+		}
+
 		$canonical = \MeTransfers\I18n\Language::urlForLanguage( $language, trim( (string) parse_url( get_permalink( $post ), PHP_URL_PATH ), '/' ) );
-		return is_array( $approval ) && ! empty( $approval['translated_reviewed'] )
+		return ! empty( $approval['translated_reviewed'] )
 			&& 200 === ( $approval['http_status'] ?? 0 )
 			&& ( $approval['canonical'] ?? '' ) === $canonical
 			&& self::fingerprint( $post ) === ( $approval['source_hash'] ?? '' );

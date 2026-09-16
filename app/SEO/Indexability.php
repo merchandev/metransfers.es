@@ -34,11 +34,6 @@ final class Indexability {
 			return false;
 		}
 
-		// Toda la antigua familia /destinos/ queda consolidada bajo /rutas/.
-		if ( 0 === strpos( $path, 'destinos/' ) ) {
-			return false;
-		}
-
 		if ( ! empty( $post->post_password )
 			|| '1' === get_post_meta( $post->ID, '_mt_seo_noindex', true )
 			|| '1' === get_post_meta( $post->ID, '_yoast_wpseo_meta-robots-noindex', true ) ) {

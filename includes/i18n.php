@@ -31,12 +31,19 @@ if ( ! defined( 'MT_LANGS' ) ) {
 }
 
 if ( ! defined( 'MT_ACTIVE_LANGS' ) ) {
-    define( 'MT_ACTIVE_LANGS', array( 'es', 'en' ) );
+    define(
+        'MT_ACTIVE_LANGS',
+        array( 'es', 'en', 'ar', 'ca', 'de', 'fr', 'it', 'ja', 'pt', 'ru', 'zh' )
+    );
 }
 
 if ( ! defined( 'MT_SEO_LANGS' ) ) {
-    // EN solo se anuncia/indexa cuando la variante concreta ha sido revisada.
-    define( 'MT_SEO_LANGS', array( 'es', 'en' ) );
+    // Todos los idiomas activos son elegibles para indexación.
+    // La aprobación por variante controla si cada URL concreta se anuncia en hreflang.
+    define(
+        'MT_SEO_LANGS',
+        array( 'es', 'en', 'ar', 'ca', 'de', 'fr', 'it', 'ja', 'pt', 'ru', 'zh' )
+    );
 }
 
 function mt_get_current_lang(): string {
