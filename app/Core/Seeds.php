@@ -194,65 +194,63 @@ final class Seeds {
 	private static function getSeoContent( string $type ): string {
 		switch ( $type ) {
 			case 'ebro-delta':
-				return '<h1>Traslado Privado al Delta del Ebro desde Barcelona</h1>
-<p>Descubre el Delta del Ebro con la comodidad de un traslado privado desde Barcelona. MeTransfers te lleva directamente hasta este singular paraje natural declarado Reserva de la Biosfera, en un viaje de aproximadamente 2 horas en vehículo privado con conductor profesional.</p>
-<h2>¿Por qué elegir MeTransfers para tu viaje al Delta del Ebro?</h2>
-<ul>
-<li><strong>Recogida puerta a puerta</strong> desde tu hotel, aeropuerto o cualquier dirección de Barcelona.</li>
-<li><strong>Conductor profesional</strong> con experiencia en rutas de larga distancia.</li>
-<li><strong>Vehículos con capacidad para grupos</strong>: berlinas ejecutivas y Mercedes Clase V para hasta 7 pasajeros con equipaje.</li>
-<li><strong>Tarifa fija sin sorpresas</strong>: precio cerrado antes del viaje, sin cargo por tráfico ni desvíos.</li>
-<li><strong>Flexibilidad total</strong>: ida y vuelta en el mismo día, o traslado de solo ida con recogida local.</li>
-</ul>
-<h2>El Delta del Ebro: naturaleza única a las puertas de Barcelona</h2>
-<p>Situado a unos 180 km al suroeste de Barcelona, el Delta del Ebro es uno de los humedales más importantes del Mediterráneo occidental. Sus arrozales, lagunas y playas vírgenes lo convierten en un destino perfecto para el ecoturismo, la observación de aves y el descanso activo. Pueblos como Deltebre, Sant Jaume d'Enveja o Les Cases d'Alcanar complementan la experiencia con gastronomía de proximidad y ambiente auténticamente local.</p>
-<h2>Reserva tu transfer al Delta del Ebro</h2>
-<p>Consulta disponibilidad y precio para tu fecha de viaje. Confirmación inmediata por correo electrónico. Pago seguro con tarjeta o transferencia bancaria.</p>';
+				return "<h1>Traslado Privado al Delta del Ebro desde Barcelona</h1>\n"
+					. "<p>Descubre el Delta del Ebro con la comodidad de un traslado privado desde Barcelona. MeTransfers te lleva directamente hasta este singular paraje natural declarado Reserva de la Biosfera, en un viaje de aproximadamente 2 horas en vehículo privado con conductor profesional.</p>\n"
+					. "<h2>Por qué elegir MeTransfers para tu viaje al Delta del Ebro</h2>\n"
+					. "<ul>\n"
+					. "<li><strong>Recogida puerta a puerta</strong> desde tu hotel, aeropuerto o cualquier dirección de Barcelona.</li>\n"
+					. "<li><strong>Conductor profesional</strong> con experiencia en rutas de larga distancia.</li>\n"
+					. "<li><strong>Vehículos para grupos</strong>: berlinas ejecutivas y Mercedes Clase V para hasta 7 pasajeros con equipaje.</li>\n"
+					. "<li><strong>Tarifa fija sin sorpresas</strong>: precio cerrado antes del viaje, sin cargo por tráfico ni desvíos.</li>\n"
+					. "<li><strong>Flexibilidad total</strong>: ida y vuelta en el mismo día, o traslado de solo ida con recogida local.</li>\n"
+					. "</ul>\n"
+					. "<h2>El Delta del Ebro: naturaleza única a las puertas de Barcelona</h2>\n"
+					. "<p>Situado a unos 180 km al suroeste de Barcelona, el Delta del Ebro es uno de los humedales más importantes del Mediterráneo occidental. Sus arrozales, lagunas y playas vírgenes lo convierten en un destino perfecto para el ecoturismo, la observación de aves y el descanso activo.</p>\n"
+					. "<h2>Reserva tu transfer al Delta del Ebro</h2>\n"
+					. "<p>Consulta disponibilidad y precio para tu fecha de viaje. Confirmación inmediata por correo electrónico. Pago seguro con tarjeta o transferencia bancaria.</p>\n";
 
 			case 'transfer-privado-a-tarragona':
-				return '<h1>Transfer Privado a Tarragona desde Barcelona</h1>
-<p>Reserva tu traslado privado de Barcelona a Tarragona con MeTransfers. Un viaje cómodo, directo y sin transbordos hasta la capital de las Terres de l\'Ebre, a tan solo 1 hora y 15 minutos en coche desde el centro de Barcelona o el Aeropuerto del Prat.</p>
-<h2>Servicio de traslado puerta a puerta</h2>
-<p>Nuestros conductores te recogen en la dirección que indiques —hotel, domicilio, aeropuerto o estación de Sants— y te dejan directamente en tu destino en Tarragona: hotel, puerto, anfiteatro romano, o cualquier otra dirección. Sin esperas, sin escalas.</p>
-<h2>Flota disponible para el trayecto Barcelona – Tarragona</h2>
-<ul>
-<li><strong>Berlina ejecutiva (1–3 pasajeros):</strong> Ideal para viajes de negocios o escapadas en pareja.</li>
-<li><strong>SUV Premium (1–4 pasajeros):</strong> Mayor espacio y confort para familias con equipaje.</li>
-<li><strong>Mercedes Clase V (1–7 pasajeros):</strong> La opción perfecta para grupos grandes o viajeros con equipaje extra.</li>
-</ul>
-<h2>¿Qué incluye el servicio?</h2>
-<ul>
-<li>Conductor profesional con licencia VTC.</li>
-<li>Agua mineral a bordo.</li>
-<li>Tarifa fija acordada antes del viaje.</li>
-<li>Seguimiento de vuelo en transfers aeropuerto (sin cargo por retraso).</li>
-<li>Cancelación gratuita con 24 h de antelación.</li>
-</ul>
-<h2>Tarragona: historia romana y Costa Dorada</h2>
-<p>Tarragona es una ciudad con más de 2.000 años de historia. Su casco antiguo alberga el anfiteatro romano junto al mar, la muralla del Passeig Arqueològic y la Catedral de Santa Tecla. Sus playas de arena fina, junto a las atracciones de PortAventura World a solo 10 minutos, hacen de Tarragona un destino ideal para todos los públicos.</p>';
+				return "<h1>Transfer Privado a Tarragona desde Barcelona</h1>\n"
+					. "<p>Reserva tu traslado privado de Barcelona a Tarragona con MeTransfers. Un viaje cómodo, directo y sin transbordos, a tan solo 1 hora y 15 minutos en coche desde el centro de Barcelona o el Aeropuerto del Prat.</p>\n"
+					. "<h2>Servicio de traslado puerta a puerta</h2>\n"
+					. "<p>Nuestros conductores te recogen en la dirección que indiques y te dejan directamente en tu destino en Tarragona: hotel, puerto, anfiteatro romano, o cualquier otra dirección. Sin esperas, sin escalas.</p>\n"
+					. "<h2>Flota disponible para el trayecto Barcelona - Tarragona</h2>\n"
+					. "<ul>\n"
+					. "<li><strong>Berlina ejecutiva (1-3 pasajeros):</strong> Ideal para viajes de negocios o escapadas en pareja.</li>\n"
+					. "<li><strong>SUV Premium (1-4 pasajeros):</strong> Mayor espacio y confort para familias con equipaje.</li>\n"
+					. "<li><strong>Mercedes Clase V (1-7 pasajeros):</strong> La opción perfecta para grupos grandes o viajeros con equipaje extra.</li>\n"
+					. "</ul>\n"
+					. "<h2>Qué incluye el servicio</h2>\n"
+					. "<ul>\n"
+					. "<li>Conductor profesional con licencia VTC.</li>\n"
+					. "<li>Agua mineral a bordo.</li>\n"
+					. "<li>Tarifa fija acordada antes del viaje.</li>\n"
+					. "<li>Seguimiento de vuelo en transfers aeropuerto (sin cargo por retraso).</li>\n"
+					. "<li>Cancelación gratuita con 24 h de antelación.</li>\n"
+					. "</ul>\n"
+					. "<h2>Tarragona: historia romana y Costa Dorada</h2>\n"
+					. "<p>Tarragona es una ciudad con más de 2.000 años de historia. Su casco antiguo alberga el anfiteatro romano junto al mar y la Catedral de Santa Tecla. Sus playas de arena fina, junto a las atracciones de PortAventura World a solo 10 minutos, hacen de Tarragona un destino ideal para todos los públicos.</p>\n";
 
 			case 'transfer-privado-a-madrid':
-				return '<h1>Transfer Privado a Madrid desde Barcelona</h1>
-<p>Viaja de Barcelona a Madrid con un traslado privado puerta a puerta. MeTransfers cubre este trayecto de largo recorrido —aproximadamente 6 horas en coche— con conductores profesionales, vehículos premium y precio cerrado desde el momento de la reserva.</p>
-<h2>Una alternativa al tren y al avión</h2>
-<p>Cuando viajas en familia, con mucho equipaje o con itinerarios poco flexibles, el transfer privado es la opción más cómoda. Sin límite de maletas, con paradas a tu ritmo, recogida en la puerta de tu hotel y llegada directamente a tu destino en Madrid.</p>
-<h2>¿Cuánto tarda el trayecto Barcelona – Madrid?</h2>
-<p>El trayecto directo por la AP-2 y AP-7/A-2 tiene una duración media de 5 h 30 min a 6 h, dependiendo del tráfico y las paradas. Para muchos grupos o familias, la comodidad del vehículo privado compensa ampliamente frente a los desplazamientos al aeropuerto, facturación y esperas.</p>
-<h2>Flota para trayectos de larga distancia</h2>
-<ul>
-<li><strong>Mercedes Clase E / Clase S:</strong> Máximo confort en berlina ejecutiva para 1–3 pasajeros.</li>
-<li><strong>Mercedes Clase V:</strong> La opción más demandada para familias y grupos de hasta 7 personas con equipaje abundante.</li>
-</ul>
-<h2>¿Qué incluye el transfer a Madrid?</h2>
-<ul>
-<li>Conductor profesional con experiencia en rutas de larga distancia.</li>
-<li>Paradas de descanso incluidas sin cargo adicional.</li>
-<li>Wifi y cargadores a bordo en vehículos seleccionados.</li>
-<li>Agua mineral y amenities de viaje.</li>
-<li>Tarifa 100% cerrada antes de salir: sin peajes ocultos ni recargos.</li>
-</ul>
-<h2>Reserva tu traslado Barcelona – Madrid</h2>
-<p>Selecciona tu fecha de recogida, número de pasajeros y equipaje. Recibirás confirmación inmediata. Para grupos y viajes de empresa, contacta con nuestro equipo para una propuesta personalizada.</p>';
+				return "<h1>Transfer Privado a Madrid desde Barcelona</h1>\n"
+					. "<p>Viaja de Barcelona a Madrid con un traslado privado puerta a puerta. MeTransfers cubre este trayecto de largo recorrido, aproximadamente 6 horas en coche, con conductores profesionales, vehículos premium y precio cerrado desde el momento de la reserva.</p>\n"
+					. "<h2>Una alternativa al tren y al avión</h2>\n"
+					. "<p>Cuando viajas en familia, con mucho equipaje o con itinerarios poco flexibles, el transfer privado es la opción más cómoda. Sin límite de maletas, con paradas a tu ritmo, recogida en la puerta de tu hotel y llegada directamente a tu destino en Madrid.</p>\n"
+					. "<h2>Flota para trayectos de larga distancia</h2>\n"
+					. "<ul>\n"
+					. "<li><strong>Mercedes Clase E / Clase S:</strong> Máximo confort en berlina ejecutiva para 1-3 pasajeros.</li>\n"
+					. "<li><strong>Mercedes Clase V:</strong> La opción más demandada para familias y grupos de hasta 7 personas con equipaje abundante.</li>\n"
+					. "</ul>\n"
+					. "<h2>Qué incluye el transfer a Madrid</h2>\n"
+					. "<ul>\n"
+					. "<li>Conductor profesional con experiencia en rutas de larga distancia.</li>\n"
+					. "<li>Paradas de descanso incluidas sin cargo adicional.</li>\n"
+					. "<li>Wifi y cargadores a bordo en vehículos seleccionados.</li>\n"
+					. "<li>Agua mineral y amenities de viaje.</li>\n"
+					. "<li>Tarifa 100% cerrada antes de salir: sin peajes ocultos ni recargos.</li>\n"
+					. "</ul>\n"
+					. "<h2>Reserva tu traslado Barcelona - Madrid</h2>\n"
+					. "<p>Selecciona tu fecha de recogida, número de pasajeros y equipaje. Recibirás confirmación inmediata. Para grupos y viajes de empresa, contacta con nuestro equipo para una propuesta personalizada.</p>\n";
 		}
 		return '';
 	}
