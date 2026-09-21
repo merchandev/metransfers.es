@@ -70,7 +70,7 @@ final class Seeds {
 		echo '<strong>MeTransfers:</strong> ';
 		echo esc_html__( 'Faltan páginas críticas del flujo de reserva. Sin ellas, los usuarios no podrán completar una reserva. Faltantes: ', 'me-transfers' );
 		echo implode( ', ', $missing ); // already escaped above
-		echo '. <a href="' . esc_url( admin_url( 'admin.php?page=mt-seeds-run' ) ) . '">';
+		echo '. <a href="' . esc_url( wp_nonce_url( admin_url( 'admin.php?page=mt-seeds-run' ), 'mt_seeds_run' ) ) . '">';
 		echo esc_html__( 'Crear páginas automáticamente', 'me-transfers' );
 		echo '</a></p></div>';
 	}

@@ -9,6 +9,21 @@
 get_header();
 use MeTransfers\SEO\Indexability;
 
+/**
+ * Título "Origen - Destino": RouteBootstrap y Meta::routeText() separan con
+ * un guion normal (' - '), pero algunas rutas antiguas usan guion largo
+ * ('–'). Probar ambos evita que explode() devuelva el título completo sin
+ * dividir (ver commit que corrige "Barcelona - Almería → Barcelona - Almería").
+ */
+function mt_split_ruta_title( $title ) {
+    foreach ( array( ' - ', '–' ) as $separator ) {
+        if ( false !== strpos( $title, $separator ) ) {
+            return array_map( 'trim', explode( $separator, $title, 2 ) );
+        }
+    }
+    return array( $title );
+}
+
 // ─── Catálogo de destinos agrupados por zona ───────────────────────────────
 $zonas = array(
     'Costa Dorada' => array(
@@ -50,9 +65,9 @@ $grupos = array(); // [ 'Salou' => [ postObj, postObj, … ] ]
 foreach ( $all_rutas as $r ) {
     $destino = get_post_meta( $r->ID, '_mt_ruta_destino', true );
     if ( ! $destino ) {
-        // Extraer destino del slug si falta el meta
-        $parts   = explode( '–', $r->post_title );
-        $destino = isset( $parts[1] ) ? trim( $parts[1] ) : $r->post_title;
+        // Extraer destino del título si falta el meta
+        $parts   = mt_split_ruta_title( $r->post_title );
+        $destino = isset( $parts[1] ) ? $parts[1] : $r->post_title;
     }
     $grupos[ $destino ][] = $r;
 }
@@ -62,8 +77,8 @@ ksort( $grupos );
 function mt_get_origen( $post ) {
     $origen = get_post_meta( $post->ID, '_mt_ruta_origen', true );
     if ( ! $origen ) {
-        $parts  = explode( '–', $post->post_title );
-        $origen = isset( $parts[0] ) ? trim( $parts[0] ) : '—';
+        $parts  = mt_split_ruta_title( $post->post_title );
+        $origen = isset( $parts[0] ) && isset( $parts[1] ) ? $parts[0] : '—';
     }
     return $origen;
 }

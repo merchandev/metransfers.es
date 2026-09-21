@@ -107,6 +107,7 @@ class Application {
 					if ( ! current_user_can( 'manage_options' ) ) {
 						wp_die( esc_html__( 'No tienes permisos para realizar esta acción.', 'me-transfers' ) );
 					}
+					check_admin_referer( 'mt_seeds_run' );
 					\MeTransfers\Core\Seeds::run();
 					wp_safe_redirect( add_query_arg( 'mt_seeds_done', '1', admin_url() ) );
 					exit;
