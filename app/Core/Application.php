@@ -77,6 +77,7 @@ class Application {
 		( new \MeTransfers\SEO\RouteBootstrap() )->register();
 		$redirects = new \MeTransfers\SEO\Redirects();
 		$redirects->register();
+		( new \MeTransfers\SEO\BlogSlugRedirects() )->register();
 		( new \MeTransfers\SEO\Policy() )->register();
 		( new \MeTransfers\SEO\Meta() )->register();
 		( new \MeTransfers\SEO\Links() )->register();
