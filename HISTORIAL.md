@@ -225,6 +225,17 @@ Archivos modificados: eliminados `app/list_all.php`, `app/list_pages.php`, `app/
 
 Archivos modificados: eliminado `includes/auto-migration-v5.php`; modificado `functions.php`.
 
+### 21 de septiembre de 2026 — Corrección masiva de URLs del blog (139 de 149 posts)
+
+- El usuario exportó el blog completo desde wp-admin (Herramientas → Exportar → Entradas) como XML/WXR y lo compartió para una revisión completa, en vez de la muestra parcial vía REST API usada hasta ahora.
+- **Hallazgo**: 139 de 149 posts (93%) tienen una URL (slug) que no coincide con su tema real. Causa raíz: en algún momento se reutilizaron entradas antiguas de blog (con URLs de contenido estacional/puntual: Semana Santa, Mobile World Congress, Sant Jordi, mascotas, delegaciones médicas...) sustituyendo su título y contenido por artículos nuevos de "Transfer/Traslado Privado Barcelona a {destino}", sin actualizar nunca la URL. De esos 139: 135 tienen título y contenido ya coherentes entre sí (solo hacía falta corregir la URL); 4 tenían también el contenido genérico, sin relación con el tema original que la URL seguía indicando.
+- **Corregido**: `app/SEO/BlogSlugRedirects.php`, una redirección 301 autocontenida que solo actúa sobre un 404 real comprobando la opción `mt_blog_slug_redirects` — segura sin importar el orden entre el despliegue de este código y la ejecución del script (una URL que todavía resuelve a un post real nunca se intercepta). `tools/fix-blog-slugs.php`, script WP-CLI con el mismo patrón que `tools/seo-approve-routes.php` (simulación por defecto, comprobación de que cada post no cambió desde que se generó el manifest, comprobación de colisión de la URL nueva contra todo el sitio, backup antes de aplicar). `docs/blog-slugs-fix-2026-09-21.json`, el manifest con las 139 correcciones.
+- Para los 4 posts con contenido genérico se escribió contenido nuevo y específico restaurando el tema original que la URL siempre indicó: tour privado de la magia de Gaudí, tour privado a Girona y el Museo Dalí, ruta Juego de Tronos por Girona, y cómo recuperar el IVA (Tax Free) en el Aeropuerto de Barcelona. El script solo sustituye título/extracto/contenido en estos 4; el resto solo cambia de URL.
+- Nota de proceso: 3 posts marcados inicialmente como "contenido también roto" resultaron ser falsos positivos de un filtro de palabras clave que ignoraba términos de 4 caracteres o menos (p. ej. "Reus", "VIP"); al revisar el contenido completo se confirmó que título y cuerpo ya eran coherentes entre sí, así que se trataron igual que los otros 135 (solo cambio de URL).
+- **Pendiente de ejecución por el usuario** (fuera de este repositorio, requiere WP-CLI): `wp eval-file tools/fix-blog-slugs.php docs/blog-slugs-fix-2026-09-21.json` para simular, y con `--apply` para aplicar de verdad. No se ha ejecutado nada contra la base de datos real desde esta sesión.
+
+Archivos añadidos: `app/SEO/BlogSlugRedirects.php`, `tools/fix-blog-slugs.php`, `docs/blog-slugs-fix-2026-09-21.json`. Modificado: `app/Core/Application.php`.
+
 ## Seguridad operativa
 
 - Las claves Redsys, Maps, SMTP y webhooks no se almacenan en Git.
