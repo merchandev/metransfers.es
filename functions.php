@@ -43,12 +43,14 @@ require_once get_template_directory() . '/includes/leads-cpt.php';
 // Disponible en: Herramientas → Repoblar Contenido
 if ( is_admin() ) {
     require_once get_template_directory() . '/includes/admin-content-repopulate.php';
-    require_once get_template_directory() . '/includes/auto-migration-v5.php';
 }
 
 
 
-// Migration safety switch — set to false once initial migration is done.
+// Gates only the legacy ad-hoc content migrations below (each idempotent,
+// self-guarded by its own "_migrated_*" option). It does NOT control
+// app/Core/Migrations.php, which runs its own versioned, locked migrations
+// independently of this constant regardless of its value.
 if ( ! defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) ) {
 	define( 'ME_TRANSFERS_ENABLE_MIGRATIONS', true );
 }
@@ -57,6 +59,17 @@ if ( ! defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) ) {
 if ( ! defined( 'ME_TRANSFERS_VERSION' ) ) {
 	define( 'ME_TRANSFERS_VERSION', '5.0.6' );
 }
+
+// Non-sensitive marker so a live audit can tell which release is actually
+// deployed without guessing from a possibly-stale crawl (a commit in main
+// is not automatically live — the deploy is a manual zip upload).
+add_action(
+	'wp_head',
+	static function () {
+		echo "\n<!-- MeTransfers theme " . esc_html( ME_TRANSFERS_VERSION ) . " -->\n";
+	},
+	1
+);
 
 // Auto-purge SiteGround Cache after theme update to prevent cached errors
 add_action('init', function() {
