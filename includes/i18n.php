@@ -31,12 +31,22 @@ if ( ! defined( 'MT_LANGS' ) ) {
 }
 
 if ( ! defined( 'MT_ACTIVE_LANGS' ) ) {
-    define( 'MT_ACTIVE_LANGS', array( 'es', 'en' ) );
+    // Solo ES y EN son idiomas públicos reales (contenido propio, switcher,
+    // hreflang). Los demás códigos siguen documentados en MT_LANGS y en
+    // Redirects::RETIRED_LANGUAGES únicamente para reconocer URLs históricas
+    // y consolidarlas con 301 hacia el canónico español; nunca deben ofrecerse
+    // como destino navegable ni anunciarse como alternate.
+    define(
+        'MT_ACTIVE_LANGS',
+        array( 'es', 'en' )
+    );
 }
 
 if ( ! defined( 'MT_SEO_LANGS' ) ) {
-    // EN solo se anuncia/indexa cuando la variante concreta ha sido revisada.
-    define( 'MT_SEO_LANGS', array( 'es', 'en' ) );
+    define(
+        'MT_SEO_LANGS',
+        array( 'es', 'en' )
+    );
 }
 
 function mt_get_current_lang(): string {

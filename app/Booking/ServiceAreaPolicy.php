@@ -87,6 +87,7 @@ final class ServiceAreaPolicy {
         try {
             $api_key = Settings::requireServerMapsKey();
         } catch ( \RuntimeException $exception ) {
+            error_log( 'MeTransfers ServiceAreaPolicy: server Maps API key is not configured (wptb_google_maps_server_api_key / MT_GOOGLE_MAPS_SERVER_API_KEY). Every booking will fail origin/destination verification until it is set.' );
             return array( 'valid' => false );
         }
 
@@ -100,6 +101,7 @@ final class ServiceAreaPolicy {
         );
         $response = wp_remote_get( $url, array( 'timeout' => 8, 'headers' => array( 'Referer' => home_url( '/' ) ) ) );
         if ( is_wp_error( $response ) ) {
+            error_log( 'MeTransfers ServiceAreaPolicy: geocoding request failed for "' . $address . '": ' . $response->get_error_message() );
             return array( 'valid' => false );
         }
 
@@ -108,6 +110,13 @@ final class ServiceAreaPolicy {
             ? $payload['results'][0]
             : null;
         if ( ! $first ) {
+            // Surface the Geocoding API status (REQUEST_DENIED, OVER_QUERY_LIMIT,
+            // ZERO_RESULTS, etc.) instead of silently failing every booking with no
+            // way to tell a missing/misconfigured server key apart from a real
+            // address that Google cannot geocode.
+            $status       = is_array( $payload ) && isset( $payload['status'] ) ? (string) $payload['status'] : 'unknown';
+            $error_detail = is_array( $payload ) && isset( $payload['error_message'] ) ? (string) $payload['error_message'] : '';
+            error_log( 'MeTransfers ServiceAreaPolicy: geocoding returned no results for "' . $address . '" (status=' . $status . ( '' !== $error_detail ? ', ' . $error_detail : '' ) . '). Check that the Geocoding API is enabled and billing is active for the server Maps key, and that its application restrictions (IP/referrer) allow server-side requests.' );
             return array( 'valid' => false );
         }
 
