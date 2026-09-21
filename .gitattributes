@@ -9,6 +9,8 @@
 *.yaml text eol=lf
 *.sh text eol=lf
 
+/app/Core/build-info.php export-subst
+
 # Release archives contain runtime files only.
 /.github export-ignore
 /tests export-ignore

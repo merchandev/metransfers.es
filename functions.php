@@ -62,11 +62,15 @@ if ( ! defined( 'ME_TRANSFERS_VERSION' ) ) {
 
 // Non-sensitive marker so a live audit can tell which release is actually
 // deployed without guessing from a possibly-stale crawl (a commit in main
-// is not automatically live — the deploy is a manual zip upload).
+// is not automatically live — the deploy is a manual zip upload). The
+// commit part is filled in by `git archive` (see app/Core/build-info.php);
+// it's blank on a plain checkout, not a build produced by the release tool.
+require_once get_template_directory() . '/app/Core/build-info.php';
 add_action(
 	'wp_head',
 	static function () {
-		echo "\n<!-- MeTransfers theme " . esc_html( ME_TRANSFERS_VERSION ) . " -->\n";
+		$marker = ME_TRANSFERS_VERSION . ( MT_BUILD_COMMIT ? ' / ' . MT_BUILD_COMMIT : '' );
+		echo "\n<!-- MeTransfers theme " . esc_html( $marker ) . " -->\n";
 	},
 	1
 );
