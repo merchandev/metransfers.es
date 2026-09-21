@@ -4,10 +4,13 @@
  *
  * Renames blog post slugs that were left over from an earlier, unrelated
  * topic after the post's title/content were overwritten with new content
- * (see HISTORIAL.md, 21 sep 2026). Only renames post_name; title, content,
- * excerpt and all other fields are untouched. Registers each old slug in
- * the `mt_blog_slug_redirects` option so BlogSlugRedirects 301s it to the
- * new one instead of 404ing.
+ * (see HISTORIAL.md, 21 sep 2026). Always renames post_name. When a row
+ * also carries new_title/new_excerpt/new_content, those replace the
+ * current (generic) title/excerpt/content too -- used only for the small
+ * subset of posts where the content itself, not just the slug, no longer
+ * matches the original topic. Registers each old slug in the
+ * `mt_blog_slug_redirects` option so BlogSlugRedirects 301s it to the new
+ * one instead of 404ing.
  */
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
 	exit( 'WP-CLI required.' );
@@ -53,8 +56,13 @@ foreach ( $manifest['posts'] as $row ) {
 		$errors[] = 'new_slug already used by another post: ' . $new_slug . ' (post ' . $existing->ID . ')';
 	}
 
+	$rewrite = ! empty( $row['new_content'] );
+	if ( $rewrite && ( empty( $row['new_title'] ) || empty( $row['new_excerpt'] ) ) ) {
+		$errors[] = 'Post ' . $post->ID . ' has new_content but is missing new_title or new_excerpt.';
+	}
+
 	$snapshot[ $post->ID ] = array( 'post' => $post->to_array(), 'meta' => get_post_meta( $post->ID ) );
-	WP_CLI::log( $post->ID . ' /' . $post->post_name . '/ -> /' . $new_slug . '/' );
+	WP_CLI::log( $post->ID . ' /' . $post->post_name . '/ -> /' . $new_slug . '/' . ( $rewrite ? ' (+ title/excerpt/content rewrite)' : '' ) );
 }
 if ( $errors ) {
 	WP_CLI::error( implode( "\n", $errors ) );
@@ -76,7 +84,16 @@ if ( ! is_array( $redirect_map ) ) {
 
 foreach ( $manifest['posts'] as $row ) {
 	$new_slug = sanitize_title( (string) $row['new_slug'] );
-	$result   = wp_update_post( array( 'ID' => $row['id'], 'post_name' => $new_slug ), true );
+	$update   = array(
+		'ID'        => $row['id'],
+		'post_name' => $new_slug,
+	);
+	if ( ! empty( $row['new_content'] ) ) {
+		$update['post_title']   = wp_slash( (string) $row['new_title'] );
+		$update['post_excerpt'] = wp_slash( (string) $row['new_excerpt'] );
+		$update['post_content'] = wp_slash( (string) $row['new_content'] );
+	}
+	$result = wp_update_post( $update, true );
 	if ( is_wp_error( $result ) ) {
 		WP_CLI::error( 'Migration stopped at post ' . $row['id'] . '. Restore from ' . $backup_key . ': ' . $result->get_error_message() );
 	}
@@ -86,7 +103,7 @@ foreach ( $manifest['posts'] as $row ) {
 update_option( \MeTransfers\SEO\BlogSlugRedirects::OPTION, $redirect_map, false );
 
 WP_CLI::success(
-	count( $manifest['posts'] ) . ' post slugs renamed. Backup: ' . $backup_key .
+	count( $manifest['posts'] ) . ' posts updated. Backup: ' . $backup_key .
 	'. ' . count( $redirect_map ) . ' redirects now registered in the ' . \MeTransfers\SEO\BlogSlugRedirects::OPTION . ' option ' .
 	'(active once the theme release containing BlogSlugRedirects is deployed).'
 );

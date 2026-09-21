@@ -29,7 +29,7 @@ final class BlogSlugRedirects {
 		if ( '' === $path || ! isset( $map[ $path ] ) ) {
 			return;
 		}
-		$query = parse_url( $request, PHP_URL_QUERY );
+		$query  = parse_url( $request, PHP_URL_QUERY );
 		$target = home_url( '/' . trim( (string) $map[ $path ], '/' ) . '/' );
 		wp_safe_redirect( $target . ( is_string( $query ) && '' !== $query ? '?' . $query : '' ), 301 );
 		exit;
