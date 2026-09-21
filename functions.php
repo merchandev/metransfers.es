@@ -951,6 +951,16 @@ add_action( 'wp_ajax_nopriv_mt_save_lead', 'mt_ajax_save_lead' );
 function mt_ajax_save_lead() {
     check_ajax_referer( 'mt_lead_nonce', 'security' );
 
+    // Un nonce válido no es un límite de envíos: no caduca antes de ~12h y
+    // no es de un solo uso, así que sin límite por IP un bot podría enviar
+    // cientos de leads con el mismo nonce.
+    $lead_rate_limit  = (int) apply_filters( 'mt_lead_rate_limit_max', 5 );
+    $lead_rate_window = (int) apply_filters( 'mt_lead_rate_limit_window', 10 * MINUTE_IN_SECONDS );
+    if ( ! \MeTransfers\Security\RequestRateLimiter::consume( 'save_lead', $lead_rate_limit, $lead_rate_window ) ) {
+        wp_send_json_error( array( 'message' => 'Demasiadas solicitudes. Inténtalo de nuevo en unos minutos.' ) );
+        return;
+    }
+
     $origen   = isset( $_POST['origen'] )   ? sanitize_text_field( $_POST['origen'] )      : 'formulario';
     $nombre   = isset( $_POST['nombre'] )   ? sanitize_text_field( $_POST['nombre'] )      : '';
     $email    = isset( $_POST['email'] )    ? sanitize_email( $_POST['email'] )            : '';
