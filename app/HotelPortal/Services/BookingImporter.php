@@ -154,7 +154,12 @@ final class BookingImporter {
 			'trip_type'          => 'one_way',
 			'status'             => self::statusValue( $get( 'estado' ) ),
 			'payment_method'     => '',
-			'payment_status'     => 'confirmed' === self::statusValue( $get( 'estado' ) ) ? 'paid' : 'pending',
+			// A confirmed booking is not the same as a paid one (cash on
+			// arrival, invoiced later, paid at the hotel...). The import
+			// sheet has no independent payment signal, so never infer
+			// "paid" from the operational status; that previously caused
+			// ReceiptService/OutboxHandler to treat unpaid bookings as paid.
+			'payment_status'     => 'pending',
 			'hotel_token'        => get_post_meta( $hotel_id, '_hqp_token', true ),
 			'hotel_id'           => absint( $hotel_id ),
 			'created_by_user_id' => get_current_user_id(),
