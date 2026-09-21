@@ -170,6 +170,14 @@ Archivos modificados: `includes/i18n.php`, `app/SEO/LegacyUrlMap.php`, `tests/Un
 
 Archivo modificado: `app/Booking/ServiceAreaPolicy.php` (solo logging, sin cambio de comportamiento).
 
+### 21 de septiembre de 2026 — Flujo de reservas de hoteles: causa confirmada y bug adicional corregido
+
+- Revisión completa del flujo de reservas (formulario principal, QR de hotel y Portal de Hoteles) para responder al reporte "los hoteles no muestran los viajes/rutas". Conclusión: **es el mismo problema que el formulario principal.** `HotelBookingController::quote()` (`/hoteles/reservas/nueva/`, "Nueva reserva" en el Portal de Hoteles) pasa por el mismo `QuoteService::createVehicleList()` → `ServiceAreaPolicy`/`RouteDistance`, que depende de la misma clave de Maps de servidor (`wptb_google_maps_server_api_key`) documentada en la entrada anterior. El widget del código QR en recepción (`HotelFixedPricing::availableVehicles()`) es independiente y no usa esa clave, así que ese flujo concreto no debería estar afectado por lo mismo.
+- **Bug adicional confirmado y corregido**, independiente de la clave de Maps: `app/Legacy/Hotel/admin/class-hqp-admin.php`, la tabla "Clientes que usaron este Código QR" (wp-admin → Hoteles → gestión de un hotel), tenía varias etiquetas de apertura PHP y textos corrompidos por una conversión de encoding rota al importar el plugin legacy (rastreado a `ef04a308`, "setup platform skeleton and import legacy modules"). El caso grave: la celda de precio tenía `<?php` sustituido por una secuencia de guiones largos + espacio duro (`— `× 11), por lo que en vez de ejecutar `<?php echo esc_html( $booking->price ); ?>` esa cadena se imprimía literalmente y el precio nunca se mostraba en esa tabla — esto es probablemente parte de lo que el usuario ve como "no muestra los viajes". Se corrigieron también las mismas cabeceras/etiquetas de estado corrompidas cosméticamente ("Cód. Redsys", "Confirmado", "Pendiente", "Pend. Pago", "Cancelado", pie de tabla). Verificado que el patrón de corrupción no aparece en ningún otro archivo del repositorio.
+- Pendiente de verificación en vivo (no reproducible sin wp-admin): confirmar que, una vez corregida la clave de Maps de servidor, "Nueva reserva" en el Portal de Hoteles muestra vehículos correctamente.
+
+Archivo modificado: `app/Legacy/Hotel/admin/class-hqp-admin.php`.
+
 ## Seguridad operativa
 
 - Las claves Redsys, Maps, SMTP y webhooks no se almacenan en Git.

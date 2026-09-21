@@ -210,7 +210,7 @@ class HQP_Admin {
                             <th>Email</th>
                             <th>Teléfono</th>
                             <th>Precio</th>
-                            <th>C— — — — — — — — ód. Redsys</th>
+                            <th>Cód. Redsys</th>
                             <th>Estado</th>
                         </tr>
                     </thead>
@@ -224,23 +224,23 @@ class HQP_Admin {
                                         <strong>De:</strong> <?php echo esc_html( mb_substr( $booking->origin, 0, 30 ) ); ?><br>
                                         <strong>A:</strong> <?php echo esc_html( mb_substr( $booking->destination, 0, 30 ) ); ?>
                                     <?php else : ?>
-                                        — — — — — — — — — — — — —
+                                        —
                                     <?php endif; ?>
                                 </td>
                                 <td><?php echo esc_html( $booking->customer_name ); ?></td>
                                 <td><a href="mailto:<?php echo esc_attr( $booking->customer_email ); ?>"><?php echo esc_html( $booking->customer_email ); ?></a></td>
                                 <td><?php echo esc_html( $booking->customer_phone ); ?></td>
-                                <td>— — — — — — — — — — — php echo esc_html( $booking->price ); ?></td>
+                                <td><?php echo esc_html( $booking->price ); ?></td>
                                 <td style="font-family:monospace; font-size:11px; color:#555;">
                                     <?php echo $booking->payment_intent_id ? esc_html( $booking->payment_intent_id ) : '—'; ?>
                                 </td>
                                 <td>
                                     <?php
                                     $status_labels = array(
-                                        'confirmed'       => '— — — — — — — — — — — — Confirmado',
-                                        'pending'         => '— — — — — — — — — — — Pendiente',
-                                        'pending_payment' => '— — — — — — — — — — — — — — — Pend. Pago',
-                                        'cancelled'       => '— — — — — — — — — — — Cancelado'
+                                        'confirmed'       => 'Confirmado',
+                                        'pending'         => 'Pendiente',
+                                        'pending_payment' => 'Pend. Pago',
+                                        'cancelled'       => 'Cancelado'
                                     );
                                     echo isset( $status_labels[ $booking->status ] ) ? $status_labels[ $booking->status ] : esc_html( $booking->status );
                                     ?>
@@ -249,7 +249,7 @@ class HQP_Admin {
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <p style="margin-top: 10px;"><em>Mostrando las — — — — — — — — últimas 50 reservas.</em></p>
+                <p style="margin-top: 10px;"><em>Mostrando las últimas 50 reservas.</em></p>
             <?php else : ?>
                 <hr style="margin: 20px 0;">
                 <p><em>Aún no hay reservas realizadas con este código QR.</em></p>
