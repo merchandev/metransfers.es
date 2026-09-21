@@ -25,6 +25,12 @@ final class LegacyUrlMap {
 		'noticias'                                   => 'blog',
 		'barcelona-taxis'                            => 'traslados-privados',
 		'barcelona-traslados'                        => 'traslados-privados',
+		// Landings duplicadas que no siguen ningún patrón geográfico detectado
+		// por getTarget(): competían por las mismas keywords que su ruta
+		// canónica en /rutas/ sin declarar redirección ni canonical cruzado.
+		'transfer-privado-a-madrid'                  => 'rutas/barcelona-madrid',
+		'transfer-privado-a-tarragona'               => 'rutas/barcelona-tarragona',
+		'ebro-delta'                                 => 'rutas/barcelona-delta-del-ebro',
 		'tienda-barcelona-tours-transfers/transfers/traslado-a-andorra' => 'rutas/barcelona-andorra',
 		'tienda-barcelona-tours-transfers/transfers/transfer-privado-portaventura' => 'rutas/barcelona-portaventura',
 		'tienda-barcelona-tours-transfers/transfers/transfer-privado-a-portaventura' => 'rutas/barcelona-portaventura',

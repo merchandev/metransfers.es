@@ -31,18 +31,21 @@ if ( ! defined( 'MT_LANGS' ) ) {
 }
 
 if ( ! defined( 'MT_ACTIVE_LANGS' ) ) {
+    // Solo ES y EN son idiomas públicos reales (contenido propio, switcher,
+    // hreflang). Los demás códigos siguen documentados en MT_LANGS y en
+    // Redirects::RETIRED_LANGUAGES únicamente para reconocer URLs históricas
+    // y consolidarlas con 301 hacia el canónico español; nunca deben ofrecerse
+    // como destino navegable ni anunciarse como alternate.
     define(
         'MT_ACTIVE_LANGS',
-        array( 'es', 'en', 'ar', 'ca', 'de', 'fr', 'it', 'ja', 'pt', 'ru', 'zh' )
+        array( 'es', 'en' )
     );
 }
 
 if ( ! defined( 'MT_SEO_LANGS' ) ) {
-    // Todos los idiomas activos son elegibles para indexación.
-    // La aprobación por variante controla si cada URL concreta se anuncia en hreflang.
     define(
         'MT_SEO_LANGS',
-        array( 'es', 'en', 'ar', 'ca', 'de', 'fr', 'it', 'ja', 'pt', 'ru', 'zh' )
+        array( 'es', 'en' )
     );
 }
 

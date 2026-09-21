@@ -162,7 +162,10 @@ final class SeoPolicyTest extends TestCase {
 	public function testVariantApprovalIsPerUrlAndInvalidatedByContentChanges(): void {
 		$post = $GLOBALS['mt_seo_posts'][1];
 		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_ready'] = '1';
-		self::assertSame( array( 'es' ), Indexability::languagesForPost( 1, array( 'es', 'en' ) ) );
+		// Grandfathered: sin metadato de aprobación/rechazo, la variante EN se
+		// considera válida (ver Variants::isApproved()), igual que las rutas
+		// históricas sin _mt_seo_ready.
+		self::assertSame( array( 'es', 'en' ), Indexability::languagesForPost( 1, array( 'es', 'en' ) ) );
 		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_variant_en'] = array(
 			'translated_reviewed' => true,
 			'http_status'         => 200,
@@ -197,7 +200,23 @@ final class SeoPolicyTest extends TestCase {
 		self::assertNull( Redirects::targetForRequest( '/traslados-privados/', array( 'es' ) ) );
 	}
 
-	public function testUnreviewedEnglishLegacyNavigationFallsBackToSpanishCanonical(): void {
+	public function testGrandfatheredEnglishLegacyNavigationKeepsEnglishPrefix(): void {
+		// Sin registro de aprobación/rechazo para EN, la variante está
+		// grandfathered (ver Variants::isApproved()) y el enlace conserva
+		// el prefijo /en/ en lugar de recaer sobre el canónico español.
+		$url = 'https://metransfers.es/en/taxis-barcelona-salou/?utm_source=menu#faq';
+		self::assertSame( 'https://metransfers.es/en/rutas/barcelona-salou/?utm_source=menu#faq', \MeTransfers\SEO\Links::normalize( $url ) );
+	}
+
+	public function testExplicitlyRejectedEnglishVariantFallsBackToSpanishCanonical(): void {
+		// Un registro explícito pero inválido (aquí: sin revisar) sigue
+		// bloqueando la variante y debe recaer sobre el canónico español.
+		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_variant_en'] = array(
+			'translated_reviewed' => false,
+			'http_status'         => 200,
+			'canonical'           => 'https://metransfers.es/en/rutas/barcelona-salou/',
+			'source_hash'         => \MeTransfers\SEO\Variants::fingerprint( $GLOBALS['mt_seo_posts'][1] ),
+		);
 		$url = 'https://metransfers.es/en/taxis-barcelona-salou/?utm_source=menu#faq';
 		self::assertSame( 'https://metransfers.es/rutas/barcelona-salou/?utm_source=menu#faq', \MeTransfers\SEO\Links::normalize( $url ) );
 	}
