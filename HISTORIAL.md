@@ -129,6 +129,20 @@ El usuario pidió revisar una por una las 10 categorías del informe de indexaci
 
 Archivos añadidos: `tools/seo-approve-variant.php`.
 
+#### Ronda 9 — Configuración de idiomas: solo ES/EN como fuente de verdad exacta
+
+El usuario pidió eliminar del tema todo rastro de idiomas que no sean español e inglés, con una configuración exacta que evite futuros problemas de traducción e indexación (en línea directa con la causa raíz de toda esta sesión: el commit `868322d` que activó 11 idiomas el 16 de septiembre).
+
+- **Mapeado primero, antes de tocar nada:** localizadas todas las referencias a los 9 códigos retirados (`ar,ca,de,fr,it,ja,pt,ru,zh`) en el repositorio. Dos falsos positivos descartados sin tocar: `PTS_ALLOWED_COUNTRIES` en `transfers-search.js` (países de cobertura del servicio, no idiomas) y `'pt'` en `fpdf.php` (unidad tipográfica "points" de una librería de PDF de terceros, vendorizada).
+- **Corregido — `MT_LANGS` (`includes/i18n.php`) reducido a únicamente `es` y `en`.** Antes documentaba los 11 idiomas (incluidos los 9 retirados) aunque solo 2 estaban activos; ahora es literalmente la única fuente de verdad de qué idiomas soporta el tema, sin ambigüedad. No rompe nada: el selector (`Switcher`), el hreflang (`Seo::renderHead`) y el enrutado (`Router`) ya solo consultaban `MT_ACTIVE_LANGS` (ya en `['es','en']` desde la ronda 1), no `MT_LANGS`; y la página de administración de traducciones (`Admin::render()`, wp-admin → Ajustes → Traducción MT) itera `MT_LANGS`, así que ahora tampoco puede ofrecer accidentalmente pre-generar traducciones a un idioma retirado.
+- **Mantenido a propósito, con la razón documentada en el propio código — `Redirects::RETIRED_LANGUAGES`.** Es la única lista que debe conservar los 9 códigos: reconoce URLs antiguas bajo esos prefijos (ya indexadas o enlazadas desde fuera) y las consolida con 301 hacia el canónico español. Quitarla convertiría esas URLs en 404 nuevos, exactamente el tipo de daño que esta sesión lleva corrigiendo. Añadido un comentario explícito indicando que es la única lista a tocar para añadir o quitar un idioma retirado, con referencia cruzada desde `includes/i18n.php`.
+- **Revisado y descartado — el mapa `zh => zh-Hans` en `I18n\Seo::hreflang()`.** Se eliminó en un primer intento por parecer un resto de idioma retirado (zh nunca estuvo en `Redirects::RETIRED_LANGUAGES` como tal, era uno de los 9); la suite de pruebas (`tests/test-i18n-routing.php`) lo detectó de inmediato: ese test usa `zh` deliberadamente como idioma de referencia genérico para verificar que el mecanismo de hreflang funciona con un tercer idioma cualquiera, no como una afirmación de que el chino esté soportado en producción. Revertido con un comentario explicando la distinción.
+- **Verificado — nada más depende de `MT_LANGS` para reconocer prefijos retirados.** `Language::pathWithoutLanguage()` sí consulta `MT_LANGS`, pero solo se invoca sobre URLs internas ya generadas (menú, contenido, `Redirects::verifiedTarget()`) o sobre la petición en curso después de que `Redirects::processRedirects()` ya haya interceptado y redirigido cualquier prefijo retirado en `template_redirect` (prioridad 0); no hay ninguna ruta de código donde depender de `MT_LANGS` para un idioma retirado cambie el resultado observable.
+- **Validado:** 98 pruebas PHPUnit (668 aserciones), phpcs limpio en todo el alcance de `phpcs.xml.dist`, y las dos pruebas standalone de i18n (`tests/test-i18n.php`, `tests/test-i18n-routing.php`) en verde tras el cambio.
+- **Pendiente, fuera del repositorio:** puede quedar caché de traducción antigua en `wp_options` (`mt_tr_{idioma}_*`) para los 9 idiomas retirados, generada mientras estuvieron activos. No afecta a nada (esos idiomas ya no se sirven ni se consultan), es solo limpieza cosmética de la base de datos; no se ha construido una herramienta para esto al no ser un problema funcional.
+
+Archivos modificados: `includes/i18n.php`, `app/SEO/Redirects.php` (solo comentarios).
+
 ---
 
 ### 14 de septiembre de 2026 — Corrección del Quality Gate
