@@ -86,8 +86,8 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 
 			<!-- BENEFICIOS -->
 			<div class="svc-block">
-				<span class="svc-label">¿Por qué elegir MeTransfers?</span>
-				<h2>Todo lo que necesitas, incluido</h2>
+				<span class="svc-label"><?php echo mt_translate( '¿Por qué elegir MeTransfers?' ); ?></span>
+				<h2><?php echo mt_translate( 'Todo lo que necesitas, incluido' ); ?></h2>
 				<div class="svc-features-grid">
 					<?php foreach ( $service['features'] as $feat ) : ?>
 					<div class="svc-feature-card">
@@ -101,8 +101,8 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 
 			<!-- CÓMO FUNCIONA -->
 			<div class="svc-block">
-				<span class="svc-label">El proceso</span>
-				<h2>Así de sencillo es reservar</h2>
+				<span class="svc-label"><?php echo mt_translate( 'El proceso' ); ?></span>
+				<h2><?php echo mt_translate( 'Así de sencillo es reservar' ); ?></h2>
 				<div class="svc-steps-grid">
 					<?php foreach ( $service['steps'] as $step ) : ?>
 					<div class="svc-step">
@@ -213,7 +213,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 						<div class="sfg">
 							<label for="<?php echo esc_attr( $form_id ); ?>-terminal"><?php echo mt_translate("Terminal"); ?></label>
 							<select id="<?php echo esc_attr( $form_id ); ?>-terminal" name="extra_terminal">
-								<option value="">No lo sé aún</option>
+								<option value=""><?php echo mt_translate( 'No lo sé aún' ); ?></option>
 								<option>Adossat A</option><option>Adossat B</option>
 								<option>Adossat C</option><option>Adossat D</option>
 								<option>Drassanes</option><option><?php echo mt_translate("Otra"); ?></option>
@@ -342,7 +342,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 							<select id="<?php echo esc_attr( $form_id ); ?>-personas" name="extra_personas">
 								<option value=""><?php echo mt_translate("Selecciona..."); ?></option>
 								<?php for ( $i = 1; $i <= 8; $i++ ) : ?>
-								<option value="<?php echo $i; ?>"><?php echo $i; ?> persona<?php echo $i > 1 ? 's' : ''; ?></option>
+								<option value="<?php echo $i; ?>"><?php echo $i . ' ' . mt_translate( $i > 1 ? 'personas' : 'persona' ); ?></option>
 								<?php endfor; ?>
 							</select>
 						</div>
