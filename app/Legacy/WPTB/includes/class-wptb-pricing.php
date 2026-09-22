@@ -4,6 +4,10 @@
  * Handles all price calculations based on vehicle, distance, and trip type
  */
 
+if ( class_exists( 'WPTB_Pricing' ) ) {
+	return;
+}
+
 class WPTB_Pricing {
 
     /**

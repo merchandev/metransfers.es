@@ -4,6 +4,10 @@
  * Handles all CRUD operations for vehicles
  */
 
+if ( class_exists( 'WPTB_Vehicle_Manager' ) ) {
+	return;
+}
+
 class WPTB_Vehicle_Manager {
 
     /**

@@ -1,5 +1,9 @@
 <?php
 
+if ( class_exists( 'WPTB_Activator' ) ) {
+	return;
+}
+
 class WPTB_Activator {
     /**
      * Compatibility facade for legacy activation callers.

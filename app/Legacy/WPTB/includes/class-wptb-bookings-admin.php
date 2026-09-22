@@ -4,6 +4,10 @@
  * Handles the bookings list page in WordPress admin
  */
 
+if ( class_exists( 'WPTB_Bookings_Admin' ) ) {
+	return;
+}
+
 class WPTB_Bookings_Admin {
 
     public function __construct() {

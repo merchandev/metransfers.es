@@ -1,5 +1,9 @@
 <?php
 
+if ( class_exists( 'WPTB_Loader' ) ) {
+	return;
+}
+
 class WPTB_Loader {
 
     protected $admin;
