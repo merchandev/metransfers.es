@@ -1,5 +1,9 @@
 <?php
 
+if ( class_exists( 'WPTB_Admin' ) ) {
+	return;
+}
+
 class WPTB_Admin {
 
     public function __construct() {

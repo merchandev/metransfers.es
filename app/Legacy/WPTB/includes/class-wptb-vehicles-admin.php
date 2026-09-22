@@ -4,6 +4,10 @@
  * Manages vehicle CRUD operations in WordPress admin
  */
 
+if ( class_exists( 'WPTB_Vehicles_Admin' ) ) {
+	return;
+}
+
 class WPTB_Vehicles_Admin {
 
     public function __construct() {

@@ -1,5 +1,9 @@
 <?php
 
+if ( class_exists( 'WPTB_Public' ) ) {
+	return;
+}
+
 class WPTB_Public {
 
     public $last_mail_error = '';

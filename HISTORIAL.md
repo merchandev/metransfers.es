@@ -155,6 +155,17 @@ El usuario pidió una pasada final para que no queden errores según los paráme
 
 Archivo modificado: `template-servicio.php`.
 
+#### Ronda 11 — Widgets del escritorio duplicándose al subir el tema
+
+El usuario reportó (con captura) que los widgets del escritorio de wp-admin (Últimas Reservas, Precios y Tarifas, Rutas Populares...) se duplican al subir una nueva versión del tema. La captura concreta no mostraba el duplicado en sí (cada widget aparecía una vez), pero el análisis del código reveló una causa raíz real e independiente de lo que se llegara a ver en esa captura.
+
+- **Causa raíz identificada:** las 10 clases del módulo heredado `app/Legacy/WPTB/includes/class-wptb-*.php` (activator, admin, bookings-admin, dashboard, loader, pricing, public, redsys, vehicle-manager, vehicles-admin) declaran clases PHP globales (`class WPTB_Dashboard {`, etc.) **sin ninguna guarda `class_exists()`**. `app/Core/Application.php` ya protege su propio punto de carga con `require_once`, así que en una sola petición el tema nunca se auto-duplica. Pero el histórico del proyecto confirma que este módulo (`plugin-de-reservas-metrasnfers`) **fue originalmente un plugin de WordPress independiente** antes de integrarse en el tema (ver "Repositorios consolidados" al principio de este documento). Si ese plugin standalone sigue instalado y activo por separado en `wp-content/plugins/` -- algo muy habitual al migrar un plugin al tema sin desactivar el original, especialmente tras subir una copia nueva del tema -- WordPress cargaría las mismas clases desde dos archivos físicos distintos en la misma petición. `WPTB_Loader::run()` volvería a ejecutarse una segunda vez de forma independiente, registrando una segunda vez cada widget del escritorio, menú de admin y hook AJAX.
+- **Corregido:** añadida la guarda estándar de WordPress (`if ( class_exists( 'WPTB_X' ) ) { return; }`) al principio de las 10 clases. Esto no cambia nada si el módulo solo se carga una vez (el caso normal). Si alguna vez se carga una segunda copia (plugin standalone activo a la vez que el tema), la segunda carga ahora se omite por completo en vez de re-registrar todo (o, sin la guarda añadida hoy, provocar directamente un error fatal de "Cannot redeclare class" al declarar la clase por segunda vez -- lo que habría dejado el wp-admin completamente roto, no solo con widgets duplicados).
+- **Pendiente de verificación por el usuario, fuera del repositorio:** revisar en wp-admin → Plugins si existe un plugin activo por separado llamado "Reservas Metransfers" / "WP Transfer Booking" (además del tema). Si existe, desactivarlo: el tema ya incorpora toda su funcionalidad vía `Application.php`. Si tras esto el duplicado persiste, hace falta una captura mostrando el widget concreto duplicado (con las dos copias visibles a la vez) para seguir investigando -- la captura compartida en esta ronda no mostraba el duplicado en sí.
+- Validado: 98 pruebas PHPUnit (668 aserciones), `tests/test-legacy-load.php` (carga completa de los 37 módulos, incluidos los 4 de WPTB), `tests/test-hardening-phase1.php` y `tests/test-production-readiness.php`, todos en verde tras el cambio.
+
+Archivos modificados: las 10 clases `app/Legacy/WPTB/includes/class-wptb-*.php` (solo la guarda añadida al principio de cada una).
+
 ---
 
 ### 14 de septiembre de 2026 — Corrección del Quality Gate

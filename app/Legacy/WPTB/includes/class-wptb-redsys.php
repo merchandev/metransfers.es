@@ -6,6 +6,10 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Based on official Redsys HMAC256_API_PHP_7.0.0
  * Renamed class to WPTB_Redsys_API to avoid conflicts
  */
+if ( class_exists( 'WPTB_Redsys_API' ) ) {
+	return;
+}
+
 class WPTB_Redsys_API {
 
     /******  Array de DatosEntrada ******/
