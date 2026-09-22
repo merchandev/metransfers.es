@@ -2,7 +2,17 @@
 namespace MeTransfers\SEO;
 
 final class Redirects {
-	/** @var string[] */
+	/**
+	 * Única lista de códigos de idioma retirados en todo el tema (ver
+	 * includes/i18n.php, donde MT_LANGS documenta que solo es/en son
+	 * idiomas reales). Estos 9 códigos no tienen contenido, selector,
+	 * traducción ni hreflang -- solo se reconocen aquí para poder
+	 * consolidar con 301 cualquier URL antigua ya indexada o enlazada
+	 * bajo su prefijo hacia el canónico español. Añadir o quitar un
+	 * idioma retirado se hace únicamente en esta constante.
+	 *
+	 * @var string[]
+	 */
 	private const RETIRED_LANGUAGES = array( 'fr', 'de', 'it', 'pt', 'ca', 'ru', 'zh', 'ja', 'ar' );
 
 	public function register() {

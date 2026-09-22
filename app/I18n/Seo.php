@@ -111,6 +111,11 @@ final class Seo {
 	}
 
 	private static function hreflang( $language ) {
+		// No es una lista de idiomas soportados (esa es MT_ACTIVE_LANGS, solo
+		// es/en). Es el mapeo genérico de código de idioma a región hreflang
+		// para cualquier idioma que en el futuro sea activo; se conserva 'zh'
+		// como caso de referencia porque tests/test-i18n-routing.php lo usa
+		// para verificar el mecanismo con un tercer idioma cualquiera.
 		$map = array(
 			'es' => 'es-ES',
 			'en' => 'en-US',

@@ -10,32 +10,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'MT_LANGS' ) ) {
+    // Única lista de idiomas reales del tema: contenido propio, selector,
+    // traducción automática, hreflang y sitemap. Español e inglés son los
+    // únicos idiomas soportados; no queda ningún otro código documentado
+    // aquí a propósito, para que esta constante sea la fuente de verdad
+    // exacta y no se pueda confundir con un idioma "medio soportado".
+    //
+    // Los 9 códigos que existieron entre el 16 y el 21 de septiembre de 2026
+    // (ar, ca, de, fr, it, ja, pt, ru, zh) se retiraron por completo del
+    // tema: no tienen contenido, no aparecen en el selector, no se traducen
+    // y no se anuncian por hreflang. Las URLs antiguas bajo esos prefijos
+    // (ya indexadas o enlazadas desde fuera) se siguen reconociendo y
+    // consolidando con 301 hacia su equivalente español -- exclusivamente
+    // en Redirects::RETIRED_LANGUAGES, la única lista que debe tocarse si
+    // algún día hay que añadir o quitar un idioma retirado.
     define(
         'MT_LANGS',
         array(
             'es' => array( 'label' => 'ES', 'name' => 'Español', 'google_code' => 'es' ),
             'en' => array( 'label' => 'EN', 'name' => 'English (US)', 'google_code' => 'en' ),
-            // Idiomas retirados: se conservan solo para reconocer URLs históricas
-            // y poder consolidarlas mediante 301 hacia el canónico español.
-            'fr' => array( 'label' => 'FR', 'name' => 'Français', 'google_code' => 'fr' ),
-            'de' => array( 'label' => 'DE', 'name' => 'Deutsch', 'google_code' => 'de' ),
-            'it' => array( 'label' => 'IT', 'name' => 'Italiano', 'google_code' => 'it' ),
-            'pt' => array( 'label' => 'PT', 'name' => 'Português', 'google_code' => 'pt' ),
-            'ca' => array( 'label' => 'CA', 'name' => 'Català', 'google_code' => 'ca' ),
-            'ru' => array( 'label' => 'RU', 'name' => 'Русский', 'google_code' => 'ru' ),
-            'zh' => array( 'label' => 'ZH', 'name' => '中文', 'google_code' => 'zh-CN' ),
-            'ja' => array( 'label' => 'JA', 'name' => '日本語', 'google_code' => 'ja' ),
-            'ar' => array( 'label' => 'AR', 'name' => 'العربية', 'google_code' => 'ar' ),
         )
     );
 }
 
 if ( ! defined( 'MT_ACTIVE_LANGS' ) ) {
-    // Solo ES y EN son idiomas públicos reales (contenido propio, switcher,
-    // hreflang). Los demás códigos siguen documentados en MT_LANGS y en
-    // Redirects::RETIRED_LANGUAGES únicamente para reconocer URLs históricas
-    // y consolidarlas con 301 hacia el canónico español; nunca deben ofrecerse
-    // como destino navegable ni anunciarse como alternate.
     define(
         'MT_ACTIVE_LANGS',
         array( 'es', 'en' )
