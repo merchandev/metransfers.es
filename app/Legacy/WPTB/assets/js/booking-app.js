@@ -173,6 +173,9 @@ jQuery(document).ready(function ($) {
     // ===== GLOBAL HELPERS (Defined early to avoid crash issues) =====
     window.selectVehicle = function (id) {
         const vehicle = window.vehicleMap ? window.vehicleMap[id] : null;
+        // The server marks vehicles that cannot carry the requested group;
+        // a disabled button alone does not stop other click paths.
+        if (vehicle && vehicle.available === false) return;
         if (vehicle) {
             $('.vehicle-card').removeClass('selected');
             $(`[data-vehicle-id="${id}"]`).addClass('selected');
@@ -484,7 +487,7 @@ jQuery(document).ready(function ($) {
             const id = $(this).data('vehicle-id');
             const vehicle = window.modalVehicleMap[id];
 
-            if (vehicle) {
+            if (vehicle && vehicle.available !== false) {
                 $('.wptb-modal-vehicle-btn').removeClass('selected');
                 $(this).addClass('selected');
 
@@ -731,6 +734,7 @@ jQuery(document).ready(function ($) {
         vehicles.forEach(function (vehicle) {
             const displayPrice = Number.parseFloat(vehicle.price || 0);
             const formattedPrice = Number.isInteger(displayPrice) ? displayPrice : displayPrice.toFixed(2);
+            const selectable = vehicle.available !== false;
 
             html += `
                 <div class="vehicle-card mt-vehicle-card" data-vehicle-id="${vehicle.id}">
@@ -755,8 +759,8 @@ jQuery(document).ready(function ($) {
                                 <span class="price-value">€${formattedPrice}</span>
                             </div>
 
-                            <button type="button" class="select-vehicle-btn mt-button mt-button--primary">
-                                ${escapeHtml(t('select', 'Seleccionar'))}
+                            <button type="button" class="select-vehicle-btn mt-button mt-button--primary"${selectable ? '' : ' disabled aria-disabled="true"'}>
+                                ${escapeHtml(selectable ? t('select', 'Seleccionar') : t('vehicle_capacity_error', 'El vehículo no tiene capacidad suficiente para los pasajeros o el equipaje.'))}
                             </button>
                         </div>
                     </div>

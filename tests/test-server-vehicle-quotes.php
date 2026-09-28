@@ -154,5 +154,10 @@ assert_vehicle_quote(
         && false === strpos( $booking_js, 'maxAutocompleteAttempts' ),
     'Async Maps must announce readiness instead of a poll that gives up after six seconds.'
 );
+assert_vehicle_quote(
+    false !== strpos( $booking_js, 'if (vehicle && vehicle.available === false) return;' )
+        && false !== strpos( $search_js, 'if (vehicle && vehicle.available !== false) {' ),
+    'Vehicles the server marks unavailable must not be selectable from any flow.'
+);
 
 echo "Server vehicle quote tests passed.\n";

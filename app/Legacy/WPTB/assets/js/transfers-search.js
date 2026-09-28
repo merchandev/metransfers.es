@@ -680,7 +680,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const id = $(this).data('vehicle-id');
             const vehicle = window.ptsVehicleMap[id];
 
-            if (vehicle) {
+            if (vehicle && vehicle.available !== false) {
                 $('.pts-vehicle-btn').removeClass('selected');
                 $(this).addClass('selected');
 
