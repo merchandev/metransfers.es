@@ -214,11 +214,13 @@ jQuery(document).ready(function ($) {
         let isGoogleMapsActive = false;
 
         // Autocomplete is an enhancement. Manual addresses and submission keep
-        // working when Google Maps is unavailable or slow to initialize.
-        let autocompleteAttempts = 0;
-        const maxAutocompleteAttempts = 12;
+        // working when Google Maps is unavailable; the server verifies them.
+        function mapsPlacesReady() {
+            return typeof google !== 'undefined' && google.maps && google.maps.places;
+        }
+
         function initAutocomplete() {
-            if (typeof google !== 'undefined' && google.maps && google.maps.places) {
+            if (mapsPlacesReady()) {
                 isGoogleMapsActive = true;
 
                 // Both points can be anywhere in the covered European countries;
@@ -280,19 +282,18 @@ jQuery(document).ready(function ($) {
                         destinationPlace = null;
                     });
                 }
-            } else if (autocompleteAttempts < maxAutocompleteAttempts) {
-                autocompleteAttempts += 1;
-                setTimeout(initAutocomplete, 500);
-            } else {
-                if (typeof wptb_vars !== 'undefined' && !wptb_vars.google_maps_api_key) {
-                    console.error('❌ ERROR CRÍTICO: La API Key de Google Maps está VACÍA en los ajustes de WordPress. El autocompletado no funcionará hasta que la configures en MeTransfers -> Integraciones.');
-                } else {
-                    console.warn('Google Maps autocomplete unavailable (el script no se cargó a tiempo); la entrada manual sigue activa.');
-                }
             }
         }
 
-        initAutocomplete();
+        if (mapsPlacesReady()) {
+            initAutocomplete();
+        } else if (typeof wptb_vars !== 'undefined' && !wptb_vars.google_maps_api_key) {
+            console.warn('Google Maps API key is empty: address autocomplete is off; manual entry still works.');
+        } else {
+            // Maps is loaded async and announces itself (callback=mtMapsLoaded);
+            // the old 6-second poll gave up for good on slow mobile networks.
+            document.addEventListener('mt:maps-ready', initAutocomplete, { once: true });
+        }
 
         // Inject Geolocation Button
         const $originWrapper = $(originId).parent();

@@ -147,5 +147,12 @@ assert_vehicle_quote(
         && false !== strpos( $booking_js, '!isInCatalonia(originPlace) && !isInCatalonia(destinationPlace)' ),
     'The browser must apply the server coverage rule (one endpoint in Catalonia), not an origin-only restriction.'
 );
+assert_vehicle_quote(
+    false !== strpos( $public, "'callback'  => 'mtMapsLoaded'" )
+        && false !== strpos( $public, "document.dispatchEvent(new Event('mt:maps-ready'))" )
+        && false !== strpos( $booking_js, "addEventListener('mt:maps-ready', initAutocomplete" )
+        && false === strpos( $booking_js, 'maxAutocompleteAttempts' ),
+    'Async Maps must announce readiness instead of a poll that gives up after six seconds.'
+);
 
 echo "Server vehicle quote tests passed.\n";
