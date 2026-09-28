@@ -142,5 +142,10 @@ assert_vehicle_quote( false !== strpos( $booking_js, 'displayQuoteFailure(' ) &&
 assert_vehicle_quote( false !== strpos( $public, "'support_phone'" ), 'The booking script must receive the support phone.' );
 assert_vehicle_quote( false !== strpos( $booking_js, 'if (!document.querySelector(searchFormId) || !document.querySelector(originId))' ), 'Pages without a search form must not initialise autocomplete.' );
 assert_vehicle_quote( false === strpos( $booking_js, "new Event('input', { bubbles: true })" ), 'Geolocation must not fire the manual-edit event that invalidates the verified origin.' );
+assert_vehicle_quote(
+    false === strpos( $booking_js, "componentRestrictions: { country: 'ES' }" )
+        && false !== strpos( $booking_js, '!isInCatalonia(originPlace) && !isInCatalonia(destinationPlace)' ),
+    'The browser must apply the server coverage rule (one endpoint in Catalonia), not an origin-only restriction.'
+);
 
 echo "Server vehicle quote tests passed.\n";

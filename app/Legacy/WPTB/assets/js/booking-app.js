@@ -145,26 +145,29 @@ jQuery(document).ready(function ($) {
     }
 
     // ===== ORIGIN & DESTINATION RESTRICTIONS =====
-    const DESTINATION_COUNTRIES = ['ES', 'PT', 'FR', 'CH', 'BE', 'DE', 'IT', 'NL', 'AT', 'HR', 'SI', 'PL', 'LU', 'AD'];
+    // Mirrors ServiceAreaPolicy: both points inside the covered countries and at
+    // least one of them in Catalonia, so trips back to Barcelona are allowed.
+    // The server stays authoritative; this only gives early feedback.
+    const ALLOWED_COUNTRIES = ['ES', 'PT', 'FR', 'CH', 'BE', 'DE', 'IT', 'NL', 'AT', 'HR', 'SI', 'PL', 'LU', 'AD'];
 
-    // Validates that origin is within Catalunya (province of Barcelona area)
-    function validateOriginArea(place) {
-        if (!place || !place.address_components) return false;
-        let isCatalunya = false;
-        let isBarcelona = false;
-        for (let comp of place.address_components) {
-            if (comp.types.includes('administrative_area_level_1')) {
-                if (comp.short_name === 'CT' || comp.long_name.includes('Catalunya') || comp.long_name.includes('Catalonia')) {
-                    isCatalunya = true;
-                }
-            }
-            if (comp.types.includes('administrative_area_level_2')) {
-                if (comp.long_name.includes('Barcelona')) {
-                    isBarcelona = true;
-                }
-            }
-        }
-        return (isCatalunya || isBarcelona);
+    function placeComponent(place, type) {
+        const components = place && Array.isArray(place.address_components) ? place.address_components : [];
+        return components.find(comp => Array.isArray(comp.types) && comp.types.includes(type)) || null;
+    }
+
+    function isAllowedCountry(place) {
+        const country = placeComponent(place, 'country');
+        return !!country && ALLOWED_COUNTRIES.includes(String(country.short_name || '').toUpperCase());
+    }
+
+    function isInCatalonia(place) {
+        const country = placeComponent(place, 'country');
+        if (!country || String(country.short_name || '').toUpperCase() !== 'ES') return false;
+        const region = placeComponent(place, 'administrative_area_level_1');
+        const province = placeComponent(place, 'administrative_area_level_2');
+        const area = [region && region.long_name, province && province.long_name].join(' ')
+            .normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+        return (region && region.short_name === 'CT') || /catalu|catalonia|barcelona/.test(area);
     }
 
     // ===== GLOBAL HELPERS (Defined early to avoid crash issues) =====
@@ -203,7 +206,11 @@ jQuery(document).ready(function ($) {
             $(dateId).attr('min', wptb_vars.min_date);
         }
 
-        let originValidated = false;
+        // Starts valid so values set by code (carousel prefill, geolocation)
+        // are accepted; typing by hand requires picking a suggestion again.
+        let originValidated = true;
+        let originPlace = null;
+        let destinationPlace = null;
         let isGoogleMapsActive = false;
 
         // Autocomplete is an enhancement. Manual addresses and submission keep
@@ -214,19 +221,9 @@ jQuery(document).ready(function ($) {
             if (typeof google !== 'undefined' && google.maps && google.maps.places) {
                 isGoogleMapsActive = true;
 
-                // ORIGIN: Restricted to Catalunya bounds
-                const originOptions = {
-                    fields: ["formatted_address", "geometry", "name", "address_components"],
-                    bounds: new google.maps.LatLngBounds(
-                        new google.maps.LatLng(40.523, 0.252), // SW Catalunya (Montsià)
-                        new google.maps.LatLng(42.861, 3.328)  // NE Catalunya (Cap de Creus)
-                    ),
-                    strictBounds: true,
-                    componentRestrictions: { country: 'ES' }
-                };
-
-                // DESTINATION: All accessible European countries by road
-                const destOptions = {
+                // Both points can be anywhere in the covered European countries;
+                // the Catalonia rule applies to the pair, checked on submit.
+                const placeOptions = {
                     fields: ["formatted_address", "geometry", "name", "address_components"],
                     bounds: new google.maps.LatLngBounds(
                         new google.maps.LatLng(36.0, -10.0), // SW Europe
@@ -239,45 +236,48 @@ jQuery(document).ready(function ($) {
                 const destInput = document.querySelector(destId);
 
                 if (originInput) {
-                    const originAutocomplete = new google.maps.places.Autocomplete(originInput, originOptions);
+                    const originAutocomplete = new google.maps.places.Autocomplete(originInput, placeOptions);
                     originAutocomplete.addListener('place_changed', () => {
                         const place = originAutocomplete.getPlace();
                         if (place && place.address_components) {
-                            if (!validateOriginArea(place)) {
-                                alert(t('origin_restriction', 'Lo sentimos, solo operamos transfers con origen en Cataluña.'));
+                            if (!isAllowedCountry(place)) {
+                                alert(t('origin_country_restriction', 'La dirección de origen debe estar dentro de los países europeos con cobertura.'));
                                 originInput.value = '';
                                 originValidated = false;
+                                originPlace = null;
                             } else {
                                 originValidated = true;
+                                originPlace = place;
                             }
                         } else {
                             originValidated = false;
+                            originPlace = null;
                         }
                     });
-                    
+
                     // Reset validation if user types manually after selecting
                     $(originInput).on('input', function() {
                         originValidated = false;
+                        originPlace = null;
                     });
                 }
 
                 if (destInput) {
-                    const destAutocomplete = new google.maps.places.Autocomplete(destInput, destOptions);
+                    const destAutocomplete = new google.maps.places.Autocomplete(destInput, placeOptions);
                     destAutocomplete.addListener('place_changed', () => {
                         const place = destAutocomplete.getPlace();
+                        destinationPlace = null;
                         if (place && place.address_components) {
-                            let isAllowed = false;
-                            for (let comp of place.address_components) {
-                                if (comp.types.includes('country') && DESTINATION_COUNTRIES.includes(comp.short_name.toUpperCase())) {
-                                    isAllowed = true;
-                                    break;
-                                }
-                            }
-                            if (!isAllowed) {
+                            if (!isAllowedCountry(place)) {
                                 alert(t('destination_restriction', 'El destino debe estar dentro de los países europeos con cobertura.'));
                                 destInput.value = '';
+                            } else {
+                                destinationPlace = place;
                             }
                         }
+                    });
+                    $(destInput).on('input', function() {
+                        destinationPlace = null;
                     });
                 }
             } else if (autocompleteAttempts < maxAutocompleteAttempts) {
@@ -333,13 +333,14 @@ jQuery(document).ready(function ($) {
                     geocoder.geocode({ location: { lat, lng } }, (results, status) => {
                         $icon.removeClass('dashicons-update spin').addClass('dashicons-location');
                         if (status === "OK" && results[0]) {
-                            if (!validateOriginArea(results[0])) {
-                                alert(t('origin_restriction', 'Lo sentimos, solo operamos transfers con origen en el área de Barcelona.'));
+                            if (!isAllowedCountry(results[0])) {
+                                alert(t('origin_country_restriction', 'La dirección de origen debe estar dentro de los países europeos con cobertura.'));
                                 $(originId).val('');
                                 $(originId).focus();
                                 return;
                             }
                             $(originId).val(results[0].formatted_address);
+                            originPlace = results[0];
                             // Dispatching 'input' here hit the manual-edit listener and
                             // invalidated the address just verified, so the form then
                             // demanded a dropdown selection. 'change' does not.
@@ -376,8 +377,14 @@ jQuery(document).ready(function ($) {
 
             // Strict Origin Validation (Require selection from dropdown)
             if (isGoogleMapsActive && !originValidated) {
-                alert(t('origin_must_select', 'Por favor, selecciona una dirección de origen válida de la lista desplegable (solo Cataluña).'));
+                alert(t('origin_must_select', 'Selecciona la dirección de origen en la lista de sugerencias.'));
                 $(originId).focus();
+                return;
+            }
+
+            // Only when both points are known places; otherwise the server decides.
+            if (originPlace && destinationPlace && !isInCatalonia(originPlace) && !isInCatalonia(destinationPlace)) {
+                alert(t('route_outside_service_area', 'La ruta debe comenzar o terminar en Cataluña y el otro punto debe estar dentro del área europea cubierta.'));
                 return;
             }
 
