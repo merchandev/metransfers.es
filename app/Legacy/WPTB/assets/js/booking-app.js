@@ -106,6 +106,44 @@ jQuery(document).ready(function ($) {
             : fallback;
     }
 
+    // The server sends a stable code (quote_service_unavailable, origin_policy_error,
+    // no_vehicles...). Reporting every failure as no_vehicles hid a total outage.
+    function quoteErrorCode(response, fallback) {
+        const code = response && response.data ? response.data.code : '';
+        return typeof code === 'string' && /^[a-z_]{1,40}$/.test(code) ? code : fallback;
+    }
+
+    // A failed online quote must not end the booking: offer a human channel
+    // with the trip already written so the team can quote it immediately.
+    function supportActions(data) {
+        const phone = String((typeof wptb_vars !== 'undefined' && wptb_vars.support_phone) || '').replace(/[^0-9]/g, '');
+        if (!phone) return null;
+
+        const route = [data.origin, data.destination].filter(Boolean).join(' → ');
+        const when = [data.date, data.time].filter(Boolean).join(' ');
+        const message = [t('whatsapp_quote_message', 'Hola, quiero un presupuesto de traslado:'), route, when].filter(Boolean).join('\n');
+
+        const $actions = $('<div>', { class: 'mt-actions' });
+        $('<a>', { class: 'mt-button mt-button--secondary', href: 'tel:+' + phone })
+            .text(t('contact_phone', 'Llamar') + ' +' + phone)
+            .on('click', () => track('support_contact', { channel: 'phone' }))
+            .appendTo($actions);
+        $('<a>', { class: 'mt-button', href: 'https://wa.me/' + phone + '?text=' + encodeURIComponent(message), target: '_blank', rel: 'noopener' })
+            .text(t('contact_whatsapp', 'Pedir presupuesto por WhatsApp'))
+            .on('click', () => track('support_contact', { channel: 'whatsapp' }))
+            .appendTo($actions);
+        return $actions;
+    }
+
+    function displayQuoteFailure($container, response, fallbackCode) {
+        track('booking_error', { error_type: quoteErrorCode(response, fallbackCode) });
+        const $message = $('<div>', { class: 'mt-empty-state' });
+        $message.append('<span class="dashicons dashicons-warning mt-empty-state__icon"></span>');
+        $message.append($('<p>').text(responseMessage(response, t('vehicle_load_error', 'Error al cargar los vehículos.'))));
+        $message.append(supportActions(bookingData));
+        $container.empty().append($message);
+    }
+
     // ===== ORIGIN & DESTINATION RESTRICTIONS =====
     const DESTINATION_COUNTRIES = ['ES', 'PT', 'FR', 'CH', 'BE', 'DE', 'IT', 'NL', 'AT', 'HR', 'SI', 'PL', 'LU', 'AD'];
 
@@ -389,15 +427,12 @@ jQuery(document).ready(function ($) {
                 if (vehicles.length > 0) {
                     displayVehiclesInModal(vehicles);
                 } else {
-                    track('booking_error', { error_type: 'no_vehicles' });
-                    const message = responseMessage(response, t('no_vehicles', 'No se encontraron vehículos disponibles.'));
-                    $('#wptb-modal-vehicles-grid').html('<p class="mt-inline-notice mt-inline-notice--error">' + escapeHtml(message) + '</p>');
+                    displayQuoteFailure($('#wptb-modal-vehicles-grid'), response, 'no_vehicles');
                 }
             },
             error: function (xhr, status, error) {
                 console.error('❌ Error AJAX:', error);
-                track('booking_error', { error_type: 'vehicle_request' });
-                $('#wptb-modal-vehicles-grid').html('<p class="mt-inline-notice mt-inline-notice--error">' + escapeHtml(t('vehicle_load_error', 'Error al cargar los vehículos.')) + '</p>');
+                displayQuoteFailure($('#wptb-modal-vehicles-grid'), xhr.responseJSON, 'vehicle_request');
             }
         });
     }
@@ -664,24 +699,15 @@ jQuery(document).ready(function ($) {
                 if (vehicles.length > 0) {
                     displayVehicles(vehicles);
                 } else {
-                    displayNoVehicles(responseMessage(response, t('no_vehicles', 'No se encontraron vehículos disponibles.')));
+                    displayQuoteFailure($('#vehicles-grid'), response, 'no_vehicles');
                 }
             },
             error: function (xhr, status, error) {
                 console.error('❌ Error AJAX:', error);
                 hideBTTLoader();
-                track('booking_error', { error_type: 'vehicle_request' });
-                $('#vehicles-grid').html('<p class="mt-inline-notice mt-inline-notice--error">' + escapeHtml(t('vehicle_load_error', 'Error al cargar los vehículos.')) + '</p>');
+                displayQuoteFailure($('#vehicles-grid'), xhr.responseJSON, 'vehicle_request');
             }
         });
-    }
-
-    function displayNoVehicles(message) {
-        track('booking_error', { error_type: 'no_vehicles' });
-        const $message = $('<div>', { class: 'mt-empty-state' });
-        $message.append('<span class="dashicons dashicons-warning mt-empty-state__icon"></span>');
-        $message.append($('<p>').text(message || t('no_vehicles', 'No se encontraron vehículos disponibles.')));
-        $('#vehicles-grid').empty().append($message);
     }
 
     function displayVehicles(vehicles) {

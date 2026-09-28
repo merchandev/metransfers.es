@@ -213,6 +213,29 @@ document.addEventListener("DOMContentLoaded", () => {
         window.bookingData.quote_verified = true;
     }
 
+    // Stable server code (quote_service_unavailable, origin_policy_error, no_vehicles...).
+    function getVehiclesResponseCode(response, fallback) {
+        const code = response && response.data ? response.data.code : '';
+        return typeof code === 'string' && /^[a-z_]{1,40}$/.test(code) ? code : fallback;
+    }
+
+    // A failed online quote must not end the booking: offer a human channel
+    // with the trip already written so the team can quote it immediately.
+    function supportActionsHtml() {
+        const phone = String((ptsData && ptsData.support_phone) || '').replace(/[^0-9]/g, '');
+        if (!phone) {
+            return '';
+        }
+        const data = window.bookingData || {};
+        const route = [data.origin, data.destination].filter(Boolean).join(' → ');
+        const when = [data.date, data.time].filter(Boolean).join(' ');
+        const message = [t('whatsapp_quote_message', 'Hola, quiero un presupuesto de traslado:'), route, when].filter(Boolean).join('\n');
+        return `<div class="mt-actions" style="margin:12px auto 0;max-width:560px;">
+                <a class="mt-button mt-button--secondary" href="tel:+${phone}">${escapeHtml(t('contact_phone', 'Llamar'))} +${phone}</a>
+                <a class="mt-button" href="https://wa.me/${phone}?text=${encodeURIComponent(message)}" target="_blank" rel="noopener">${escapeHtml(t('contact_whatsapp', 'Pedir presupuesto por WhatsApp'))}</a>
+            </div>`;
+    }
+
     function getVehiclesResponseMessage(response) {
         if (!response || typeof response !== "object") {
             return "";
@@ -595,8 +618,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     const responseMessage = getVehiclesResponseMessage(normalizedResponse);
                     const noVehiclesMessage = responseMessage || t('no_vehicles', 'No se encontraron vehículos disponibles.');
-                    track('booking_error', { error_type: 'no_vehicles' });
-                    $('#pts-modal-vehicles-grid').html(`<p style="text-align:center;padding:20px;">${escapeHtml(noVehiclesMessage)}</p>`);
+                    track('booking_error', { error_type: getVehiclesResponseCode(normalizedResponse, 'no_vehicles') });
+                    $('#pts-modal-vehicles-grid').html(`<p style="text-align:center;padding:20px;">${escapeHtml(noVehiclesMessage)}</p>${supportActionsHtml()}`);
                 }
             },
             error: function (xhr, status, error) {
@@ -615,8 +638,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     : (responseMessage || t('vehicle_load_error', 'Error al cargar los vehículos.'));
 
                 console.error('[PTS] Error cargando vehiculos:', status, error, xhr ? xhr.responseText : '');
-                track('booking_error', { error_type: 'vehicle_request' });
-                $('#pts-modal-vehicles-grid').html(`<p style="color:red;text-align:center;">${escapeHtml(errorMessage)}</p>`);
+                track('booking_error', { error_type: getVehiclesResponseCode(normalizedResponse, 'vehicle_request') });
+                $('#pts-modal-vehicles-grid').html(`<p style="color:red;text-align:center;">${escapeHtml(errorMessage)}</p>${supportActionsHtml()}`);
             }
         });
     }

@@ -135,5 +135,10 @@ foreach ( array( $booking_js, $search_js ) as $browser_source ) {
 assert_vehicle_quote( false === strpos( $public, "'pricing' => array(" ), 'The vehicle endpoint must not expose tariff coefficients.' );
 assert_vehicle_quote( false !== strpos( $public, "unset( \$result['breakdown'] )" ), 'The public single-quote response must omit its tariff breakdown.' );
 assert_vehicle_quote( false !== strpos( $public, "'code'    => isset( \$result['code'] ) ? \$result['code'] : 'vehicle_quote_failed'" ), 'The vehicle endpoint must forward the specific failure code.' );
+foreach ( array( $booking_js, $search_js ) as $browser_source ) {
+    assert_vehicle_quote( false === strpos( $browser_source, "track('booking_error', { error_type: 'no_vehicles' })" ), 'Quote failures must be tracked with their server code, not all as no_vehicles.' );
+}
+assert_vehicle_quote( false !== strpos( $booking_js, 'displayQuoteFailure(' ) && false !== strpos( $booking_js, 'wa.me/' ), 'A failed quote must offer a human contact channel.' );
+assert_vehicle_quote( false !== strpos( $public, "'support_phone'" ), 'The booking script must receive the support phone.' );
 
 echo "Server vehicle quote tests passed.\n";

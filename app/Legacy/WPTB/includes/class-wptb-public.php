@@ -124,6 +124,8 @@ class WPTB_Public {
             'home_url' => \MeTransfers\Booking\I18n::url( '/' ),
             'language' => \MeTransfers\Booking\I18n::language(),
             'terms_version' => MT_TERMS_VERSION,
+            // Offered whenever the online quote fails, so an outage does not lose the booking.
+            'support_phone' => apply_filters( 'mt_booking_support_phone', '+34662024136' ),
             'strings' => \MeTransfers\Booking\I18n::strings(),
         );
 

@@ -108,6 +108,7 @@ function wptb_enqueue_transfers_search_assets() {
             'google_maps_language' => \MeTransfers\Booking\I18n::maps_language(),
             'google_maps_region' => 'ES',
             'strings' => \MeTransfers\Booking\I18n::strings(),
+            'support_phone' => apply_filters( 'mt_booking_support_phone', '+34662024136' ),
         ));
     }
 }
