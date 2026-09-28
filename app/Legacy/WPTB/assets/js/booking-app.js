@@ -191,6 +191,13 @@ jQuery(document).ready(function ($) {
         const searchFormId = '#wptb-search-form' + suffix;
         const locBtnId = 'wptb-location-btn' + suffix; // ID for injection, no hash
 
+        // The vehicle and details pages load this script without a search form
+        // (and without Maps): polling for autocomplete there only produced
+        // misleading "Google Maps autocomplete unavailable" warnings.
+        if (!document.querySelector(searchFormId) || !document.querySelector(originId)) {
+            return;
+        }
+
         // Set Min Date
         if (typeof wptb_vars !== 'undefined' && wptb_vars.min_date) {
             $(dateId).attr('min', wptb_vars.min_date);
