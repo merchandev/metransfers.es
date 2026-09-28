@@ -340,11 +340,11 @@ jQuery(document).ready(function ($) {
                                 return;
                             }
                             $(originId).val(results[0].formatted_address);
-                            // Trigger input event for validation/maps
-                            const event = new Event('input', { bubbles: true });
-                            if (document.querySelector(originId)) {
-                                document.querySelector(originId).dispatchEvent(event);
-                            }
+                            // Dispatching 'input' here hit the manual-edit listener and
+                            // invalidated the address just verified, so the form then
+                            // demanded a dropdown selection. 'change' does not.
+                            originValidated = true;
+                            document.querySelector(originId).dispatchEvent(new Event('change', { bubbles: true }));
                         } else {
                             alert(t('geocode_error', 'No se pudo determinar la dirección. Por favor ingrésala manualmente.'));
                             $(originId).focus();
