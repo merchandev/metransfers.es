@@ -73,6 +73,9 @@ google_replies( array(
 ) );
 $denied = \MeTransfers\Booking\ServiceAreaPolicy::validateRoute( 'Aeropuerto BCN', 'H10 Casanova' );
 assert_maps( empty( $denied['valid'] ), 'A denied geocoding request must keep failing closed.' );
+assert_maps( 'quote_service_unavailable' === $denied['code'], 'A provider outage must not be blamed on the visitor address.' );
+$denied_en = \MeTransfers\Booking\ServiceAreaPolicy::validateRoute( 'Aeropuerto BCN', 'H10 Casanova', 'en' );
+assert_maps( 0 === strpos( $denied_en['error'], 'We cannot calculate your quote online' ), 'The outage message must follow the visitor language.' );
 $failures = MapsProvider::failures();
 assert_maps( 'REQUEST_DENIED' === $failures['geocoding']['status'], 'The provider status must be recorded.' );
 assert_maps( false === strpos( $failures['geocoding']['detail'], 'AIza' ), 'The stored provider detail must never contain the key.' );
@@ -94,6 +97,8 @@ assert_maps( false !== strpos( $api_hint, 'Distance Matrix API' ), 'The disabled
 google_replies( array( 'status' => 'ZERO_RESULTS', 'results' => array() ) );
 $unknown = MapsProvider::request( MapsProvider::GEOCODING, array( 'address' => 'Nowhere 123' ) );
 assert_maps( ! $unknown['ok'] && ! $unknown['outage'], 'ZERO_RESULTS must not be reported as an outage.' );
+$unknown_route = \MeTransfers\Booking\ServiceAreaPolicy::validateRoute( 'Nowhere 123', 'Girona', 'en' );
+assert_maps( 'origin_policy_error' === $unknown_route['code'] && 0 === strpos( $unknown_route['error'], 'We could not find the pickup address' ), 'An unknown address must ask the visitor to correct it, in their language.' );
 assert_maps( ! isset( MapsProvider::failures()['geocoding'] ), 'A healthy provider answer must clear the outage notice.' );
 
 // 4. Distance Matrix element status is honoured; transport errors are outages.
@@ -103,7 +108,7 @@ assert_maps( ! $route['ok'] && ! $route['outage'] && 'NOT_FOUND' === $route['sta
 
 $GLOBALS['mt_test_http'] = new WP_Error();
 $offline = \MeTransfers\Booking\RouteDistance::calculate( 'Barcelona', 'Sitges' );
-assert_maps( ! empty( $offline['error'] ), 'A transport failure must stop the route calculation.' );
+assert_maps( ! empty( $offline['error'] ) && 'quote_service_unavailable' === $offline['code'], 'A transport failure must stop the route calculation as an outage.' );
 assert_maps( 'transport_error' === MapsProvider::failures()['distance_matrix']['status'], 'A transport failure must be recorded for wp-admin.' );
 
 // 5. A successful answer clears the outage and returns the payload to callers.

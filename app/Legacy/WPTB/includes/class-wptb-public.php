@@ -545,7 +545,7 @@ class WPTB_Public {
         if ( empty( $result['valid'] ) ) {
             wp_send_json_error(
                 array(
-                    'code'    => 'vehicle_quote_failed',
+                    'code'    => isset( $result['code'] ) ? $result['code'] : 'vehicle_quote_failed',
                     'message' => isset( $result['error'] ) ? $result['error'] : \MeTransfers\Booking\I18n::text( 'no_vehicles', $language ),
                 )
             );
@@ -570,8 +570,8 @@ class WPTB_Public {
         $result = \MeTransfers\Booking\QuoteService::create( wp_unslash( $_POST ) );
         if ( empty( $result['valid'] ) ) {
             wp_send_json_error( array(
-                'code'    => 'invalid_quote',
-                'message' => isset( $result['error'] ) ? $result['error'] : \MeTransfers\Booking\I18n::text( 'invalid_booking_request' ),
+                'code'    => isset( $result['code'] ) ? $result['code'] : 'invalid_quote',
+                'message' => isset( $result['error'] ) ? $result['error'] : \MeTransfers\Booking\I18n::text( 'invalid_booking_request', $language ),
             ) );
             return;
         }

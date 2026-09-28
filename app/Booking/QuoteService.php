@@ -62,6 +62,13 @@ final class QuoteService {
         }
 
         if ( empty( $quotes ) ) {
+            // An active fleet whose every tariff fails is a pricing setup
+            // problem, not "no vans available": report it as such.
+            $active_count = is_array( $vehicles ) ? count( $vehicles ) : 0;
+            if ( $active_count > 0 ) {
+                error_log( 'MeTransfers QuoteService: ' . $active_count . ' active vehicle(s) but none produced a valid server price.' );
+                return self::error( 'invalid_server_price', $context['language'] );
+            }
             return self::error( 'no_vehicles', $context['language'] );
         }
 
@@ -113,6 +120,6 @@ final class QuoteService {
     }
 
     private static function error( $key, $language ) {
-        return array( 'valid' => false, 'error' => I18n::text( $key, $language ) );
+        return array( 'valid' => false, 'code' => $key, 'error' => I18n::text( $key, $language ) );
     }
 }

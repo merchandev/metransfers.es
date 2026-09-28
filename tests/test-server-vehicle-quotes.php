@@ -115,6 +115,15 @@ assert_vehicle_quote( ! empty( $capacity_ok['valid'] ), 'Passenger and combined 
 assert_vehicle_quote( empty( $too_many_people['valid'] ), 'Passenger capacity must use the shared policy.' );
 assert_vehicle_quote( empty( $too_much_luggage['valid'] ), 'Suitcases and carry-ons must share the configured luggage limit.' );
 
+$fleet = WPTB_Vehicle_Manager::$vehicles;
+WPTB_Vehicle_Manager::$vehicles = array();
+$empty = \MeTransfers\Booking\QuoteService::createVehicleList( $input );
+assert_vehicle_quote( 'no_vehicles' === $empty['code'], 'An empty active fleet must be reported as no vehicles.' );
+WPTB_Vehicle_Manager::$vehicles = array( (object) array( 'id' => 99, 'name' => 'Broken tariff' ) );
+$unpriced = \MeTransfers\Booking\QuoteService::createVehicleList( $input );
+assert_vehicle_quote( 'invalid_server_price' === $unpriced['code'], 'A fleet whose tariffs all fail must not look like an empty fleet.' );
+WPTB_Vehicle_Manager::$vehicles = $fleet;
+
 $root = dirname( __DIR__ );
 $public = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-public.php' );
 $booking_js = file_get_contents( $root . '/app/Legacy/WPTB/assets/js/booking-app.js' );
@@ -125,5 +134,6 @@ foreach ( array( $booking_js, $search_js ) as $browser_source ) {
 }
 assert_vehicle_quote( false === strpos( $public, "'pricing' => array(" ), 'The vehicle endpoint must not expose tariff coefficients.' );
 assert_vehicle_quote( false !== strpos( $public, "unset( \$result['breakdown'] )" ), 'The public single-quote response must omit its tariff breakdown.' );
+assert_vehicle_quote( false !== strpos( $public, "'code'    => isset( \$result['code'] ) ? \$result['code'] : 'vehicle_quote_failed'" ), 'The vehicle endpoint must forward the specific failure code.' );
 
 echo "Server vehicle quote tests passed.\n";

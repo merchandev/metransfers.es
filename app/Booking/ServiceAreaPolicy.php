@@ -6,15 +6,15 @@ final class ServiceAreaPolicy {
         'ES', 'PT', 'FR', 'CH', 'BE', 'DE', 'IT', 'NL', 'AT', 'HR', 'SI', 'PL', 'LU', 'AD',
     );
 
-    public static function validateRoute( $origin, $destination ) {
+    public static function validateRoute( $origin, $destination, $language = '' ) {
         $origin_result = self::geocode( $origin );
         if ( empty( $origin_result['valid'] ) ) {
-            return array( 'valid' => false, 'error' => I18n::text( 'origin_policy_error' ) );
+            return self::geocodeFailure( $origin_result, 'origin_policy_error', $language );
         }
 
         $destination_result = self::geocode( $destination );
         if ( empty( $destination_result['valid'] ) ) {
-            return array( 'valid' => false, 'error' => I18n::text( 'destination_policy_error' ) );
+            return self::geocodeFailure( $destination_result, 'destination_policy_error', $language );
         }
 
         $allowed_countries = (array) apply_filters(
@@ -36,7 +36,8 @@ final class ServiceAreaPolicy {
         if ( ! $valid ) {
             return array(
                 'valid' => false,
-                'error' => I18n::text( 'route_outside_service_area' ),
+                'code'  => 'route_outside_service_area',
+                'error' => I18n::text( 'route_outside_service_area', $language ),
             );
         }
 
@@ -92,7 +93,7 @@ final class ServiceAreaPolicy {
             if ( ! $response['outage'] ) {
                 error_log( 'MeTransfers ServiceAreaPolicy: Google could not geocode "' . $address . '" (status=' . $response['status'] . ').' );
             }
-            return array( 'valid' => false );
+            return array( 'valid' => false, 'outage' => $response['outage'] );
         }
 
         $result = array(
@@ -119,6 +120,13 @@ final class ServiceAreaPolicy {
             set_transient( $cache_key, $result, 7 * DAY_IN_SECONDS );
         }
         return $result;
+    }
+
+    // A provider outage is our failure, not the visitor's address: telling
+    // them the origin "could not be verified" sends them to retype it forever.
+    private static function geocodeFailure( array $geocode, $key, $language ) {
+        $key = ! empty( $geocode['outage'] ) ? 'quote_service_unavailable' : $key;
+        return array( 'valid' => false, 'code' => $key, 'error' => I18n::text( $key, $language ) );
     }
 
     private static function normalize( $result ) {

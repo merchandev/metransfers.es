@@ -41,20 +41,22 @@ final class RouteContext {
             $date,
             $time,
             'round_trip' === $trip_type && '' !== $return_date && '' !== $return_time ? $return_date : '',
-            'round_trip' === $trip_type && '' !== $return_date && '' !== $return_time ? $return_time : ''
+            'round_trip' === $trip_type && '' !== $return_date && '' !== $return_time ? $return_time : '',
+            null,
+            $language
         );
         if ( empty( $date_policy['valid'] ) ) {
-            return array( 'valid' => false, 'error' => $date_policy['error'] );
+            return self::failed( $date_policy );
         }
 
-        $area = ServiceAreaPolicy::validateRoute( $origin, $destination );
+        $area = ServiceAreaPolicy::validateRoute( $origin, $destination, $language );
         if ( empty( $area['valid'] ) ) {
-            return array( 'valid' => false, 'error' => $area['error'] );
+            return self::failed( $area );
         }
 
-        $outbound = RouteDistance::calculate( $origin, $destination );
+        $outbound = RouteDistance::calculate( $origin, $destination, $language );
         if ( isset( $outbound['error'] ) ) {
-            return array( 'valid' => false, 'error' => $outbound['error'] );
+            return self::failed( $outbound );
         }
 
         $pricing_distance = (float) $outbound['distance_km'];
@@ -63,14 +65,14 @@ final class RouteContext {
         $return_route = null;
 
         if ( 'round_trip' === $trip_type ) {
-            $return_area = ServiceAreaPolicy::validateRoute( $return_origin, $return_destination );
+            $return_area = ServiceAreaPolicy::validateRoute( $return_origin, $return_destination, $language );
             if ( empty( $return_area['valid'] ) ) {
-                return array( 'valid' => false, 'error' => $return_area['error'] );
+                return self::failed( $return_area );
             }
 
-            $return_route = RouteDistance::calculate( $return_origin, $return_destination );
+            $return_route = RouteDistance::calculate( $return_origin, $return_destination, $language );
             if ( isset( $return_route['error'] ) ) {
-                return array( 'valid' => false, 'error' => $return_route['error'] );
+                return self::failed( $return_route );
             }
 
             $total_distance += (float) $return_route['distance_km'];
@@ -105,6 +107,15 @@ final class RouteContext {
     }
 
     private static function error( $key, $language ) {
-        return array( 'valid' => false, 'error' => I18n::text( $key, $language ) );
+        return array( 'valid' => false, 'code' => $key, 'error' => I18n::text( $key, $language ) );
+    }
+
+    // Keep the specific code so the browser can tell an outage from a bad address.
+    private static function failed( array $result ) {
+        return array(
+            'valid' => false,
+            'code'  => isset( $result['code'] ) ? $result['code'] : 'invalid_booking_request',
+            'error' => $result['error'],
+        );
     }
 }
