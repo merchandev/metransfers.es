@@ -1,8 +1,6 @@
 <?php
 namespace MeTransfers\Booking;
 
-use MeTransfers\Core\Settings;
-
 class RouteDistance {
     public static function calculate( $origin, $destination ) {
         $origin = sanitize_text_field( $origin );
@@ -26,30 +24,24 @@ class RouteDistance {
             return array( 'error' => 'Demasiadas consultas de ruta. Inténtalo de nuevo en un minuto.' );
         }
 
-        try {
-            $api_key = Settings::requireServerMapsKey();
-        } catch ( \RuntimeException $exception ) {
-            return array( 'error' => 'El cálculo de rutas del servidor no está configurado.' );
-        }
-
-        $url = add_query_arg(
+        $response = MapsProvider::request(
+            MapsProvider::DISTANCE_MATRIX,
             array(
                 'origins'      => $origin,
                 'destinations' => $destination,
-                'key'          => $api_key,
                 'units'        => 'metric',
                 'language'     => 'es',
-            ),
-            'https://maps.googleapis.com/maps/api/distancematrix/json'
+            )
         );
-        $response = wp_remote_get( $url, array( 'timeout' => 8, 'headers' => array( 'Referer' => home_url( '/' ) ) ) );
-        if ( is_wp_error( $response ) ) {
+        if ( 'key_missing' === $response['status'] ) {
+            return array( 'error' => 'El cálculo de rutas del servidor no está configurado.' );
+        }
+        if ( 'transport_error' === $response['status'] ) {
             return array( 'error' => 'No se pudo consultar la ruta.' );
         }
 
-        $payload = json_decode( wp_remote_retrieve_body( $response ), true );
-        $element = isset( $payload['rows'][0]['elements'][0] ) ? $payload['rows'][0]['elements'][0] : null;
-        if ( ! is_array( $element ) || 'OK' !== ( $element['status'] ?? '' ) ) {
+        $element = $response['payload']['rows'][0]['elements'][0] ?? null;
+        if ( ! $response['ok'] || ! is_array( $element ) ) {
             return array( 'error' => 'El proveedor no pudo calcular la ruta.' );
         }
 

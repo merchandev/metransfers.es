@@ -1079,7 +1079,11 @@ class WPTB_Admin {
                         <td>
                             <input type="password" name="wptb_google_maps_server_api_key"
                                    value="" class="regular-text" autocomplete="new-password" placeholder="Dejar vacío para conservar la actual" />
-                            <p class="description">Obligatoria para cotizar en el servidor. Debe estar restringida por IP y APIs; la clave pública del navegador nunca se utiliza como fallback. <?php echo \MeTransfers\Core\Settings::get( 'google_maps_server_api_key', '' ) ? 'Hay una clave de servidor configurada.' : 'No hay una clave de servidor configurada.'; ?></p>
+                            <p class="description">Obligatoria para cotizar en el servidor: sin ella ningún cliente ve vehículos ni precios. Necesita <strong>Geocoding API</strong> y <strong>Distance Matrix API</strong> habilitadas, facturación activa y restricción por <strong>dirección IP</strong> del servidor (no por sitio web/referrer, que Google rechaza en estas APIs). La clave pública del navegador nunca se utiliza como fallback. <?php echo \MeTransfers\Core\Settings::get( 'google_maps_server_api_key', '' ) ? 'Hay una clave de servidor configurada.' : 'No hay una clave de servidor configurada.'; ?>
+                            <?php if ( 'constant' === \MeTransfers\Core\Settings::source( 'google_maps_server_api_key' )['type'] ) : ?>
+                                <br><strong>Atención:</strong> la clave en uso viene de la constante <code>MT_GOOGLE_MAPS_SERVER_API_KEY</code> de <code>wp-config.php</code>, que tiene prioridad: guardar este campo no la reemplaza.
+                            <?php endif; ?></p>
+                            <p><a class="button" href="<?php echo esc_url( \MeTransfers\Booking\MapsProvider::checkUrl() ); ?>">Probar conexión ahora</a></p>
                         </td>
                     </tr>
                 </table>

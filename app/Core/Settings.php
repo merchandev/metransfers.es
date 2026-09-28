@@ -148,6 +148,34 @@ class Settings {
 	}
 
 	/**
+	 * Where get() resolves a setting from, without exposing its value. Constants
+	 * win over options, so an admin who edits the option while wp-config.php
+	 * still defines the constant changes nothing.
+	 *
+	 * @return array{type: string, name: string} type is constant, option or none.
+	 */
+	public static function source( $key ) {
+		if ( ! isset( self::DEFINITIONS[ $key ] ) ) {
+			return array( 'type' => 'none', 'name' => '' );
+		}
+
+		foreach ( self::DEFINITIONS[ $key ]['constants'] as $constant ) {
+			if ( defined( $constant ) && '' !== constant( $constant ) && null !== constant( $constant ) ) {
+				return array( 'type' => 'constant', 'name' => $constant );
+			}
+		}
+
+		foreach ( self::DEFINITIONS[ $key ]['options'] as $option ) {
+			$value = get_option( $option, null );
+			if ( null !== $value && '' !== $value ) {
+				return array( 'type' => 'option', 'name' => $option );
+			}
+		}
+
+		return array( 'type' => 'none', 'name' => '' );
+	}
+
+	/**
 	 * Return the private Maps credential used by server-side provider calls.
 	 * Browser credentials are intentionally never accepted as a fallback.
 	 */
