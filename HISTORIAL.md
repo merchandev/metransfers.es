@@ -15,18 +15,77 @@ La consolidación conserva autores, fechas, mensajes y SHA. Los commits `483d5c1
 
 ## Cronología
 
-### 28 de septiembre de 2026 — Caída de la cotización online (reporte de cliente)
+### 28 de septiembre de 2026 — Caída de la cotización online (reporte de cliente, 3 rondas)
 
-Un cliente no pudo reservar una van BCN → H10 Casanova para el 04/10/2026 («no options available»). Se revisó el diagnóstico que aportó el usuario contra el código y contra producción, se corrigió y se aplicó en 12 commits (rama `fix/reservas-cotizacion-2026-09-28`). El detalle completo está en `docs/REPORTE-RESERVAS-2026-09-28.md`.
+Un cliente escribió por WhatsApp el 27/09: no podía reservar una van del aeropuerto de Barcelona al hotel H10 Casanova para el domingo 04/10/2026 a las 12:00 («no options available»). El usuario aportó un diagnóstico propio. Se contrastó contra el código y contra producción, se corrigió y se aplicó en 12 commits de corrección más 3 de documentación, en la rama `fix/reservas-cotizacion-2026-09-28`. El informe completo, con cada hallazgo y su commit, está en `docs/REPORTE-RESERVAS-2026-09-28.md`.
 
-- **Causa:** la misma de la ronda 1 del 21/09, que seguía sin resolverse. Google rechaza la clave de Maps del servidor al geocodificar, así que fallan **todas** las cotizaciones. Reproducido también con «Barcelona» → «Girona». La reparación es de configuración en Google Cloud y está pendiente del propietario.
-- **Rectificación del 21/09:** el Hotel QR **sí** depende de esa clave al confirmar la reserva (`class-hqp-public.php` → `RouteDistance` → Distance Matrix).
-- **Visibilidad:** nuevo `MapsProvider`. Aviso rojo en wp-admin con el estado y el mensaje literal de Google, más una pista de solución, botón «Probar conexión ahora» y `tools/maps-check.php`. También avisa cuando la clave viene de `wp-config.php`, porque la constante gana al campo del panel.
-- **Cliente:** mensaje honesto y localizado cuando la caída es nuestra (`quote_service_unavailable`), con botones de WhatsApp (trayecto ya escrito) y llamada. La analítica ya no registra todo como `no_vehicles`.
-- **Formulario:** corregidos la geolocalización que invalidaba el origen, la cobertura del navegador (ahora admite regresos a Cataluña), el modal del carrusel bloqueado, la espera de Maps que abandonaba a los 6 s y los avisos de consola engañosos en la selección de vehículo. También se respeta `available`.
-- **Revisión posterior:** el buscador premium ya no exige Maps ni Distance Matrix en el navegador para cotizar. El Portal de Hoteles espera a Maps para activar el autocompletado (helper compartido `Assets::announceMapsReady()`). Un fallo de BD al leer la flota ya no se presenta como «no hay vehículos».
+#### Ronda 1 — Diagnóstico revisado: caída total y recurrente, no un problema de la ruta
 
-Archivos principales: `app/Booking/MapsProvider.php` (nuevo), `ServiceAreaPolicy.php`, `RouteDistance.php`, `RouteContext.php`, `BookingDatePolicy.php`, `QuoteService.php`, `I18n.php`, `app/Core/Settings.php`, `app/Legacy/WPTB/assets/js/booking-app.js`, `transfers-search.js`, `class-wptb-public.php`, `class-wptb-admin.php`, `tests/test-maps-provider.php` (nuevo).
+- Reproducido en producción el 28/09 con el endpoint público `wptb_get_vehicles`: la ruta del cliente devuelve «No se pudo verificar el origen del traslado.», igual que «Barcelona» → «Girona». **Fallan todas las cotizaciones.** No depende de la ruta, la fecha ni la flota.
+- Es **la misma causa que la ronda 1 del 21/09**, que seguía sin resolverse. Aquel día solo se añadió `error_log()` en `ServiceAreaPolicy`, y el propietario no consulta los logs de PHP. Llevamos al menos 7 días sin reservas online.
+- Causa inmediata: Google rechaza (o no recibe) la **clave de Maps del servidor** al geocodificar el origen. La del navegador funciona, y por eso el autocompletado parecía estar bien. El motivo exacto (clave ausente, restricción por *referrer*, IP no autorizada, API sin habilitar, facturación o cuota) no puede verse desde fuera. Por eso esta sesión lo hace visible en wp-admin (ronda 2).
+- **Rectificación del 21/09:** el Hotel QR **sí** depende de esa clave al confirmar la reserva (`class-hqp-public.php` → `RouteDistance` → Distance Matrix). El alcance real incluye el formulario principal, el modal del carrusel, el buscador premium, «Nueva reserva» del Portal de Hoteles, la recotización en datos de reserva y en el inicio de pago, y el Hotel QR.
+- Hallazgos nuevos:
+  - Si `wp-config.php` define `MT_GOOGLE_MAPS_SERVER_API_KEY`, esa constante **tiene prioridad sobre el campo del panel**.
+  - Geocoding API y Distance Matrix API no aceptan claves restringidas por sitio web (*referrer*): hay que restringirlas por IP.
+  - A verificar: según el aviso de Google de 2025, Distance Matrix API pasó a «Legacy» y no se puede activar en proyectos nuevos. Si la clave rotada el 19/08 está en un proyecto nuevo, la distancia podría fallar incluso con la geocodificación corregida.
+- Correcciones al diagnóstico aportado:
+  - Los avisos de consola «Google Maps autocomplete unavailable» de la captura eran ruido de la página de vehículos, no la causa.
+  - H07 (`available`) baja a prioridad baja: en la fase de vehículos no se envían pasajeros ni maletas.
+- El cliente recibió un mensaje en español, aunque navegaba en inglés, que culpaba a su dirección. La analítica registraba cualquier fallo como `no_vehicles`.
+- Nota de método: probar con `curl` desde Windows sin UTF-8 (la «ñ» de «España») devuelve «Datos de reserva inválidos», porque `sanitize_text_field()` vacía el campo. Es un artefacto de la prueba, no del sitio.
+
+Archivos: `docs/REPORTE-RESERVAS-2026-09-28.md` (informe v2).
+
+#### Ronda 2 — Correcciones aplicadas, una por commit
+
+1. **Diagnóstico visible en wp-admin.**
+   - Nuevo `app/Booking/MapsProvider.php`. Centraliza las llamadas a Geocoding y Distance Matrix, guarda el último fallo en la opción `mt_maps_health` (no autocargada, con la clave redactada) y muestra un aviso rojo persistente con el estado de Google, desde cuándo falla, su mensaje literal y una pista de solución.
+   - Botón «Probar conexión ahora» en el aviso y en *MeTransfers → Integraciones*; en consola, `tools/maps-check.php`.
+   - `Settings::source()` indica si la clave viene de `wp-config.php` o del panel.
+   - `RouteDistance`, que antes fallaba en silencio, ahora también queda registrado.
+   - `ZERO_RESULTS` y `NOT_FOUND` son problemas de la dirección, no caídas, y limpian el aviso.
+2. **Códigos de error estables e idioma del visitante.**
+   - `ServiceAreaPolicy`, `BookingDatePolicy` (argumento de idioma tras `$now`) y `RouteDistance` (antes con textos fijos en español) devuelven `code` y un mensaje localizado. `RouteContext` y `QuoteService` lo propagan, y `wptb_get_vehicles` / `wptb_get_quote` lo envían en lugar del fijo.
+   - Una caída del proveedor da `quote_service_unavailable` («no podemos calcular tu presupuesto online…») en vez de culpar a la dirección.
+   - Mensajes de dirección no encontrada más claros.
+   - Una flota con todas las tarifas rotas da `invalid_server_price`.
+3. **Estado de error en el navegador.**
+   - `booking-app.js` (página y modal) y `transfers-search.js` registran en analítica el código real y leen el JSON de los errores HTTP, como el 429.
+   - Cualquier fallo ofrece «Pedir presupuesto por WhatsApp» (mensaje con ruta, fecha y hora) y un botón de llamada. El número sale del filtro `mt_booking_support_phone` (por defecto +34 662 02 41 36).
+4. `initBookingForm` ya no se ejecuta en páginas sin formulario, lo que quita los avisos de consola engañosos.
+5. «Usar mi ubicación» ya no invalida el origen recién validado. Antes disparaba un `input` sintético y el envío quedaba bloqueado.
+6. **Cobertura unificada con el servidor.**
+   - El autocompletado admite origen y destino en los países cubiertos, y la regla «un extremo en Cataluña» se comprueba sobre el par al enviar. Así se admiten regresos como París → Barcelona.
+   - `originValidated` arranca en `true`: el modal del carrusel, que rellena el origen por código, se bloqueaba en cada envío.
+   - Nuevas claves ES/EN `origin_must_select` y `origin_country_restriction`.
+7. **Carga de Maps.** La URL de Maps lleva `callback=mtMapsLoaded`, que dispara el evento `mt:maps-ready`. Sustituye al sondeo de 6 s, que abandonaba para siempre en redes lentas.
+8. Los vehículos con `available: false` muestran el botón deshabilitado y no se pueden seleccionar desde ningún flujo.
+
+#### Ronda 3 — Revisión de que todo se aplicó: 4 huecos adicionales
+
+- La lista de comprobación contra el diagnóstico aportado (6.1, 7.1–7.4, 8.1–8.3, 9.1 y 9.2) dio 49 de 49 puntos presentes en el código final.
+- Huecos encontrados y corregidos:
+  - (9) El buscador premium no pedía vehículos al servidor hasta que cargaban Maps y un Distance Matrix del navegador, que era redundante. Si fallaban, mostraba «El sistema no está disponible».
+  - (10) Su mensaje de sesión caducada estaba fijo en español (`session_expired`).
+  - (11) En «Nueva reserva» del Portal de Hoteles, el autocompletado se intentaba activar una sola vez y casi nunca llegaba a funcionar. El aviso de Maps pasa a un helper compartido, `Assets::announceMapsReady()`.
+  - (12) Un fallo de base de datos al leer la flota devolvía una lista vacía y se mostraba «no hay vehículos». Ahora da `vehicle_load_error`.
+
+#### Verificación
+
+- Pasan la suite legacy (17 scripts, incluido el nuevo `tests/test-maps-provider.php`, añadido al CI), PHPUnit (98 pruebas, 668 aserciones), PHPStan (con `MapsProvider.php` añadido a las rutas), PHPCS y ESLint.
+- Navegador, con páginas locales que usan los scripts y el CSS reales y simulan Maps y AJAX: cada corrección de JS se contrastó con el script anterior. Lo que antes fallaba ahora pasa: geolocalización, París → Barcelona, carrusel, Maps a los 8 s, buscador premium sin Maps y autocompletado del portal con Maps tardío. Siguen rechazados, como debe ser, Madrid → Lisboa y un origen en Marruecos.
+- Regresión final: 11 escenarios sobre la rama completa, todos correctos.
+- No verificado: producción, porque no se desplegó nada y no hay acceso a wp-admin ni a Google Cloud. No se creó ninguna reserva ni pago y no se envió nada al cliente.
+
+#### Pendiente (fuera del repositorio)
+
+- **Responder al cliente** con un presupuesto manual para el 04/10.
+- **Desplegar** la rama con `tools/build-release.ps1`.
+- En Google Cloud, para la clave del servidor: Geocoding API y Distance Matrix API habilitadas, facturación activa y restricción por **IP** del servidor, nunca por *referrer*. Si el aviso indica que la clave viene de `wp-config.php`, cambiarla allí. Repetir «Probar conexión ahora» hasta que salga en verde.
+- Si Distance Matrix da el error *legacy*, migrar `RouteDistance` a Routes API (cambio aparte).
+
+Archivos añadidos: `app/Booking/MapsProvider.php`, `tests/test-maps-provider.php`, `tools/maps-check.php`, `docs/REPORTE-RESERVAS-2026-09-28.md`. Modificados: `app/Booking/{BookingDatePolicy,I18n,QuoteService,RouteContext,RouteDistance,ServiceAreaPolicy}.php`, `app/Core/{Application,Assets,Settings}.php`, `app/HotelPortal/HotelPortal.php`, `app/Legacy/WPTB/assets/js/{booking-app,transfers-search}.js`, `app/Legacy/WPTB/includes/{class-wptb-admin,class-wptb-public,shortcode-transfers-search}.php`, `assets/js/hotel-portal-booking.js`, `assets/css/booking.css`, `tests/{test-booking-policies,test-hardening-phase1,test-route-distance,test-server-vehicle-quotes}.php`, `.github/workflows/php-lint.yml`, `phpstan.neon`, `HISTORIAL.md`.
 
 ### 21 de septiembre de 2026 — Auditoría de indexación, seguridad y reservas (6 rondas)
 
