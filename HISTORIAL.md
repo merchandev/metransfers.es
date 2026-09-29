@@ -17,13 +17,14 @@ La consolidación conserva autores, fechas, mensajes y SHA. Los commits `483d5c1
 
 ### 28 de septiembre de 2026 — Caída de la cotización online (reporte de cliente)
 
-Un cliente no pudo reservar una van BCN → H10 Casanova para el 04/10/2026 («no options available»). Se revisó el diagnóstico que aportó el usuario contra el código y contra producción, se corrigió y se aplicó en 8 commits (rama `fix/reservas-cotizacion-2026-09-28`). El detalle completo está en `docs/REPORTE-RESERVAS-2026-09-28.md`.
+Un cliente no pudo reservar una van BCN → H10 Casanova para el 04/10/2026 («no options available»). Se revisó el diagnóstico que aportó el usuario contra el código y contra producción, se corrigió y se aplicó en 12 commits (rama `fix/reservas-cotizacion-2026-09-28`). El detalle completo está en `docs/REPORTE-RESERVAS-2026-09-28.md`.
 
 - **Causa:** la misma de la ronda 1 del 21/09, que seguía sin resolverse. Google rechaza la clave de Maps del servidor al geocodificar, así que fallan **todas** las cotizaciones. Reproducido también con «Barcelona» → «Girona». La reparación es de configuración en Google Cloud y está pendiente del propietario.
 - **Rectificación del 21/09:** el Hotel QR **sí** depende de esa clave al confirmar la reserva (`class-hqp-public.php` → `RouteDistance` → Distance Matrix).
 - **Visibilidad:** nuevo `MapsProvider`. Aviso rojo en wp-admin con el estado y el mensaje literal de Google, más una pista de solución, botón «Probar conexión ahora» y `tools/maps-check.php`. También avisa cuando la clave viene de `wp-config.php`, porque la constante gana al campo del panel.
 - **Cliente:** mensaje honesto y localizado cuando la caída es nuestra (`quote_service_unavailable`), con botones de WhatsApp (trayecto ya escrito) y llamada. La analítica ya no registra todo como `no_vehicles`.
 - **Formulario:** corregidos la geolocalización que invalidaba el origen, la cobertura del navegador (ahora admite regresos a Cataluña), el modal del carrusel bloqueado, la espera de Maps que abandonaba a los 6 s y los avisos de consola engañosos en la selección de vehículo. También se respeta `available`.
+- **Revisión posterior:** el buscador premium ya no exige Maps ni Distance Matrix en el navegador para cotizar. El Portal de Hoteles espera a Maps para activar el autocompletado (helper compartido `Assets::announceMapsReady()`). Un fallo de BD al leer la flota ya no se presenta como «no hay vehículos».
 
 Archivos principales: `app/Booking/MapsProvider.php` (nuevo), `ServiceAreaPolicy.php`, `RouteDistance.php`, `RouteContext.php`, `BookingDatePolicy.php`, `QuoteService.php`, `I18n.php`, `app/Core/Settings.php`, `app/Legacy/WPTB/assets/js/booking-app.js`, `transfers-search.js`, `class-wptb-public.php`, `class-wptb-admin.php`, `tests/test-maps-provider.php` (nuevo).
 

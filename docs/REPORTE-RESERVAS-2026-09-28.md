@@ -2,7 +2,7 @@
 
 **Fecha:** 28 de septiembre de 2026 (versión 2, revisada y aplicada).
 **Repositorio:** https://github.com/merchandev/metransfers.es
-**Base revisada:** `main`, commit `0cbfe14`. Correcciones en la rama `fix/reservas-cotizacion-2026-09-28` (8 commits, sección 6).
+**Base revisada:** `main`, commit `0cbfe14`. Correcciones en la rama `fix/reservas-cotizacion-2026-09-28` (12 commits, sección 6).
 **Estado:** correcciones de código aplicadas y probadas en local. **No desplegadas.** La causa raíz es configuración de Google Cloud y solo puede corregirla quien tenga acceso a esa cuenta (sección 4).
 
 ## 1. Resumen ejecutivo
@@ -44,6 +44,10 @@ Nota para futuras pruebas con `curl` desde Windows: si la consola no envía UTF-
 | N1 | Alta (nuevo) | Si `wp-config.php` define `MT_GOOGLE_MAPS_SERVER_API_KEY`, **tiene prioridad sobre el campo del panel**: cambiar la clave en wp-admin no tendría efecto | Ahora se avisa en el panel y en el aviso rojo |
 | N2 | Alta (nuevo) | Geocoding API y Distance Matrix API **no aceptan claves restringidas por sitio web (referrer)**, aunque el código envíe cabecera `Referer`. La clave del servidor debe restringirse por **IP** (la IP de salida del hosting, que Google muestra en su mensaje de rechazo) | Pista incluida en el aviso |
 | N3 | A verificar (nuevo) | Según el aviso de Google de 2025, Distance Matrix API pasó a «Legacy» y no se puede activar en proyectos nuevos. Si la clave rotada el 19/08 (README) está en un proyecto nuevo, **la distancia podría fallar incluso con la geocodificación corregida**. En ese caso habría que usar una clave de un proyecto antiguo o migrar a Routes API | El botón de comprobación prueba ambas APIs y lo detecta |
+| N4 | Alta (nuevo) | El buscador premium (`transfers-search.js`) no pedía vehículos al servidor hasta que cargaban Maps y un Distance Matrix **del navegador**. Si fallaba cualquiera de los dos, mostraba «El sistema no está disponible» o «No se pudo calcular la ruta». Ese cálculo era redundante: el servidor devuelve la ruta. Reproducido | Corregido (commit 9) |
+| N5 | Baja (nuevo) | Mensaje de sesión caducada fijo en español en el buscador premium | Corregido (commit 10) |
+| N6 | Media (nuevo) | En «Nueva reserva» del Portal de Hoteles, el autocompletado se intentaba activar una sola vez; con Maps en asíncrono no llegaba a activarse casi nunca. Es H03 en el portal, sin ningún reintento. Reproducido | Corregido (commit 11) |
+| N7 | Media (nuevo) | Si fallaba la consulta de la flota a la base de datos, se devolvía una lista vacía y se mostraba «no hay vehículos» (parte de 9.2 de la v1) | Corregido (commit 12) |
 
 Hipótesis a comprobar primero: la rotación de credenciales de Maps del 19/08 (documentada en el README) encaja con la cronología. Si la clave nueva se creó con la restricción por *referrer* de la del navegador, o en un proyecto nuevo sin las APIs o sin facturación, explicaría el fallo total. El aviso de wp-admin lo confirmará o lo descartará.
 
@@ -84,6 +88,10 @@ No sustituir la clave del servidor por la del navegador ni desactivar la validac
 | 6 | `ae6f3ea` | El navegador aplica la regla del servidor (un extremo en Cataluña). Arregla los orígenes prellenados por código (carrusel) y localiza `origin_must_select` | H05, H05b, H08 |
 | 7 | `d99abf0` | Maps avisa con `callback=mtMapsLoaded` → evento `mt:maps-ready`, sin límite de 6 s | H03 |
 | 8 | `4071437` | Los vehículos con `available: false` no se pueden seleccionar desde ningún flujo | H07 |
+| 9 | `8464c91` | El buscador premium cotiza con la ruta del servidor, sin depender de Maps en el navegador | N4 |
+| 10 | `c24ca01` | Mensaje de sesión caducada del buscador premium en ES/EN (`session_expired`) | N5, H08 |
+| 11 | `0806fa6` | Helper compartido `Assets::announceMapsReady()`. El Portal de Hoteles espera a Maps con `callback=mtMapsLoaded` | N6, H03 |
+| 12 | `43f7867` | Un fallo de BD al leer la flota devuelve `vehicle_load_error`, no `no_vehicles` | N7 |
 
 ## 7. Verificación realizada
 
@@ -94,7 +102,8 @@ No sustituir la clave del servidor por la del navegador ni desactivar la validac
 | PHPStan (se añade `MapsProvider.php` a las rutas analizadas) | Sin errores |
 | PHPCS | Sin errores |
 | ESLint | Sin errores |
-| Navegador (páginas locales con el marcado, el CSS y los scripts reales; Maps y AJAX simulados) | Cada corrección de JS se contrastó con el script anterior. Antes fallaban y ahora pasan: geolocalización, París → Barcelona, prellenado del carrusel y Maps a los 8 s. Siguen rechazados, como debe ser, Madrid → Lisboa y un origen en Marruecos. El estado de error se ve bien en escritorio y móvil, sin desbordamiento horizontal |
+| Navegador (páginas locales con el marcado, el CSS y los scripts reales; Maps y AJAX simulados) | Cada corrección de JS se contrastó con el script anterior. Antes fallaban y ahora pasan: geolocalización, París → Barcelona, prellenado del carrusel, Maps a los 8 s, buscador premium sin Maps y autocompletado del portal con Maps tardío. Siguen rechazados, como debe ser, Madrid → Lisboa y un origen en Marruecos. El estado de error se ve bien en escritorio y móvil, sin desbordamiento horizontal |
+| Regresión final sobre la rama completa | 11 escenarios en navegador con el código definitivo (caída, error 429, disponibilidad, 7 casos del formulario y Maps tardío): todos correctos, sin avisos de consola en la página de vehículos |
 
 Las pruebas de `MapsProvider` cubren: clave ausente, `REQUEST_DENIED` por *referrer* con redacción de la clave, pistas distintas para IP, API deshabilitada, API *legacy* y facturación, `ZERO_RESULTS` que no se trata como caída, `NOT_FOUND` de Distance Matrix, error de transporte y recuperación que limpia el aviso.
 
