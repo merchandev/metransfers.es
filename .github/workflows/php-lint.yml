@@ -76,6 +76,7 @@ jobs:
           php tests/test-legacy-load.php
           php tests/test-pricing.php
           php tests/test-route-distance.php
+          php tests/test-maps-provider.php
           php tests/test-booking-policies.php
           php tests/test-redsys-gateway.php
           php tests/test-hardening-phase1.php

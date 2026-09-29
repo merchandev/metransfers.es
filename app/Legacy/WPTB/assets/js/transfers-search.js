@@ -213,6 +213,29 @@ document.addEventListener("DOMContentLoaded", () => {
         window.bookingData.quote_verified = true;
     }
 
+    // Stable server code (quote_service_unavailable, origin_policy_error, no_vehicles...).
+    function getVehiclesResponseCode(response, fallback) {
+        const code = response && response.data ? response.data.code : '';
+        return typeof code === 'string' && /^[a-z_]{1,40}$/.test(code) ? code : fallback;
+    }
+
+    // A failed online quote must not end the booking: offer a human channel
+    // with the trip already written so the team can quote it immediately.
+    function supportActionsHtml() {
+        const phone = String((ptsData && ptsData.support_phone) || '').replace(/[^0-9]/g, '');
+        if (!phone) {
+            return '';
+        }
+        const data = window.bookingData || {};
+        const route = [data.origin, data.destination].filter(Boolean).join(' → ');
+        const when = [data.date, data.time].filter(Boolean).join(' ');
+        const message = [t('whatsapp_quote_message', 'Hola, quiero un presupuesto de traslado:'), route, when].filter(Boolean).join('\n');
+        return `<div class="mt-actions" style="margin:12px auto 0;max-width:560px;">
+                <a class="mt-button mt-button--secondary" href="tel:+${phone}">${escapeHtml(t('contact_phone', 'Llamar'))} +${phone}</a>
+                <a class="mt-button" href="https://wa.me/${phone}?text=${encodeURIComponent(message)}" target="_blank" rel="noopener">${escapeHtml(t('contact_whatsapp', 'Pedir presupuesto por WhatsApp'))}</a>
+            </div>`;
+    }
+
     function getVehiclesResponseMessage(response) {
         if (!response || typeof response !== "object") {
             return "";
@@ -227,62 +250,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         return "";
-    }
-
-    function calculateRouteMetrics(origin, destination, onSuccess, onError) {
-        ensureGoogleMapsReadyForPTS()
-            .then(() => {
-                if (!google.maps || !google.maps.DistanceMatrixService) {
-                    throw new Error('Google Maps Distance Matrix is not available.');
-                }
-
-                const service = new google.maps.DistanceMatrixService();
-                service.getDistanceMatrix(
-                    {
-                        origins: [origin],
-                        destinations: [destination],
-                        travelMode: google.maps.TravelMode.DRIVING,
-                        unitSystem: google.maps.UnitSystem.METRIC
-                    },
-                    (response, status) => {
-                        if (status !== 'OK') {
-                            if (typeof onError === 'function') {
-                                onError(t('route_error', 'No se pudo calcular la ruta.'));
-                            }
-                            return;
-                        }
-
-                        const element = response
-                            && response.rows
-                            && response.rows[0]
-                            && response.rows[0].elements
-                            && response.rows[0].elements[0]
-                            ? response.rows[0].elements[0]
-                            : null;
-
-                        if (!element || element.status !== 'OK' || !element.distance || !element.duration) {
-                            if (typeof onError === 'function') {
-                                onError(t('route_error', 'No se pudo calcular la ruta.'));
-                            }
-                            return;
-                        }
-
-                        if (typeof onSuccess === 'function') {
-                            onSuccess({
-                                distanceKm: (element.distance.value / 1000).toFixed(1),
-                                durationMinutes: Math.round(element.duration.value / 60),
-                                durationText: element.duration.text
-                            });
-                        }
-                    }
-                );
-            })
-            .catch((error) => {
-                if (typeof onError === 'function') {
-                    onError(t('route_error', 'No se pudo calcular la ruta.'));
-                }
-                console.error('[PTS] Distance matrix failed:', error);
-            });
     }
 
     function formatCurrencyLabel(amount) {
@@ -515,8 +482,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const fullDestination = destinationExact + ', ' + destinationDisplay;
 
-            if (typeof jQuery === 'undefined' || typeof google === 'undefined') {
-                track('booking_error', { error_type: 'maps_unavailable' });
+            if (typeof jQuery === 'undefined') {
+                track('booking_error', { error_type: 'configuration' });
                 alert(t('system_unavailable', 'El sistema no está disponible. Recarga la página.'));
                 return;
             }
@@ -530,33 +497,17 @@ document.addEventListener("DOMContentLoaded", () => {
             window.bookingData.time = time;
             window.bookingData.origin = origin;
             window.bookingData.destination = fullDestination;
-            const $submitBtn = jQuery('#pts-submitBtn');
+            window.bookingData.distance_km = 0;
+            window.bookingData.duration_minutes = 0;
+            window.bookingData.duration_text = '';
+            window.bookingData.quote_verified = false;
 
-            $submitBtn.prop('disabled', true).text(t('calculating', 'Calculando...'));
-
-            calculateRouteMetrics(
-                origin,
-                fullDestination,
-                (metrics) => {
-                    $submitBtn.prop('disabled', false).text(t('search_vehicles', 'Buscar vehículos'));
-
-                    window.bookingData.distance_km = metrics.distanceKm;
-                    window.bookingData.duration_minutes = metrics.durationMinutes;
-                    window.bookingData.duration_text = metrics.durationText;
-
-                    // Show step 2
-                    jQuery('#pts-modal-step-1').hide();
-                    jQuery('#pts-modal-step-2').fadeIn();
-
-                    // Load vehicles
-                    loadVehiclesIntoPTSModal();
-                },
-                () => {
-                    $submitBtn.prop('disabled', false).text(t('search_vehicles', 'Buscar vehículos'));
-                    track('booking_error', { error_type: 'route_calculation' });
-                    alert(t('route_error', 'No se pudo calcular la ruta. Verifica el origen y el destino.'));
-                }
-            );
+            // The server geocodes, routes and prices the trip and returns the route
+            // with the vehicles. A browser-side Distance Matrix call used to gate
+            // this step, so a slow or failing Maps script blocked every quote.
+            jQuery('#pts-modal-step-1').hide();
+            jQuery('#pts-modal-step-2').fadeIn();
+            loadVehiclesIntoPTSModal();
         });
     }
 
@@ -595,8 +546,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     const responseMessage = getVehiclesResponseMessage(normalizedResponse);
                     const noVehiclesMessage = responseMessage || t('no_vehicles', 'No se encontraron vehículos disponibles.');
-                    track('booking_error', { error_type: 'no_vehicles' });
-                    $('#pts-modal-vehicles-grid').html(`<p style="text-align:center;padding:20px;">${escapeHtml(noVehiclesMessage)}</p>`);
+                    track('booking_error', { error_type: getVehiclesResponseCode(normalizedResponse, 'no_vehicles') });
+                    $('#pts-modal-vehicles-grid').html(`<p style="text-align:center;padding:20px;">${escapeHtml(noVehiclesMessage)}</p>${supportActionsHtml()}`);
                 }
             },
             error: function (xhr, status, error) {
@@ -611,12 +562,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const nonceExpired = xhr && typeof xhr.responseText === 'string' && xhr.responseText.trim() === '-1';
                 const responseMessage = getVehiclesResponseMessage(normalizedResponse);
                 const errorMessage = nonceExpired
-                    ? 'La sesion expiro. Recarga la pagina e intenta de nuevo.'
+                    ? t('session_expired', 'La sesión caducó. Recarga la página e inténtalo de nuevo.')
                     : (responseMessage || t('vehicle_load_error', 'Error al cargar los vehículos.'));
 
                 console.error('[PTS] Error cargando vehiculos:', status, error, xhr ? xhr.responseText : '');
-                track('booking_error', { error_type: 'vehicle_request' });
-                $('#pts-modal-vehicles-grid').html(`<p style="color:red;text-align:center;">${escapeHtml(errorMessage)}</p>`);
+                track('booking_error', { error_type: getVehiclesResponseCode(normalizedResponse, 'vehicle_request') });
+                $('#pts-modal-vehicles-grid').html(`<p style="color:red;text-align:center;">${escapeHtml(errorMessage)}</p>${supportActionsHtml()}`);
             }
         });
     }
@@ -657,7 +608,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const id = $(this).data('vehicle-id');
             const vehicle = window.ptsVehicleMap[id];
 
-            if (vehicle) {
+            if (vehicle && vehicle.available !== false) {
                 $('.pts-vehicle-btn').removeClass('selected');
                 $(this).addClass('selected');
 

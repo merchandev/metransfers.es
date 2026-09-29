@@ -1,22 +1,20 @@
 <?php
 namespace MeTransfers\Booking;
 
-use MeTransfers\Core\Settings;
-
 final class ServiceAreaPolicy {
     private const DEFAULT_ALLOWED_COUNTRIES = array(
         'ES', 'PT', 'FR', 'CH', 'BE', 'DE', 'IT', 'NL', 'AT', 'HR', 'SI', 'PL', 'LU', 'AD',
     );
 
-    public static function validateRoute( $origin, $destination ) {
+    public static function validateRoute( $origin, $destination, $language = '' ) {
         $origin_result = self::geocode( $origin );
         if ( empty( $origin_result['valid'] ) ) {
-            return array( 'valid' => false, 'error' => I18n::text( 'origin_policy_error' ) );
+            return self::geocodeFailure( $origin_result, 'origin_policy_error', $language );
         }
 
         $destination_result = self::geocode( $destination );
         if ( empty( $destination_result['valid'] ) ) {
-            return array( 'valid' => false, 'error' => I18n::text( 'destination_policy_error' ) );
+            return self::geocodeFailure( $destination_result, 'destination_policy_error', $language );
         }
 
         $allowed_countries = (array) apply_filters(
@@ -38,7 +36,8 @@ final class ServiceAreaPolicy {
         if ( ! $valid ) {
             return array(
                 'valid' => false,
-                'error' => I18n::text( 'route_outside_service_area' ),
+                'code'  => 'route_outside_service_area',
+                'error' => I18n::text( 'route_outside_service_area', $language ),
             );
         }
 
@@ -84,40 +83,17 @@ final class ServiceAreaPolicy {
             return self::normalize( $cached );
         }
 
-        try {
-            $api_key = Settings::requireServerMapsKey();
-        } catch ( \RuntimeException $exception ) {
-            error_log( 'MeTransfers ServiceAreaPolicy: server Maps API key is not configured (wptb_google_maps_server_api_key / MT_GOOGLE_MAPS_SERVER_API_KEY). Every booking will fail origin/destination verification until it is set.' );
-            return array( 'valid' => false );
-        }
-
-        $url = add_query_arg(
-            array(
-                'address'  => $address,
-                'key'      => $api_key,
-                'language' => 'en',
-            ),
-            'https://maps.googleapis.com/maps/api/geocode/json'
-        );
-        $response = wp_remote_get( $url, array( 'timeout' => 8, 'headers' => array( 'Referer' => home_url( '/' ) ) ) );
-        if ( is_wp_error( $response ) ) {
-            error_log( 'MeTransfers ServiceAreaPolicy: geocoding request failed for "' . $address . '": ' . $response->get_error_message() );
-            return array( 'valid' => false );
-        }
-
-        $payload = json_decode( wp_remote_retrieve_body( $response ), true );
-        $first = isset( $payload['results'][0] ) && is_array( $payload['results'][0] )
-            ? $payload['results'][0]
+        // Provider/configuration failures are logged and surfaced in wp-admin by
+        // MapsProvider; only the address-level outcome is logged here.
+        $response = MapsProvider::request( MapsProvider::GEOCODING, array( 'address' => $address, 'language' => 'en' ) );
+        $first = isset( $response['payload']['results'][0] ) && is_array( $response['payload']['results'][0] )
+            ? $response['payload']['results'][0]
             : null;
-        if ( ! $first ) {
-            // Surface the Geocoding API status (REQUEST_DENIED, OVER_QUERY_LIMIT,
-            // ZERO_RESULTS, etc.) instead of silently failing every booking with no
-            // way to tell a missing/misconfigured server key apart from a real
-            // address that Google cannot geocode.
-            $status       = is_array( $payload ) && isset( $payload['status'] ) ? (string) $payload['status'] : 'unknown';
-            $error_detail = is_array( $payload ) && isset( $payload['error_message'] ) ? (string) $payload['error_message'] : '';
-            error_log( 'MeTransfers ServiceAreaPolicy: geocoding returned no results for "' . $address . '" (status=' . $status . ( '' !== $error_detail ? ', ' . $error_detail : '' ) . '). Check that the Geocoding API is enabled and billing is active for the server Maps key, and that its application restrictions (IP/referrer) allow server-side requests.' );
-            return array( 'valid' => false );
+        if ( ! $response['ok'] || ! $first ) {
+            if ( ! $response['outage'] ) {
+                error_log( 'MeTransfers ServiceAreaPolicy: Google could not geocode "' . $address . '" (status=' . $response['status'] . ').' );
+            }
+            return array( 'valid' => false, 'outage' => $response['outage'] );
         }
 
         $result = array(
@@ -144,6 +120,13 @@ final class ServiceAreaPolicy {
             set_transient( $cache_key, $result, 7 * DAY_IN_SECONDS );
         }
         return $result;
+    }
+
+    // A provider outage is our failure, not the visitor's address: telling
+    // them the origin "could not be verified" sends them to retype it forever.
+    private static function geocodeFailure( array $geocode, $key, $language ) {
+        $key = ! empty( $geocode['outage'] ) ? 'quote_service_unavailable' : $key;
+        return array( 'valid' => false, 'code' => $key, 'error' => I18n::text( $key, $language ) );
     }
 
     private static function normalize( $result ) {

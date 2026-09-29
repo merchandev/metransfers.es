@@ -88,6 +88,9 @@ class Application {
 		$drafts = new \MeTransfers\Booking\BookingDraftService();
 		$drafts->register();
 
+		$maps_provider = new \MeTransfers\Booking\MapsProvider();
+		$maps_provider->register();
+
 		$receipts = new \MeTransfers\Booking\ReceiptController();
 		$receipts->register();
 

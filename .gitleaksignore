@@ -1,0 +1,5 @@
+# Fake Google key used as test data in PR #58 (commit b5a0fc1) to check that
+# MapsProvider redacts keys from stored provider errors. Not a real credential;
+# the test now builds the fake key at runtime. Only these two findings are exempt.
+b5a0fc1cb5ec94ab5dc8bf4a9bc277780f7330a7:tests/test-maps-provider.php:gcp-api-key:68
+b5a0fc1cb5ec94ab5dc8bf4a9bc277780f7330a7:tests/test-maps-provider.php:gcp-api-key:71

@@ -64,12 +64,21 @@ function assert_policy( $condition, $message ) {
 
 assert_policy( \MeTransfers\Booking\ServiceAreaPolicy::validateRoute( 'Barcelona', 'Paris' )['valid'], 'A covered route from Catalonia must be accepted.' );
 assert_policy( \MeTransfers\Booking\ServiceAreaPolicy::validateRoute( 'Paris', 'Girona' )['valid'], 'A covered route to Catalonia must be accepted.' );
-assert_policy( ! \MeTransfers\Booking\ServiceAreaPolicy::validateRoute( 'Madrid', 'Lisbon' )['valid'], 'One endpoint must be in the operating hub.' );
+$outside = \MeTransfers\Booking\ServiceAreaPolicy::validateRoute( 'Madrid', 'Lisbon', 'en' );
+assert_policy( ! $outside['valid'], 'One endpoint must be in the operating hub.' );
+assert_policy( 'route_outside_service_area' === $outside['code'] && 0 === strpos( $outside['error'], 'The route must start or finish in Catalonia' ), 'Coverage errors must carry a stable code and the visitor language.' );
 assert_policy( ! \MeTransfers\Booking\ServiceAreaPolicy::validateRoute( 'Barcelona', 'Tangier' )['valid'], 'Unsupported destination countries must be rejected.' );
 
 $now = new DateTimeImmutable( '2026-08-19 10:00:00', new DateTimeZone( 'Europe/Madrid' ) );
 assert_policy( \MeTransfers\Booking\BookingDatePolicy::validate( '2026-08-19', '12:01', '', '', $now )['valid'], 'A booking beyond the lead time must pass.' );
-assert_policy( ! \MeTransfers\Booking\BookingDatePolicy::validate( '2026-08-19', '11:59', '', '', $now )['valid'], 'Lead time must be enforced.' );
+$too_soon = \MeTransfers\Booking\BookingDatePolicy::validate( '2026-08-19', '11:59', '', '', $now, 'en' );
+assert_policy( ! $too_soon['valid'], 'Lead time must be enforced.' );
+assert_policy( 'booking_lead_time_error' === $too_soon['code'] && 'Bookings require at least two hours of advance notice.' === $too_soon['error'], 'Date errors must carry a stable code and the visitor language.' );
+$past = \MeTransfers\Booking\QuoteService::create( array(
+    'language' => 'en', 'date' => '2020-01-01', 'time' => '10:00',
+    'origin' => 'Barcelona', 'destination' => 'Paris', 'vehicle_id' => 7,
+) );
+assert_policy( 'booking_lead_time_error' === $past['code'] && 'Bookings require at least two hours of advance notice.' === $past['error'], 'RouteContext must forward the specific code and language.' );
 assert_policy( ! \MeTransfers\Booking\BookingDatePolicy::validate( '2026-08-20', '10:00', '2026-08-20', '09:59', $now )['valid'], 'Return must be later than outbound.' );
 
 $quote = \MeTransfers\Booking\QuoteService::create( array(

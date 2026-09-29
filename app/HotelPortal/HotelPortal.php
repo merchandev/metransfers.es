@@ -74,6 +74,7 @@ final class HotelPortal {
 						'libraries' => 'places,geometry',
 						'language'  => 'es',
 						'region'    => 'ES',
+						'callback'  => 'mtMapsLoaded',
 					),
 					'https://maps.googleapis.com/maps/api/js'
 				),
@@ -81,6 +82,7 @@ final class HotelPortal {
 				null,
 				true
 			);
+			\MeTransfers\Core\Assets::announceMapsReady( 'google-maps' );
 			$dependencies[] = 'google-maps';
 		}
 		if ( file_exists( $booking_path ) ) {
