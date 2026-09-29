@@ -562,7 +562,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const nonceExpired = xhr && typeof xhr.responseText === 'string' && xhr.responseText.trim() === '-1';
                 const responseMessage = getVehiclesResponseMessage(normalizedResponse);
                 const errorMessage = nonceExpired
-                    ? 'La sesion expiro. Recarga la pagina e intenta de nuevo.'
+                    ? t('session_expired', 'La sesión caducó. Recarga la página e inténtalo de nuevo.')
                     : (responseMessage || t('vehicle_load_error', 'Error al cargar los vehículos.'));
 
                 console.error('[PTS] Error cargando vehiculos:', status, error, xhr ? xhr.responseText : '');
