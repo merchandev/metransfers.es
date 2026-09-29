@@ -138,6 +138,11 @@ class Migrations {
 				'version'  => '6.9.0',
 				'callback' => array( DataMigrations::class, 'consolidateMapsKey' ),
 			),
+			array(
+				'id'       => '20260929_002_address_cache_schema',
+				'version'  => '6.10.0',
+				'callback' => array( Schema::class, 'installAddressCacheTables' ),
+			),
 		);
 	}
 

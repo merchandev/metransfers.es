@@ -6,7 +6,10 @@ parameters:
         - app/Admin/Capabilities.php
         - app/Booking/BookingDatePolicy.php
         - app/Booking/I18n.php
+        - app/Booking/AddressCache.php
         - app/Booking/MapsProvider.php
+        - app/Booking/RouteDistance.php
+        - app/Booking/ServiceAreaPolicy.php
         - app/Core/DataMigrations.php
         - app/Core/Outbox.php
         - app/Core/ReleaseGate.php

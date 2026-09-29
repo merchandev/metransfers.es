@@ -39,6 +39,7 @@ class WP_Error {
 require_once __DIR__ . '/../app/Core/Settings.php';
 require_once __DIR__ . '/../app/Booking/I18n.php';
 require_once __DIR__ . '/../app/Booking/MapsProvider.php';
+require_once __DIR__ . '/../app/Booking/AddressCache.php';
 require_once __DIR__ . '/../app/Booking/ServiceAreaPolicy.php';
 require_once __DIR__ . '/../app/Booking/RouteDistance.php';
 

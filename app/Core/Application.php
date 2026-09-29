@@ -14,7 +14,7 @@ class Application {
 			define( 'MT_PLATFORM_VERSION', '6.9.4' );
 		}
 		if ( ! defined( 'MT_PLATFORM_DB_VERSION' ) ) {
-			define( 'MT_PLATFORM_DB_VERSION', '6.9.0' );
+			define( 'MT_PLATFORM_DB_VERSION', '6.10.0' );
 		}
 		if ( ! defined( 'MT_TERMS_VERSION' ) ) {
 			define( 'MT_TERMS_VERSION', '2026-08-18' );
@@ -90,6 +90,9 @@ class Application {
 
 		$maps_provider = new \MeTransfers\Booking\MapsProvider();
 		$maps_provider->register();
+
+		$address_cache = new \MeTransfers\Booking\AddressCache();
+		$address_cache->register();
 
 		$receipts = new \MeTransfers\Booking\ReceiptController();
 		$receipts->register();

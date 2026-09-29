@@ -1074,6 +1074,16 @@ class WPTB_Admin {
                                 <p class="description"><strong>Atención:</strong> la clave en uso viene de la constante <code>MT_GOOGLE_MAPS_API_KEY</code> de <code>wp-config.php</code>, que tiene prioridad: cambiar este campo no la reemplaza.</p>
                             <?php endif; ?>
                             <p><button type="submit" name="mt_save_and_test_maps" value="1" class="button button-primary">Guardar y probar conexión</button></p>
+                            <?php $mt_address_stats = \MeTransfers\Booking\AddressCache::stats(); ?>
+                            <?php if ( $mt_address_stats ) : ?>
+                                <p class="description">
+                                    <strong>Guardado en la base de datos:</strong>
+                                    direcciones: <?php echo esc_html( number_format_i18n( $mt_address_stats['addresses'] ) ); ?> ·
+                                    rutas: <?php echo esc_html( number_format_i18n( $mt_address_stats['routes'] ) ); ?> ·
+                                    consultas respondidas sin llamar a Google: <?php echo esc_html( number_format_i18n( $mt_address_stats['saved'] ) ); ?>.<br>
+                                    Los datos de Google se renuevan cada <?php echo (int) \MeTransfers\Booking\AddressCache::REFRESH_DAYS; ?> días y se borran a los <?php echo (int) \MeTransfers\Booking\AddressCache::MAX_DAYS; ?> (condiciones de Google Maps Platform).
+                                </p>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 </table>

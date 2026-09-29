@@ -6,6 +6,9 @@ final class ServiceAreaPolicy {
         'ES', 'PT', 'FR', 'CH', 'BE', 'DE', 'IT', 'NL', 'AT', 'HR', 'SI', 'PL', 'LU', 'AD',
     );
 
+    // Round trips resolve the same two addresses twice in one request.
+    private static $resolved = array();
+
     public static function validateRoute( $origin, $destination, $language = '' ) {
         $origin_result = self::geocode( $origin );
         if ( empty( $origin_result['valid'] ) ) {
@@ -77,10 +80,23 @@ final class ServiceAreaPolicy {
             return self::normalize( $filtered );
         }
 
-        $cache_key = 'mt_geocode_' . hash( 'sha256', strtolower( $address ) );
-        $cached = get_transient( $cache_key );
-        if ( is_array( $cached ) ) {
-            return self::normalize( $cached );
+        $key = AddressCache::key( $address );
+        if ( isset( self::$resolved[ $key ] ) ) {
+            return self::$resolved[ $key ];
+        }
+
+        $result = self::lookup( $address );
+        if ( ! empty( $result['valid'] ) ) {
+            self::$resolved[ $key ] = $result;
+        }
+        return $result;
+    }
+
+    private static function lookup( $address ) {
+        $stored = AddressCache::address( $address );
+        if ( $stored && $stored['fresh'] ) {
+            AddressCache::rememberAddress( $address, null, true );
+            return self::normalize( $stored );
         }
 
         // Provider/configuration failures are logged and surfaced in wp-admin by
@@ -90,6 +106,11 @@ final class ServiceAreaPolicy {
             ? $response['payload']['results'][0]
             : null;
         if ( ! $response['ok'] || ! $first ) {
+            AddressCache::rememberAddress( $address );
+            // While Google is down, an answer younger than MAX_DAYS keeps quoting.
+            if ( $response['outage'] && $stored ) {
+                return self::normalize( $stored );
+            }
             if ( ! $response['outage'] ) {
                 error_log( 'MeTransfers ServiceAreaPolicy: Google could not geocode "' . $address . '" (status=' . $response['status'] . ').' );
             }
@@ -116,9 +137,14 @@ final class ServiceAreaPolicy {
         }
 
         $result = self::normalize( $result );
-        if ( ! empty( $result['valid'] ) ) {
-            set_transient( $cache_key, $result, 7 * DAY_IN_SECONDS );
-        }
+        AddressCache::rememberAddress(
+            $address,
+            empty( $result['valid'] ) ? null : $result + array(
+                'place_id' => (string) ( $first['place_id'] ?? '' ),
+                'lat'      => $first['geometry']['location']['lat'] ?? null,
+                'lng'      => $first['geometry']['location']['lng'] ?? null,
+            )
+        );
         return $result;
     }
 
