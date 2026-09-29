@@ -35,9 +35,10 @@
     color: #fff;
 }
 
-.mt-checkout__summary h2 {
+/* Same weight as style.css's dark #wptb-plugin-container h2 rule (see components.css). */
+#wptb-plugin-container .mt-checkout__summary h2 {
     margin: 0 0 18px;
-    color: #fff;
+    color: #fff !important;
     font-family: var(--mt-font-heading);
     font-size: 1.35rem;
 }

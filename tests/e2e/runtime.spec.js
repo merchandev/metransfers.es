@@ -95,6 +95,18 @@ test('booking search uses a readable vertical layout in a narrow hero panel', as
   expect(submitBox.width).toBeGreaterThan(380);
 });
 
+test('blue booking buttons and the payment summary title keep white text over the theme stylesheet', async ({ page }) => {
+  await page.goto('/tests/e2e/fixtures/booking-contrast.html');
+
+  const white = 'rgb(255, 255, 255)';
+  for (const selector of ['#button-text', '#submit-payment', '.wptb-main-search-submit', '.trip-type-btn.active', '.select-vehicle-btn', 'a[href^="https://wa.me/"]', '.mt-checkout__summary h2']) {
+    await expect(page.locator(selector)).toHaveCSS('color', white);
+  }
+  // Light buttons keep their dark text.
+  await expect(page.locator('#wptb-payment-back')).not.toHaveCSS('color', white);
+  await expect(page.locator('.trip-type-btn:not(.active)')).not.toHaveCSS('color', white);
+});
+
 test('booking search only creates columns when its own container is wide enough', async ({ page }) => {
   await page.setViewportSize({ width: 1100, height: 800 });
   await page.goto('/tests/e2e/fixtures/booking-search.html');
