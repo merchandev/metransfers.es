@@ -2,7 +2,7 @@
 
 **Fecha:** 28 de septiembre de 2026 (versión 2, revisada y aplicada).
 **Repositorio:** https://github.com/merchandev/metransfers.es
-**Base revisada:** `main`, commit `0cbfe14`. Correcciones en la rama `fix/reservas-cotizacion-2026-09-28` (12 commits, sección 6), [PR #58](https://github.com/merchandev/metransfers.es/pull/58). Los hashes de la sección 6 son los commits del PR.
+**Base revisada:** `main`, commit `0cbfe14`. Correcciones en la rama `fix/reservas-cotizacion-2026-09-28` (12 commits, sección 6), [PR #58](https://github.com/merchandev/metransfers.es/pull/58). Los hashes de la sección 6 son los commits de ese PR. `main` exige firma verificada, así que el cambio entra en `main` como un único commit firmado por GitHub, con el mismo contenido.
 **Estado:** correcciones de código aplicadas y probadas en local. **No desplegadas.** La causa raíz es configuración de Google Cloud y solo puede corregirla quien tenga acceso a esa cuenta (sección 4).
 
 ## 1. Resumen ejecutivo
