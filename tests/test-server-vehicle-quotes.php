@@ -122,6 +122,11 @@ assert_vehicle_quote( 'no_vehicles' === $empty['code'], 'An empty active fleet m
 WPTB_Vehicle_Manager::$vehicles = array( (object) array( 'id' => 99, 'name' => 'Broken tariff' ) );
 $unpriced = \MeTransfers\Booking\QuoteService::createVehicleList( $input );
 assert_vehicle_quote( 'invalid_server_price' === $unpriced['code'], 'A fleet whose tariffs all fail must not look like an empty fleet.' );
+WPTB_Vehicle_Manager::$vehicles = array();
+$GLOBALS['wpdb'] = (object) array( 'last_error' => "Table 'wp_wptb_vehicles' doesn't exist" );
+$db_failure = \MeTransfers\Booking\QuoteService::createVehicleList( $input );
+assert_vehicle_quote( 'vehicle_load_error' === $db_failure['code'], 'A failed fleet query must not look like an empty fleet.' );
+unset( $GLOBALS['wpdb'] );
 WPTB_Vehicle_Manager::$vehicles = $fleet;
 
 $root = dirname( __DIR__ );
