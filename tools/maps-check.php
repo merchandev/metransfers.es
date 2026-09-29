@@ -3,7 +3,7 @@
  * WP-CLI: wp eval-file tools/maps-check.php
  *
  * Sends one live Geocoding API request and one Distance Matrix API request
- * with the configured server Maps key and prints Google's status for each,
+ * with the configured Google Maps key and prints Google's status for each,
  * plus what to fix. This is the same check as the "Probar conexión ahora"
  * button in wp-admin. It bypasses caches and test filters, never prints the
  * key, creates no booking and consumes two provider requests.
@@ -16,8 +16,8 @@ if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
 	exit( 'WP-CLI required.' );
 }
 
-$source = \MeTransfers\Core\Settings::source( 'google_maps_server_api_key' );
-WP_CLI::log( 'Server Maps key source: ' . ( 'none' === $source['type'] ? 'none' : $source['type'] . ' ' . $source['name'] ) );
+$source = \MeTransfers\Core\Settings::source( 'google_maps_api_key' );
+WP_CLI::log( 'Google Maps key source: ' . ( 'none' === $source['type'] ? 'none' : $source['type'] . ' ' . $source['name'] ) );
 
 $failed = false;
 foreach ( \MeTransfers\Booking\MapsProvider::runCheck() as $service => $result ) {

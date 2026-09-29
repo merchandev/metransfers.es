@@ -11,8 +11,13 @@ final class Language {
 		// cambia de idioma de forma explícita desde el selector; así evitamos bucles
 		// entre WordPress redirect_canonical() y /en/.
 		self::set( $detected );
+		if ( is_admin() ) {
+			// wp-admin keeps each user's own language.
+			return;
+		}
 		add_filter( 'locale', array( __CLASS__, 'filterLocale' ) );
 		add_filter( 'language_attributes', array( __CLASS__, 'filterAttributes' ) );
+		add_filter( 'gettext', array( __CLASS__, 'filterHtmlLangAttribute' ), 10, 3 );
 	}
 
 	public static function detectFromUri( $request_uri, ?array $active_languages = null ) {
@@ -42,11 +47,28 @@ final class Language {
 	}
 
 	public static function filterLocale( $locale ) {
-		return 'en' === self::$current ? 'en_US' : $locale;
+		return self::info( 'locale', $locale );
 	}
 
 	public static function filterAttributes( $output ) {
-		return 'en' === self::$current ? 'lang="en-US"' : $output;
+		return 'lang="' . self::info( 'hreflang', 'es-ES' ) . '"';
+	}
+
+	/**
+	 * WordPress derives get_bloginfo( 'language' ) -- the source of Yoast's
+	 * schema inLanguage -- from this core string, and the Spanish language
+	 * pack translates it to the generic "es". Spanish here is Spain's.
+	 */
+	public static function filterHtmlLangAttribute( $translation, $text = '', $domain = 'default' ) {
+		return 'html_lang_attribute' === $text && 'default' === $domain
+			? self::info( 'hreflang', $translation )
+			: $translation;
+	}
+
+	private static function info( $key, $fallback ) {
+		return defined( 'MT_LANGS' ) && isset( MT_LANGS[ self::$current ][ $key ] )
+			? MT_LANGS[ self::$current ][ $key ]
+			: $fallback;
 	}
 
 	public static function pathWithoutLanguage( $request_uri ) {

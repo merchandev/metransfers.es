@@ -3,12 +3,11 @@
 define(
     'MT_LANGS',
     array(
-        'es' => array( 'label' => 'ES', 'name' => 'Español', 'google_code' => 'es' ),
-        'en' => array( 'label' => 'EN', 'name' => 'English', 'google_code' => 'en' ),
-        'zh' => array( 'label' => 'ZH', 'name' => '中文', 'google_code' => 'zh-CN' ),
+        'es' => array( 'label' => 'ES', 'name' => 'Español (España)', 'locale' => 'es_ES', 'hreflang' => 'es-ES', 'google_code' => 'es' ),
+        'en' => array( 'label' => 'EN', 'name' => 'English', 'locale' => 'en_US', 'hreflang' => 'en-US', 'google_code' => 'en' ),
     )
 );
-define( 'MT_ACTIVE_LANGS', array( 'es', 'en', 'zh' ) );
+define( 'MT_ACTIVE_LANGS', array( 'es', 'en' ) );
 define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 
 $GLOBALS['mt_i18n_hooks'] = array();
@@ -23,6 +22,10 @@ function add_filter( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
 
 function wp_unslash( $value ) {
     return $value;
+}
+
+function is_admin() {
+    return false;
 }
 
 function home_url( $path = '' ) {
@@ -51,6 +54,10 @@ assert_i18n_routing( 'es' === Language::detectFromUri( '/', MT_ACTIVE_LANGS ), '
 assert_i18n_routing( 'en' === Language::detectFromUri( '/en/rutas/barcelona-salou/?utm=test', MT_ACTIVE_LANGS ), 'A supported language prefix must be detected from the path only.' );
 assert_i18n_routing( 'es' === Language::detectFromUri( '/es/pago/', MT_ACTIVE_LANGS ), 'Spanish must not use a public prefix.' );
 assert_i18n_routing( 'es' === Language::detectFromUri( '/xx/pago/', MT_ACTIVE_LANGS ), 'Unsupported language prefixes must not enter translated routing.' );
+foreach ( array( 'fr', 'de', 'it', 'pt', 'ca', 'ru', 'zh', 'ja', 'ar' ) as $retired ) {
+    assert_i18n_routing( 'es' === Language::detectFromUri( '/' . $retired . '/pago/', MT_ACTIVE_LANGS ), "Retired language /$retired/ must never be served as a language." );
+    assert_i18n_routing( null === Router::matchRequest( '/' . $retired . '/rutas/', MT_ACTIVE_LANGS ), "The router must not route /$retired/." );
+}
 
 $home = Router::matchRequest( '/en/', MT_ACTIVE_LANGS );
 $nested = Router::matchRequest( '/en/rutas/barcelona-salou/', MT_ACTIVE_LANGS );
@@ -72,11 +79,26 @@ assert_i18n_routing(
     'https://example.test/rutas/barcelona-salou/' === Seo::canonicalForRequest( 'https://example.test/rutas/barcelona-salou/', '/rutas/barcelona-salou/', 'es' ),
     'Yoast canonical filtering must leave Spanish canonical URLs unchanged.'
 );
-$alternates = Seo::alternatesForRequest( '/en/rutas/barcelona-salou/', array( 'es', 'en', 'zh' ) );
+$alternates = Seo::alternatesForRequest( '/en/rutas/barcelona-salou/', array( 'es', 'en', 'zh', 'fr' ) );
 assert_i18n_routing( 'https://example.test/rutas/barcelona-salou/' === $alternates['es-ES'], 'Spanish hreflang must use es-ES and remain unprefixed.' );
 assert_i18n_routing( 'https://example.test/en/rutas/barcelona-salou/' === $alternates['en-US'], 'English hreflang must use en-US and preserve the /en/ prefix.' );
-assert_i18n_routing( 'https://example.test/zh/rutas/barcelona-salou/' === $alternates['zh-Hans'], 'Chinese hreflang must use zh-Hans with the zh URL prefix.' );
 assert_i18n_routing( $alternates['es-ES'] === $alternates['x-default'], 'x-default must point to the Spanish canonical.' );
+assert_i18n_routing( array( 'es-ES', 'en-US', 'x-default' ) === array_keys( $alternates ), 'hreflang must only ever announce Spain Spanish and English.' );
+
+Language::set( 'es' );
+assert_i18n_routing( 'es_ES' === Language::filterLocale( 'es' ), 'Spanish pages must use the es_ES (Spain) locale.' );
+assert_i18n_routing( 'lang="es-ES"' === Language::filterAttributes( 'lang="es"' ), 'Spanish pages must declare lang="es-ES".' );
+assert_i18n_routing( 'es-ES' === Language::filterHtmlLangAttribute( 'es', 'html_lang_attribute', 'default' ), 'get_bloginfo( language ) must report es-ES for Spain Spanish.' );
+assert_i18n_routing( 'Hola' === Language::filterHtmlLangAttribute( 'Hola', 'Hello', 'default' ), 'Only the html_lang_attribute string may be rewritten.' );
+Language::set( 'fr' );
+assert_i18n_routing( 'es' === Language::get(), 'A retired language must fall back to Spanish.' );
+Language::set( 'en' );
+assert_i18n_routing( 'en_US' === Language::filterLocale( 'es' ) && 'lang="en-US"' === Language::filterAttributes( '' ), 'English pages must use en_US / en-US.' );
+
+assert_i18n_routing( \MeTransfers\I18n\Translation::isAllowedPair( 'es', 'en' ) && \MeTransfers\I18n\Translation::isAllowedPair( 'en', 'es' ), 'The translator must work Spanish to English and English to Spanish.' );
+foreach ( array( array( 'es', 'fr' ), array( 'fr', 'es' ), array( 'en', 'de' ), array( 'es', 'es' ), array( 'en', 'en' ), array( 'es', 'zh' ) ) as $pair ) {
+    assert_i18n_routing( ! \MeTransfers\I18n\Translation::isAllowedPair( $pair[0], $pair[1] ), 'The translator must refuse ' . implode( ' -> ', $pair ) . '.' );
+}
 
 $root = dirname( __DIR__ );
 $facade = file_get_contents( $root . '/includes/i18n.php' );
@@ -84,6 +106,10 @@ $router = file_get_contents( $root . '/app/I18n/Router.php' );
 $translation = file_get_contents( $root . '/app/I18n/Translation.php' );
 $admin = file_get_contents( $root . '/app/I18n/Admin.php' );
 $functions = file_get_contents( $root . '/functions.php' );
+preg_match_all( "/^\s*'([a-z]{2})'\s*=>\s*array\(/m", $facade, $declared );
+assert_i18n_routing( array( 'es', 'en' ) === $declared[1], 'MT_LANGS must declare exactly Spanish and English.' );
+assert_i18n_routing( false !== strpos( $facade, "'locale'      => 'es_ES'" ) && false !== strpos( $facade, "array( 'es', 'en' )" ), 'Spanish must be Spain Spanish and the only active languages es and en.' );
+assert_i18n_routing( false === strpos( $admin, 'mt_prebuild_lang' ), 'The translation admin must not offer a target language choice.' );
 assert_i18n_routing( false === strpos( $facade, '<style' ) && false === strpos( $facade, '<script' ) && false === strpos( $facade, 'style=' ), 'The i18n facade must not emit inline CSS or JavaScript.' );
 assert_i18n_routing( file_exists( $root . '/assets/css/i18n-switcher.css' ) && file_exists( $root . '/assets/js/i18n-switcher.js' ), 'The language switcher must use versioned asset files.' );
 assert_i18n_routing( false !== strpos( $router, "'template_include'" ) && false === strpos( $router, 'include $full_path' ), 'Translated routing must use the WordPress template filter instead of include-and-exit.' );

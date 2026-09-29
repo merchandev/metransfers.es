@@ -128,6 +128,21 @@ class Migrations {
 				'version'  => '6.7.0',
 				'callback' => array( DataMigrations::class, 'assignKnownHotelUsers' ),
 			),
+			array(
+				'id'       => '20260928_001_purge_retired_language_data',
+				'version'  => '6.8.0',
+				'callback' => array( DataMigrations::class, 'purgeRetiredLanguageData' ),
+			),
+			array(
+				'id'       => '20260929_001_single_maps_key',
+				'version'  => '6.9.0',
+				'callback' => array( DataMigrations::class, 'consolidateMapsKey' ),
+			),
+			array(
+				'id'       => '20260929_002_address_cache_schema',
+				'version'  => '6.10.0',
+				'callback' => array( Schema::class, 'installAddressCacheTables' ),
+			),
 		);
 	}
 

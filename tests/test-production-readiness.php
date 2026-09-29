@@ -112,7 +112,7 @@ foreach ( array(
     assert_readiness( ! file_exists( $root . '/' . $obsolete_file ), "Obsolete root helper $obsolete_file must stay removed." );
 }
 
-assert_readiness( false !== strpos( $readme, 'MT_GOOGLE_MAPS_SERVER_API_KEY' ), 'README must document server-side Maps configuration.' );
+assert_readiness( false !== strpos( $readme, 'MT_GOOGLE_MAPS_API_KEY' ) && false !== strpos( $readme, '**única** clave de Google Maps' ) && false !== strpos( $readme, 'Distance Matrix' ), 'README must document the single Google Maps key and the APIs it needs.' );
 assert_readiness( false !== strpos( $readme, 'Redsys Sandbox' ), 'README must document the staging payment gate.' );
 
 echo "Production-readiness tests passed.\n";

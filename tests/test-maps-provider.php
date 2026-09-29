@@ -39,6 +39,7 @@ class WP_Error {
 require_once __DIR__ . '/../app/Core/Settings.php';
 require_once __DIR__ . '/../app/Booking/I18n.php';
 require_once __DIR__ . '/../app/Booking/MapsProvider.php';
+require_once __DIR__ . '/../app/Booking/AddressCache.php';
 require_once __DIR__ . '/../app/Booking/ServiceAreaPolicy.php';
 require_once __DIR__ . '/../app/Booking/RouteDistance.php';
 
@@ -61,13 +62,13 @@ assert_maps( ! $missing['ok'] && $missing['outage'] && 'key_missing' === $missin
 assert_maps( array() === $GLOBALS['mt_test_urls'], 'No provider request may be sent without a server key.' );
 $failures = MapsProvider::failures();
 assert_maps( 'key_missing' === $failures['geocoding']['status'], 'A missing key must be recorded for wp-admin.' );
-assert_maps( false !== strpos( MapsProvider::hint( 'key_missing', '' ), 'MT_GOOGLE_MAPS_SERVER_API_KEY' ), 'The hint must say where the key is configured.' );
-assert_maps( 'none' === \MeTransfers\Core\Settings::source( 'google_maps_server_api_key' )['type'], 'No key source must be reported.' );
+assert_maps( false !== strpos( MapsProvider::hint( 'key_missing', '' ), 'Google Maps API Key' ), 'The hint must point to the single key field.' );
+assert_maps( 'none' === \MeTransfers\Core\Settings::source( 'google_maps_api_key' )['type'], 'No key source must be reported.' );
 
 // 2. Referrer-restricted key: Google's REQUEST_DENIED text is kept (redacted) and explained.
 // Fake key built at runtime so no key-shaped literal trips the secret scanner.
 $fake_key = 'AIza' . str_repeat( 'x', 35 );
-$GLOBALS['mt_test_options']['wptb_google_maps_server_api_key'] = $fake_key;
+$GLOBALS['mt_test_options']['wptb_google_maps_api_key'] = $fake_key;
 google_replies( array(
     'status'        => 'REQUEST_DENIED',
     'error_message' => 'API keys with referer restrictions cannot be used with this API. key=' . $fake_key,
@@ -81,8 +82,10 @@ assert_maps( 0 === strpos( $denied_en['error'], 'We cannot calculate your quote 
 $failures = MapsProvider::failures();
 assert_maps( 'REQUEST_DENIED' === $failures['geocoding']['status'], 'The provider status must be recorded.' );
 assert_maps( false === strpos( $failures['geocoding']['detail'], 'AIza' ), 'The stored provider detail must never contain the key.' );
-assert_maps( false !== strpos( MapsProvider::hint( 'REQUEST_DENIED', $failures['geocoding']['detail'] ), 'IP' ), 'A referrer-restricted key must be explained as needing an IP restriction.' );
-assert_maps( 'option' === \MeTransfers\Core\Settings::source( 'google_maps_server_api_key' )['type'], 'An option-backed key must be reported as such.' );
+assert_maps( false !== strpos( MapsProvider::hint( 'REQUEST_DENIED', $failures['geocoding']['detail'] ), '«Ninguna»' ), 'A referrer-restricted single key must be told to drop the application restriction.' );
+$missing_apis_hint = MapsProvider::hint( 'REQUEST_DENIED', 'This API key is not authorized to use this service or API. Please check the API restrictions settings of your API key.' );
+assert_maps( false !== strpos( $missing_apis_hint, 'Restricciones de API' ) && false !== strpos( $missing_apis_hint, 'Geocoding API' ) && false !== strpos( $missing_apis_hint, 'Distance Matrix API' ), 'A key missing APIs in its restriction list must be told exactly which APIs to tick.' );
+assert_maps( 'option' === \MeTransfers\Core\Settings::source( 'google_maps_api_key' )['type'], 'An option-backed key must be reported as such.' );
 foreach ( $GLOBALS['mt_test_urls'] as $url ) {
     assert_maps( false !== strpos( $url, 'maps.googleapis.com/maps/api/geocode/json' ), 'Geocoding must call the Geocoding endpoint.' );
 }

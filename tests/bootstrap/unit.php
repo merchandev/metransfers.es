@@ -16,18 +16,17 @@ if ( ! defined( 'MT_LANGS' ) ) {
 		array(
 			'es' => array(
 				'label'       => 'ES',
-				'name'        => 'Español',
+				'name'        => 'Español (España)',
+				'locale'      => 'es_ES',
+				'hreflang'    => 'es-ES',
 				'google_code' => 'es',
 			),
 			'en' => array(
 				'label'       => 'EN',
 				'name'        => 'English',
+				'locale'      => 'en_US',
+				'hreflang'    => 'en-US',
 				'google_code' => 'en',
-			),
-			'zh' => array(
-				'label'       => 'ZH',
-				'name'        => '中文',
-				'google_code' => 'zh-CN',
 			),
 		)
 	);

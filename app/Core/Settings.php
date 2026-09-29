@@ -10,10 +10,6 @@ class Settings {
 			'constants' => array( 'MT_GOOGLE_MAPS_API_KEY' ),
 			'options'   => array( 'wptb_google_maps_api_key' ),
 		),
-		'google_maps_server_api_key'    => array(
-			'constants' => array( 'MT_GOOGLE_MAPS_SERVER_API_KEY' ),
-			'options'   => array( 'wptb_google_maps_server_api_key' ),
-		),
 		'redsys_merchant_code'          => array(
 			'constants' => array( 'MT_REDSYS_MERCHANT_CODE' ),
 			'options'   => array( 'wptb_redsys_merchant_code' ),
@@ -106,7 +102,6 @@ class Settings {
 	);
 
 	private const PRIVATE_OPTIONS = array(
-		'wptb_google_maps_server_api_key',
 		'wptb_redsys_key',
 		'wptb_redsys_secret_key',
 		'wptb_smtp_password',
@@ -176,13 +171,16 @@ class Settings {
 	}
 
 	/**
-	 * Return the private Maps credential used by server-side provider calls.
-	 * Browser credentials are intentionally never accepted as a fallback.
+	 * The single Google Maps key: it loads the map and autocomplete in the
+	 * browser and also geocodes and measures routes on the server. The owner
+	 * chose one key over a separate server key (28-29 Sep 2026). It is
+	 * therefore public, so it cannot carry a website restriction (Google
+	 * rejects those on server calls): limit it by API list and daily quota.
 	 */
-	public static function requireServerMapsKey() {
-		$key = trim( (string) self::get( 'google_maps_server_api_key', '' ) );
+	public static function requireMapsKey() {
+		$key = trim( (string) self::get( 'google_maps_api_key', '' ) );
 		if ( '' === $key ) {
-			throw new \RuntimeException( 'Server Maps key missing.' );
+			throw new \RuntimeException( 'Google Maps key missing.' );
 		}
 
 		return $key;

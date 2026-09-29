@@ -46,33 +46,34 @@ final class Admin {
 
 		if ( isset( $_POST['mt_prebuild_translations'] ) ) {
 			check_admin_referer( 'mt_i18n_save' );
-			$language = isset( $_POST['mt_prebuild_lang'] ) ? sanitize_key( wp_unslash( $_POST['mt_prebuild_lang'] ) ) : '';
-			if ( isset( MT_LANGS[ $language ] ) && 'es' !== $language ) {
-				$sources          = Translation::sourceCatalog();
-				$translated       = Translation::remoteBatch( $sources, $language );
-				$translated_count = count( $translated );
-				$notice_type      = count( $sources ) === $translated_count ? 'success' : ( 0 < $translated_count ? 'warning' : 'error' );
-				$notice           = array( $notice_type, sprintf( '%d de %d textos del sitio se guardaron para %s.', $translated_count, count( $sources ), strtoupper( $language ) ) );
-				AuditLog::record(
-					'i18n.catalog_prebuilt',
-					'language',
-					0,
-					array(
-						'language' => $language,
-						'count'    => $translated_count,
-						'total'    => count( $sources ),
-					)
-				);
-			}
+			// The site is written in Spanish; English is the only translation.
+			$sources          = Translation::sourceCatalog();
+			$translated       = Translation::remoteBatch( $sources, 'en', 'es' );
+			$translated_count = count( $translated );
+			$notice_type      = count( $sources ) === $translated_count ? 'success' : ( 0 < $translated_count ? 'warning' : 'error' );
+			$notice           = array( $notice_type, sprintf( '%d de %d textos del sitio se tradujeron al inglés.', $translated_count, count( $sources ) ) );
+			AuditLog::record(
+				'i18n.catalog_prebuilt',
+				'language',
+				0,
+				array(
+					'language' => 'en',
+					'count'    => $translated_count,
+					'total'    => count( $sources ),
+				)
+			);
 		}
 
 		if ( isset( $_POST['mt_test_api'] ) ) {
 			check_admin_referer( 'mt_i18n_save' );
-			$translated = Translation::remoteBatch( array( 'Hola mundo' ), 'en' );
-			$ok         = isset( $translated[0] ) && 'Hola mundo' !== $translated[0];
+			$to_english = Translation::remoteBatch( array( 'Hola mundo' ), 'en', 'es' );
+			$to_spanish = Translation::remoteBatch( array( 'Hello world' ), 'es', 'en' );
+			$ok         = isset( $to_english[0], $to_spanish[0] )
+				&& 'Hola mundo' !== $to_english[0]
+				&& 'Hello world' !== $to_spanish[0];
 			$notice     = $ok
-				? array( 'success', 'La API de traducción respondió correctamente.' )
-				: array( 'error', 'No se pudo validar la API de traducción.' );
+				? array( 'success', sprintf( 'La API de traducción respondió en ambas direcciones: «Hola mundo» → «%s» y «Hello world» → «%s».', $to_english[0], $to_spanish[0] ) )
+				: array( 'error', 'No se pudo validar la API de traducción (español → inglés e inglés → español).' );
 			AuditLog::record( 'i18n.provider_tested', 'integration', 0, array( 'result' => $ok ? 'success' : 'failed' ) );
 		}
 
@@ -101,18 +102,9 @@ final class Admin {
 				<div class="mt-i18n-actions">
 					<?php submit_button( 'Guardar API Key', 'primary', 'mt_save_settings', false ); ?>
 					<?php submit_button( 'Probar API ahora', 'secondary', 'mt_test_api', false ); ?>
-					<select name="mt_prebuild_lang" aria-label="Idioma para pre-generar">
-						<?php foreach ( MT_LANGS as $code => $language ) : ?>
-							<?php
-							if ( 'es' === $code ) {
-								continue;
-							}
-							?>
-							<option value="<?php echo esc_attr( $code ); ?>"><?php echo esc_html( $language['name'] ); ?></option>
-						<?php endforeach; ?>
-					</select>
-					<?php submit_button( 'Pre-generar catálogo completo', 'secondary', 'mt_prebuild_translations', false ); ?>
+					<?php submit_button( 'Pre-generar catálogo en inglés', 'secondary', 'mt_prebuild_translations', false ); ?>
 				</div>
+				<p class="description">El sitio se escribe en español de España. El traductor solo trabaja español → inglés e inglés → español; no hay ningún otro idioma.</p>
 			</form>
 			<hr>
 			<h2>Estado de idiomas</h2>

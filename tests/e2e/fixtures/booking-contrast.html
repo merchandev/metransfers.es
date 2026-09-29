@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Booking contrast fixture</title>
+  <!-- Same order as WordPress: the theme stylesheet first, then the booking assets (Assets::enqueue, priority 100). -->
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <link rel="stylesheet" href="/assets/css/booking.css">
+  <link rel="stylesheet" href="/assets/css/checkout.css">
+</head>
+<body>
+  <div id="wptb-plugin-container" class="wptb-iso mt-checkout">
+    <form>
+      <button type="submit" class="wptb-main-search-submit mt-button mt-button--primary">Buscar vehículos</button>
+    </form>
+    <div class="trip-type-selector">
+      <button type="button" class="trip-type-btn active" data-type="one_way">Solo ida</button>
+      <button type="button" class="trip-type-btn" data-type="round_trip">Ida y vuelta</button>
+    </div>
+    <div class="vehicle-card mt-vehicle-card">
+      <div class="mt-vehicle-card__footer">
+        <button type="button" class="select-vehicle-btn mt-button mt-button--primary">Seleccionar</button>
+      </div>
+    </div>
+    <div class="mt-actions">
+      <a class="mt-button mt-button--secondary" href="tel:+34662024136">Llamar</a>
+      <a class="mt-button" href="https://wa.me/34662024136">Pedir presupuesto por WhatsApp</a>
+    </div>
+    <div class="mt-checkout__layout">
+      <aside class="mt-checkout__summary" aria-label="Resumen de tu reserva">
+        <h2>Resumen de tu reserva</h2>
+        <dl><div><dt>Vehículo</dt><dd>MINI VAN «V» Class</dd></div></dl>
+      </aside>
+      <div class="mt-actions">
+        <button type="button" class="mt-button mt-button--secondary" id="wptb-payment-back">Volver</button>
+        <button type="submit" id="submit-payment" class="mt-button mt-button--primary">
+          <span id="button-text">Pagar</span>
+          <span class="mt-spinner is-hidden" id="payment-spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -2,7 +2,7 @@
 namespace MeTransfers\SEO;
 
 if ( ! defined( 'OBJECT' ) ) { define( 'OBJECT', 'OBJECT' ); }
-if ( ! defined( 'MT_ACTIVE_LANGS' ) ) { define( 'MT_ACTIVE_LANGS', array( 'es', 'en', 'zh' ) ); }
+if ( ! defined( 'MT_ACTIVE_LANGS' ) ) { define( 'MT_ACTIVE_LANGS', array( 'es', 'en' ) ); }
 if ( ! defined( 'MT_SEO_LANGS' ) ) { define( 'MT_SEO_LANGS', array( 'es', 'en' ) ); }
 function apply_filters( $hook, $value ) { return $value; }
 function wp_json_encode( $value ) { return json_encode( $value ); }

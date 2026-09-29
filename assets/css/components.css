@@ -40,6 +40,19 @@
     color: var(--mt-color-primary-hover);
 }
 
+/*
+ * Blue buttons in the booking form always carry white text, including text
+ * wrapped in a <span> such as «Pagar». style.css forces a dark colour on every
+ * span/h2/h3/label inside #wptb-plugin-container with an ID and !important,
+ * so this needs the same weight.
+ */
+#wptb-plugin-container .mt-button:not(.mt-button--secondary),
+#wptb-plugin-container .mt-button:not(.mt-button--secondary) *,
+#wptb-plugin-container .trip-type-btn.active,
+#wptb-plugin-container .trip-type-btn.active * {
+    color: #fff !important;
+}
+
 .mt-actions {
     display: flex;
     flex-direction: column-reverse;

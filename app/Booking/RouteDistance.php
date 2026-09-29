@@ -14,10 +14,10 @@ class RouteDistance {
             return self::normalize_result( $filtered, $language );
         }
 
-        $cache_key = 'mt_route_' . hash( 'sha256', strtolower( $origin . '|' . $destination ) );
-        $cached = get_transient( $cache_key );
-        if ( is_array( $cached ) && ! empty( $cached['distance_km'] ) ) {
-            return self::normalize_result( $cached, $language );
+        $stored = AddressCache::route( $origin, $destination );
+        if ( $stored && $stored['fresh'] ) {
+            AddressCache::rememberRoute( $origin, $destination, null, true );
+            return self::normalize_result( $stored, $language );
         }
 
         if ( ! self::consume_rate_limit() ) {
@@ -35,22 +35,27 @@ class RouteDistance {
         );
         $element = $response['payload']['rows'][0]['elements'][0] ?? null;
         if ( ! $response['ok'] || ! is_array( $element ) ) {
+            AddressCache::rememberRoute( $origin, $destination );
+            // While Google is down, a measure younger than MAX_DAYS keeps quoting.
+            if ( $response['outage'] && $stored ) {
+                return self::normalize_result( $stored, $language );
+            }
             return self::error( $response['outage'] ? 'quote_service_unavailable' : 'route_not_found', $language );
         }
 
         $meters = isset( $element['distance']['value'] ) ? (int) $element['distance']['value'] : 0;
         $seconds = isset( $element['duration']['value'] ) ? (int) $element['duration']['value'] : 0;
         if ( $meters <= 0 ) {
+            AddressCache::rememberRoute( $origin, $destination );
             return self::error( 'route_error', $language );
         }
 
-        $result = array(
+        AddressCache::rememberRoute( $origin, $destination, array( 'distance_meters' => $meters, 'duration_seconds' => $seconds ) );
+
+        return array(
             'distance_km'     => round( $meters / 1000, 2 ),
             'duration_minutes' => $seconds > 0 ? (int) ceil( $seconds / 60 ) : 0,
         );
-        set_transient( $cache_key, $result, 6 * HOUR_IN_SECONDS );
-
-        return $result;
     }
 
     private static function normalize_result( $result, $language ) {

@@ -10,25 +10,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'MT_LANGS' ) ) {
-    // Única lista de idiomas reales del tema: contenido propio, selector,
-    // traducción automática, hreflang y sitemap. Español e inglés son los
-    // únicos idiomas soportados; no queda ningún otro código documentado
-    // aquí a propósito, para que esta constante sea la fuente de verdad
-    // exacta y no se pueda confundir con un idioma "medio soportado".
+    // Los dos únicos idiomas del tema. El español de España (es_ES) es la
+    // lengua nativa y de origen de todo el contenido; el inglés es la única
+    // traducción. El traductor solo trabaja español -> inglés e
+    // inglés -> español (Translation::PAIRS); ningún otro idioma tiene
+    // contenido, selector, traducción, hreflang ni sitemap.
     //
     // Los 9 códigos que existieron entre el 16 y el 21 de septiembre de 2026
-    // (ar, ca, de, fr, it, ja, pt, ru, zh) se retiraron por completo del
-    // tema: no tienen contenido, no aparecen en el selector, no se traducen
-    // y no se anuncian por hreflang. Las URLs antiguas bajo esos prefijos
-    // (ya indexadas o enlazadas desde fuera) se siguen reconociendo y
-    // consolidando con 301 hacia su equivalente español -- exclusivamente
-    // en Redirects::RETIRED_LANGUAGES, la única lista que debe tocarse si
-    // algún día hay que añadir o quitar un idioma retirado.
+    // (ar, ca, de, fr, it, ja, pt, ru, zh) se retiraron por completo, y sus
+    // datos guardados (caché de traducción, aprobaciones SEO) los borra la
+    // migración 20260928_001. Lo único que queda de ellos es la redirección
+    // 301 de sus URLs antiguas, ya indexadas por Google, hacia el español
+    // (Redirects::RETIRED_LANGUAGES): quitarla convertiría esas URLs en 404.
     define(
         'MT_LANGS',
         array(
-            'es' => array( 'label' => 'ES', 'name' => 'Español', 'google_code' => 'es' ),
-            'en' => array( 'label' => 'EN', 'name' => 'English (US)', 'google_code' => 'en' ),
+            'es' => array(
+                'label'       => 'ES',
+                'name'        => 'Español (España)',
+                'locale'      => 'es_ES',
+                'hreflang'    => 'es-ES',
+                'google_code' => 'es',
+            ),
+            'en' => array(
+                'label'       => 'EN',
+                'name'        => 'English',
+                'locale'      => 'en_US',
+                'hreflang'    => 'en-US',
+                'google_code' => 'en',
+            ),
         )
     );
 }

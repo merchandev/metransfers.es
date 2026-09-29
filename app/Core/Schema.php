@@ -7,6 +7,7 @@ final class Schema {
 		self::installCoreTables();
 		self::installEventTables();
 		self::installFleetTables();
+		self::installAddressCacheTables();
 	}
 
 	public static function installMigrationJournal() {
@@ -273,6 +274,63 @@ final class Schema {
                 PRIMARY KEY  (id),
                 KEY is_active (is_active),
                 KEY display_order (display_order)
+            ) $charset_collate;"
+		);
+	}
+
+	/**
+	 * Quoted addresses and routes (see Booking\AddressCache). The Google
+	 * columns are nullable because the daily purge empties them after 30 days.
+	 */
+	public static function installAddressCacheTables() {
+		global $wpdb;
+		self::loadUpgradeApi();
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$table_addresses = $wpdb->prefix . 'mt_addresses';
+		self::apply(
+			"CREATE TABLE $table_addresses (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                address_hash char(64) NOT NULL,
+                address varchar(500) NOT NULL,
+                place_id varchar(255) DEFAULT NULL,
+                formatted_address varchar(500) DEFAULT NULL,
+                country_code char(2) DEFAULT NULL,
+                administrative_1 varchar(191) DEFAULT NULL,
+                administrative_2 varchar(191) DEFAULT NULL,
+                lat decimal(10,7) DEFAULT NULL,
+                lng decimal(10,7) DEFAULT NULL,
+                geocoded_at datetime DEFAULT NULL,
+                lookups int(10) unsigned NOT NULL DEFAULT 0,
+                hits int(10) unsigned NOT NULL DEFAULT 0,
+                first_seen_at datetime NOT NULL,
+                last_seen_at datetime NOT NULL,
+                PRIMARY KEY  (id),
+                UNIQUE KEY address_hash (address_hash),
+                KEY country_code (country_code),
+                KEY geocoded_at (geocoded_at),
+                KEY last_seen_at (last_seen_at)
+            ) $charset_collate;"
+		);
+
+		$table_routes = $wpdb->prefix . 'mt_routes';
+		self::apply(
+			"CREATE TABLE $table_routes (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                route_hash char(64) NOT NULL,
+                origin varchar(500) NOT NULL,
+                destination varchar(500) NOT NULL,
+                distance_meters int(10) unsigned DEFAULT NULL,
+                duration_seconds int(10) unsigned DEFAULT NULL,
+                measured_at datetime DEFAULT NULL,
+                lookups int(10) unsigned NOT NULL DEFAULT 0,
+                hits int(10) unsigned NOT NULL DEFAULT 0,
+                first_seen_at datetime NOT NULL,
+                last_seen_at datetime NOT NULL,
+                PRIMARY KEY  (id),
+                UNIQUE KEY route_hash (route_hash),
+                KEY measured_at (measured_at),
+                KEY last_seen_at (last_seen_at)
             ) $charset_collate;"
 		);
 	}

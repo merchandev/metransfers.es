@@ -48,6 +48,8 @@ $tables = array(
 	'mt_outbox',
 	'mt_booking_drafts',
 	'mt_admin_audit',
+	'mt_addresses',
+	'mt_routes',
 );
 foreach ( $tables as $suffix ) {
 	$table = $wpdb->prefix . $suffix;
@@ -62,9 +64,53 @@ $succeeded = (int) $wpdb->get_var(
 		$journal
 	)
 );
-mt_wp_integration_assert( 10 === $succeeded, 'All ten discrete migrations must be journaled as succeeded.' );
+mt_wp_integration_assert( 13 === $succeeded, 'All thirteen discrete migrations must be journaled as succeeded.' );
+foreach ( array( '20260928_001_purge_retired_language_data', '20260929_001_single_maps_key', '20260929_002_address_cache_schema' ) as $migration_id ) {
+	$status = $wpdb->get_var(
+		$wpdb->prepare(
+			'SELECT status FROM %i WHERE migration_id = %s',
+			$journal,
+			$migration_id
+		)
+	);
+	mt_wp_integration_assert( 'succeeded' === $status, "Migration {$migration_id} must run on a real database." );
+}
+mt_wp_integration_assert( false === get_option( 'wptb_google_maps_server_api_key' ), 'The retired server Maps key option must not survive the migration.' );
 mt_wp_integration_assert( has_action( \MeTransfers\Core\Outbox::CRON_HOOK ), 'The durable outbox worker must be registered.' );
 mt_wp_integration_assert( false !== wp_next_scheduled( \MeTransfers\Core\Outbox::CRON_HOOK ), 'The durable outbox worker must be scheduled.' );
+
+// Address cache: the real SQL (upsert, NULL coordinates, 30-day purge, retention) on MariaDB.
+$address_table = $wpdb->prefix . 'mt_addresses';
+$route_table   = $wpdb->prefix . 'mt_routes';
+$cache_address = 'Integration Address ' . wp_generate_password( 8, false );
+$cache_hash    = \MeTransfers\Booking\AddressCache::key( $cache_address );
+$geocode       = array( 'place_id' => 'ChIJ-integration', 'formatted_address' => 'Integration, Spain', 'country_code' => 'ES', 'administrative_1' => 'Catalonia', 'administrative_2' => 'Barcelona', 'lat' => null, 'lng' => 2.0833 );
+mt_wp_integration_assert( false !== wp_next_scheduled( \MeTransfers\Booking\AddressCache::CRON_HOOK ), 'The daily address cache purge must be scheduled.' );
+mt_wp_integration_assert( \MeTransfers\Booking\AddressCache::rememberAddress( $cache_address, $geocode ), 'A Google answer must be stored.' );
+$stored = \MeTransfers\Booking\AddressCache::address( strtoupper( $cache_address ) );
+mt_wp_integration_assert( $stored && 'ES' === $stored['country_code'] && 'Catalonia' === $stored['administrative_1'] && $stored['fresh'], 'A stored address must be read back fresh, whatever its case.' );
+\MeTransfers\Booking\AddressCache::rememberAddress( $cache_address, null, true );
+\MeTransfers\Booking\AddressCache::rememberAddress( $cache_address, array( 'place_id' => '' ) + $geocode );
+$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE address_hash = %s', $address_table, $cache_hash ), ARRAY_A );
+mt_wp_integration_assert( 3 === (int) $row['lookups'] && 1 === (int) $row['hits'], 'Lookups and saved Google calls must be counted.' );
+mt_wp_integration_assert( null === $row['lat'] && '2.0833000' === $row['lng'] && 'ChIJ-integration' === $row['place_id'], 'Missing coordinates must be NULL and a refresh without a place ID must keep the stored one.' );
+mt_wp_integration_assert( \MeTransfers\Booking\AddressCache::rememberRoute( $cache_address, 'Integration Destination', array( 'distance_meters' => 12400, 'duration_seconds' => 1500 ) ), 'A route measure must be stored.' );
+$measure = \MeTransfers\Booking\AddressCache::route( $cache_address, 'Integration Destination' );
+mt_wp_integration_assert( $measure && 12.4 === $measure['distance_km'] && 25 === $measure['duration_minutes'] && $measure['fresh'], 'A stored route must be read back.' );
+mt_wp_integration_assert( null === \MeTransfers\Booking\AddressCache::route( 'Integration Destination', $cache_address ), 'The opposite direction is a different route.' );
+$expired = gmdate( 'Y-m-d H:i:s', time() - ( \MeTransfers\Booking\AddressCache::MAX_DAYS + 1 ) * DAY_IN_SECONDS );
+$wpdb->query( $wpdb->prepare( 'UPDATE %i SET geocoded_at = %s WHERE address_hash = %s', $address_table, $expired, $cache_hash ) );
+$wpdb->query( $wpdb->prepare( 'UPDATE %i SET measured_at = %s WHERE origin = %s', $route_table, $expired, $cache_address ) );
+mt_wp_integration_assert( null === \MeTransfers\Booking\AddressCache::address( $cache_address ), 'Google data older than 30 days must never be read.' );
+mt_wp_integration_assert( \MeTransfers\Booking\AddressCache::purge(), 'The daily purge must run on a real database.' );
+$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE address_hash = %s', $address_table, $cache_hash ), ARRAY_A );
+mt_wp_integration_assert( null === $row['country_code'] && null === $row['lng'] && null === $row['geocoded_at'] && $cache_address === $row['address'] && 'ChIJ-integration' === $row['place_id'], 'The purge must delete Google data but keep the address and place ID.' );
+mt_wp_integration_assert( null === $wpdb->get_var( $wpdb->prepare( 'SELECT distance_meters FROM %i WHERE origin = %s', $route_table, $cache_address ) ), 'The purge must delete route measures older than 30 days.' );
+$forgotten = gmdate( 'Y-m-d H:i:s', time() - ( \MeTransfers\Booking\AddressCache::RETENTION_DAYS + 1 ) * DAY_IN_SECONDS );
+$wpdb->query( $wpdb->prepare( 'UPDATE %i SET last_seen_at = %s WHERE address_hash = %s', $address_table, $forgotten, $cache_hash ) );
+\MeTransfers\Booking\AddressCache::purge();
+mt_wp_integration_assert( null === $wpdb->get_var( $wpdb->prepare( 'SELECT id FROM %i WHERE address_hash = %s', $address_table, $cache_hash ) ), 'Addresses nobody quoted for 13 months must be deleted.' );
+mt_wp_integration_assert( is_array( \MeTransfers\Booking\AddressCache::stats() ), 'The admin statistics query must run.' );
 
 $public_query_vars = apply_filters( 'query_vars', array() );
 mt_wp_integration_assert( in_array( 'mt_lang', $public_query_vars, true ), 'The language query variable must be public.' );
