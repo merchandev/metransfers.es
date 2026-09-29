@@ -159,5 +159,9 @@ assert_vehicle_quote(
         && false !== strpos( $search_js, 'if (vehicle && vehicle.available !== false) {' ),
     'Vehicles the server marks unavailable must not be selectable from any flow.'
 );
+assert_vehicle_quote(
+    false === strpos( $search_js, 'getDistanceMatrix' ) && false === strpos( $search_js, "typeof google === 'undefined'" ),
+    'The premium search must quote through the server even when Google Maps fails in the browser.'
+);
 
 echo "Server vehicle quote tests passed.\n";

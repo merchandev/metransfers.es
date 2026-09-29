@@ -252,62 +252,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return "";
     }
 
-    function calculateRouteMetrics(origin, destination, onSuccess, onError) {
-        ensureGoogleMapsReadyForPTS()
-            .then(() => {
-                if (!google.maps || !google.maps.DistanceMatrixService) {
-                    throw new Error('Google Maps Distance Matrix is not available.');
-                }
-
-                const service = new google.maps.DistanceMatrixService();
-                service.getDistanceMatrix(
-                    {
-                        origins: [origin],
-                        destinations: [destination],
-                        travelMode: google.maps.TravelMode.DRIVING,
-                        unitSystem: google.maps.UnitSystem.METRIC
-                    },
-                    (response, status) => {
-                        if (status !== 'OK') {
-                            if (typeof onError === 'function') {
-                                onError(t('route_error', 'No se pudo calcular la ruta.'));
-                            }
-                            return;
-                        }
-
-                        const element = response
-                            && response.rows
-                            && response.rows[0]
-                            && response.rows[0].elements
-                            && response.rows[0].elements[0]
-                            ? response.rows[0].elements[0]
-                            : null;
-
-                        if (!element || element.status !== 'OK' || !element.distance || !element.duration) {
-                            if (typeof onError === 'function') {
-                                onError(t('route_error', 'No se pudo calcular la ruta.'));
-                            }
-                            return;
-                        }
-
-                        if (typeof onSuccess === 'function') {
-                            onSuccess({
-                                distanceKm: (element.distance.value / 1000).toFixed(1),
-                                durationMinutes: Math.round(element.duration.value / 60),
-                                durationText: element.duration.text
-                            });
-                        }
-                    }
-                );
-            })
-            .catch((error) => {
-                if (typeof onError === 'function') {
-                    onError(t('route_error', 'No se pudo calcular la ruta.'));
-                }
-                console.error('[PTS] Distance matrix failed:', error);
-            });
-    }
-
     function formatCurrencyLabel(amount) {
         const numericAmount = Number(amount);
         if (!Number.isFinite(numericAmount)) {
@@ -538,8 +482,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const fullDestination = destinationExact + ', ' + destinationDisplay;
 
-            if (typeof jQuery === 'undefined' || typeof google === 'undefined') {
-                track('booking_error', { error_type: 'maps_unavailable' });
+            if (typeof jQuery === 'undefined') {
+                track('booking_error', { error_type: 'configuration' });
                 alert(t('system_unavailable', 'El sistema no está disponible. Recarga la página.'));
                 return;
             }
@@ -553,33 +497,17 @@ document.addEventListener("DOMContentLoaded", () => {
             window.bookingData.time = time;
             window.bookingData.origin = origin;
             window.bookingData.destination = fullDestination;
-            const $submitBtn = jQuery('#pts-submitBtn');
+            window.bookingData.distance_km = 0;
+            window.bookingData.duration_minutes = 0;
+            window.bookingData.duration_text = '';
+            window.bookingData.quote_verified = false;
 
-            $submitBtn.prop('disabled', true).text(t('calculating', 'Calculando...'));
-
-            calculateRouteMetrics(
-                origin,
-                fullDestination,
-                (metrics) => {
-                    $submitBtn.prop('disabled', false).text(t('search_vehicles', 'Buscar vehículos'));
-
-                    window.bookingData.distance_km = metrics.distanceKm;
-                    window.bookingData.duration_minutes = metrics.durationMinutes;
-                    window.bookingData.duration_text = metrics.durationText;
-
-                    // Show step 2
-                    jQuery('#pts-modal-step-1').hide();
-                    jQuery('#pts-modal-step-2').fadeIn();
-
-                    // Load vehicles
-                    loadVehiclesIntoPTSModal();
-                },
-                () => {
-                    $submitBtn.prop('disabled', false).text(t('search_vehicles', 'Buscar vehículos'));
-                    track('booking_error', { error_type: 'route_calculation' });
-                    alert(t('route_error', 'No se pudo calcular la ruta. Verifica el origen y el destino.'));
-                }
-            );
+            // The server geocodes, routes and prices the trip and returns the route
+            // with the vehicles. A browser-side Distance Matrix call used to gate
+            // this step, so a slow or failing Maps script blocked every quote.
+            jQuery('#pts-modal-step-1').hide();
+            jQuery('#pts-modal-step-2').fadeIn();
+            loadVehiclesIntoPTSModal();
         });
     }
 
