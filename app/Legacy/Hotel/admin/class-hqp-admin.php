@@ -428,6 +428,7 @@ class HQP_Admin {
         ?>
         <div class="wrap">
             <h1 class="wp-heading-inline">Reservas de Hoteles</h1>
+            <?php \MeTransfers\Admin\HotelBookingsExport::button(); ?>
             <hr class="wp-header-end">
             
             <div class="tablenav top" style="margin: 20px 0;">

@@ -105,6 +105,7 @@ class Application {
 			add_action( 'admin_menu', array( $admin_menu, 'register' ) );
 			add_action( 'admin_enqueue_scripts', array( $admin_menu, 'enqueueStyles' ) );
 			add_action( 'admin_notices', array( '\MeTransfers\Core\Seeds', 'adminNoticesMissingPages' ) );
+			( new \MeTransfers\Admin\HotelBookingsExport() )->register();
 			add_action(
 				'admin_init',
 				static function () {
