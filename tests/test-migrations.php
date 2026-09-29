@@ -149,6 +149,46 @@ try {
 }
 assert_migration( $schema_failure_detected, 'A dbDelta failure must abort the migration instead of being journaled as successful.' );
 
+// Retired-language purge: run the migration against a fake wpdb and apply
+// its REGEXP patterns to real-looking rows to see exactly what is deleted.
+require_once __DIR__ . '/../app/Core/DataMigrations.php';
+class Test_Purge_WPDB {
+    public $options = 'wp_options';
+    public $postmeta = 'wp_postmeta';
+    public $deleted = array();
+    private $rows = array(
+        'wp_options'  => array( 'mt_tr_en_0123456789abcdef0123456789abcdef', 'mt_tr_es_0123456789abcdef0123456789abcdef', 'mt_tr_fr_0123456789abcdef0123456789abcdef', 'mt_tr_zh_0123456789abcdef0123456789abcdef', 'mt_tr_ru_0123456789abcdef0123456789abcdef', 'mt_tracking_id', 'mt_tr_fr_notahash', 'blogname' ),
+        'wp_postmeta' => array( '_mt_seo_variant_en', '_mt_seo_variant_es', '_mt_seo_variant_fr', '_mt_seo_variant_ja', '_mt_seo_variants', '_yoast_wpseo_title' ),
+    );
+    public function prepare( $sql, ...$args ) {
+        return array( $sql, $args );
+    }
+    public function query( $prepared ) {
+        list( $sql, $args ) = $prepared;
+        $table = $args[0];
+        foreach ( $this->rows[ $table ] as $name ) {
+            $match = preg_match( '/' . $args[1] . '/', $name );
+            $keep = false !== strpos( $sql, 'NOT REGEXP' )
+                ? preg_match( '/' . $args[2] . '/', $name )
+                : in_array( $name, array_slice( $args, 2 ), true );
+            if ( $match && ! $keep ) {
+                $this->deleted[] = $name;
+            }
+        }
+        return 1;
+    }
+}
+$purge_wpdb = new Test_Purge_WPDB();
+$previous_wpdb = $GLOBALS['wpdb'];
+$GLOBALS['wpdb'] = $purge_wpdb;
+\MeTransfers\Core\DataMigrations::purgeRetiredLanguageData();
+$GLOBALS['wpdb'] = $previous_wpdb;
+sort( $purge_wpdb->deleted );
+assert_migration(
+    array( '_mt_seo_variant_fr', '_mt_seo_variant_ja', 'mt_tr_fr_0123456789abcdef0123456789abcdef', 'mt_tr_ru_0123456789abcdef0123456789abcdef', 'mt_tr_zh_0123456789abcdef0123456789abcdef' ) === $purge_wpdb->deleted,
+    'The purge must delete only translation caches and SEO approvals of languages other than es/en.'
+);
+
 $root = dirname( __DIR__ );
 $migration_source = file_get_contents( $root . '/app/Core/Migrations.php' );
 $schema_source = file_get_contents( $root . '/app/Core/Schema.php' );

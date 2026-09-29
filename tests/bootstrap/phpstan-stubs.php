@@ -11,7 +11,8 @@ define( 'MT_SEO_LANGS', array( 'es' ) );
 define(
 	'MT_LANGS',
 	array(
-		'es' => array( 'label' => 'ES', 'name' => 'Español', 'google_code' => 'es' ),
+		'es' => array( 'label' => 'ES', 'name' => 'Español (España)', 'locale' => 'es_ES', 'hreflang' => 'es-ES', 'google_code' => 'es' ),
+		'en' => array( 'label' => 'EN', 'name' => 'English', 'locale' => 'en_US', 'hreflang' => 'en-US', 'google_code' => 'en' ),
 	)
 );
 

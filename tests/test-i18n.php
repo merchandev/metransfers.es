@@ -37,6 +37,12 @@ assert_i18n(
 );
 
 $test_language = 'zh';
-assert_i18n( 'zh-CN' === \MeTransfers\Booking\I18n::maps_language(), 'Google Maps must receive its supported Chinese locale.' );
+assert_i18n( 'es' === \MeTransfers\Booking\I18n::language() && 'es' === \MeTransfers\Booking\I18n::maps_language(), 'Any language other than English must fall back to Spanish.' );
+assert_i18n( 'Origen' === \MeTransfers\Booking\I18n::text( 'origin', 'fr' ), 'Booking strings must never be machine-translated to a retired language.' );
+foreach ( array( 'fr', 'de', 'pt', 'zh', 'xx', '', 'EN ' ) as $value ) {
+    assert_i18n( ( 'EN ' === $value ? 'en' : 'es' ) === \MeTransfers\Booking\I18n::normalizeLanguage( $value ), "normalizeLanguage('$value') must return es or en only." );
+}
+$test_language = 'en';
+assert_i18n( 'en' === \MeTransfers\Booking\I18n::maps_language(), 'English pages must request English from Google Maps.' );
 
 echo "Booking i18n tests passed.\n";

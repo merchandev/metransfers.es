@@ -128,6 +128,11 @@ class Migrations {
 				'version'  => '6.7.0',
 				'callback' => array( DataMigrations::class, 'assignKnownHotelUsers' ),
 			),
+			array(
+				'id'       => '20260928_001_purge_retired_language_data',
+				'version'  => '6.8.0',
+				'callback' => array( DataMigrations::class, 'purgeRetiredLanguageData' ),
+			),
 		);
 	}
 

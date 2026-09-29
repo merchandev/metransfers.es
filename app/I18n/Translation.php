@@ -8,6 +8,18 @@ final class Translation {
 	private const REMOTE_MAX_ITEMS = 25;
 	private const REMOTE_MAX_CHARS = 18000;
 
+	// The only directions the machine translator may ever run: the site is
+	// written in Spain's Spanish and translated to English, and English text
+	// can be brought back to Spanish. Any other source/target pair is refused.
+	public const PAIRS = array(
+		array( 'es', 'en' ),
+		array( 'en', 'es' ),
+	);
+
+	public static function isAllowedPair( $source, $target ) {
+		return in_array( array( (string) $source, (string) $target ), self::PAIRS, true );
+	}
+
 	public static function register() {
 		add_filter( 'the_content', array( __CLASS__, 'translate' ), 99 );
 		add_filter( 'the_title', array( __CLASS__, 'translateTitle' ), 99, 2 );
@@ -158,12 +170,10 @@ final class Translation {
 		return array_values( array_unique( $texts ) );
 	}
 
-	public static function remoteBatch( array $texts, $language ) {
+	public static function remoteBatch( array $texts, $language, $source = 'es' ) {
 		if ( ! is_admin()
 			|| ! current_user_can( Capabilities::MANAGE_INTEGRATIONS )
-			|| 'es' === $language
-			|| ! defined( 'MT_LANGS' )
-			|| ! isset( MT_LANGS[ $language ] ) ) {
+			|| ! self::isAllowedPair( $source, $language ) ) {
 			return array();
 		}
 
@@ -185,7 +195,7 @@ final class Translation {
 		}
 
 		foreach ( self::remoteChunks( $texts_to_translate ) as $chunk ) {
-			$results += self::translateRemoteChunk( $chunk, $language, $api_key );
+			$results += self::translateRemoteChunk( $chunk, $source, $language, $api_key );
 		}
 		ksort( $results );
 		return $results;
@@ -211,7 +221,7 @@ final class Translation {
 		return $chunks;
 	}
 
-	private static function translateRemoteChunk( array $chunk, string $language, string $api_key ): array {
+	private static function translateRemoteChunk( array $chunk, string $source, string $language, string $api_key ): array {
 		if ( empty( $chunk ) ) {
 			return array();
 		}
@@ -227,7 +237,7 @@ final class Translation {
 				'body'    => wp_json_encode(
 					array(
 						'q'      => array_values( $chunk ),
-						'source' => 'es',
+						'source' => MT_LANGS[ $source ]['google_code'],
 						'target' => MT_LANGS[ $language ]['google_code'],
 						'format' => 'html',
 					)
@@ -241,7 +251,7 @@ final class Translation {
 				? $response->get_error_message()
 				: 'HTTP ' . (int) wp_remote_retrieve_response_code( $response ) . ': ' . wp_remote_retrieve_body( $response );
 			error_log( 'MeTransfers i18n API Error: ' . $message );
-			return self::retryRemoteChunk( $chunk, $language, $api_key );
+			return self::retryRemoteChunk( $chunk, $source, $language, $api_key );
 		}
 
 		$body         = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -251,7 +261,7 @@ final class Translation {
 		$keys         = array_keys( $chunk );
 		if ( count( $translations ) !== count( $keys ) ) {
 			error_log( 'MeTransfers i18n API returned an incomplete batch; retrying in smaller chunks.' );
-			return self::retryRemoteChunk( $chunk, $language, $api_key );
+			return self::retryRemoteChunk( $chunk, $source, $language, $api_key );
 		}
 
 		$results = array();
@@ -269,14 +279,14 @@ final class Translation {
 		return $results;
 	}
 
-	private static function retryRemoteChunk( array $chunk, string $language, string $api_key ): array {
+	private static function retryRemoteChunk( array $chunk, string $source, string $language, string $api_key ): array {
 		if ( count( $chunk ) <= 1 ) {
 			return array();
 		}
 		$size    = (int) ceil( count( $chunk ) / 2 );
 		$results = array();
 		foreach ( array_chunk( $chunk, $size, true ) as $smaller ) {
-			$results += self::translateRemoteChunk( $smaller, $language, $api_key );
+			$results += self::translateRemoteChunk( $smaller, $source, $language, $api_key );
 		}
 		return $results;
 	}

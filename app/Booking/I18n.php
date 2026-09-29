@@ -5,16 +5,7 @@ final class I18n {
     private static $translated = array();
 
     public static function language() {
-        if ( function_exists( 'mt_lang' ) ) {
-            $language = (string) mt_lang();
-        } elseif ( function_exists( 'determine_locale' ) ) {
-            $language = substr( (string) determine_locale(), 0, 2 );
-        } else {
-            $language = 'es';
-        }
-
-        $language = strtolower( preg_replace( '/[^a-z-]/i', '', $language ) );
-        return '' !== $language ? $language : 'es';
+        return self::normalizeLanguage( function_exists( 'mt_lang' ) ? mt_lang() : 'es' );
     }
 
     public static function text( $key, $language = '' ) {
@@ -22,38 +13,22 @@ final class I18n {
         return isset( $strings[ $key ] ) ? $strings[ $key ] : (string) $key;
     }
 
+    /**
+     * Bookings run only in Spain's Spanish (source) or English; any other
+     * value -- a stale form, a retired /fr/ URL, a forged request -- is Spanish.
+     */
     public static function normalizeLanguage( $language ) {
-        $language = strtolower( preg_replace( '/[^a-z-]/i', '', (string) $language ) );
-        return preg_match( '/^[a-z]{2}$/', $language ) ? $language : 'es';
+        return 'en' === strtolower( trim( (string) $language ) ) ? 'en' : 'es';
     }
 
     public static function strings( $language = '' ) {
         $language = self::normalizeLanguage( '' !== $language ? $language : self::language() );
-        if ( isset( self::$translated[ $language ] ) ) {
-            return self::$translated[ $language ];
+        if ( ! isset( self::$translated[ $language ] ) ) {
+            self::$translated[ $language ] = 'en' === $language
+                ? array_replace( self::spanish(), self::english() )
+                : self::spanish();
         }
-
-        $source = self::spanish();
-        if ( 'es' === $language ) {
-            self::$translated[ $language ] = $source;
-            return $source;
-        }
-
-        if ( 'en' === $language ) {
-            self::$translated[ $language ] = array_replace( $source, self::english() );
-            return self::$translated[ $language ];
-        }
-
-        if ( function_exists( 'mt_translate_batch' ) ) {
-            $translated = mt_translate_batch( array_values( $source ), $language );
-            if ( is_array( $translated ) && count( $translated ) === count( $source ) ) {
-                self::$translated[ $language ] = array_combine( array_keys( $source ), array_values( $translated ) );
-                return self::$translated[ $language ];
-            }
-        }
-
-        self::$translated[ $language ] = $source;
-        return $source;
+        return self::$translated[ $language ];
     }
 
     /**
@@ -75,11 +50,7 @@ final class I18n {
     }
 
     public static function maps_language() {
-        $map = array(
-            'zh' => 'zh-CN',
-        );
-        $language = self::language();
-        return isset( $map[ $language ] ) ? $map[ $language ] : $language;
+        return self::language();
     }
 
     private static function spanish() {

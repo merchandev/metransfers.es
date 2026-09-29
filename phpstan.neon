@@ -23,6 +23,6 @@ parameters:
     dynamicConstantNames:
         MT_ACTIVE_LANGS: 'list<string>'
         MT_SEO_LANGS: 'list<string>'
-        MT_LANGS: 'array<string, array{label: string, name: string, google_code: string}>'
+        MT_LANGS: 'array<string, array{label: string, name: string, locale: string, hreflang: string, google_code: string}>'
     tmpDir: .phpstan-cache
     reportUnmatchedIgnoredErrors: true

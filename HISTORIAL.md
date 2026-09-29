@@ -15,6 +15,35 @@ La consolidación conserva autores, fechas, mensajes y SHA. Los commits `483d5c1
 
 ## Cronología
 
+### 28 de septiembre de 2026 (tarde) — Solo español de España e inglés; traductor limitado a ES↔EN
+
+El usuario pidió eliminar del tema cualquier configuración de otros idiomas: solo el español nativo de España y el inglés, y un traductor que trabaje únicamente de inglés a español y viceversa.
+
+- **Punto de partida.** Desde la ronda 9 del 21/09, `MT_LANGS`, `MT_ACTIVE_LANGS` y `MT_SEO_LANGS` ya eran solo `es`/`en`, y el selector de la web real ya ofrecía solo ES y EN. Quedaban restos:
+  - el mapeo `zh => zh-Hans` en `I18n\Seo::hreflang()`;
+  - `Booking\I18n`, que aceptaba cualquier código de dos letras, traducía automáticamente los textos de reserva a cualquier idioma vía `mt_translate_batch` y mapeaba `zh => zh-CN` para Google Maps;
+  - el traductor, con el origen fijo en español y el destino tomado de `MT_LANGS`;
+  - un selector de «idioma a pre-generar» en wp-admin;
+  - las pruebas, que usaban el chino como tercer idioma de ejemplo;
+  - en la base de datos, las cachés de traducción (`mt_tr_{idioma}_*`) y las aprobaciones SEO (`_mt_seo_variant_{idioma}`) de los 9 idiomas retirados.
+- **Español de España.** La web real se declaraba como español genérico (`<html lang="es">`, schema `inLanguage: "es"`), porque el paquete de idioma de WordPress traduce `html_lang_attribute` como «es». `MT_LANGS` pasa a llevar `locale` (`es_ES` / `en_US`) y `hreflang` (`es-ES` / `en-US`). En el frontal, `Language` fija el locale, `<html lang="es-ES">` y `get_bloginfo( 'language' )`, que es lo que usa Yoast para `inLanguage`. wp-admin conserva el idioma de cada usuario.
+- **Traductor solo ES↔EN.**
+  - `Translation::PAIRS` define los únicos pares permitidos (español → inglés, inglés → español), y `remoteBatch()` recibe el idioma de origen y rechaza cualquier otro par.
+  - wp-admin → Ajustes → Traducción MT ya no ofrece elegir idioma: pre-genera el inglés, y «Probar API» comprueba las dos direcciones.
+  - `Booking\I18n` solo devuelve `es` o `en`: cualquier otro valor, venga de un formulario antiguo, de una URL `/fr/` o de una petición manipulada, se trata como español.
+- **Base de datos.** Nueva migración `20260928_001_purge_retired_language_data` (esquema 6.8.0), que se ejecuta sola al desplegar y borra las cachés de traducción y las aprobaciones SEO de cualquier idioma distinto de `es`/`en`. Tiene una prueba de comportamiento que comprueba qué filas borra y cuáles conserva.
+- **Se conserva a propósito:** la redirección 301 de las URLs antiguas `/fr/`, `/ru/`, `/zh/`… hacia el español (`Redirects::RETIRED_LANGUAGES`). No es un idioma activo: son URLs que Google ya tiene indexadas (aparecen en el informe de Search Console del 20/09), y quitar la regla las convertiría en cientos de 404 nuevos. Tampoco se tocan `PTS_ALLOWED_COUNTRIES` (son países de cobertura) ni `'pt'` en `fpdf.php` (una unidad tipográfica).
+- **Pruebas:** los tests exigen ahora exactamente es/en, rechazan los 9 prefijos retirados, `hreflang` solo anuncia `es-ES`, `en-US` y `x-default`, y el traductor rechaza cualquier par que no sea ES↔EN. Pasan la suite legacy, PHPUnit, PHPStan (con la forma de `MT_LANGS` actualizada), PHPCS y ESLint.
+- **Pendiente fuera del repositorio:** paquetes de idioma de WordPress o plugins instalados para otros idiomas y ajustes de Yoast. Se revisará en el servidor cuando haya acceso SSH.
+
+**Hallazgos en producción del mismo día, sin cambio de código** (revisando Search Console con el navegador integrado):
+
+- **Caída general de URLs (404).** Solo responden las páginas que siguen en la caché de SiteGround (portada, `/blog/`, `/aviso-legal/`). Sin caché, `/contacto/`, `/seleccionar-vehiculo/`, `/reservas-metransfers/`, `/pago/`, `/rutas/…`, `/wp-json/` y `/page-sitemap.xml` devuelven el 404 genérico del servidor, no el del tema. En cambio, `/?pagename=…`, `/?rest_route=/` y `/index.php/…` sí llegan a WordPress. Es el patrón de una regla de reescritura perdida o rota (probablemente `.htaccess`). Solución propuesta: wp-admin → Ajustes → Enlaces permanentes → Guardar, y vaciar la caché dinámica de SiteGround, que ha guardado los 404.
+- **El CAPTCHA de SiteGround sigue activo.** A clientes sin JavaScript les responde `HTTP 202` con `SG-Captcha: challenge` y `X-Robots-Tag: noindex`, incluso en `robots.txt` y el sitemap.
+- **Tema desplegado 5.0.6 sin hash de commit.** Se subió sin `tools/build-release.ps1`, así que no se puede saber qué commit está en producción.
+
+Archivos modificados: `includes/i18n.php`, `app/I18n/{Language,Seo,Translation,Admin}.php`, `app/Booking/I18n.php`, `app/Core/{DataMigrations,Migrations,Application}.php`, `phpstan.neon`, `tests/{test-i18n,test-i18n-routing,test-migrations}.php`, `tests/bootstrap/{unit,phpstan-stubs}.php`, `tests/Support/SeoWordPress.php`, `HISTORIAL.md`.
+
 ### 28 de septiembre de 2026 — Caída de la cotización online (reporte de cliente, 3 rondas)
 
 Un cliente escribió por WhatsApp el 27/09: no podía reservar una van del aeropuerto de Barcelona al hotel H10 Casanova para el domingo 04/10/2026 a las 12:00 («no options available»). El usuario aportó un diagnóstico propio. Se contrastó contra el código y contra producción, se corrigió y se aplicó en 12 commits de corrección más 3 de documentación, en la rama `fix/reservas-cotizacion-2026-09-28` ([PR #58](https://github.com/merchandev/metransfers.es/pull/58), que conserva los commits individuales). Desde después del 22/09, `main` exige commits con firma verificada y los commits locales no estaban firmados. Por eso el cambio entra en `main` como **un único commit verificado**, creado con la API de GitHub (`createCommitOnBranch`, firmado por GitHub) a partir del mismo árbol de archivos, en un PR aparte. El informe completo, con cada hallazgo y su commit, está en `docs/REPORTE-RESERVAS-2026-09-28.md`.

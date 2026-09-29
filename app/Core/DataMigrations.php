@@ -185,6 +185,36 @@ final class DataMigrations {
 		}
 	}
 
+	/**
+	 * The theme runs only in Spanish (Spain) and English. Deletes what the
+	 * languages active between 16 and 21 Sep 2026 left behind: machine
+	 * translation cache rows (mt_tr_{lang}_{md5}) and SEO variant approvals
+	 * (_mt_seo_variant_{lang}) for any language other than es and en.
+	 */
+	public static function purgeRetiredLanguageData() {
+		global $wpdb;
+		$options  = $wpdb->query(
+			$wpdb->prepare(
+				'DELETE FROM %i WHERE option_name REGEXP %s AND option_name NOT REGEXP %s',
+				$wpdb->options,
+				'^mt_tr_[a-z]{2}_[0-9a-f]{32}$',
+				'^mt_tr_(es|en)_'
+			)
+		);
+		$variants = $wpdb->query(
+			$wpdb->prepare(
+				'DELETE FROM %i WHERE meta_key REGEXP %s AND meta_key NOT IN (%s, %s)',
+				$wpdb->postmeta,
+				'^_mt_seo_variant_[a-z]{2}$',
+				'_mt_seo_variant_es',
+				'_mt_seo_variant_en'
+			)
+		);
+		if ( false === $options || false === $variants ) {
+			throw new \RuntimeException( 'Unable to purge data of retired languages.' );
+		}
+	}
+
 	private static function matchingHotelId( array $hotels, array $needles ) {
 
 		foreach ( $hotels as $hotel ) {
