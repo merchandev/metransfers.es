@@ -53,16 +53,14 @@ tools/                     Utilidades operativas mantenidas
 - Composer 2 para PHPUnit, PHPStan, WPCS y auditoría de dependencias.
 - Node.js 24 y npm para ESLint, auditoría y Playwright.
 - WooCommerce solo para el flujo legacy que crea pedidos/carrito.
-- Google Maps JavaScript API para autocompletado/mapas.
-- Google Distance Matrix API accesible desde el servidor para autorizar distancia y precio.
+- Una sola clave de Google Maps para mapa y autocompletado (Maps JavaScript API, Places API, Directions API) y para autorizar dirección, distancia y precio en el servidor (Geocoding API, Distance Matrix API).
 
 ## Configuración
 
 Los secretos no deben almacenarse en Git. La prioridad es: constantes de `wp-config.php`, opciones de WordPress y valores seguros por defecto.
 
 ```php
-define( 'MT_GOOGLE_MAPS_API_KEY', '...' );
-define( 'MT_GOOGLE_MAPS_SERVER_API_KEY', '...' );
+define( 'MT_GOOGLE_MAPS_API_KEY', '...' ); // Una sola clave: navegador y servidor.
 
 define( 'MT_REDSYS_MERCHANT_CODE', '...' );
 define( 'MT_REDSYS_SECRET', '...' );
@@ -88,9 +86,7 @@ define( 'MT_MAPS_CREDENTIALS_ROTATED_AT', '2026-08-19T12:00:00+02:00' );
 define( 'MT_REDSYS_SANDBOX_VERIFIED_AT', '2026-08-19T12:00:00+02:00' );
 ```
 
-`MT_GOOGLE_MAPS_API_KEY` se utiliza únicamente en el navegador y debe restringirse por dominio/referrer. `MT_GOOGLE_MAPS_SERVER_API_KEY` es obligatoria para geocodificar y cotizar en el servidor, debe restringirse por IP y APIs, y nunca utiliza la clave pública como fallback.
-
-La clave Maps pública debe restringirse por dominio. La clave de servidor debe restringirse por IP y por API. Las credenciales Redsys/SMTP deben rotarse antes de producción si estuvieron presentes en commits antiguos.
+`MT_GOOGLE_MAPS_API_KEY` (o el campo «Google Maps API Key» de MeTransfers → Integraciones) es la **única** clave de Google Maps desde el 29/09/2026: carga el mapa y el autocompletado en el navegador y también geocodifica y calcula distancias en el servidor para cotizar. Como se usa en el servidor, no puede restringirse por sitio web ni por IP (Restricciones de aplicación: «Ninguna»). Al ser pública, debe restringirse por API (Maps JavaScript, Places, Directions, Geocoding y Distance Matrix) y tener un límite diario de cuota. La antigua `MT_GOOGLE_MAPS_SERVER_API_KEY` ya no se lee; la migración `20260929_001_single_maps_key` pasa su valor al campo único si era la única configurada y borra la opción antigua. Las credenciales Redsys/SMTP deben rotarse antes de producción si estuvieron presentes en commits antiguos.
 El gateway bloquea el endpoint Live mientras falte cualquiera de las cuatro attestaciones anteriores; las fechas son evidencia operativa y no deben inventarse.
 
 ## Instalación y migraciones

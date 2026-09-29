@@ -62,15 +62,18 @@ $succeeded = (int) $wpdb->get_var(
 		$journal
 	)
 );
-mt_wp_integration_assert( 11 === $succeeded, 'All eleven discrete migrations must be journaled as succeeded.' );
-$language_purge = $wpdb->get_var(
-	$wpdb->prepare(
-		'SELECT status FROM %i WHERE migration_id = %s',
-		$journal,
-		'20260928_001_purge_retired_language_data'
-	)
-);
-mt_wp_integration_assert( 'succeeded' === $language_purge, 'The retired-language data purge must run on a real database.' );
+mt_wp_integration_assert( 12 === $succeeded, 'All twelve discrete migrations must be journaled as succeeded.' );
+foreach ( array( '20260928_001_purge_retired_language_data', '20260929_001_single_maps_key' ) as $migration_id ) {
+	$status = $wpdb->get_var(
+		$wpdb->prepare(
+			'SELECT status FROM %i WHERE migration_id = %s',
+			$journal,
+			$migration_id
+		)
+	);
+	mt_wp_integration_assert( 'succeeded' === $status, "Migration {$migration_id} must run on a real database." );
+}
+mt_wp_integration_assert( false === get_option( 'wptb_google_maps_server_api_key' ), 'The retired server Maps key option must not survive the migration.' );
 mt_wp_integration_assert( has_action( \MeTransfers\Core\Outbox::CRON_HOOK ), 'The durable outbox worker must be registered.' );
 mt_wp_integration_assert( false !== wp_next_scheduled( \MeTransfers\Core\Outbox::CRON_HOOK ), 'The durable outbox worker must be scheduled.' );
 

@@ -52,19 +52,29 @@ require_once __DIR__ . '/../app/Core/Settings.php';
 require_once __DIR__ . '/../app/Security/RequestRateLimiter.php';
 require_once __DIR__ . '/../app/Security/PathGuard.php';
 
-$missing_server_key = false;
+// Single Google Maps key since 29 Sep 2026 (owner decision): the key in
+// MeTransfers → Integraciones serves both the browser and the server, and the
+// retired separate server option is never read again.
+$saved_maps_key = $GLOBALS['mt_test_options']['wptb_google_maps_api_key'] ?? null;
+unset( $GLOBALS['mt_test_options']['wptb_google_maps_api_key'] );
+$GLOBALS['mt_test_options']['wptb_google_maps_server_api_key'] = 'retired-server-key';
+$missing_maps_key = false;
 try {
-    \MeTransfers\Core\Settings::requireServerMapsKey();
+    \MeTransfers\Core\Settings::requireMapsKey();
 } catch ( RuntimeException $exception ) {
-    $missing_server_key = true;
+    $missing_maps_key = true;
 }
-assert_phase_one( $missing_server_key, 'A browser Maps key must never satisfy server-side configuration.' );
+assert_phase_one( $missing_maps_key, 'The retired separate server key must never be read.' );
 
-$GLOBALS['mt_test_options']['wptb_google_maps_server_api_key'] = 'server-key';
+$GLOBALS['mt_test_options']['wptb_google_maps_api_key'] = 'single-key';
 assert_phase_one(
-    'server-key' === \MeTransfers\Core\Settings::requireServerMapsKey(),
-    'The dedicated server Maps key must be returned when configured.'
+    'single-key' === \MeTransfers\Core\Settings::requireMapsKey(),
+    'The single Google Maps key must serve server-side calls.'
 );
+unset( $GLOBALS['mt_test_options']['wptb_google_maps_server_api_key'] );
+if ( null !== $saved_maps_key ) {
+    $GLOBALS['mt_test_options']['wptb_google_maps_api_key'] = $saved_maps_key;
+}
 
 $_SERVER['REMOTE_ADDR'] = '192.0.2.10';
 assert_phase_one(
@@ -106,11 +116,11 @@ $booking_details = file_get_contents( $root . '/app/Legacy/WPTB/templates/bookin
 $admin_controller = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-admin.php' );
 
 assert_phase_one(
-    false === strpos( $service_area, "Settings::get( 'google_maps_api_key'" )
-        && false === strpos( $route_distance, "Settings::get( 'google_maps_api_key'" )
-        && false === strpos( $maps_provider, "Settings::get( 'google_maps_api_key'" )
-        && false !== strpos( $maps_provider, 'Settings::requireServerMapsKey()' ),
-    'Server-side Maps services must not fall back to the browser key.'
+    false === strpos( $service_area, 'Settings::' )
+        && false === strpos( $route_distance, 'Settings::' )
+        && false !== strpos( $maps_provider, 'Settings::requireMapsKey()' )
+        && false === strpos( $admin_controller, 'wptb_google_maps_server_api_key' ),
+    'Every server-side Maps call must go through MapsProvider with the single key, and the admin must show one key field only.'
 );
 assert_phase_one(
     false === strpos( $loader, 'wptb_calculate_price' )

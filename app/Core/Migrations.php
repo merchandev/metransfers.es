@@ -133,6 +133,11 @@ class Migrations {
 				'version'  => '6.8.0',
 				'callback' => array( DataMigrations::class, 'purgeRetiredLanguageData' ),
 			),
+			array(
+				'id'       => '20260929_001_single_maps_key',
+				'version'  => '6.9.0',
+				'callback' => array( DataMigrations::class, 'consolidateMapsKey' ),
+			),
 		);
 	}
 

@@ -102,7 +102,6 @@ class WPTB_Admin {
 
     public function register_settings() {
         register_setting( 'wptb_settings_group', 'wptb_google_maps_api_key', array( 'sanitize_callback' => 'sanitize_text_field' ) );
-        register_setting( 'wptb_settings_group', 'wptb_google_maps_server_api_key', array( 'sanitize_callback' => array( $this, 'sanitize_google_server_key' ) ) );
 
         // Redsys.
         register_setting( 'wptb_settings_group', 'wptb_redsys_merchant_code', array( 'sanitize_callback' => 'sanitize_text_field' ) );
@@ -142,11 +141,6 @@ class WPTB_Admin {
         }
 
         return (string) get_option( 'wptb_redsys_key', '' );
-    }
-
-    public function sanitize_google_server_key( $value ) {
-        $value = sanitize_text_field( $value );
-        return '' !== $value ? $value : get_option( 'wptb_google_maps_server_api_key', '' );
     }
 
     public function sanitize_smtp_password( $value ) {
@@ -1064,26 +1058,22 @@ class WPTB_Admin {
                 <h2 style="margin-top: 30px;">🗺️ Google Maps</h2>
                 <table class="form-table">
                     <tr valign="top">
-                        <th scope="row">Google Maps API Key</th>
+                        <th scope="row"><label for="wptb_google_maps_api_key">Google Maps API Key</label></th>
                         <td>
-                            <input type="text" name="wptb_google_maps_api_key" 
-                                   value="<?php echo esc_attr( get_option('wptb_google_maps_api_key', '') ); ?>" 
-                                   class="regular-text" />
+                            <input type="text" id="wptb_google_maps_api_key" name="wptb_google_maps_api_key"
+                                   value="<?php echo esc_attr( get_option( 'wptb_google_maps_api_key', '' ) ); ?>"
+                                   class="regular-text" autocomplete="off" />
                             <p class="description">
-                                Usa tu propia API key con facturación activa. Habilita al menos: Maps JavaScript API, Places API y Directions API.
+                                <strong>Una sola clave para todo:</strong> mapa y autocompletado de direcciones en la web, y cálculo de rutas, distancias y precios en el servidor. Sin ella ningún cliente ve vehículos ni precios.<br>
+                                En Google Cloud → Credenciales → la clave:
+                                <strong>Restricciones de API</strong>: <?php echo esc_html( \MeTransfers\Booking\MapsProvider::REQUIRED_APIS ); ?>.
+                                <strong>Restricciones de aplicación</strong>: «Ninguna» (Google rechaza en el servidor las claves restringidas por sitio web o por IP).
+                                Como la clave es pública, pon un límite diario en Google Cloud → Cuotas.
                             </p>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <th scope="row">Google Maps API Key (servidor)</th>
-                        <td>
-                            <input type="password" name="wptb_google_maps_server_api_key"
-                                   value="" class="regular-text" autocomplete="new-password" placeholder="Dejar vacío para conservar la actual" />
-                            <p class="description">Obligatoria para cotizar en el servidor: sin ella ningún cliente ve vehículos ni precios. Necesita <strong>Geocoding API</strong> y <strong>Distance Matrix API</strong> habilitadas, facturación activa y restricción por <strong>dirección IP</strong> del servidor (no por sitio web/referrer, que Google rechaza en estas APIs). La clave pública del navegador nunca se utiliza como fallback. <?php echo \MeTransfers\Core\Settings::get( 'google_maps_server_api_key', '' ) ? 'Hay una clave de servidor configurada.' : 'No hay una clave de servidor configurada.'; ?>
-                            <?php if ( 'constant' === \MeTransfers\Core\Settings::source( 'google_maps_server_api_key' )['type'] ) : ?>
-                                <br><strong>Atención:</strong> la clave en uso viene de la constante <code>MT_GOOGLE_MAPS_SERVER_API_KEY</code> de <code>wp-config.php</code>, que tiene prioridad: guardar este campo no la reemplaza.
-                            <?php endif; ?></p>
-                            <p><a class="button" href="<?php echo esc_url( \MeTransfers\Booking\MapsProvider::checkUrl() ); ?>">Probar conexión ahora</a></p>
+                            <?php if ( 'constant' === \MeTransfers\Core\Settings::source( 'google_maps_api_key' )['type'] ) : ?>
+                                <p class="description"><strong>Atención:</strong> la clave en uso viene de la constante <code>MT_GOOGLE_MAPS_API_KEY</code> de <code>wp-config.php</code>, que tiene prioridad: cambiar este campo no la reemplaza.</p>
+                            <?php endif; ?>
+                            <p><button type="submit" name="mt_save_and_test_maps" value="1" class="button button-primary">Guardar y probar conexión</button></p>
                         </td>
                     </tr>
                 </table>

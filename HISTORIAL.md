@@ -15,6 +15,20 @@ La consolidación conserva autores, fechas, mensajes y SHA. Los commits `483d5c1
 
 ## Cronología
 
+### 29 de septiembre de 2026 — Causa raíz confirmada y una sola clave de Google Maps
+
+- **Causa raíz de la caída de cotizaciones, confirmada en producción.** Tras desplegar el PR #59, el aviso de wp-admin mostró `key_missing`: **la clave de Maps del servidor nunca se había configurado**. El campo del navegador sí tenía clave, pero el código no la usaba en el servidor por diseño. La hipótesis del 21/09 («la latencia apunta a que la clave de servidor existe») era errónea.
+- **Por qué costó arreglarlo.** Con dos campos, el propietario pegó la clave nueva (restringida a Geocoding y Distance Matrix) en el campo del navegador. El mapa dejó de funcionar (`ApiTargetBlockedMapError` en la web pública) y el servidor siguió con una clave sin esas APIs (`REQUEST_DENIED`, «This API key is not authorized to use this service or API»). Además, el botón «Probar conexión ahora» junto al campo probaba la clave **guardada**, no la recién pegada.
+- **Decisión del propietario: una sola clave y un solo campo.** `Settings::requireMapsKey()` devuelve la clave «Google Maps API Key» (o `MT_GOOGLE_MAPS_API_KEY`) tanto para el navegador como para el servidor. Se eliminan el campo, la opción y la constante de la clave de servidor, y el panel solo tiene un campo, con las APIs necesarias y la restricción correcta explicadas.
+- **Contrapartida de seguridad, asumida y documentada.** La clave es pública (va en el HTML) y, al usarse también en el servidor, no puede restringirse por sitio web ni por IP. Se mitiga restringiéndola por API (`MapsProvider::REQUIRED_APIS`: Maps JavaScript, Places, Directions, Geocoding y Distance Matrix) y con un límite diario de cuota en Google Cloud.
+- **«Guardar y probar conexión».** Este botón del formulario guarda primero la clave y lanza la comprobación en la página siguiente, así que prueba siempre lo que se acaba de pegar.
+- **Pistas del aviso** reescritas para la clave única. Hay una nueva para el error exacto que apareció: a la clave le faltan APIs en «Restricciones de API», y la pista indica cuáles marcar.
+- **Migración `20260929_001_single_maps_key`** (esquema 6.9.0). Si solo había clave de servidor, pasa a ser la clave única; nunca sobrescribe una clave ya puesta. Después borra la opción antigua. Tiene prueba unitaria y está incluida en la prueba de integración con WordPress real.
+- **CI del PR #61.** Falló solo porque la prueba de integración contaba exactamente 10 migraciones. La migración de idiomas se había ejecutado bien en MariaDB real. Corregido para contar 12 y comprobar explícitamente las dos migraciones nuevas.
+- **Operación.** El sitio respondía 200 desde cuatro países (check-host.net), pero desde el PC del propietario no llegaba a abrirse la conexión TCP: el cortafuegos de SiteGround bloqueaba su IP de salida (`149.102.224.57`, al parecer de una VPN; el día anterior `146.70.202.115`). Se cerró el PR #58 (sustituido por #59); el #60, abierto después, es idéntico a `main`.
+
+Archivos modificados: `app/Core/{Settings,DataMigrations,Migrations,Application}.php`, `app/Booking/MapsProvider.php`, `app/Legacy/WPTB/includes/class-wptb-admin.php`, `tools/maps-check.php`, `README.md`, `tests/{test-maps-provider,test-hardening-phase1,test-production-readiness,test-migrations}.php`, `tests/Integration/wordpress-smoke.php`, `HISTORIAL.md`.
+
 ### 28 de septiembre de 2026 (tarde) — Solo español de España e inglés; traductor limitado a ES↔EN
 
 El usuario pidió eliminar del tema cualquier configuración de otros idiomas: solo el español nativo de España y el inglés, y un traductor que trabaje únicamente de inglés a español y viceversa.

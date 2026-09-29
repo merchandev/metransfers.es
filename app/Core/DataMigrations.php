@@ -215,6 +215,19 @@ final class DataMigrations {
 		}
 	}
 
+	/**
+	 * One Google Maps key for everything (29 Sep 2026). If only the old
+	 * separate server key was set, it becomes the single key; the orphan
+	 * server option is then deleted so no code can read a stale credential.
+	 */
+	public static function consolidateMapsKey() {
+		$server = trim( (string) get_option( 'wptb_google_maps_server_api_key', '' ) );
+		if ( '' !== $server && '' === trim( (string) get_option( 'wptb_google_maps_api_key', '' ) ) ) {
+			update_option( 'wptb_google_maps_api_key', $server );
+		}
+		delete_option( 'wptb_google_maps_server_api_key' );
+	}
+
 	private static function matchingHotelId( array $hotels, array $needles ) {
 
 		foreach ( $hotels as $hotel ) {

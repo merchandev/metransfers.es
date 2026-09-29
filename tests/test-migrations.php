@@ -189,6 +189,22 @@ assert_migration(
     'The purge must delete only translation caches and SEO approvals of languages other than es/en.'
 );
 
+// Single Maps key: an install with only the old server key keeps it as the
+// single key; an install with both keeps the single key; the orphan goes.
+function delete_option( $name ) {
+    unset( $GLOBALS['mt_migration_options'][ $name ] );
+    return true;
+}
+$GLOBALS['mt_migration_options']['wptb_google_maps_server_api_key'] = 'only-server-key';
+$GLOBALS['mt_migration_options']['wptb_google_maps_api_key'] = '';
+\MeTransfers\Core\DataMigrations::consolidateMapsKey();
+assert_migration( 'only-server-key' === get_option( 'wptb_google_maps_api_key' ), 'A lone server key must become the single Maps key.' );
+assert_migration( false === get_option( 'wptb_google_maps_server_api_key' ), 'The retired server key option must be deleted.' );
+$GLOBALS['mt_migration_options']['wptb_google_maps_server_api_key'] = 'stale-server-key';
+\MeTransfers\Core\DataMigrations::consolidateMapsKey();
+assert_migration( 'only-server-key' === get_option( 'wptb_google_maps_api_key' ), 'An existing single key must never be overwritten by the old server key.' );
+assert_migration( false === get_option( 'wptb_google_maps_server_api_key' ), 'The stale server key option must be deleted.' );
+
 $root = dirname( __DIR__ );
 $migration_source = file_get_contents( $root . '/app/Core/Migrations.php' );
 $schema_source = file_get_contents( $root . '/app/Core/Schema.php' );

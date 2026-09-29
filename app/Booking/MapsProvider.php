@@ -24,6 +24,10 @@ final class MapsProvider {
         self::DISTANCE_MATRIX => 'Distance Matrix API',
     );
 
+    // Everything the single key must be allowed to call: map and autocomplete
+    // in the browser, route map, and geocoding and distances on the server.
+    public const REQUIRED_APIS = 'Maps JavaScript API, Places API, Directions API, Geocoding API y Distance Matrix API';
+
     // Google answered correctly but cannot resolve this particular address or
     // route: the integration is healthy, the input is not.
     private const ADDRESS_STATUSES = array( 'ZERO_RESULTS', 'NOT_FOUND', 'MAX_ROUTE_LENGTH_EXCEEDED' );
@@ -34,6 +38,22 @@ final class MapsProvider {
         }
         add_action( 'admin_notices', array( __CLASS__, 'renderNotice' ) );
         add_action( 'admin_post_' . self::CHECK_ACTION, array( __CLASS__, 'handleCheck' ) );
+        add_action( 'admin_init', array( __CLASS__, 'flagCheckAfterSave' ) );
+    }
+
+    /**
+     * «Guardar y probar conexión» submits the settings form: options.php saves
+     * the key first, and the check runs on the page it redirects to, so it
+     * tests the key just pasted rather than the previously stored one.
+     */
+    public static function flagCheckAfterSave() {
+        if ( empty( $_POST['mt_save_and_test_maps'] )
+            || 'wptb_settings_group' !== ( $_POST['option_page'] ?? '' )
+            || ! current_user_can( 'manage_options' )
+            || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ?? '' ) ), 'wptb_settings_group-options' ) ) {
+            return;
+        }
+        set_transient( self::checkTransient() . '_pending', 1, 5 * MINUTE_IN_SECONDS );
     }
 
     /**
@@ -41,7 +61,7 @@ final class MapsProvider {
      */
     public static function request( $service, array $params ) {
         try {
-            $key = Settings::requireServerMapsKey();
+            $key = Settings::requireMapsKey();
         } catch ( \RuntimeException $exception ) {
             return self::failure( $service, 'key_missing', '' );
         }
@@ -107,35 +127,39 @@ final class MapsProvider {
      */
     public static function hint( $status, $detail ) {
         $detail = strtolower( (string) $detail );
+        $apis   = self::REQUIRED_APIS;
         if ( 'key_missing' === $status ) {
-            return 'No hay clave de Maps de servidor. Configúrala en MeTransfers → Integraciones («Google Maps API Key (servidor)») o con la constante MT_GOOGLE_MAPS_SERVER_API_KEY en wp-config.php.';
+            return 'No hay clave de Google Maps. Pégala en MeTransfers → Integraciones («Google Maps API Key») y pulsa «Guardar y probar conexión».';
         }
         if ( 'transport_error' === $status || 0 === strpos( (string) $status, 'http_' ) ) {
             return 'El servidor no pudo hablar con maps.googleapis.com (DNS, TLS, cortafuegos o salida HTTPS bloqueada en el hosting).';
         }
         if ( false !== strpos( $detail, 'referer restrictions' ) ) {
-            return 'La clave de servidor está restringida por sitios web (HTTP referrer). Geocoding API y Distance Matrix API no admiten esa restricción: usa una clave restringida por dirección IP (la IP de salida del hosting) y limitada a esas dos APIs.';
+            return 'La clave está restringida por sitios web. Como la misma clave también calcula rutas en el servidor, Google la rechaza: en Google Cloud → Credenciales → la clave → «Restricciones de aplicación», elige «Ninguna».';
         }
         if ( false !== strpos( $detail, 'ip address' ) || false !== strpos( $detail, 'not authorized to use this api key' ) ) {
-            return 'La restricción por IP de la clave no incluye la IP de salida del servidor. Añade en Google Cloud Console la IP que Google indica en el detalle.';
+            return 'La clave está restringida por direcciones IP, y así no funciona en el navegador de los clientes: en Google Cloud → Credenciales → la clave → «Restricciones de aplicación», elige «Ninguna».';
+        }
+        if ( false !== strpos( $detail, 'not authorized to use this service or api' ) ) {
+            return 'A la clave le faltan APIs en su lista. En Google Cloud → Credenciales → la clave → «Restricciones de API», deja marcadas: ' . $apis . '. Guarda y espera unos minutos.';
         }
         if ( false !== strpos( $detail, 'legacy api' ) ) {
             return 'Google trata esta API como «Legacy» y no está habilitada en el proyecto de la clave (Google ya no permite activarla en proyectos nuevos). Usa una clave de un proyecto donde siga activa; si no existe, hay que migrar el cálculo de distancias a Routes API.';
         }
         if ( false !== strpos( $detail, 'project is not authorized' ) || false !== strpos( $detail, 'not activated' ) ) {
-            return 'La API no está habilitada en el proyecto de la clave. En Google Cloud Console → APIs y servicios, habilita Geocoding API y Distance Matrix API.';
+            return 'La API no está habilitada en el proyecto de la clave. En Google Cloud → APIs y servicios → Biblioteca, habilita: ' . $apis . '.';
         }
         if ( false !== strpos( $detail, 'billing' ) ) {
             return 'El proyecto de Google Cloud de la clave no tiene la facturación activa.';
         }
         if ( false !== strpos( $detail, 'api key is invalid' ) || false !== strpos( $detail, 'api key not valid' ) ) {
-            return 'Google no reconoce la clave de servidor (borrada, rotada o copiada con errores).';
+            return 'Google no reconoce la clave (borrada, rotada o copiada con errores). Cópiala de nuevo con «Mostrar clave» en Google Cloud.';
         }
         if ( in_array( $status, array( 'OVER_QUERY_LIMIT', 'OVER_DAILY_LIMIT' ), true ) ) {
             return 'Se superó la cuota de Google Maps del proyecto o la facturación está suspendida.';
         }
         if ( 'REQUEST_DENIED' === $status ) {
-            return 'Google rechazó la clave de servidor. Revisa que exista, que tenga Geocoding API y Distance Matrix API habilitadas, facturación activa y una restricción por IP que incluya el servidor.';
+            return 'Google rechazó la clave. Revisa en Google Cloud que exista, que en «Restricciones de API» estén ' . $apis . ', que «Restricciones de aplicación» sea «Ninguna» y que la facturación esté activa.';
         }
         return 'Respuesta inesperada del proveedor. Pulsa «Probar conexión ahora» para ver el detalle actual.';
     }
@@ -159,6 +183,13 @@ final class MapsProvider {
             return;
         }
 
+        // Requested with «Guardar y probar conexión»: the key is saved by now.
+        if ( get_transient( self::checkTransient() . '_pending' ) ) {
+            delete_transient( self::checkTransient() . '_pending' );
+            self::renderCheckResult( self::runCheck() );
+            return;
+        }
+
         $check = get_transient( self::checkTransient() );
         if ( is_array( $check ) ) {
             delete_transient( self::checkTransient() );
@@ -172,7 +203,7 @@ final class MapsProvider {
         }
 
         echo '<div class="notice notice-error"><p><strong>MeTransfers: las cotizaciones online están fallando.</strong> ';
-        echo 'Ningún cliente puede ver vehículos ni precios hasta que Google acepte la clave de Maps del servidor.</p><ul style="list-style:disc;margin-left:20px;">';
+        echo 'Ningún cliente puede ver vehículos ni precios hasta que Google acepte la clave de Google Maps.</p><ul style="list-style:disc;margin-left:20px;">';
         foreach ( $failures as $service => $failure ) {
             echo '<li>' . esc_html(
                 sprintf(
@@ -194,7 +225,7 @@ final class MapsProvider {
     private static function renderCheckResult( array $check ) {
         $ok = ! in_array( false, array_column( $check, 'ok' ), true );
         echo '<div class="notice ' . ( $ok ? 'notice-success' : 'notice-error' ) . '"><p><strong>';
-        echo esc_html( $ok ? 'MeTransfers: la conexión del servidor con Google Maps funciona.' : 'MeTransfers: la comprobación de Google Maps del servidor ha fallado.' );
+        echo esc_html( $ok ? 'MeTransfers: la clave de Google Maps funciona. Las cotizaciones online están operativas.' : 'MeTransfers: la comprobación de la clave de Google Maps ha fallado.' );
         echo '</strong></p><ul style="list-style:disc;margin-left:20px;">';
         foreach ( $check as $service => $result ) {
             echo '<li>' . esc_html( sprintf( '%1$s: %2$s', self::LABELS[ $service ] ?? $service, $result['status'] ) );
@@ -216,9 +247,9 @@ final class MapsProvider {
     }
 
     private static function renderFooter() {
-        $source = Settings::source( 'google_maps_server_api_key' );
+        $source = Settings::source( 'google_maps_api_key' );
         $source_text = 'none' === $source['type']
-            ? 'No hay ninguna clave de servidor configurada.'
+            ? 'No hay ninguna clave de Google Maps configurada.'
             : ( 'constant' === $source['type']
                 ? sprintf( 'Clave en uso: constante %s de wp-config.php (tiene prioridad sobre el campo del panel; cambiar el panel no la reemplaza).', $source['name'] )
                 : sprintf( 'Clave en uso: opción %s (MeTransfers → Integraciones).', $source['name'] ) );
