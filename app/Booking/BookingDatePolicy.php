@@ -2,11 +2,11 @@
 namespace MeTransfers\Booking;
 
 final class BookingDatePolicy {
-    public static function validate( $date, $time, $return_date = '', $return_time = '', $now = null ) {
+    public static function validate( $date, $time, $return_date = '', $return_time = '', $now = null, $language = '' ) {
         $timezone = new \DateTimeZone( 'Europe/Madrid' );
         $outbound = self::parse( $date, $time, $timezone );
         if ( ! $outbound ) {
-            return array( 'valid' => false, 'error' => I18n::text( 'invalid_booking_datetime' ) );
+            return self::error( 'invalid_booking_datetime', $language );
         }
 
         if ( ! $now instanceof \DateTimeInterface ) {
@@ -18,14 +18,14 @@ final class BookingDatePolicy {
         $minimum_minutes = max( 0, (int) apply_filters( 'mt_min_booking_lead_minutes', 120 ) );
         $earliest = $now->modify( '+' . $minimum_minutes . ' minutes' );
         if ( $outbound < $earliest ) {
-            return array( 'valid' => false, 'error' => I18n::text( 'booking_lead_time_error' ) );
+            return self::error( 'booking_lead_time_error', $language );
         }
 
         $has_return = '' !== trim( (string) $return_date ) || '' !== trim( (string) $return_time );
         if ( $has_return ) {
             $return = self::parse( $return_date, $return_time, $timezone );
             if ( ! $return || $return <= $outbound ) {
-                return array( 'valid' => false, 'error' => I18n::text( 'return_datetime_error' ) );
+                return self::error( 'return_datetime_error', $language );
             }
         }
 
@@ -34,6 +34,10 @@ final class BookingDatePolicy {
             'outbound_at'  => $outbound->format( 'Y-m-d H:i:s' ),
             'return_at'    => isset( $return ) ? $return->format( 'Y-m-d H:i:s' ) : '',
         );
+    }
+
+    private static function error( $key, $language ) {
+        return array( 'valid' => false, 'code' => $key, 'error' => I18n::text( $key, $language ) );
     }
 
     private static function parse( $date, $time, $timezone ) {

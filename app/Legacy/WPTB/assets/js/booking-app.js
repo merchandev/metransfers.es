@@ -106,32 +106,76 @@ jQuery(document).ready(function ($) {
             : fallback;
     }
 
-    // ===== ORIGIN & DESTINATION RESTRICTIONS =====
-    const DESTINATION_COUNTRIES = ['ES', 'PT', 'FR', 'CH', 'BE', 'DE', 'IT', 'NL', 'AT', 'HR', 'SI', 'PL', 'LU', 'AD'];
+    // The server sends a stable code (quote_service_unavailable, origin_policy_error,
+    // no_vehicles...). Reporting every failure as no_vehicles hid a total outage.
+    function quoteErrorCode(response, fallback) {
+        const code = response && response.data ? response.data.code : '';
+        return typeof code === 'string' && /^[a-z_]{1,40}$/.test(code) ? code : fallback;
+    }
 
-    // Validates that origin is within Catalunya (province of Barcelona area)
-    function validateOriginArea(place) {
-        if (!place || !place.address_components) return false;
-        let isCatalunya = false;
-        let isBarcelona = false;
-        for (let comp of place.address_components) {
-            if (comp.types.includes('administrative_area_level_1')) {
-                if (comp.short_name === 'CT' || comp.long_name.includes('Catalunya') || comp.long_name.includes('Catalonia')) {
-                    isCatalunya = true;
-                }
-            }
-            if (comp.types.includes('administrative_area_level_2')) {
-                if (comp.long_name.includes('Barcelona')) {
-                    isBarcelona = true;
-                }
-            }
-        }
-        return (isCatalunya || isBarcelona);
+    // A failed online quote must not end the booking: offer a human channel
+    // with the trip already written so the team can quote it immediately.
+    function supportActions(data) {
+        const phone = String((typeof wptb_vars !== 'undefined' && wptb_vars.support_phone) || '').replace(/[^0-9]/g, '');
+        if (!phone) return null;
+
+        const route = [data.origin, data.destination].filter(Boolean).join(' → ');
+        const when = [data.date, data.time].filter(Boolean).join(' ');
+        const message = [t('whatsapp_quote_message', 'Hola, quiero un presupuesto de traslado:'), route, when].filter(Boolean).join('\n');
+
+        const $actions = $('<div>', { class: 'mt-actions' });
+        $('<a>', { class: 'mt-button mt-button--secondary', href: 'tel:+' + phone })
+            .text(t('contact_phone', 'Llamar') + ' +' + phone)
+            .on('click', () => track('support_contact', { channel: 'phone' }))
+            .appendTo($actions);
+        $('<a>', { class: 'mt-button', href: 'https://wa.me/' + phone + '?text=' + encodeURIComponent(message), target: '_blank', rel: 'noopener' })
+            .text(t('contact_whatsapp', 'Pedir presupuesto por WhatsApp'))
+            .on('click', () => track('support_contact', { channel: 'whatsapp' }))
+            .appendTo($actions);
+        return $actions;
+    }
+
+    function displayQuoteFailure($container, response, fallbackCode) {
+        track('booking_error', { error_type: quoteErrorCode(response, fallbackCode) });
+        const $message = $('<div>', { class: 'mt-empty-state' });
+        $message.append('<span class="dashicons dashicons-warning mt-empty-state__icon"></span>');
+        $message.append($('<p>').text(responseMessage(response, t('vehicle_load_error', 'Error al cargar los vehículos.'))));
+        $message.append(supportActions(bookingData));
+        $container.empty().append($message);
+    }
+
+    // ===== ORIGIN & DESTINATION RESTRICTIONS =====
+    // Mirrors ServiceAreaPolicy: both points inside the covered countries and at
+    // least one of them in Catalonia, so trips back to Barcelona are allowed.
+    // The server stays authoritative; this only gives early feedback.
+    const ALLOWED_COUNTRIES = ['ES', 'PT', 'FR', 'CH', 'BE', 'DE', 'IT', 'NL', 'AT', 'HR', 'SI', 'PL', 'LU', 'AD'];
+
+    function placeComponent(place, type) {
+        const components = place && Array.isArray(place.address_components) ? place.address_components : [];
+        return components.find(comp => Array.isArray(comp.types) && comp.types.includes(type)) || null;
+    }
+
+    function isAllowedCountry(place) {
+        const country = placeComponent(place, 'country');
+        return !!country && ALLOWED_COUNTRIES.includes(String(country.short_name || '').toUpperCase());
+    }
+
+    function isInCatalonia(place) {
+        const country = placeComponent(place, 'country');
+        if (!country || String(country.short_name || '').toUpperCase() !== 'ES') return false;
+        const region = placeComponent(place, 'administrative_area_level_1');
+        const province = placeComponent(place, 'administrative_area_level_2');
+        const area = [region && region.long_name, province && province.long_name].join(' ')
+            .normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+        return (region && region.short_name === 'CT') || /catalu|catalonia|barcelona/.test(area);
     }
 
     // ===== GLOBAL HELPERS (Defined early to avoid crash issues) =====
     window.selectVehicle = function (id) {
         const vehicle = window.vehicleMap ? window.vehicleMap[id] : null;
+        // The server marks vehicles that cannot carry the requested group;
+        // a disabled button alone does not stop other click paths.
+        if (vehicle && vehicle.available === false) return;
         if (vehicle) {
             $('.vehicle-card').removeClass('selected');
             $(`[data-vehicle-id="${id}"]`).addClass('selected');
@@ -153,35 +197,38 @@ jQuery(document).ready(function ($) {
         const searchFormId = '#wptb-search-form' + suffix;
         const locBtnId = 'wptb-location-btn' + suffix; // ID for injection, no hash
 
+        // The vehicle and details pages load this script without a search form
+        // (and without Maps): polling for autocomplete there only produced
+        // misleading "Google Maps autocomplete unavailable" warnings.
+        if (!document.querySelector(searchFormId) || !document.querySelector(originId)) {
+            return;
+        }
+
         // Set Min Date
         if (typeof wptb_vars !== 'undefined' && wptb_vars.min_date) {
             $(dateId).attr('min', wptb_vars.min_date);
         }
 
-        let originValidated = false;
+        // Starts valid so values set by code (carousel prefill, geolocation)
+        // are accepted; typing by hand requires picking a suggestion again.
+        let originValidated = true;
+        let originPlace = null;
+        let destinationPlace = null;
         let isGoogleMapsActive = false;
 
         // Autocomplete is an enhancement. Manual addresses and submission keep
-        // working when Google Maps is unavailable or slow to initialize.
-        let autocompleteAttempts = 0;
-        const maxAutocompleteAttempts = 12;
+        // working when Google Maps is unavailable; the server verifies them.
+        function mapsPlacesReady() {
+            return typeof google !== 'undefined' && google.maps && google.maps.places;
+        }
+
         function initAutocomplete() {
-            if (typeof google !== 'undefined' && google.maps && google.maps.places) {
+            if (mapsPlacesReady()) {
                 isGoogleMapsActive = true;
 
-                // ORIGIN: Restricted to Catalunya bounds
-                const originOptions = {
-                    fields: ["formatted_address", "geometry", "name", "address_components"],
-                    bounds: new google.maps.LatLngBounds(
-                        new google.maps.LatLng(40.523, 0.252), // SW Catalunya (Montsià)
-                        new google.maps.LatLng(42.861, 3.328)  // NE Catalunya (Cap de Creus)
-                    ),
-                    strictBounds: true,
-                    componentRestrictions: { country: 'ES' }
-                };
-
-                // DESTINATION: All accessible European countries by road
-                const destOptions = {
+                // Both points can be anywhere in the covered European countries;
+                // the Catalonia rule applies to the pair, checked on submit.
+                const placeOptions = {
                     fields: ["formatted_address", "geometry", "name", "address_components"],
                     bounds: new google.maps.LatLngBounds(
                         new google.maps.LatLng(36.0, -10.0), // SW Europe
@@ -194,60 +241,62 @@ jQuery(document).ready(function ($) {
                 const destInput = document.querySelector(destId);
 
                 if (originInput) {
-                    const originAutocomplete = new google.maps.places.Autocomplete(originInput, originOptions);
+                    const originAutocomplete = new google.maps.places.Autocomplete(originInput, placeOptions);
                     originAutocomplete.addListener('place_changed', () => {
                         const place = originAutocomplete.getPlace();
                         if (place && place.address_components) {
-                            if (!validateOriginArea(place)) {
-                                alert(t('origin_restriction', 'Lo sentimos, solo operamos transfers con origen en Cataluña.'));
+                            if (!isAllowedCountry(place)) {
+                                alert(t('origin_country_restriction', 'La dirección de origen debe estar dentro de los países europeos con cobertura.'));
                                 originInput.value = '';
                                 originValidated = false;
+                                originPlace = null;
                             } else {
                                 originValidated = true;
+                                originPlace = place;
                             }
                         } else {
                             originValidated = false;
+                            originPlace = null;
                         }
                     });
-                    
+
                     // Reset validation if user types manually after selecting
                     $(originInput).on('input', function() {
                         originValidated = false;
+                        originPlace = null;
                     });
                 }
 
                 if (destInput) {
-                    const destAutocomplete = new google.maps.places.Autocomplete(destInput, destOptions);
+                    const destAutocomplete = new google.maps.places.Autocomplete(destInput, placeOptions);
                     destAutocomplete.addListener('place_changed', () => {
                         const place = destAutocomplete.getPlace();
+                        destinationPlace = null;
                         if (place && place.address_components) {
-                            let isAllowed = false;
-                            for (let comp of place.address_components) {
-                                if (comp.types.includes('country') && DESTINATION_COUNTRIES.includes(comp.short_name.toUpperCase())) {
-                                    isAllowed = true;
-                                    break;
-                                }
-                            }
-                            if (!isAllowed) {
+                            if (!isAllowedCountry(place)) {
                                 alert(t('destination_restriction', 'El destino debe estar dentro de los países europeos con cobertura.'));
                                 destInput.value = '';
+                            } else {
+                                destinationPlace = place;
                             }
                         }
                     });
-                }
-            } else if (autocompleteAttempts < maxAutocompleteAttempts) {
-                autocompleteAttempts += 1;
-                setTimeout(initAutocomplete, 500);
-            } else {
-                if (typeof wptb_vars !== 'undefined' && !wptb_vars.google_maps_api_key) {
-                    console.error('❌ ERROR CRÍTICO: La API Key de Google Maps está VACÍA en los ajustes de WordPress. El autocompletado no funcionará hasta que la configures en MeTransfers -> Integraciones.');
-                } else {
-                    console.warn('Google Maps autocomplete unavailable (el script no se cargó a tiempo); la entrada manual sigue activa.');
+                    $(destInput).on('input', function() {
+                        destinationPlace = null;
+                    });
                 }
             }
         }
 
-        initAutocomplete();
+        if (mapsPlacesReady()) {
+            initAutocomplete();
+        } else if (typeof wptb_vars !== 'undefined' && !wptb_vars.google_maps_api_key) {
+            console.warn('Google Maps API key is empty: address autocomplete is off; manual entry still works.');
+        } else {
+            // Maps is loaded async and announces itself (callback=mtMapsLoaded);
+            // the old 6-second poll gave up for good on slow mobile networks.
+            document.addEventListener('mt:maps-ready', initAutocomplete, { once: true });
+        }
 
         // Inject Geolocation Button
         const $originWrapper = $(originId).parent();
@@ -288,18 +337,19 @@ jQuery(document).ready(function ($) {
                     geocoder.geocode({ location: { lat, lng } }, (results, status) => {
                         $icon.removeClass('dashicons-update spin').addClass('dashicons-location');
                         if (status === "OK" && results[0]) {
-                            if (!validateOriginArea(results[0])) {
-                                alert(t('origin_restriction', 'Lo sentimos, solo operamos transfers con origen en el área de Barcelona.'));
+                            if (!isAllowedCountry(results[0])) {
+                                alert(t('origin_country_restriction', 'La dirección de origen debe estar dentro de los países europeos con cobertura.'));
                                 $(originId).val('');
                                 $(originId).focus();
                                 return;
                             }
                             $(originId).val(results[0].formatted_address);
-                            // Trigger input event for validation/maps
-                            const event = new Event('input', { bubbles: true });
-                            if (document.querySelector(originId)) {
-                                document.querySelector(originId).dispatchEvent(event);
-                            }
+                            originPlace = results[0];
+                            // Dispatching 'input' here hit the manual-edit listener and
+                            // invalidated the address just verified, so the form then
+                            // demanded a dropdown selection. 'change' does not.
+                            originValidated = true;
+                            document.querySelector(originId).dispatchEvent(new Event('change', { bubbles: true }));
                         } else {
                             alert(t('geocode_error', 'No se pudo determinar la dirección. Por favor ingrésala manualmente.'));
                             $(originId).focus();
@@ -331,8 +381,14 @@ jQuery(document).ready(function ($) {
 
             // Strict Origin Validation (Require selection from dropdown)
             if (isGoogleMapsActive && !originValidated) {
-                alert(t('origin_must_select', 'Por favor, selecciona una dirección de origen válida de la lista desplegable (solo Cataluña).'));
+                alert(t('origin_must_select', 'Selecciona la dirección de origen en la lista de sugerencias.'));
                 $(originId).focus();
+                return;
+            }
+
+            // Only when both points are known places; otherwise the server decides.
+            if (originPlace && destinationPlace && !isInCatalonia(originPlace) && !isInCatalonia(destinationPlace)) {
+                alert(t('route_outside_service_area', 'La ruta debe comenzar o terminar en Cataluña y el otro punto debe estar dentro del área europea cubierta.'));
                 return;
             }
 
@@ -389,15 +445,12 @@ jQuery(document).ready(function ($) {
                 if (vehicles.length > 0) {
                     displayVehiclesInModal(vehicles);
                 } else {
-                    track('booking_error', { error_type: 'no_vehicles' });
-                    const message = responseMessage(response, t('no_vehicles', 'No se encontraron vehículos disponibles.'));
-                    $('#wptb-modal-vehicles-grid').html('<p class="mt-inline-notice mt-inline-notice--error">' + escapeHtml(message) + '</p>');
+                    displayQuoteFailure($('#wptb-modal-vehicles-grid'), response, 'no_vehicles');
                 }
             },
             error: function (xhr, status, error) {
                 console.error('❌ Error AJAX:', error);
-                track('booking_error', { error_type: 'vehicle_request' });
-                $('#wptb-modal-vehicles-grid').html('<p class="mt-inline-notice mt-inline-notice--error">' + escapeHtml(t('vehicle_load_error', 'Error al cargar los vehículos.')) + '</p>');
+                displayQuoteFailure($('#wptb-modal-vehicles-grid'), xhr.responseJSON, 'vehicle_request');
             }
         });
     }
@@ -434,7 +487,7 @@ jQuery(document).ready(function ($) {
             const id = $(this).data('vehicle-id');
             const vehicle = window.modalVehicleMap[id];
 
-            if (vehicle) {
+            if (vehicle && vehicle.available !== false) {
                 $('.wptb-modal-vehicle-btn').removeClass('selected');
                 $(this).addClass('selected');
 
@@ -664,24 +717,15 @@ jQuery(document).ready(function ($) {
                 if (vehicles.length > 0) {
                     displayVehicles(vehicles);
                 } else {
-                    displayNoVehicles(responseMessage(response, t('no_vehicles', 'No se encontraron vehículos disponibles.')));
+                    displayQuoteFailure($('#vehicles-grid'), response, 'no_vehicles');
                 }
             },
             error: function (xhr, status, error) {
                 console.error('❌ Error AJAX:', error);
                 hideBTTLoader();
-                track('booking_error', { error_type: 'vehicle_request' });
-                $('#vehicles-grid').html('<p class="mt-inline-notice mt-inline-notice--error">' + escapeHtml(t('vehicle_load_error', 'Error al cargar los vehículos.')) + '</p>');
+                displayQuoteFailure($('#vehicles-grid'), xhr.responseJSON, 'vehicle_request');
             }
         });
-    }
-
-    function displayNoVehicles(message) {
-        track('booking_error', { error_type: 'no_vehicles' });
-        const $message = $('<div>', { class: 'mt-empty-state' });
-        $message.append('<span class="dashicons dashicons-warning mt-empty-state__icon"></span>');
-        $message.append($('<p>').text(message || t('no_vehicles', 'No se encontraron vehículos disponibles.')));
-        $('#vehicles-grid').empty().append($message);
     }
 
     function displayVehicles(vehicles) {
@@ -690,6 +734,7 @@ jQuery(document).ready(function ($) {
         vehicles.forEach(function (vehicle) {
             const displayPrice = Number.parseFloat(vehicle.price || 0);
             const formattedPrice = Number.isInteger(displayPrice) ? displayPrice : displayPrice.toFixed(2);
+            const selectable = vehicle.available !== false;
 
             html += `
                 <div class="vehicle-card mt-vehicle-card" data-vehicle-id="${vehicle.id}">
@@ -714,8 +759,8 @@ jQuery(document).ready(function ($) {
                                 <span class="price-value">€${formattedPrice}</span>
                             </div>
 
-                            <button type="button" class="select-vehicle-btn mt-button mt-button--primary">
-                                ${escapeHtml(t('select', 'Seleccionar'))}
+                            <button type="button" class="select-vehicle-btn mt-button mt-button--primary"${selectable ? '' : ' disabled aria-disabled="true"'}>
+                                ${escapeHtml(selectable ? t('select', 'Seleccionar') : t('vehicle_capacity_error', 'El vehículo no tiene capacidad suficiente para los pasajeros o el equipaje.'))}
                             </button>
                         </div>
                     </div>

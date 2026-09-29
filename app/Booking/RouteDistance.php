@@ -1,62 +1,47 @@
 <?php
 namespace MeTransfers\Booking;
 
-use MeTransfers\Core\Settings;
-
 class RouteDistance {
-    public static function calculate( $origin, $destination ) {
+    public static function calculate( $origin, $destination, $language = '' ) {
         $origin = sanitize_text_field( $origin );
         $destination = sanitize_text_field( $destination );
         if ( '' === $origin || '' === $destination ) {
-            return array( 'error' => 'Origen o destino no válidos.' );
+            return self::error( 'invalid_booking_request', $language );
         }
 
         $filtered = apply_filters( 'mt_server_route_distance', null, $origin, $destination );
         if ( is_array( $filtered ) && ! empty( $filtered['distance_km'] ) ) {
-            return self::normalize_result( $filtered );
+            return self::normalize_result( $filtered, $language );
         }
 
         $cache_key = 'mt_route_' . hash( 'sha256', strtolower( $origin . '|' . $destination ) );
         $cached = get_transient( $cache_key );
         if ( is_array( $cached ) && ! empty( $cached['distance_km'] ) ) {
-            return self::normalize_result( $cached );
+            return self::normalize_result( $cached, $language );
         }
 
         if ( ! self::consume_rate_limit() ) {
-            return array( 'error' => 'Demasiadas consultas de ruta. Inténtalo de nuevo en un minuto.' );
+            return self::error( 'quote_rate_limited', $language );
         }
 
-        try {
-            $api_key = Settings::requireServerMapsKey();
-        } catch ( \RuntimeException $exception ) {
-            return array( 'error' => 'El cálculo de rutas del servidor no está configurado.' );
-        }
-
-        $url = add_query_arg(
+        $response = MapsProvider::request(
+            MapsProvider::DISTANCE_MATRIX,
             array(
                 'origins'      => $origin,
                 'destinations' => $destination,
-                'key'          => $api_key,
                 'units'        => 'metric',
                 'language'     => 'es',
-            ),
-            'https://maps.googleapis.com/maps/api/distancematrix/json'
+            )
         );
-        $response = wp_remote_get( $url, array( 'timeout' => 8, 'headers' => array( 'Referer' => home_url( '/' ) ) ) );
-        if ( is_wp_error( $response ) ) {
-            return array( 'error' => 'No se pudo consultar la ruta.' );
-        }
-
-        $payload = json_decode( wp_remote_retrieve_body( $response ), true );
-        $element = isset( $payload['rows'][0]['elements'][0] ) ? $payload['rows'][0]['elements'][0] : null;
-        if ( ! is_array( $element ) || 'OK' !== ( $element['status'] ?? '' ) ) {
-            return array( 'error' => 'El proveedor no pudo calcular la ruta.' );
+        $element = $response['payload']['rows'][0]['elements'][0] ?? null;
+        if ( ! $response['ok'] || ! is_array( $element ) ) {
+            return self::error( $response['outage'] ? 'quote_service_unavailable' : 'route_not_found', $language );
         }
 
         $meters = isset( $element['distance']['value'] ) ? (int) $element['distance']['value'] : 0;
         $seconds = isset( $element['duration']['value'] ) ? (int) $element['duration']['value'] : 0;
         if ( $meters <= 0 ) {
-            return array( 'error' => 'La distancia calculada no es válida.' );
+            return self::error( 'route_error', $language );
         }
 
         $result = array(
@@ -68,16 +53,20 @@ class RouteDistance {
         return $result;
     }
 
-    private static function normalize_result( $result ) {
+    private static function normalize_result( $result, $language ) {
         $distance_km = (float) $result['distance_km'];
         if ( $distance_km <= 0 ) {
-            return array( 'error' => 'La distancia calculada no es válida.' );
+            return self::error( 'route_error', $language );
         }
 
         return array(
             'distance_km'      => round( $distance_km, 2 ),
             'duration_minutes' => isset( $result['duration_minutes'] ) ? absint( $result['duration_minutes'] ) : 0,
         );
+    }
+
+    private static function error( $key, $language ) {
+        return array( 'code' => $key, 'error' => I18n::text( $key, $language ) );
     }
 
     private static function consume_rate_limit() {

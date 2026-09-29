@@ -20,6 +20,7 @@ function get_option( $key, $default = false ) {
 }
 
 require_once __DIR__ . '/../app/Core/Settings.php';
+require_once __DIR__ . '/../app/Booking/I18n.php';
 require_once __DIR__ . '/../app/Booking/RouteDistance.php';
 
 $route = \MeTransfers\Booking\RouteDistance::calculate( ' Barcelona ', 'Sitges' );
@@ -29,7 +30,7 @@ if ( 41.24 !== $route['distance_km'] || 52 !== $route['duration_minutes'] ) {
 }
 
 $invalid = \MeTransfers\Booking\RouteDistance::calculate( '', 'Sitges' );
-if ( empty( $invalid['error'] ) ) {
+if ( empty( $invalid['error'] ) || 'invalid_booking_request' !== $invalid['code'] ) {
     fwrite( STDERR, "FAILED: invalid route input must return an error.\n" );
     exit( 1 );
 }

@@ -66,13 +66,16 @@ class WPTB_Public {
                     'key'       => $api_key,
                     'libraries' => 'places,geometry',
                     'language'  => \MeTransfers\Booking\I18n::maps_language(),
-                    'region'    => 'ES'
+                    'region'    => 'ES',
+                    'callback'  => 'mtMapsLoaded',
                 ),
                 'https://maps.googleapis.com/maps/api/js'
             );
-            // Cargar en el footer de forma síncrona, como estaba originalmente, para asegurar 
-            // que google.maps.places se instancie antes de que el usuario interactúe.
             wp_enqueue_script( 'google-maps', $maps_url, array(), null, true );
+            // functions.php loads Maps async (async/defer + loading=async), so it can
+            // arrive after booking-app.js runs: Google calls mtMapsLoaded when places
+            // is usable and the form initialises then, however slow the network.
+            \MeTransfers\Core\Assets::announceMapsReady( 'google-maps' );
         } elseif ( empty( $api_key ) && in_array( $phase, $maps_phases, true ) && is_admin() ) {
             // Aviso en el admin si la API Key está ausente y se necesita Maps
             add_action( 'admin_notices', static function () {
@@ -124,6 +127,8 @@ class WPTB_Public {
             'home_url' => \MeTransfers\Booking\I18n::url( '/' ),
             'language' => \MeTransfers\Booking\I18n::language(),
             'terms_version' => MT_TERMS_VERSION,
+            // Offered whenever the online quote fails, so an outage does not lose the booking.
+            'support_phone' => apply_filters( 'mt_booking_support_phone', '+34662024136' ),
             'strings' => \MeTransfers\Booking\I18n::strings(),
         );
 
@@ -545,7 +550,7 @@ class WPTB_Public {
         if ( empty( $result['valid'] ) ) {
             wp_send_json_error(
                 array(
-                    'code'    => 'vehicle_quote_failed',
+                    'code'    => isset( $result['code'] ) ? $result['code'] : 'vehicle_quote_failed',
                     'message' => isset( $result['error'] ) ? $result['error'] : \MeTransfers\Booking\I18n::text( 'no_vehicles', $language ),
                 )
             );
@@ -570,8 +575,8 @@ class WPTB_Public {
         $result = \MeTransfers\Booking\QuoteService::create( wp_unslash( $_POST ) );
         if ( empty( $result['valid'] ) ) {
             wp_send_json_error( array(
-                'code'    => 'invalid_quote',
-                'message' => isset( $result['error'] ) ? $result['error'] : \MeTransfers\Booking\I18n::text( 'invalid_booking_request' ),
+                'code'    => isset( $result['code'] ) ? $result['code'] : 'invalid_quote',
+                'message' => isset( $result['error'] ) ? $result['error'] : \MeTransfers\Booking\I18n::text( 'invalid_booking_request', $language ),
             ) );
             return;
         }

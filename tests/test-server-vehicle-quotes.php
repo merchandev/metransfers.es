@@ -115,6 +115,20 @@ assert_vehicle_quote( ! empty( $capacity_ok['valid'] ), 'Passenger and combined 
 assert_vehicle_quote( empty( $too_many_people['valid'] ), 'Passenger capacity must use the shared policy.' );
 assert_vehicle_quote( empty( $too_much_luggage['valid'] ), 'Suitcases and carry-ons must share the configured luggage limit.' );
 
+$fleet = WPTB_Vehicle_Manager::$vehicles;
+WPTB_Vehicle_Manager::$vehicles = array();
+$empty = \MeTransfers\Booking\QuoteService::createVehicleList( $input );
+assert_vehicle_quote( 'no_vehicles' === $empty['code'], 'An empty active fleet must be reported as no vehicles.' );
+WPTB_Vehicle_Manager::$vehicles = array( (object) array( 'id' => 99, 'name' => 'Broken tariff' ) );
+$unpriced = \MeTransfers\Booking\QuoteService::createVehicleList( $input );
+assert_vehicle_quote( 'invalid_server_price' === $unpriced['code'], 'A fleet whose tariffs all fail must not look like an empty fleet.' );
+WPTB_Vehicle_Manager::$vehicles = array();
+$GLOBALS['wpdb'] = (object) array( 'last_error' => "Table 'wp_wptb_vehicles' doesn't exist" );
+$db_failure = \MeTransfers\Booking\QuoteService::createVehicleList( $input );
+assert_vehicle_quote( 'vehicle_load_error' === $db_failure['code'], 'A failed fleet query must not look like an empty fleet.' );
+unset( $GLOBALS['wpdb'] );
+WPTB_Vehicle_Manager::$vehicles = $fleet;
+
 $root = dirname( __DIR__ );
 $public = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-public.php' );
 $booking_js = file_get_contents( $root . '/app/Legacy/WPTB/assets/js/booking-app.js' );
@@ -125,5 +139,37 @@ foreach ( array( $booking_js, $search_js ) as $browser_source ) {
 }
 assert_vehicle_quote( false === strpos( $public, "'pricing' => array(" ), 'The vehicle endpoint must not expose tariff coefficients.' );
 assert_vehicle_quote( false !== strpos( $public, "unset( \$result['breakdown'] )" ), 'The public single-quote response must omit its tariff breakdown.' );
+assert_vehicle_quote( false !== strpos( $public, "'code'    => isset( \$result['code'] ) ? \$result['code'] : 'vehicle_quote_failed'" ), 'The vehicle endpoint must forward the specific failure code.' );
+foreach ( array( $booking_js, $search_js ) as $browser_source ) {
+    assert_vehicle_quote( false === strpos( $browser_source, "track('booking_error', { error_type: 'no_vehicles' })" ), 'Quote failures must be tracked with their server code, not all as no_vehicles.' );
+}
+assert_vehicle_quote( false !== strpos( $booking_js, 'displayQuoteFailure(' ) && false !== strpos( $booking_js, 'wa.me/' ), 'A failed quote must offer a human contact channel.' );
+assert_vehicle_quote( false !== strpos( $public, "'support_phone'" ), 'The booking script must receive the support phone.' );
+assert_vehicle_quote( false !== strpos( $booking_js, 'if (!document.querySelector(searchFormId) || !document.querySelector(originId))' ), 'Pages without a search form must not initialise autocomplete.' );
+assert_vehicle_quote( false === strpos( $booking_js, "new Event('input', { bubbles: true })" ), 'Geolocation must not fire the manual-edit event that invalidates the verified origin.' );
+assert_vehicle_quote(
+    false === strpos( $booking_js, "componentRestrictions: { country: 'ES' }" )
+        && false !== strpos( $booking_js, '!isInCatalonia(originPlace) && !isInCatalonia(destinationPlace)' ),
+    'The browser must apply the server coverage rule (one endpoint in Catalonia), not an origin-only restriction.'
+);
+assert_vehicle_quote(
+    false !== strpos( $public, "'callback'  => 'mtMapsLoaded'" )
+        && false !== strpos( $public, "Assets::announceMapsReady( 'google-maps' )" )
+        && false !== strpos( file_get_contents( $root . '/app/Core/Assets.php' ), "document.dispatchEvent(new Event('mt:maps-ready'))" )
+        && false !== strpos( file_get_contents( $root . '/app/HotelPortal/HotelPortal.php' ), "'callback'  => 'mtMapsLoaded'" )
+        && false !== strpos( file_get_contents( $root . '/assets/js/hotel-portal-booking.js' ), "addEventListener('mt:maps-ready', initPlaces" )
+        && false !== strpos( $booking_js, "addEventListener('mt:maps-ready', initAutocomplete" )
+        && false === strpos( $booking_js, 'maxAutocompleteAttempts' ),
+    'Async Maps must announce readiness instead of a poll that gives up after six seconds.'
+);
+assert_vehicle_quote(
+    false !== strpos( $booking_js, 'if (vehicle && vehicle.available === false) return;' )
+        && false !== strpos( $search_js, 'if (vehicle && vehicle.available !== false) {' ),
+    'Vehicles the server marks unavailable must not be selectable from any flow.'
+);
+assert_vehicle_quote(
+    false === strpos( $search_js, 'getDistanceMatrix' ) && false === strpos( $search_js, "typeof google === 'undefined'" ),
+    'The premium search must quote through the server even when Google Maps fails in the browser.'
+);
 
 echo "Server vehicle quote tests passed.\n";

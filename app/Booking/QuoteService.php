@@ -35,9 +35,16 @@ final class QuoteService {
         $suitcases = isset( $input['suitcases'] ) && is_scalar( $input['suitcases'] ) ? absint( $input['suitcases'] ) : 0;
         $carry_ons = isset( $input['carry_ons'] ) && is_scalar( $input['carry_ons'] ) ? absint( $input['carry_ons'] ) : 0;
         $vehicles = \WPTB_Vehicle_Manager::get_active_vehicles();
+        // A failed fleet query also comes back as an empty list; wpdb resets
+        // last_error on every query, so it still describes this one. The
+        // manager has already logged the database error.
+        global $wpdb;
+        if ( ! is_array( $vehicles ) || ( isset( $wpdb->last_error ) && '' !== $wpdb->last_error ) ) {
+            return self::error( 'vehicle_load_error', $context['language'] );
+        }
         $quotes = array();
 
-        foreach ( is_array( $vehicles ) ? $vehicles : array() as $vehicle ) {
+        foreach ( $vehicles as $vehicle ) {
             $quote = self::quoteFromContext( (int) $vehicle->id, $context );
             if ( empty( $quote['valid'] ) ) {
                 continue;
@@ -62,6 +69,13 @@ final class QuoteService {
         }
 
         if ( empty( $quotes ) ) {
+            // An active fleet whose every tariff fails is a pricing setup
+            // problem, not "no vans available": report it as such.
+            $active_count = count( $vehicles );
+            if ( $active_count > 0 ) {
+                error_log( 'MeTransfers QuoteService: ' . $active_count . ' active vehicle(s) but none produced a valid server price.' );
+                return self::error( 'invalid_server_price', $context['language'] );
+            }
             return self::error( 'no_vehicles', $context['language'] );
         }
 
@@ -113,6 +127,6 @@ final class QuoteService {
     }
 
     private static function error( $key, $language ) {
-        return array( 'valid' => false, 'error' => I18n::text( $key, $language ) );
+        return array( 'valid' => false, 'code' => $key, 'error' => I18n::text( $key, $language ) );
     }
 }

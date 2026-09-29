@@ -98,6 +98,7 @@ assert_phase_one(
 
 $service_area = file_get_contents( $root . '/app/Booking/ServiceAreaPolicy.php' );
 $route_distance = file_get_contents( $root . '/app/Booking/RouteDistance.php' );
+$maps_provider = file_get_contents( $root . '/app/Booking/MapsProvider.php' );
 $loader = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-loader.php' );
 $public_controller = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-wptb-public.php' );
 $booking_js = file_get_contents( $root . '/app/Legacy/WPTB/assets/js/booking-app.js' );
@@ -106,7 +107,9 @@ $admin_controller = file_get_contents( $root . '/app/Legacy/WPTB/includes/class-
 
 assert_phase_one(
     false === strpos( $service_area, "Settings::get( 'google_maps_api_key'" )
-        && false === strpos( $route_distance, "Settings::get( 'google_maps_api_key'" ),
+        && false === strpos( $route_distance, "Settings::get( 'google_maps_api_key'" )
+        && false === strpos( $maps_provider, "Settings::get( 'google_maps_api_key'" )
+        && false !== strpos( $maps_provider, 'Settings::requireServerMapsKey()' ),
     'Server-side Maps services must not fall back to the browser key.'
 );
 assert_phase_one(
