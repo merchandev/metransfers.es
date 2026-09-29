@@ -112,6 +112,34 @@ $wpdb->query( $wpdb->prepare( 'UPDATE %i SET last_seen_at = %s WHERE address_has
 mt_wp_integration_assert( null === $wpdb->get_var( $wpdb->prepare( 'SELECT id FROM %i WHERE address_hash = %s', $address_table, $cache_hash ) ), 'Addresses nobody quoted for 13 months must be deleted.' );
 mt_wp_integration_assert( is_array( \MeTransfers\Booking\AddressCache::stats() ), 'The admin statistics query must run.' );
 
+// Hotel bookings Excel export: real queries, hotel matching and a readable file.
+require_once ABSPATH . 'wp-admin/includes/file.php';
+$export_hotel = wp_insert_post( array( 'post_type' => 'hotel_partner', 'post_status' => 'publish', 'post_title' => 'Integration Hotel' ) );
+update_post_meta( $export_hotel, '_hqp_token', 'HOTEL-INTEGRATION-TOKEN' );
+$bookings_table = $wpdb->prefix . 'wptb_bookings';
+$export_ids     = array();
+foreach ( array( array( 'hotel_id' => $export_hotel ), array( 'hotel_token' => 'HOTEL-INTEGRATION-TOKEN' ) ) as $link ) {
+	$wpdb->insert( $bookings_table, $link + array( 'booking_date' => '2026-10-04', 'booking_time' => '12:00:00', 'origin' => 'Aeropuerto BCN', 'destination' => 'Integration Hotel', 'price' => 50, 'status' => 'confirmed', 'source' => 'Hotel QR' ) );
+	$export_ids[] = (int) $wpdb->insert_id;
+}
+$export = \MeTransfers\Admin\HotelBookingsExport::collect();
+$linked = array();
+foreach ( $export['bookings'] as $row ) {
+	if ( in_array( (int) $row['id'], $export_ids, true ) ) {
+		$linked[] = (int) $row['export_hotel_id'];
+		mt_wp_integration_assert( ! array_key_exists( 'hotel_token', $row ), 'The hotel token must not be exported.' );
+	}
+}
+mt_wp_integration_assert( array( $export_hotel, $export_hotel ) === $linked, 'Hotel bookings must be matched by hotel_id and by the legacy QR token on a real database.' );
+$export_file = wp_tempnam( 'integration.xlsx' );
+\MeTransfers\Admin\HotelBookingsExport::build( $export['hotels'], $export['bookings'], current_datetime() )->save( $export_file );
+$export_zip = new ZipArchive();
+mt_wp_integration_assert( true === $export_zip->open( $export_file ) && false !== strpos( (string) $export_zip->getFromName( 'xl/workbook.xml' ), 'name="Integration Hotel"' ), 'The export must produce an .xlsx with one sheet per hotel.' );
+$export_zip->close();
+wp_delete_file( $export_file );
+$wpdb->query( $wpdb->prepare( 'DELETE FROM %i WHERE id IN (%d, %d)', $bookings_table, $export_ids[0], $export_ids[1] ) );
+wp_delete_post( $export_hotel, true );
+
 $public_query_vars = apply_filters( 'query_vars', array() );
 mt_wp_integration_assert( in_array( 'mt_lang', $public_query_vars, true ), 'The language query variable must be public.' );
 mt_wp_integration_assert( in_array( 'mt_page', $public_query_vars, true ), 'The translated page query variable must be public.' );

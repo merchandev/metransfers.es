@@ -4,6 +4,8 @@ parameters:
     level: 5
     paths:
         - app/Admin/Capabilities.php
+        - app/Admin/HotelBookingsExport.php
+        - app/Admin/XlsxWorkbook.php
         - app/Booking/BookingDatePolicy.php
         - app/Booking/I18n.php
         - app/Booking/AddressCache.php

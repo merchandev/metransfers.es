@@ -19,6 +19,7 @@ Este árbol corresponde al proyecto final de producción y conserva el historial
 - Motor de reservas con rutas, vehículos, capacidad, tarifas, pagos y recibos autoritativos.
 - Portal de Hoteles con dashboards independientes y responsables por hotel.
 - Gestión de Hotel QR, usuarios, importación/exportación y atribución de reservas.
+- **Hoteles → Reservas de Hoteles → «Exportar Excel por hotel»**: un único `.xlsx` con la pestaña **Resumen** (totales por hotel y todas las reservas de hoteles, con filtros) y una pestaña por cada hotel registrado, con sus datos, su actividad (reservas por estado, importes, pasajeros, kilómetros, primera y última reserva) y todas sus reservas. Requiere el permiso de exportar reservas y queda registrado en la auditoría.
 - Pantalla **Hoteles → Usuarios / Accesos** para identificar responsables, hoteles asignados, supervisores y bloquear exclusivamente su entrada al portal.
 - Importación XLSX/CSV idempotente por referencia y Token Hotel: crea filas nuevas, actualiza coincidencias y conserva precio, distancia, vehículo y atribución.
 - Traducciones, caché, selector de idioma e integración SEO/Yoast.
@@ -124,6 +125,7 @@ php tests/test-legacy-load.php
 php tests/test-pricing.php
 php tests/test-route-distance.php
 php tests/test-address-cache.php
+php tests/test-hotel-bookings-export.php
 php tests/test-booking-policies.php
 php tests/test-redsys-gateway.php
 php tests/test-hardening-phase1.php

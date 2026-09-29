@@ -6,6 +6,7 @@ define( 'HOUR_IN_SECONDS', 3600 );
 define( 'DAY_IN_SECONDS', 86400 );
 define( 'OBJECT', 'OBJECT' );
 define( 'ARRAY_A', 'ARRAY_A' );
+define( 'ABSPATH', dirname( __DIR__, 2 ) . '/' );
 define( 'MT_PLATFORM_VERSION', 'test' );
 
 define( 'MT_ACTIVE_LANGS', array( 'es' ) );
