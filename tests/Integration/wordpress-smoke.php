@@ -62,7 +62,15 @@ $succeeded = (int) $wpdb->get_var(
 		$journal
 	)
 );
-mt_wp_integration_assert( 10 === $succeeded, 'All ten discrete migrations must be journaled as succeeded.' );
+mt_wp_integration_assert( 11 === $succeeded, 'All eleven discrete migrations must be journaled as succeeded.' );
+$language_purge = $wpdb->get_var(
+	$wpdb->prepare(
+		'SELECT status FROM %i WHERE migration_id = %s',
+		$journal,
+		'20260928_001_purge_retired_language_data'
+	)
+);
+mt_wp_integration_assert( 'succeeded' === $language_purge, 'The retired-language data purge must run on a real database.' );
 mt_wp_integration_assert( has_action( \MeTransfers\Core\Outbox::CRON_HOOK ), 'The durable outbox worker must be registered.' );
 mt_wp_integration_assert( false !== wp_next_scheduled( \MeTransfers\Core\Outbox::CRON_HOOK ), 'The durable outbox worker must be scheduled.' );
 
