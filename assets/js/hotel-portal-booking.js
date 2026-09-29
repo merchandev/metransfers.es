@@ -46,7 +46,9 @@
             autocomplete.addListener('place_changed', function () { var place = autocomplete.getPlace(); if (place.formatted_address) input.value = place.formatted_address; input.dispatchEvent(new Event('change')); });
         });
     }
-    initPlaces();
+    // Maps loads async and may arrive after this script: initialising only once
+    // here left "Nueva reserva" without autocomplete on most page loads.
+    if (window.google && google.maps && google.maps.places) { initPlaces(); } else { document.addEventListener('mt:maps-ready', initPlaces, { once: true }); }
 
     calculate.addEventListener('click', function () {
         if (!form.reportValidity()) return;

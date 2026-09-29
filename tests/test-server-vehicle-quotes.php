@@ -149,7 +149,10 @@ assert_vehicle_quote(
 );
 assert_vehicle_quote(
     false !== strpos( $public, "'callback'  => 'mtMapsLoaded'" )
-        && false !== strpos( $public, "document.dispatchEvent(new Event('mt:maps-ready'))" )
+        && false !== strpos( $public, "Assets::announceMapsReady( 'google-maps' )" )
+        && false !== strpos( file_get_contents( $root . '/app/Core/Assets.php' ), "document.dispatchEvent(new Event('mt:maps-ready'))" )
+        && false !== strpos( file_get_contents( $root . '/app/HotelPortal/HotelPortal.php' ), "'callback'  => 'mtMapsLoaded'" )
+        && false !== strpos( file_get_contents( $root . '/assets/js/hotel-portal-booking.js' ), "addEventListener('mt:maps-ready', initPlaces" )
         && false !== strpos( $booking_js, "addEventListener('mt:maps-ready', initAutocomplete" )
         && false === strpos( $booking_js, 'maxAutocompleteAttempts' ),
     'Async Maps must announce readiness instead of a poll that gives up after six seconds.'

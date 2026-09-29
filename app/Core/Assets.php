@@ -67,6 +67,19 @@ class Assets {
 		}
 	}
 
+	/**
+	 * functions.php loads the Maps JS API async, so its consumers cannot assume
+	 * google.maps is ready when they run. With callback=mtMapsLoaded in the Maps
+	 * URL, this inline script turns Google's callback into a 'mt:maps-ready' event.
+	 */
+	public static function announceMapsReady( $handle ) {
+		wp_add_inline_script(
+			$handle,
+			"window.mtMapsLoaded=function(){window.mtMapsReady=true;document.dispatchEvent(new Event('mt:maps-ready'));};",
+			'before'
+		);
+	}
+
 	public static function is_booking_context() {
 		return 'none' !== self::booking_phase();
 	}

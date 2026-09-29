@@ -75,11 +75,7 @@ class WPTB_Public {
             // functions.php loads Maps async (async/defer + loading=async), so it can
             // arrive after booking-app.js runs: Google calls mtMapsLoaded when places
             // is usable and the form initialises then, however slow the network.
-            wp_add_inline_script(
-                'google-maps',
-                "window.mtMapsLoaded=function(){window.mtMapsReady=true;document.dispatchEvent(new Event('mt:maps-ready'));};",
-                'before'
-            );
+            \MeTransfers\Core\Assets::announceMapsReady( 'google-maps' );
         } elseif ( empty( $api_key ) && in_array( $phase, $maps_phases, true ) && is_admin() ) {
             // Aviso en el admin si la API Key está ausente y se necesita Maps
             add_action( 'admin_notices', static function () {
