@@ -1,5 +1,50 @@
 import { expect, test } from '@playwright/test';
 
+for (const lang of ['es', 'en']) {
+  test(`airport quote keeps the lead payload and online booking link (${lang})`, async ({ page }) => {
+    let payload;
+    await page.route('**/wp-admin/admin-ajax.php', async route => {
+      payload = route.request().postData();
+      await route.fulfill({ json: { success: true, data: { message: 'Backend receipt' } } });
+    });
+    await page.goto(`/tests/e2e/service-fixture?lang=${lang}`);
+    await expect(page.locator('.svc-form')).toHaveAttribute('data-service', 'aeropuerto');
+    await expect(page.locator('.svc-hero-cta-group a[href="#solicitar"]')).toHaveText(lang === 'en' ? 'Request a quote' : 'Solicitar presupuesto');
+    await expect(page.locator(`.svc-hero-cta-group a[href="${lang === 'en' ? '/en/' : '/'}#panel"]`)).toBeVisible();
+    await expect(page.locator(`.svc-hero-cta-group a[href="${lang === 'en' ? '/en/' : '/'}#panel"]`)).toHaveClass(/btn-primary/);
+    await page.locator('[name="nombre"]').fill('Test passenger');
+    await page.locator('[name="telefono"]').fill('+34000000000');
+    await page.locator('[name="extra_fecha"]').fill('2026-10-04');
+    await page.locator('[name="extra_hora"]').fill('12:00');
+    await page.locator('[name="extra_vuelo"]').fill('TEST123');
+    await page.locator('[name="extra_direccion"]').fill('BCN airport → H10 Casanova');
+    await page.locator('[name="extra_pasajeros"]').selectOption('5');
+    await page.locator('[name="gdpr_aceptado"]').check();
+    await page.locator('.svc-submit-btn').click();
+    await expect(page.locator('.svc-form-ok')).toHaveClass(/active/);
+    await expect(page.locator('.svc-form-ok')).toHaveText(lang === 'en' ? 'Request received! We will get back to you shortly.' : '¡Solicitud recibida correctamente! Te responderemos muy pronto.');
+    for (const fragment of ['mt_save_lead', 'isolated-fixture-nonce', 'formulario-aeropuerto', 'TEST123', '2026-10-04', 'H10 Casanova', 'gdpr_fecha']) {
+      expect(payload).toContain(fragment);
+    }
+    await expect(page.locator('[name="nombre"]')).toHaveValue('');
+    expect(await page.evaluate(() => window.dataLayer || [])).toEqual([]);
+  });
+}
+
+test('airport quote failure preserves passenger details and allows a retry', async ({ page }) => {
+  await page.route('**/wp-admin/admin-ajax.php', route => route.fulfill({ json: { success: false, data: { message: 'Please retry' } } }));
+  await page.goto('/tests/e2e/service-fixture?lang=en');
+  await page.locator('[name="nombre"]').fill('Test passenger');
+  await page.locator('[name="telefono"]').fill('+34000000000');
+  await page.locator('[name="extra_fecha"]').fill('2026-10-04');
+  await page.locator('[name="gdpr_aceptado"]').check();
+  await page.locator('.svc-submit-btn').click();
+  await expect(page.locator('.svc-form-ok')).toHaveText('Please retry');
+  await expect(page.locator('.svc-form-ok')).toHaveClass(/error/);
+  await expect(page.locator('[name="nombre"]')).toHaveValue('Test passenger');
+  await expect(page.locator('.svc-submit-btn')).toBeEnabled();
+});
+
 test('language switcher is keyboard accessible', async ({ page }) => {
   await page.goto('/tests/e2e/fixtures/i18n.html');
   const trigger = page.getByRole('button', { name: 'Cambiar idioma' });

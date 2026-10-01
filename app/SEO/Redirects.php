@@ -90,6 +90,15 @@ final class Redirects {
 			return $target;
 		}
 
+		// These pages have reviewed English copy in the theme. Routing a
+		// visitor to them is independent of opting the variant into Google.
+		// Keep existing robots, sitemap and hreflang approval requirements.
+		if ( 'en' === $target_lang
+			&& in_array( trim( $path, '/' ), array( 'transfer-aeropuerto-barcelona', 'sobre-nosotros' ), true )
+			&& UrlPolicy::eligibleTarget( $path, 'es' ) ) {
+			return $target;
+		}
+
 		// Una variante traducida no aprobada nunca debe convertir un alias
 		// histórico válido en 404. Se consolida hacia el canónico español.
 		if ( 'es' !== $target_lang && UrlPolicy::eligibleTarget( $path, 'es' ) ) {

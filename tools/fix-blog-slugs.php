@@ -36,6 +36,10 @@ foreach ( $manifest['posts'] as $row ) {
 		$errors[] = 'Post ' . $post->ID . ' changed since the manifest was built (slug or title no longer match) -- skipping to avoid overwriting a newer edit.';
 		continue;
 	}
+	if ( isset( $row['expected_modified'] ) && $post->post_modified !== $row['expected_modified'] ) {
+		$errors[] = 'Post ' . $post->ID . ' has a newer edit; expected_modified does not match.';
+		continue;
+	}
 	if ( in_array( $post->ID, $seen_ids, true ) ) {
 		$errors[] = 'Duplicate id in manifest: ' . $post->ID;
 	}
@@ -61,7 +65,7 @@ foreach ( $manifest['posts'] as $row ) {
 		$errors[] = 'Post ' . $post->ID . ' has new_content but is missing new_title or new_excerpt.';
 	}
 
-	$snapshot[ $post->ID ] = array( 'post' => $post->to_array(), 'meta' => get_post_meta( $post->ID ) );
+	$snapshot[ $post->ID ] = array( 'post' => $post->to_array(), 'meta' => get_post_meta( $post->ID ), 'permalink' => get_permalink( $post ) );
 	WP_CLI::log( $post->ID . ' /' . $post->post_name . '/ -> /' . $new_slug . '/' . ( $rewrite ? ' (+ title/excerpt/content rewrite)' : '' ) );
 }
 if ( $errors ) {
@@ -81,6 +85,8 @@ $redirect_map = get_option( \MeTransfers\SEO\BlogSlugRedirects::OPTION, array() 
 if ( ! is_array( $redirect_map ) ) {
 	$redirect_map = array();
 }
+// Keep the previous map for a reversible, scoped rollback.
+add_option( $backup_key . '_redirects', $redirect_map, '', false );
 
 foreach ( $manifest['posts'] as $row ) {
 	$new_slug = sanitize_title( (string) $row['new_slug'] );
@@ -93,11 +99,23 @@ foreach ( $manifest['posts'] as $row ) {
 		$update['post_excerpt'] = wp_slash( (string) $row['new_excerpt'] );
 		$update['post_content'] = wp_slash( (string) $row['new_content'] );
 	}
+	if ( isset( $row['new_excerpt'] ) ) {
+		$update['post_excerpt'] = wp_slash( (string) $row['new_excerpt'] );
+	}
 	$result = wp_update_post( $update, true );
 	if ( is_wp_error( $result ) ) {
 		WP_CLI::error( 'Migration stopped at post ' . $row['id'] . '. Restore from ' . $backup_key . ': ' . $result->get_error_message() );
 	}
+	// A manual canonical override is preserved. An explicit self-canonical
+	// must follow the post to its new URL or it would point back to the 301.
+	$old_canonical = get_post_meta( $row['id'], '_yoast_wpseo_canonical', true );
+	if ( $old_canonical && rtrim( $old_canonical, '/' ) === rtrim( $snapshot[ $row['id'] ]['permalink'], '/' ) ) {
+		update_post_meta( $row['id'], '_yoast_wpseo_canonical', get_permalink( $row['id'] ) );
+	}
 	$redirect_map[ $row['old_slug'] ] = $new_slug;
+	// Persist after each post so a later failure never leaves its old URL
+	// without a redirect. All rows were validated before the first write.
+	update_option( \MeTransfers\SEO\BlogSlugRedirects::OPTION, $redirect_map, false );
 }
 
 update_option( \MeTransfers\SEO\BlogSlugRedirects::OPTION, $redirect_map, false );

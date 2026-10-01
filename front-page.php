@@ -903,7 +903,7 @@ a.contact__val:hover{color:var(--blue);}
       >
         <div class="route__info">
           <h3><?php echo mt_translate("Barcelona — Girona"); ?></h3>
-          <p><?php echo mt_translate("Traslado directo a la ciudad o al aeropuerto de Girona."); ?></p>
+          <p><?php echo esc_html( mt_translate( 'Indica si tu destino es Girona ciudad o su aeropuerto para consultar el servicio y precio.' ) ); ?></p>
         </div>
         <span class="route__time">
             <?php echo esc_html( mt_translate( mt_get_route_duration( 'barcelona-girona' ) ?: 'Según tráfico' ) ); ?>

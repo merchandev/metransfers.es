@@ -33,6 +33,13 @@ final class Translation {
 			return $text;
 		}
 
+		// Reviewed theme copy must also work on a fresh database or when an
+		// older machine translation remains in the persistent cache.
+		$editorial = EditorialEnglish::lookup( (string) $text, $language );
+		if ( null !== $editorial ) {
+			return $editorial;
+		}
+
 		$cache_key = self::cacheKey( $text, $language );
 		$cached    = wp_cache_get( $cache_key, 'mt_i18n' );
 		if ( false === $cached ) {

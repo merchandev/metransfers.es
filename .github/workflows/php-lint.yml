@@ -91,6 +91,7 @@ jobs:
           php tests/test-migrations.php
           php tests/test-i18n.php
           php tests/test-i18n-routing.php
+          php tests/test-blog-repair.php
           php tests/test-production-readiness.php
 
       - name: Check UTF-8 corruption
@@ -131,6 +132,12 @@ jobs:
 
       - name: Install locked JavaScript tools
         run: npm ci
+
+      - name: Setup PHP for real service template rendering
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.2'
+          coverage: none
 
       - name: Audit JavaScript dependencies
         run: npm audit --audit-level=high

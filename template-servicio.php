@@ -49,13 +49,15 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 			<p class="svc-hero-desc"><?php echo esc_html( mt_translate( $service['hero_desc']  )); ?></p>
 			<div class="svc-hero-cta-group">
 				<?php
-				$cta_href = '#solicitar';
-				if ( ! in_array( $service['slug'], array( 'corporativo-y-eventos', 'vehiculos-para-grupos' ), true ) ) {
-					$cta_href = me_transfers_get_section_url( 'panel' );
-				}
+				$has_online_booking = ! in_array( $service['slug'], array( 'corporativo-y-eventos', 'vehiculos-para-grupos' ), true );
 				?>
-				<a href="<?php echo esc_url( $cta_href ); ?>" class="btn btn-primary">
-					<?php echo esc_html( mt_translate( $service['cta_text']  )); ?>
+				<?php if ( $has_online_booking ) : ?>
+				<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary">
+					<?php echo esc_html( mt_translate( 'Calcular y reservar online' ) ); ?>
+				</a>
+				<?php endif; ?>
+				<a href="#solicitar" class="btn <?php echo $has_online_booking ? 'btn-secondary' : 'btn-primary'; ?>">
+					<?php echo esc_html( mt_translate( 'Solicitar presupuesto' ) ); ?>
 				</a>
 				<button type="button" class="btn btn-whatsapp js-wa-trigger">
 					<span class="material-symbols-outlined" aria-hidden="true">chat</span>
@@ -124,7 +126,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 				<h2><?php echo mt_translate("Solicita presupuesto"); ?></h2>
 				<p class="svc-form-sub"><?php echo mt_translate("Rellena el formulario y te respondemos en menos de 2 horas — o al instante por WhatsApp."); ?></p>
 
-				<form id="<?php echo esc_attr( $form_id ); ?>" class="svc-form" data-service="<?php echo esc_attr( mt_translate( $form_type  )); ?>">
+				<form id="<?php echo esc_attr( $form_id ); ?>" class="svc-form" data-service="<?php echo esc_attr( $form_type ); ?>">
 
 					<!-- Campos comunes: Nombre, Email, Teléfono -->
 					<p class="svc-form-section-title">
@@ -417,7 +419,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 
 					<button type="submit" class="svc-submit-btn">
 						<span class="material-symbols-outlined" aria-hidden="true">send</span>
-						<?php echo esc_html( mt_translate( $service['cta_text']  )); ?>
+						<?php echo esc_html( mt_translate( 'Solicitar presupuesto' ) ); ?>
 					</button>
 
 					<div class="svc-form-ok" id="<?php echo esc_attr( $form_id ); ?>-ok">
@@ -444,7 +446,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 		var btn = form.querySelector('.svc-submit-btn');
 		var ok  = document.getElementById('<?php echo esc_js( $form_id ); ?>-ok');
 		var orig = btn.innerHTML;
-		btn.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true" style="animation: spin 1s linear infinite;">hourglass_empty</span> Enviando...';
+		btn.textContent = <?php echo wp_json_encode( mt_translate( 'Enviando...' ) ); ?>;
 		btn.disabled = true;
 
 		var data = new FormData(form);
@@ -478,10 +480,10 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 			.then(function(r) { return r.json(); })
 			.then(function(res) {
 				if (!res.success) {
-					throw new Error(res.data && res.data.message ? res.data.message : 'No se pudo enviar la solicitud.');
+					throw new Error(res.data && res.data.message ? res.data.message : <?php echo wp_json_encode( mt_translate( 'No se pudo enviar la solicitud.' ) ); ?>);
 				}
 				if (ok) {
-					ok.textContent = res.data && res.data.message ? res.data.message : '¡Solicitud recibida correctamente! Te responderemos muy pronto.';
+					ok.textContent = <?php echo wp_json_encode( mt_translate( '¡Solicitud recibida correctamente! Te responderemos muy pronto.' ) ); ?>;
 					ok.classList.remove('error');
 					ok.classList.add('active');
 				}
@@ -489,7 +491,7 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 			})
 			.catch(function(err) {
 				if (ok) {
-					ok.textContent = err && err.message ? err.message : 'No se pudo enviar la solicitud. Por favor, inténtalo de nuevo.';
+					ok.textContent = err && err.message ? err.message : <?php echo wp_json_encode( mt_translate( 'No se pudo enviar la solicitud. Por favor, inténtalo de nuevo.' ) ); ?>;
 					ok.classList.add('active', 'error');
 				}
 			})

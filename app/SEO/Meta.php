@@ -5,6 +5,15 @@ final class Meta {
 	public function register() {
 		add_filter( 'wpseo_title', array( __CLASS__, 'title' ), 110 );
 		add_filter( 'wpseo_metadesc', array( __CLASS__, 'description' ), 110 );
+		add_filter( 'pre_get_document_title', array( __CLASS__, 'reviewedEnglishTitle' ), 110 );
+	}
+
+	public static function reviewedEnglishTitle( $title ) {
+		if ( 'en' !== \MeTransfers\I18n\Language::get() || ! is_singular( 'page' )
+			|| ! in_array( self::requestSlug(), array( 'sobre-nosotros', 'transfer-aeropuerto-barcelona' ), true ) ) {
+			return $title;
+		}
+		return self::title( $title );
 	}
 
 	public static function routeText( $post, string $field, string $language = 'es' ): string {
@@ -70,6 +79,10 @@ final class Meta {
 	private static function pageMeta( string $language ): array {
 		if ( 'en' === $language ) {
 			return array(
+				'sobre-nosotros'                    => array(
+					'title'       => 'About MeTransfers Barcelona | Private Transfers',
+					'description' => 'Meet MeTransfers Barcelona: our team, fleet and private transfer services for airport, cruise port, business travel and trips around Catalonia.',
+				),
 				''                                  => array(
 					'title'       => 'Barcelona Airport Transfers & Private Drivers | MeTransfers',
 					'description' => 'Book private transfers in Barcelona for the airport, cruise port, hotels, train stations and long-distance trips with professional drivers.',

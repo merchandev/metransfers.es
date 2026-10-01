@@ -11,6 +11,7 @@ $fixtures = array(
 	array( 'ruta', 'barcelona-vielha', '' ),
 	array( 'ruta', 'barcelona-costa-brava', '' ),
 	array( 'page', 'transfer-aeropuerto-barcelona', '' ),
+	array( 'page', 'sobre-nosotros', '' ),
 	array( 'page', 'traslados-puerto', '' ),
 	array( 'page', 'chofer-por-horas', '' ),
 	array( 'page', 'corporativo-y-eventos', '' ),
@@ -31,6 +32,9 @@ $fixtures = array(
 foreach ( $fixtures as $fixture ) {
 	$id = wp_insert_post( array( 'post_type' => $fixture[0], 'post_name' => $fixture[1], 'post_title' => $fixture[1], 'post_content' => '<p>Contenido editorial de prueba.</p>', 'post_status' => 'publish' ), true );
 	if ( is_wp_error( $id ) ) { WP_CLI::error( $id->get_error_message() ); }
+	if ( 'transfer-aeropuerto-barcelona' === $fixture[1] ) {
+		update_post_meta( $id, '_wp_page_template', 'template-servicio.php' );
+	}
 	if ( '' !== $fixture[2] ) { update_post_meta( $id, '_mt_seo_ready', $fixture[2] ); }
 	if ( 'ruta' === $fixture[0] ) {
 		update_post_meta( $id, '_mt_ruta_origen', 'Barcelona centro' );

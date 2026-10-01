@@ -70,6 +70,28 @@ foreach ( array(
 
 mt_seo_assert( 404 === wp_remote_retrieve_response_code( mt_seo_fetch( '/esta-url-no-debe-existir-2026/' ) ), 'Unknown URLs must remain real 404s.' );
 
+// The public English pages must work with an empty translation cache.
+$airport_alias = mt_seo_fetch( '/en/traslados-aeropuerto/?utm_source=contract' );
+mt_seo_assert( 301 === wp_remote_retrieve_response_code( $airport_alias ), 'English airport alias must redirect.' );
+mt_seo_assert( home_url( '/en/transfer-aeropuerto-barcelona/?utm_source=contract' ) === wp_remote_retrieve_header( $airport_alias, 'location' ), 'English airport alias must retain the language and query.' );
+$airport_en = mt_seo_fetch( '/en/transfer-aeropuerto-barcelona/' );
+$airport_body = wp_remote_retrieve_body( $airport_en );
+mt_seo_assert( 200 === wp_remote_retrieve_response_code( $airport_en ), 'English airport must return 200.' );
+mt_seo_assert( false !== strpos( $airport_body, 'From El Prat Airport to your hotel' ), 'Airport English copy must not depend on database cache.' );
+mt_seo_assert( false !== strpos( $airport_body, 'Request a quote' ) && false !== strpos( $airport_body, 'Get a price and book online' ), 'Quote and booking must have distinct calls to action.' );
+mt_seo_assert( false !== strpos( $airport_body, home_url( '/en/' ) . '#panel' ), 'Online booking must keep the existing localized home calculator destination.' );
+mt_seo_assert( false !== strpos( $airport_body, 'name="extra_fecha"' ) && false !== strpos( $airport_body, 'data-service="aeropuerto"' ), 'Form field names and service code must survive translation.' );
+mt_seo_assert( false !== strpos( mt_seo_attr( $airport_body, '//meta[@name="robots"]', 'content' ), 'noindex' ), 'Routing must not auto-approve translated SEO variants.' );
+$about_en = wp_remote_retrieve_body( mt_seo_fetch( '/en/sobre-nosotros/' ) );
+mt_seo_assert( false !== strpos( $about_en, 'Our story and values' ) && false === strpos( $about_en, 'Nuestra historia y valores' ), 'About page must have reviewed English main copy.' );
+preg_match( '#<title>([^<]*)</title>#si', $about_en, $about_title );
+mt_seo_assert( false !== strpos( $about_title[1] ?? '', 'About MeTransfers Barcelona' ), 'About document title must be English with core and Yoast.' );
+if ( $yoast ) {
+	mt_seo_assert( false !== strpos( mt_seo_attr( $about_en, '//meta[@name="description"]', 'content' ), 'Meet MeTransfers Barcelona' ), 'About Yoast description must be English.' );
+}
+$routes_en = wp_remote_retrieve_body( mt_seo_fetch( '/en/rutas/' ) );
+mt_seo_assert( false !== strpos( $routes_en, 'available routes with a private' ), 'Route count and intro must be translated without changing the query.' );
+
 $sitemap = wp_remote_retrieve_body( mt_seo_fetch( $yoast ? '/ruta-sitemap.xml' : '/wp-sitemap-posts-ruta-1.xml' ) );
 mt_seo_assert( false !== strpos( $sitemap, '/rutas/barcelona-salou/' ), 'Sitemap must include ready route.' );
 mt_seo_assert( false === strpos( $sitemap, '/rutas/barcelona-andorra/' ), 'Sitemap must exclude rejected route.' );

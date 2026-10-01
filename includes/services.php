@@ -20,31 +20,31 @@ function me_transfers_get_service_catalog() {
 
 		// ─── 1. TRASLADOS AL AEROPUERTO ─────────────────────────────────────────────
 		'transfer-aeropuerto-barcelona' => array(
-			'title'       => 'MeTransfers Barcelona - Traslado al Aeropuerto desde Barcelona',
-			'h1'          => 'Traslado privado al Aeropuerto de Barcelona',
-			'subtitle'    => 'Te recogemos en Barcelona y te llevamos a El Prat',
+			'title'       => 'MeTransfers Barcelona - Traslados entre el Aeropuerto y Barcelona',
+			'h1'          => 'Traslados privados Aeropuerto de Barcelona ↔ hotel',
+			'subtitle'    => 'Del Aeropuerto El Prat a tu hotel y de Barcelona al aeropuerto',
 			'slug'        => 'transfer-aeropuerto-barcelona',
 			'badge'       => 'Aeropuerto El Prat · 24/7',
-			'hero_desc'   => 'Te recogemos en tu hotel u oficina en Barcelona y te llevamos directamente al Aeropuerto El Prat. Seguimiento de vuelo en tiempo real, tarifa fija y hasta 60 min de cortesía en aeropuerto en llegadas.',
-			'desc_long'   => 'Salir desde Barcelona hacia el aeropuerto nunca fue tan sencillo. En MeTransfers calculamos el tiempo de salida desde tu domicilio, hotel u oficina con margen suficiente para que llegues tranquilo, sin carreras y con energía para tu viaje.
+			'hero_desc'   => 'Llegadas y salidas con vehículo privado: Aeropuerto El Prat → hotel, domicilio u oficina en Barcelona, y Barcelona → aeropuerto. Seguimiento de vuelo, asistencia con el equipaje y precio confirmado antes de reservar.',
+			'desc_long'   => 'Si llegas al Aeropuerto de Barcelona-El Prat, organizamos tu recogida y el traslado directo al hotel, domicilio u oficina. Indica terminal, número de vuelo, pasajeros y equipaje para coordinar el punto de encuentro. Tu chófer te recibe con un cartel personalizado y te ayuda con las maletas.
 
-Y si llegas a El Prat, un chófer uniformado (idiomas bajo petición) te recibirá en la zona de llegadas con un cartel personalizado con tu nombre o el de tu empresa. Monitoreamos tu vuelo en tiempo real — sin importar retrasos o adelantos de última hora. Te asistirá con el equipaje y te acompañará directamente a tu vehículo premium estacionado a pie de terminal. El trayecto al hotel, oficina o destino final se convierte en el primer momento de descanso tras el vuelo.',
+Para tu salida, te recogemos en Barcelona y te llevamos a El Prat. Coordinamos la hora de recogida según tu vuelo y el trayecto. Puedes calcular el precio y reservar online, o solicitar un presupuesto por formulario. Una solicitud de presupuesto no confirma una reserva: recibirás la propuesta y las instrucciones para confirmar el servicio.',
 			'features'    => array(
 				array( 'icon' => 'flight', 'title' => 'Seguimiento de Vuelo', 'desc' => 'Monitoreamos tu vuelo en tiempo real. Si hay retrasos, tu conductor espera.' ),
 				array( 'icon' => 'receipt_long', 'title' => 'Meet & Greet', 'desc' => 'Cartel personalizado en zona de llegadas. Bienvenida profesional y puntual.' ),
 				array( 'icon' => 'schedule', 'title' => 'Espera de cortesía', 'desc' => 'Incluimos hasta 60 minutos de cortesía en aeropuerto en llegadas internacionales.' ),
 				array( 'icon' => 'luggage', 'title' => 'Ayuda con el equipaje', 'desc' => 'Tu chófer te asiste con las maletas desde la terminal hasta el vehículo.' ),
 				array( 'icon' => 'directions_car', 'title' => 'Flota Premium', 'desc' => 'Viaja en ECONOMIC CLASS, MINI VAN «V» Class, BUSINESS CLASS o MINI VAN ECONOMIC según tus necesidades.' ),
-				array( 'icon' => 'lock', 'title' => 'Precio cerrado desde Barcelona', 'desc' => 'Sin tarifas sorpresa. El precio que ves incluye la recogida en Barcelona y el trayecto completo.' ),
+				array( 'icon' => 'lock', 'title' => 'Precio cerrado en ambos sentidos', 'desc' => 'Consulta el precio para tu origen, destino, pasajeros y equipaje antes de confirmar el traslado.' ),
 			),
 			'steps'       => array(
-				array( 'n' => '01', 'title' => 'Indica tu punto de recogida en Barcelona', 'desc' => 'Introduce tu dirección en Barcelona, número de vuelo, fecha y hora de salida.' ),
-				array( 'n' => '02', 'title' => 'Confirmación rápida', 'desc' => 'Recibirás confirmación de reserva con los datos completos del servicio y del conductor.' ),
-				array( 'n' => '03', 'title' => 'Tu chófer llega a tiempo', 'desc' => 'El día del servicio, tu conductor llega a tu dirección en Barcelona con máxima puntualidad.' ),
-				array( 'n' => '04', 'title' => 'Llegas tranquilo a El Prat', 'desc' => 'Sube, relájate y disfruta del trayecto en total confort. Tu vuelo, a tiempo.' ),
+				array( 'n' => '01', 'title' => 'Elige llegada o salida', 'desc' => 'Indica origen, destino, vuelo, fecha, hora, pasajeros y equipaje.' ),
+				array( 'n' => '02', 'title' => 'Consulta el precio y confirma', 'desc' => 'Reserva online o solicita presupuesto. El servicio queda reservado cuando recibes la confirmación de reserva.' ),
+				array( 'n' => '03', 'title' => 'Encuentra a tu chófer', 'desc' => 'Recogida en el punto acordado del aeropuerto o en tu dirección en Barcelona.' ),
+				array( 'n' => '04', 'title' => 'Traslado directo a tu destino', 'desc' => 'Viaja cómodamente al hotel o al aeropuerto con asistencia para tu equipaje.' ),
 			),
 			'form_type'   => 'aeropuerto',
-			'cta_text'    => 'Reservar ahora',
+			'cta_text'    => 'Solicitar presupuesto',
 		),
 
 		// ─── 2. TRASLADOS AL PUERTO ──────────────────────────────────────────────────

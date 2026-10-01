@@ -1,0 +1,21 @@
+{
+    "version": "2026-10-01-two-confirmed-posts",
+    "posts": [
+        {
+            "id": 29745,
+            "old_slug": "barcelona-seniors-comodidad-accesibilidad-vehiculos",
+            "title": "Diferencias Entre Servicios de Traslado: Taxi vs. Transfer Privado en Barcelona",
+            "expected_modified": "2026-08-05 09:00:00",
+            "new_slug": "diferencias-entre-servicios-de-traslado-taxi-vs-transfer-privado-en-barcelona",
+            "new_excerpt": "Compara taxi y transfer privado en Barcelona: reserva anticipada, precio, recogida y espacio para pasajeros y equipaje. Revisa qué opción se adapta a tu viaje antes de confirmar el servicio."
+        },
+        {
+            "id": 29746,
+            "old_slug": "lonjas-de-pescado-en-la-costa-de-cataluna",
+            "title": "Cómo Escoger el Mejor Servicio de Transfer en Barcelona: Guía Completa",
+            "expected_modified": "2026-08-06 09:00:00",
+            "new_slug": "como-escoger-el-mejor-servicio-de-transfer-en-barcelona-guia-completa",
+            "new_excerpt": "Guía para escoger un servicio de transfer en Barcelona: compara vehículos, capacidad de equipaje, condiciones de reserva, seguimiento del vuelo y precio antes de viajar."
+        }
+    ]
+}
