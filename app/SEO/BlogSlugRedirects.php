@@ -40,7 +40,12 @@ final class BlogSlugRedirects {
 			return null;
 		}
 		$target = trim( $map[ $path ], '/' );
-		if ( $target === $path || ! UrlPolicy::eligibleTarget( $target, 'es' ) ) {
+		$post   = UrlPolicy::postForPath( $target );
+		// A public article remains a valid redirect destination even when its
+		// owner set noindex or a manual canonical. Those SEO choices must not
+		// break inbound links after a slug correction.
+		if ( $target === $path || ! $post || 'post' !== $post->post_type
+			|| 'publish' !== $post->post_status || '' !== (string) ( $post->post_password ?? '' ) ) {
 			return null;
 		}
 		$language = \MeTransfers\I18n\Language::detectFromUri( $request );

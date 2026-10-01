@@ -234,7 +234,13 @@ final class SeoPolicyTest extends TestCase {
 		self::assertSame( '/transfer-guide/', \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/en/old-topic/', $map ) );
 		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/unknown/', $map ) );
 		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/transfer-guide/', array( 'transfer-guide' => 'transfer-guide' ) ) );
-		$GLOBALS['mt_seo_posts'][1]->post_status = 'private';
+		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_noindex']        = '1';
+		$GLOBALS['mt_test_post_meta'][1]['_yoast_wpseo_canonical'] = 'https://example.test/other/';
+		self::assertSame( '/transfer-guide/', \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/old-topic/', $map ) );
+		$GLOBALS['mt_seo_posts'][1]->post_password = '0';
+		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/old-topic/', $map ) );
+		$GLOBALS['mt_seo_posts'][1]->post_password = '';
+		$GLOBALS['mt_seo_posts'][1]->post_status   = 'private';
 		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/old-topic/', $map ) );
 		unset( $GLOBALS['mt_seo_posts'][1] );
 		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/old-topic/', $map ) );

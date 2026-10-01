@@ -87,11 +87,11 @@ Se conservan `mt_save_lead`, nonce, `nombre`, `telefono`, `email`, `mensaje`, to
 
 `app/SEO/Redirects.php` conserva el idioma del alias cuando el destino español existe y es apto, para los dos paths editoriales revisados. Las reglas de `Variants`, robots, sitemap y hreflang siguen exigiendo aprobación por URL. No se aprueban automáticamente páginas, rutas ni artículos sin revisión.
 
-`app/SEO/BlogSlugRedirects.php` utiliza el mapa guardado por la migración y comprueba que el destino sea publicado y apto antes de redirigir. Se ejecuta solamente en 404 y peticiones GET/HEAD; conserva la query y evita bucles. Las variantes EN de artículos sin aprobación consolidan en español según la política existente.
+`app/SEO/BlogSlugRedirects.php` utiliza el mapa guardado por la migración y comprueba que el artículo de destino sea existente, publicado y sin contraseña antes de redirigir. Un noindex o canonical manual no impide que los enlaces antiguos lleguen al artículo. Se ejecuta solamente en 404 y peticiones GET/HEAD; conserva la query y evita bucles. Las variantes EN de artículos sin aprobación consolidan en español según la política existente.
 
 ## Validación preparada y ejecutada
 
-- PHPUnit: 104 pruebas, 922 aserciones; sin fallos. Existe una deprecación de configuración de PHPUnit ya presente en la base.
+- PHPUnit: 104 pruebas, 924 aserciones; sin fallos. Existe una deprecación de configuración de PHPUnit ya presente en la base.
 - PHPStan: sin errores.
 - WPCS: sin errores.
 - ESLint: sin errores.
