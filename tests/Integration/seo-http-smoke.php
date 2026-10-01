@@ -84,6 +84,11 @@ mt_seo_assert( false !== strpos( $airport_body, 'name="extra_fecha"' ) && false 
 mt_seo_assert( false !== strpos( mt_seo_attr( $airport_body, '//meta[@name="robots"]', 'content' ), 'noindex' ), 'Routing must not auto-approve translated SEO variants.' );
 $about_en = wp_remote_retrieve_body( mt_seo_fetch( '/en/sobre-nosotros/' ) );
 mt_seo_assert( false !== strpos( $about_en, 'Our story and values' ) && false === strpos( $about_en, 'Nuestra historia y valores' ), 'About page must have reviewed English main copy.' );
+preg_match( '#<title>([^<]*)</title>#si', $about_en, $about_title );
+mt_seo_assert( false !== strpos( $about_title[1] ?? '', 'About MeTransfers Barcelona' ), 'About document title must be English with core and Yoast.' );
+if ( $yoast ) {
+	mt_seo_assert( false !== strpos( mt_seo_attr( $about_en, '//meta[@name="description"]', 'content' ), 'Meet MeTransfers Barcelona' ), 'About Yoast description must be English.' );
+}
 $routes_en = wp_remote_retrieve_body( mt_seo_fetch( '/en/rutas/' ) );
 mt_seo_assert( false !== strpos( $routes_en, 'available routes with a private' ), 'Route count and intro must be translated without changing the query.' );
 

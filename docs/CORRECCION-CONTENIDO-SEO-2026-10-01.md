@@ -13,7 +13,7 @@ Las correcciones de reservas, Google Maps y exportación de hoteles de los PR an
 | Hallazgo confirmado | Causa | Corrección preparada |
 | --- | --- | --- |
 | El alias `/en/traslados-aeropuerto/` acaba en español | La redirección exigía aprobación SEO de la variante inglesa para conservar el idioma | Conserva `/en/` en las páginas editoriales revisadas. Mantiene parámetros. No modifica las reglas de aprobación de Google |
-| Aeropuerto y «Sobre nosotros» mezclan ES/EN | `Translation::translate()` devuelve el original si no existe traducción en caché | Catálogo inglés revisado incluido en el tema, con coincidencias exactas y prioridad sobre traducciones antiguas |
+| Aeropuerto y «Sobre nosotros» mezclan ES/EN | `Translation::translate()` devuelve el original si no existe traducción en caché | Catálogo inglés revisado incluido en el tema, con coincidencias exactas y prioridad sobre traducciones antiguas; títulos ingleses en WordPress/Yoast y descripción inglesa de «Sobre nosotros» en Yoast |
 | Cabecera, formularios y pie contienen textos españoles | Textos sin traducción persistente y algunas frases sin envolver | Traducciones de menús, etiquetas, placeholders, ayuda de WhatsApp y mensajes locales del formulario |
 | Aeropuerto destaca principalmente hotel → aeropuerto | Títulos y pasos orientados a salidas | Titular, descripción y pasos explican aeropuerto → hotel y hotel → aeropuerto |
 | El formulario de presupuesto anuncia «Reservar ahora» | Se reutiliza un CTA de reserva en el botón de envío | «Solicitar presupuesto» identifica el formulario. Se conserva otro enlace visible «Calcular y reservar online» al mismo panel de reservas |
