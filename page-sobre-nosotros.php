@@ -127,7 +127,7 @@ get_header();
 			<h2 style="margin-bottom: 1rem;"><?php echo mt_translate('¿Listo para viajar con nosotros?'); ?></h2>
 			<p style="margin-bottom: 2rem; color: #64748b; font-size: 1.1rem; max-width: 600px; margin-inline: auto;"><?php echo mt_translate('Contacta con nuestro equipo o reserva tu traslado online de forma rápida y segura.'); ?></p>
 			<div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-				<a href="<?php echo esc_url( home_url( '/' ) ); ?>#solicitar" class="btn btn-primary"><?php echo mt_translate('Reservar ahora'); ?></a>
+				<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary"><?php echo mt_translate('Reservar ahora'); ?></a>
 				<a href="<?php echo esc_url( mt_localized_url( 'contacto' ) ); ?>" class="btn btn-ghost" style="border-color: #3b82f6; color: #3b82f6;"><?php echo mt_translate('Contactar'); ?></a>
 			</div>
 		</div>

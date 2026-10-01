@@ -3,6 +3,10 @@ import { stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { dirname, extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+
+const runFile = promisify(execFile);
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const mimeTypes = {
@@ -16,6 +20,12 @@ const mimeTypes = {
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url || '/', 'http://127.0.0.1');
+    if (url.pathname === '/tests/e2e/service-fixture') {
+      const language = url.searchParams.get('lang') === 'en' ? 'en' : 'es';
+      const { stdout } = await runFile('php', [resolve(root, 'tests/e2e/render-service.php'), language]);
+      response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }).end(stdout);
+      return;
+    }
     const relativePath = decodeURIComponent(url.pathname).replace(/^\/+/, '');
     const filePath = resolve(root, relativePath || 'tests/e2e/fixtures/i18n.html');
     if (filePath !== root && !filePath.startsWith(root + sep)) {

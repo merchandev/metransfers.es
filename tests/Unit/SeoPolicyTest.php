@@ -216,4 +216,27 @@ final class SeoPolicyTest extends TestCase {
 		$url = 'https://metransfers.es/en/taxis-barcelona-salou/?utm_source=menu#faq';
 		self::assertSame( 'https://metransfers.es/en/rutas/barcelona-salou/?utm_source=menu#faq', \MeTransfers\SEO\Links::normalize( $url ) );
 	}
+
+	public function testReviewedAirportAliasKeepsLanguageWithoutChangingSeoApproval(): void {
+		$GLOBALS['mt_seo_posts'][1]->post_type = 'page';
+		$GLOBALS['mt_seo_posts'][1]->post_name = 'transfer-aeropuerto-barcelona';
+		self::assertSame( '/en/transfer-aeropuerto-barcelona/?utm_source=test', Redirects::verifiedTarget( '/en/traslados-aeropuerto/?utm_source=test' ) );
+		self::assertSame( array( 'es' ), Indexability::languagesForPost( 1, array( 'es', 'en' ) ) );
+		$GLOBALS['mt_seo_posts'][1]->post_status = 'draft';
+		self::assertNull( Redirects::verifiedTarget( '/en/traslados-aeropuerto/' ) );
+	}
+
+	public function testBlogRedirectsKeepQueryAndRefuseMissingOrPrivateTargets(): void {
+		$GLOBALS['mt_seo_posts'][1]->post_type = 'post';
+		$GLOBALS['mt_seo_posts'][1]->post_name = 'transfer-guide';
+		$map                                   = array( 'old-topic' => 'transfer-guide' );
+		self::assertSame( '/transfer-guide/?utm_source=google', \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/old-topic/?utm_source=google', $map ) );
+		self::assertSame( '/transfer-guide/', \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/en/old-topic/', $map ) );
+		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/unknown/', $map ) );
+		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/transfer-guide/', array( 'transfer-guide' => 'transfer-guide' ) ) );
+		$GLOBALS['mt_seo_posts'][1]->post_status = 'private';
+		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/old-topic/', $map ) );
+		unset( $GLOBALS['mt_seo_posts'][1] );
+		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/old-topic/', $map ) );
+	}
 }

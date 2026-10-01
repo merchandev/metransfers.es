@@ -17,7 +17,8 @@ final class BlogSlugRedirects {
 	}
 
 	public static function maybeRedirect() {
-		if ( ! is_404() ) {
+		if ( ! is_404() || is_admin() || wp_doing_ajax()
+			|| ! in_array( $_SERVER['REQUEST_METHOD'] ?? 'GET', array( 'GET', 'HEAD' ), true ) ) {
 			return;
 		}
 		$map = get_option( self::OPTION, array() );
@@ -25,13 +26,26 @@ final class BlogSlugRedirects {
 			return;
 		}
 		$request = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
-		$path    = trim( (string) parse_url( $request, PHP_URL_PATH ), '/' );
-		if ( '' === $path || ! isset( $map[ $path ] ) ) {
+		$target  = self::targetForRequest( $request, $map );
+		if ( null === $target ) {
 			return;
 		}
-		$query  = parse_url( $request, PHP_URL_QUERY );
-		$target = home_url( '/' . trim( (string) $map[ $path ], '/' ) . '/' );
-		wp_safe_redirect( $target . ( is_string( $query ) && '' !== $query ? '?' . $query : '' ), 301 );
+		wp_safe_redirect( home_url( $target ), 301 );
 		exit;
+	}
+
+	public static function targetForRequest( string $request, array $map ): ?string {
+		$path = \MeTransfers\I18n\Language::pathWithoutLanguage( $request );
+		if ( '' === $path || ! isset( $map[ $path ] ) || ! is_string( $map[ $path ] ) ) {
+			return null;
+		}
+		$target = trim( $map[ $path ], '/' );
+		if ( $target === $path || ! UrlPolicy::eligibleTarget( $target, 'es' ) ) {
+			return null;
+		}
+		$language = \MeTransfers\I18n\Language::detectFromUri( $request );
+		$prefix   = 'en' === $language && UrlPolicy::eligibleTarget( $target, 'en' ) ? '/en/' : '/';
+		$query    = parse_url( $request, PHP_URL_QUERY );
+		return $prefix . $target . '/' . ( is_string( $query ) && '' !== $query ? '?' . $query : '' );
 	}
 }

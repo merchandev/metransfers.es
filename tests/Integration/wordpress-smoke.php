@@ -160,4 +160,33 @@ foreach ( array( 'fr', 'de', 'it', 'pt', 'ca', 'ru', 'zh', 'ja', 'ar' ) as $reti
 	}
 }
 
+// Blog migration: real database, dry run, quoted content and guarded rollback.
+$blog_id = wp_insert_post( array( 'post_type' => 'post', 'post_status' => 'publish', 'post_name' => 'mt-editorial-old-topic', 'post_title' => 'Editorial fixture', 'post_content' => '<p>Driver\'s guide <a href="https://sales.example/">Sales</a></p>', 'post_excerpt' => 'Old unrelated excerpt' ) );
+$blog_original = get_post( $blog_id );
+$blog_old_url = get_permalink( $blog_id );
+update_post_meta( $blog_id, '_yoast_wpseo_canonical', $blog_old_url );
+$blog_version = 'integration-editorial-' . $blog_id;
+$blog_manifest_file = wp_tempnam( 'blog-repair.json' );
+file_put_contents( $blog_manifest_file, wp_json_encode( array( 'version' => $blog_version, 'posts' => array( array( 'id' => $blog_id, 'old_slug' => $blog_original->post_name, 'title' => $blog_original->post_title, 'expected_modified' => $blog_original->post_modified, 'new_slug' => 'mt-editorial-transfer-guide', 'new_excerpt' => 'Driver\'s transfer guide' ) ) ) ) );
+$blog_tools = get_template_directory() . '/tools/';
+$args = array( $blog_manifest_file );
+include $blog_tools . 'fix-blog-slugs.php';
+mt_wp_integration_assert( 'mt-editorial-old-topic' === get_post( $blog_id )->post_name, 'Dry run must not mutate blog data.' );
+$args = array( $blog_manifest_file, '--apply' );
+include $blog_tools . 'fix-blog-slugs.php';
+$blog_applied = get_post( $blog_id );
+mt_wp_integration_assert( 'mt-editorial-transfer-guide' === $blog_applied->post_name && "Driver's transfer guide" === $blog_applied->post_excerpt, 'Slug and independent excerpt must update on the same post.' );
+mt_wp_integration_assert( $blog_original->post_content === $blog_applied->post_content && $blog_original->post_title === $blog_applied->post_title, 'Body, title and sales links must remain unchanged.' );
+mt_wp_integration_assert( get_permalink( $blog_id ) === get_post_meta( $blog_id, '_yoast_wpseo_canonical', true ), 'Explicit self-canonical must follow the renamed post.' );
+mt_wp_integration_assert( '/mt-editorial-transfer-guide/?utm_source=test' === \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/mt-editorial-old-topic/?utm_source=test', get_option( \MeTransfers\SEO\BlogSlugRedirects::OPTION ) ), 'Applied migration must preserve old inbound links and query parameters.' );
+include $blog_tools . 'restore-blog-slugs.php';
+$blog_restored = get_post( $blog_id );
+mt_wp_integration_assert( $blog_original->post_name === $blog_restored->post_name && $blog_original->post_excerpt === $blog_restored->post_excerpt, 'Rollback must restore original URL and excerpt.' );
+mt_wp_integration_assert( $blog_old_url === get_post_meta( $blog_id, '_yoast_wpseo_canonical', true ), 'Rollback must restore explicit self-canonical.' );
+mt_wp_integration_assert( ! isset( get_option( \MeTransfers\SEO\BlogSlugRedirects::OPTION, array() )[ $blog_original->post_name ] ), 'Rollback must remove only its migration redirect.' );
+wp_delete_post( $blog_id, true );
+wp_delete_file( $blog_manifest_file );
+delete_option( 'mt_blog_slugs_backup_' . $blog_version );
+delete_option( 'mt_blog_slugs_backup_' . $blog_version . '_redirects' );
+
 echo "WordPress {$wp_version} integration smoke passed.\n";

@@ -15,6 +15,16 @@ La consolidación conserva autores, fechas, mensajes y SHA. Los commits `483d5c1
 
 ## Cronología
 
+### 1 de octubre de 2026 — Corrección de contenido e inglés con protección del flujo comercial
+
+- Catálogo inglés revisado incluido en el tema para aeropuerto, «Sobre nosotros», navegación, etiquetas del formulario, ayuda de WhatsApp y listado de rutas. Funciona sin traducciones en la base de datos y corrige las equivalencias antiguas de esas frases.
+- Aeropuerto presenta las llegadas al hotel y las salidas hacia El Prat. El formulario dice «Solicitar presupuesto» y conserva un enlace independiente al mismo panel para calcular y reservar online. Se mantienen nombres de campos, nonce, acción de leads, GDPR y código de servicio.
+- El alias inglés de aeropuerto conserva `/en/` y los parámetros. Las reglas de robots, sitemap y aprobación de variantes para hreflang siguen vigentes. Los nombres propios de destinos ya no pasan por traducción automática.
+- «Sobre nosotros» enlaza al panel real para reservar; Girona pide precisar ciudad o aeropuerto para consultar servicio y precio.
+- Manifiesto limitado a los artículos 29745 y 29746: slug y extracto pasan a corresponder al título y cuerpo actuales, con respaldo, comprobación de ediciones posteriores, canonical coherente y redirecciones 301. Herramienta de reversión protegida frente a cambios posteriores. Los cuerpos y enlaces de venta se conservan.
+- Validación local: 104 pruebas unitarias, PHPStan, WPCS, ESLint, 15 pruebas de navegador, regresiones de reservas/pagos/hoteles y prueba de protección de migración aprobadas. Se añaden pruebas en WordPress real y HTTP con Yoast a CI.
+- Estado operativo: código preparado para despliegue; el conector WordPress solicita reautenticación y el navegador muestra el login. Esta entrada no afirma una aplicación en producción. Informe, código y procedimiento en [CORRECCION-CONTENIDO-SEO-2026-10-01.md](docs/CORRECCION-CONTENIDO-SEO-2026-10-01.md).
+
 ### 29 de septiembre de 2026 (tarde) — Exportación a Excel de las reservas de hoteles
 
 El propietario pidió exportar un Excel completo con las reservas de hoteles: una pestaña «Resumen» con toda la información y una pestaña por cada hotel registrado con su actividad completa.
