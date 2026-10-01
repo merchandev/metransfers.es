@@ -95,6 +95,7 @@ Se conservan `mt_save_lead`, nonce, `nombre`, `telefono`, `email`, `mensaje`, to
 - PHPStan: sin errores.
 - WPCS: sin errores.
 - ESLint: sin errores.
+- Auditoría npm: sin vulnerabilidades tras actualizar únicamente `brace-expansion` 5.0.9 → 5.0.12, dependencia de desarrollo. El archivo de producción excluye esas herramientas.
 - Playwright: 15 pruebas aprobadas. El formulario probado se renderiza desde el PHP real, con dependencias de WordPress simuladas y AJAX interceptado localmente.
 - Regresiones de precios, Google Maps, direcciones, vehículos, reservas, Redsys, recibos, hoteles, Excel, seguridad e internacionalización: aprobadas. Una prueba existente de rechazo de vehículos incompletos emite avisos de propiedades ausentes y termina correctamente.
 - Migración: simulación sin escrituras, rechazo de ediciones posteriores, colisiones y protección de la reversión aprobados en el test aislado.

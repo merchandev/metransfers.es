@@ -79,6 +79,7 @@ $airport_body = wp_remote_retrieve_body( $airport_en );
 mt_seo_assert( 200 === wp_remote_retrieve_response_code( $airport_en ), 'English airport must return 200.' );
 mt_seo_assert( false !== strpos( $airport_body, 'From El Prat Airport to your hotel' ), 'Airport English copy must not depend on database cache.' );
 mt_seo_assert( false !== strpos( $airport_body, 'Request a quote' ) && false !== strpos( $airport_body, 'Get a price and book online' ), 'Quote and booking must have distinct calls to action.' );
+mt_seo_assert( false !== strpos( $airport_body, home_url( '/en/' ) . '#panel' ), 'Online booking must keep the existing localized home calculator destination.' );
 mt_seo_assert( false !== strpos( $airport_body, 'name="extra_fecha"' ) && false !== strpos( $airport_body, 'data-service="aeropuerto"' ), 'Form field names and service code must survive translation.' );
 mt_seo_assert( false !== strpos( mt_seo_attr( $airport_body, '//meta[@name="robots"]', 'content' ), 'noindex' ), 'Routing must not auto-approve translated SEO variants.' );
 $about_en = wp_remote_retrieve_body( mt_seo_fetch( '/en/sobre-nosotros/' ) );

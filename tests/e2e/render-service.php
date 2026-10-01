@@ -18,7 +18,7 @@ function esc_js( $text ) { return addslashes( $text ); }
 function wp_json_encode( $text ) { return json_encode( $text ); }
 function home_url( $path ) { return $path; }
 function me_transfers_get_section_url( $section ) {
-	return ( 'en' === \MeTransfers\I18n\Language::get() ? '/en' : '' ) . '/reservaciones/';
+	return ( 'en' === \MeTransfers\I18n\Language::get() ? '/en/' : '/' ) . '#panel';
 }
 function get_header() {
 	echo '<!doctype html><html lang="' . \MeTransfers\I18n\Language::get() . '"><head><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body>';
