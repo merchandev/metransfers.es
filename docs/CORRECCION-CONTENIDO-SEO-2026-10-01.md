@@ -16,7 +16,7 @@ Las correcciones de reservas, Google Maps y exportación de hoteles de los PR an
 | Aeropuerto y «Sobre nosotros» mezclan ES/EN | `Translation::translate()` devuelve el original si no existe traducción en caché | Catálogo inglés revisado incluido en el tema, con coincidencias exactas y prioridad sobre traducciones antiguas; títulos ingleses en WordPress/Yoast y descripción inglesa de «Sobre nosotros» en Yoast |
 | Cabecera, formularios y pie contienen textos españoles | Textos sin traducción persistente y algunas frases sin envolver | Traducciones de menús, etiquetas, placeholders, ayuda de WhatsApp y mensajes locales del formulario |
 | Aeropuerto destaca principalmente hotel → aeropuerto | Títulos y pasos orientados a salidas | Titular, descripción y pasos explican aeropuerto → hotel y hotel → aeropuerto |
-| El formulario de presupuesto anuncia «Reservar ahora» | Se reutiliza un CTA de reserva en el botón de envío | «Solicitar presupuesto» identifica el formulario. Se conserva otro enlace visible «Calcular y reservar online» al mismo panel de reservas |
+| El formulario de presupuesto anuncia «Reservar ahora» | Se reutiliza un CTA de reserva en el botón de envío | «Solicitar presupuesto» identifica el formulario. «Calcular y reservar online» conserva el botón principal y el mismo panel de reservas |
 | «Sobre nosotros» enlaza a un ancla incorrecta para reservar | El botón usa portada + `#solicitar` | Usa el helper del panel existente, que conserva el idioma |
 | Rutas mezcla idiomas y traduce nombres geográficos incorrectamente | Introducción fija en español; nombres propios pasan por la caché de traducción | Introducción y contadores traducidos; Granada, La Pineda y demás destinos conservan su nombre |
 | Dos artículos tienen URLs y extractos de temas distintos | Se cambió el cuerpo/título sin corregir slug y extracto | Migración limitada a dos IDs: conserva título/cuerpo y actualiza slug/extracto, con copia y 301 |
@@ -67,15 +67,15 @@ El español permanece igual. Un HTML arbitrario que no coincide exactamente con 
 `template-servicio.php` conserva los dos destinos:
 
 ```php
-<a href="#solicitar" class="btn btn-primary">
-    <?php echo esc_html( mt_translate( 'Solicitar presupuesto' ) ); ?>
-</a>
-<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>">
+<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary">
     <?php echo esc_html( mt_translate( 'Calcular y reservar online' ) ); ?>
+</a>
+<a href="#solicitar" class="btn btn-secondary">
+    <?php echo esc_html( mt_translate( 'Solicitar presupuesto' ) ); ?>
 </a>
 ```
 
-El segundo enlace respeta la condición existente de servicios con reserva online; empresas y grupos conservan su consulta por formulario. El formulario mantiene código técnico sin traducir:
+El enlace de reserva respeta la condición existente de servicios con reserva online; empresas y grupos conservan su consulta por formulario como acción principal. El formulario mantiene código técnico sin traducir:
 
 ```php
 data-service="<?php echo esc_attr( $form_type ); ?>"

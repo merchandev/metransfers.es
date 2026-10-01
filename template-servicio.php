@@ -51,14 +51,14 @@ $form_id   = 'svc-form-' . esc_attr( $form_type );
 				<?php
 				$has_online_booking = ! in_array( $service['slug'], array( 'corporativo-y-eventos', 'vehiculos-para-grupos' ), true );
 				?>
-				<a href="#solicitar" class="btn btn-primary">
-					<?php echo esc_html( mt_translate( 'Solicitar presupuesto' ) ); ?>
-				</a>
 				<?php if ( $has_online_booking ) : ?>
-				<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-secondary">
+				<a href="<?php echo esc_url( me_transfers_get_section_url( 'panel' ) ); ?>" class="btn btn-primary">
 					<?php echo esc_html( mt_translate( 'Calcular y reservar online' ) ); ?>
 				</a>
 				<?php endif; ?>
+				<a href="#solicitar" class="btn <?php echo $has_online_booking ? 'btn-secondary' : 'btn-primary'; ?>">
+					<?php echo esc_html( mt_translate( 'Solicitar presupuesto' ) ); ?>
+				</a>
 				<button type="button" class="btn btn-whatsapp js-wa-trigger">
 					<span class="material-symbols-outlined" aria-hidden="true">chat</span>
 					WhatsApp

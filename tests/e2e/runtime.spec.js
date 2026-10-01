@@ -11,6 +11,7 @@ for (const lang of ['es', 'en']) {
     await expect(page.locator('.svc-form')).toHaveAttribute('data-service', 'aeropuerto');
     await expect(page.locator('.svc-hero-cta-group a[href="#solicitar"]')).toHaveText(lang === 'en' ? 'Request a quote' : 'Solicitar presupuesto');
     await expect(page.locator(`.svc-hero-cta-group a[href="${lang === 'en' ? '/en/' : '/'}#panel"]`)).toBeVisible();
+    await expect(page.locator(`.svc-hero-cta-group a[href="${lang === 'en' ? '/en/' : '/'}#panel"]`)).toHaveClass(/btn-primary/);
     await page.locator('[name="nombre"]').fill('Test passenger');
     await page.locator('[name="telefono"]').fill('+34000000000');
     await page.locator('[name="extra_fecha"]').fill('2026-10-04');
