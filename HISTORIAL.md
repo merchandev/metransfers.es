@@ -15,6 +15,17 @@ La consolidación conserva autores, fechas, mensajes y SHA. Los commits `483d5c1
 
 ## Cronología
 
+### 1 de octubre de 2026 — Auditoría completa del blog y correcciones directas mediante MCP
+
+- Conexión MCP autenticada verificada en producción. Se leen las 149 entradas y sus campos SEO y se comprueban conflictos con las 104 páginas, 97 rutas y estados no publicados/papelera: 140 slugs propuestos sin colisiones.
+- Reparados directamente 35 cuerpos con comentarios de bloques mal cerrados. En la entrada 29569 se elimina la repetición recursiva: pasa de 11.301 bloques públicos a sus 9 bloques distintos. El resumen automático se regenera; el extracto almacenado sigue vacío.
+- Corregidos los extractos de 29735, 29744, 29745 y 29746, la dirección del traslado aeropuerto → Barcelona en 1038 y el título de 29566 para que diga «en Barcelona». Son 41 entradas modificadas, preservando referencias únicas a enlaces e imágenes.
+- La prueba de migración pasó en español, pero el prefijo inglés antiguo devolvió 404. Se detiene el lote y se restauran sus 39 slugs. Las 78 URLs originales ES/EN responden 200 mediante HEAD; el GET de las muestras también pasa. Los 140 cambios definitivos siguen pendientes.
+- Preparado el fallback de `BlogSlugRedirects` sobre `_wp_old_slug`, que permite recuperar antiguos enlaces ingleses de entradas publicadas sin mapa de migración. Solo actúa en 404 GET/HEAD, excluye pagos/reservas y rechaza destinos ambiguos, privados o con contraseña. Instalación en el tema de producción pendiente de acceso a sus archivos.
+- Verificación pública final: 149 IDs, slugs originales, autores, fechas de creación, categorías y etiquetas conservados; 149 canonical correctos; referencias de enlaces/imágenes conservadas y directivas robots coherentes con la copia previa. Los 35 cuerpos ya no repiten bloques y los cuatro extractos corresponden al plan.
+- Código probado localmente: 107 pruebas unitarias y 947 aserciones, PHPStan y WPCS sin errores; regresiones de idioma y migración/reversión aprobadas. Se añaden pruebas de integración real y un generador de propuestas de bloques que no escribe en WordPress.
+- Copias originales y diarios guardados fuera de Git en `../metransfers-backups/blog-2026-10-01-mcp/`. Informe completo con código: `docs/RESULTADO-BLOG-MCP-2026-10-01.md`; auditoría individual: `docs/AUDITORIA-BLOG-2026-10-01.md`.
+
 ### 1 de octubre de 2026 — Corrección de contenido e inglés con protección del flujo comercial
 
 - Catálogo inglés revisado incluido en el tema para aeropuerto, «Sobre nosotros», navegación, etiquetas del formulario, ayuda de WhatsApp y listado de rutas. Funciona sin traducciones en la base de datos y corrige las equivalencias antiguas de esas frases.
