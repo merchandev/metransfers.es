@@ -15,6 +15,18 @@ La consolidación conserva autores, fechas, mensajes y SHA. Los commits `483d5c1
 
 ## Cronología
 
+### 2 de octubre de 2026 — Slugs del blog corregidos en producción y redirecciones verificadas
+
+- Se completa la migración mediante el MCP de WordPress: 140 slugs corresponden al título y tema actuales; los 9 slugs coherentes se conservan.
+- Yoast Premium pasa al método PHP y ejecuta las redirecciones guardadas. Las protecciones inglesas temporales se convierten en 301 hacia la versión inglesa. No quedan reglas 302 de esta intervención.
+- Se contrastan 153 reglas simples y 278 regex en el administrador; las 12 reglas históricas ajenas al lote se conservan. Las reglas exactas preservan los parámetros de campaña y no abarcan reservas, pagos ni puntos de venta.
+- La primera comprobación masiva detecta una concatenación ambigua de captura en el slug que comienza por «10-». Se separan sus reglas ES/EN y se repiten sus seis URLs, que pasan.
+- Resultado final: 866 URLs distintas verificadas —560 antiguas con 301 y destino correcto, 280 nuevas con 200, 18 conservadas con 200 y 8 controles de ventas con 200—, sin fallos pendientes.
+- Las 149 entradas mantienen título, cuerpo, extracto, autor, fecha de publicación, estado, categorías y etiquetas respecto a la reparación anterior. Los 149 canonical y robots son coherentes; el sitemap contiene las 149 URLs actuales y la portada del blog.
+- La solución aplicada utiliza Yoast; el fallback de BlogSlugRedirects sigue como alternativa probada en el repositorio, pendiente de acceso a los archivos activos para un futuro despliegue.
+- Reporte completo con código y métricas: [RESULTADO-BLOG-MCP-2026-10-01.md](docs/RESULTADO-BLOG-MCP-2026-10-01.md). Inventario final de 149 entradas: [BLOG-URLS-FINAL-2026-10-02.csv](docs/BLOG-URLS-FINAL-2026-10-02.csv). Mapa de 419 reglas de migración: [REDIRECCIONES-BLOG-2026-10-02.csv](docs/REDIRECCIONES-BLOG-2026-10-02.csv). Resumen de verificación: [VERIFICACION-BLOG-2026-10-02.json](docs/VERIFICACION-BLOG-2026-10-02.json).
+- La copia original y los diarios permanecen fuera de Git; la huella SHA-256 del respaldo original sigue intacta. Los controles web no equivalen a una compra real ni certifican posiciones de Google.
+
 ### 1 de octubre de 2026 — Auditoría completa del blog y correcciones directas mediante MCP
 
 - Conexión MCP autenticada verificada en producción. Se leen las 149 entradas y sus campos SEO y se comprueban conflictos con las 104 páginas, 97 rutas y estados no publicados/papelera: 140 slugs propuestos sin colisiones.

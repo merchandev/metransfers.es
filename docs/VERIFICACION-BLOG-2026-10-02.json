@@ -1,0 +1,50 @@
+{
+  "status": "applied_live_verified",
+  "user_date": "2026-10-02",
+  "checked_at_utc": "2026-10-02 11:41:05 UTC",
+  "site": "https://metransfers.es",
+  "connection": "MCP Server For WordPress",
+  "http": {
+    "checked": 866,
+    "responses": 866,
+    "old_redirects": 560,
+    "new_urls": 280,
+    "unchanged_urls": 18,
+    "sales_controls": 8,
+    "failures": []
+  },
+  "content": {
+    "published_posts": 149,
+    "slugs_migrated": 140,
+    "coherent_slugs_preserved": 9,
+    "canonical_checks": 149,
+    "protected_public_fields_compared": 8,
+    "robots_checks": 149,
+    "failures": []
+  },
+  "sitemap": {
+    "entries": 149,
+    "archive": "https://metransfers.es/blog/",
+    "total_urls": 150,
+    "missing_entries": 0
+  },
+  "yoast": {
+    "method": "PHP",
+    "plain_rules": 153,
+    "regex_rules": 278,
+    "historical_rules_preserved": 12,
+    "migration_rules": 419,
+    "temporary_302": 0,
+    "numeric_slug_rule": "29572 uses separate ES/EN regex rules",
+    "persisted_rules_verified": true
+  },
+  "backup": {
+    "stored_outside_git": true,
+    "original_sha256": "02A0D492629AE46553BA95DB31F4FDFE5DDB0BF3987836A2C1130ACA8BC4C530"
+  },
+  "limitations": [
+    "Sales checks verify page loading; no real booking or payment submitted.",
+    "Google positions and full English article translations are not certified.",
+    "Native English old-slug fallback is tested in the repository and is not installed in the active production theme."
+  ]
+}

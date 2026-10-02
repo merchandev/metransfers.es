@@ -2,7 +2,7 @@
 
 **Snapshot inicial del 1 de octubre de 2026: las 149 entradas públicas publicadas que expone WordPress. Las secciones iniciales documentan la auditoría previa a las modificaciones.**
 
-**Actualización posterior mediante MCP:** conexión autenticada comprobada; 35 artículos con bloques defectuosos, 4 extractos, 1 título y el texto de un trayecto corregidos. Se restauraron los 39 slugs de la prueba al detectar un 404 en inglés. Los 140 cambios definitivos de slug siguen pendientes de instalar las redirecciones. El estado final, las verificaciones, la copia de seguridad y el código completo están en [RESULTADO-BLOG-MCP-2026-10-01.md](RESULTADO-BLOG-MCP-2026-10-01.md). Las afirmaciones antiguas sobre acceso no autorizado o ausencia de cambios corresponden a fases anteriores.
+**Actualización final del 2 de octubre mediante MCP:** los 140 slugs se han corregido en producción y los 9 coherentes se conservan. Se repararon 35 artículos con bloques defectuosos, 4 extractos, 1 título y el texto de un trayecto. Las redirecciones ES/EN se ejecutan con Yoast en modo PHP, conservan las campañas y pasan la comprobación de 866 URLs. El estado final, las verificaciones, la copia de seguridad y el código completo están en [RESULTADO-BLOG-MCP-2026-10-01.md](RESULTADO-BLOG-MCP-2026-10-01.md); el [inventario final](BLOG-URLS-FINAL-2026-10-02.csv) recoge las 149 entradas. El resto de este documento conserva el snapshot previo y las fases anteriores, incluidas las limitaciones de acceso y los slugs que entonces seguían pendientes.
 
 ## 1. Resultado principal
 

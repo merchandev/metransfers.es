@@ -1,132 +1,154 @@
-# Resultado de la revisión y corrección del blog mediante MCP
+# Resultado final de la revisión y corrección del blog mediante MCP
 
-**Fecha del usuario: 1 de octubre de 2026. Estado: correcciones de contenido aplicadas; migración definitiva de 140 slugs pendiente de instalar las redirecciones en inglés.**
+**Trabajo iniciado el 1 de octubre y terminado el 2 de octubre de 2026, según la fecha del usuario. Estado: 140 slugs corregidos en producción y 866 URLs verificadas sin fallos pendientes.**
 
-## 1. Conexión comprobada
+## 1. Resultado y conexión comprobada
 
-La conexión «MCP Server For WordPress» ya funciona contra **https://metransfers.es**. La sesión dispone de un usuario administrador y 202 capacidades. Se verificó que el entorno es producción, con WordPress 7.1.2 y PHP 8.2.34.
+La conexión **MCP Server For WordPress** funciona contra **https://metransfers.es** con un usuario administrador y 202 capacidades. Se comprobaron WordPress 7.1.2 y PHP 8.2.34 en producción. Las entradas se leyeron y editaron mediante el MCP; las redirecciones se configuraron en el administrador de **Yoast SEO Premium**, ya instalado.
 
-Este acceso permite leer y editar entradas, páginas y campos SEO. No expone herramientas para modificar archivos del tema, instalar el manejador de redirecciones o administrar el alojamiento de SiteGround. La cuenta conectada no equivale a acceso a los archivos del servidor.
+Se revisaron las **149 entradas publicadas**, las 104 páginas publicadas, las 97 rutas y los estados no publicados/papelera para descartar conflictos. Se corrigieron **140 slugs** que no correspondían al tema actual y se conservaron los **9 slugs coherentes**.
 
-Se revisaron las **149 entradas publicadas**. Se inventariaron además 104 páginas publicadas y 97 rutas publicadas, y se comprobaron los estados restantes y la papelera para buscar conflictos de URL. No se encontraron colisiones para los 140 slugs propuestos.
+Este acceso a WordPress no constituye una conexión al panel ni a los archivos de SiteGround. El editor de archivos del tema denegó el acceso; la solución aplicada utiliza el gestor existente de Yoast.
 
-## 2. Hallazgos
+## 2. Hallazgos y causa
 
-| Hallazgo | Entradas |
+| Hallazgo inicial | Entradas |
 |---|---:|
-| Slug que describe un tema distinto del título y cuerpo | 138 |
+| Slug que describía un tema distinto del título y cuerpo | 138 |
 | Desajuste parcial de enfoque | 2 |
 | Slug coherente con el tema actual | 9 |
-| Bloques defectuosos que repetían el artículo al renderizarlo | 35 |
+| Bloques defectuosos que repetían contenido al renderizarlo | 35 |
 | Extracto manual que conservaba el tema antiguo | 4 |
 
-El listado individual de las 149 entradas, con su URL, título, contenido revisado y diagnóstico, está en [la auditoría completa](AUDITORIA-BLOG-2026-10-01.md). Sus secciones iniciales conservan el estado previo a esta intervención.
+WordPress almacena título, cuerpo y slug en campos independientes. El estado encontrado es compatible con sustituir el título y el cuerpo sin actualizar el slug. La evidencia no identifica a una persona o herramienta responsable.
 
-### Por qué ocurrió
+Los 35 cuerpos defectuosos tenían comentarios de bloques mal emparejados. La entrada 29569 también incluía un bloque `wp:post-content` dentro de su propio contenido. Su revisión anterior contiene exactamente el mismo cuerpo defectuoso que la copia inicial; el problema ya estaba guardado antes de esta intervención.
 
-WordPress guarda el título, el cuerpo y el slug como campos independientes. El estado observado es compatible con ediciones que sustituyeron el título y cuerpo y omitieron el campo de slug. La revisión no permite atribuir esas operaciones a una persona o herramienta concreta.
+La [auditoría inicial](AUDITORIA-BLOG-2026-10-01.md) conserva el diagnóstico previo. El [inventario final de las 149 entradas](BLOG-URLS-FINAL-2026-10-02.csv) recoge los slugs antiguos, los actuales y las URLs de ambos idiomas.
 
-En los 35 artículos defectuosos también había comentarios de bloques mal emparejados. En lugar de cerrar un bloque, algunos comentarios lo abrían de nuevo. La entrada 29569 incluía además un bloque `wp:post-content` dentro de su propio contenido y copias repetidas del HTML.
+## 3. Cambios aplicados directamente en producción
 
-La revisión anterior de la entrada 29569 contiene exactamente el mismo cuerpo defectuoso que la copia obtenida antes de esta intervención. Esto confirma que el defecto ya estaba guardado; no identifica por sí solo qué cliente o herramienta lo introdujo.
-
-## 3. Cambios aplicados directamente en WordPress
-
-| Corrección | Estado |
+| Corrección | Resultado |
 |---|---|
-| Reconstrucción de bloques equilibrados en 35 artículos | Aplicada y comprobada en la versión pública |
-| Retirada de las copias idénticas y del bloque de contenido recursivo de 29569 | Aplicada |
-| Extractos de 29735, 29744, 29745 y 29746 alineados con su tema actual | Aplicada |
-| Texto de 1038 corregido para aeropuerto El Prat → Barcelona | Aplicada |
-| Título de 29566 cambiado a «Cómo Planificar un Viaje Perfecto en Barcelona: Guía Completa» | Aplicada |
-| Migración definitiva de 140 slugs | Pendiente del despliegue y prueba de las redirecciones inglesas |
+| 140 slugs correspondientes al título y tema actual | Aplicados y verificados |
+| 9 slugs ya coherentes | Conservados |
+| Bloques equilibrados en 35 artículos | Reparados; referencias únicas conservadas |
+| Copias idénticas y bloque recursivo de 29569 | Retirados |
+| Extractos de 29735, 29744, 29745 y 29746 | Corresponden al tema actual |
+| Texto de 1038 | Dirección aeropuerto El Prat → Barcelona corregida |
+| Título de 29566 | «Cómo Planificar un Viaje Perfecto en Barcelona: Guía Completa» |
+| Redirecciones antiguas españolas e inglesas | 301 al artículo correcto, conservando campañas |
+| Método de redirección de Yoast | PHP, guardado y comprobado |
+| Sitemap de entradas | 149 URLs actuales y la portada del blog |
 
-Son **41 entradas corregidas**: 36 cuerpos, 4 extractos manuales y 1 título. El resumen automático de 29569 se regeneró a partir del cuerpo limpio; las revisiones anteriores y posteriores confirman que su campo de extracto almacenado sigue vacío.
+Las reparaciones de contenido afectan a **41 entradas**: 36 cuerpos, 4 extractos manuales y 1 título. Estos cambios se solapan con los 140 cambios de slug.
 
-La reconstrucción conserva los textos y las referencias únicas a enlaces e imágenes. Los enlaces comerciales a `transfersinbarcelona.com/es` se mantienen. No se ha certificado que sean ajenos al negocio.
+El extracto almacenado de 29569 sigue vacío: WordPress genera su resumen desde el cuerpo limpio. Se conservaron los enlaces comerciales a `transfersinbarcelona.com/es`; la revisión no demuestra que sean ajenos al negocio.
 
-### Resultado del artículo más afectado
+### Ejemplos de URLs corregidas
+
+| ID | Slug antiguo | Slug actual |
+|---|---|---|
+| 29746 | `lonjas-de-pescado-en-la-costa-de-cataluna` | `como-escoger-el-mejor-servicio-de-transfer-en-barcelona-guia-completa` |
+| 29745 | `barcelona-seniors-comodidad-accesibilidad-vehiculos` | `diferencias-entre-servicios-de-traslado-taxi-vs-transfer-privado-en-barcelona` |
+| 29735 | `recuperar-el-iva-en-el-aeropuerto` | `beneficios-de-usar-un-servicio-de-traslado-privado-en-barcelona` |
+| 29572 | `tour-privado-por-los-pueblos-medievales-de-cataluna-desde-barcelona` | `10-consejos-para-elegir-el-mejor-servicio-de-traslado-en-barcelona` |
+
+### Artículo con mayor repetición
 
 | Medida de 29569 | Antes | Después |
 |---|---:|---:|
 | Caracteres del HTML público del cuerpo | 3.949.474 | 2.916 |
 | Bloques de texto mostrados | 11.301 | 9 |
-| Textos de bloque distintos | 9 | 9 |
+| Textos distintos | 9 | 9 |
 
-## 4. Incidencia durante la migración de URLs y restauración
+## 4. Redirecciones y correcciones durante la verificación
 
-Se cambió primero la entrada 29746 y se comprobó que la URL española antigua respondía 301, la nueva 200 y el canonical seguía la URL nueva. Después se inició el lote y se alcanzaron 39 cambios de slug.
+La primera migración pasó en español, pero los enlaces ingleses antiguos devolvían 404. Se detuvo el lote y se restauraron sus 39 slugs, manteniendo las reparaciones de contenido. Las 78 URLs originales ES/EN volvieron a responder 200.
 
-La verificación adicional de idioma detectó que la URL inglesa antigua devolvía **404**, aunque la nueva inglesa respondía 200. Se detuvo el lote y se restauraron los **39 slugs originales**, conservando las reparaciones de contenido.
+El router inglés del tema utiliza `mt_lang` y `mt_page`; la redirección nativa de slugs antiguos requiere `name`. Esa condición puede consultarse en el [código oficial de WordPress](https://developer.wordpress.org/reference/functions/wp_old_slug_redirect/).
 
-La restauración terminó sin errores. Las **78 peticiones HEAD** a las URLs originales de esas 39 entradas, en español e inglés, respondieron **200**. También se verificaron con GET las URLs originales de la entrada de prueba y la última entrada restaurada.
+Yoast tenía seleccionado el método de servidor con un archivo separado. Guardar una regla no producía una redirección pública. Al seleccionar y guardar **PHP**, la prueba devolvió 301. Las reglas simples no cubrían las cadenas de consulta; se añadieron reglas exactas para conservarlas. Véase la [documentación de Yoast sobre parámetros y redirecciones](https://yoast.com/help/url-redirects-with-encoded-characters/).
 
-**Los 149 slugs actuales coinciden con los que existían antes de esta sesión.** Los 140 cambios definitivos siguen pendientes; el desajuste de esas URLs aún no está resuelto en producción.
+Se migraron los artículos por grupos, comparando su estado antes y después. Las protecciones inglesas temporales se convirtieron en reglas permanentes hacia la versión inglesa. **No quedan reglas 302 de esta intervención.**
 
-## 5. Comprobaciones finales
+El primer pase de 866 URLs detectó una redirección incorrecta para 29572: juntar `$1` con el slug que empieza por `10-` generaba una referencia numérica ambigua. Se sustituyó por reglas independientes para español e inglés, con el destino numérico escrito literalmente. Las seis URLs de ese artículo se repitieron y pasaron. El [manual de PHP](https://www.php.net/manual/en/function.preg-replace.php) explica la ambigüedad de las referencias seguidas de dígitos; la solución final evita esa concatenación en Yoast.
 
-La nueva lectura pública de las 149 entradas confirma:
+Estado guardado de Yoast, leído desde su interfaz:
 
-- Los mismos 149 IDs publicados.
-- Slugs, URLs, autores, fechas de creación, categorías y etiquetas conservados.
-- 149 canonical correspondientes a sus URLs actuales.
-- Directivas noindex, nofollow, noimageindex, noarchive y nosnippet coherentes con los valores guardados antes de la intervención.
-- Referencias únicas a enlaces e imágenes conservadas en las 149 entradas.
-- Los 35 cuerpos reparados tienen bloques equilibrados y ya no repiten sus textos.
-- Los cuatro extractos manuales coinciden con el contenido previsto.
-- El título nuevo de 29566 se muestra correctamente.
+- **153 reglas simples**: 142 de tipo 301 y las 11 reglas 410 anteriores.
+- **278 reglas regex**, todas 301, con destinos contrastados.
+- **12 reglas históricas conservadas**: 11 disposiciones 410 y una redirección de categoría.
+- **419 reglas de esta migración**, reproducibles en [REDIRECCIONES-BLOG-2026-10-02.csv](REDIRECCIONES-BLOG-2026-10-02.csv).
+- Método PHP seleccionado y guardado.
 
-Las marcas de modificación que devuelve WordPress incluyen el 2 de octubre, mientras el trabajo se realizó el 1 de octubre en la zona del usuario. No se verificó la configuración de zona horaria del sitio.
+El CSV no incluye las 12 reglas históricas ajenas a esta migración. La [guía operativa](CORRECCION-REDIRECCIONES-BLOG-EN-2026-10-01.md) incluye los patrones y la configuración aplicada.
 
-El trabajo se limitó a las entradas del blog. Las comprobaciones públicas y de código no certifican una compra real ni posiciones concretas en Google.
+## 5. Verificación final
 
-## 6. Copia de seguridad y diario
+| Comprobación | Resultado |
+|---|---:|
+| URLs antiguas ES/EN, con y sin parámetros | 560 / 560 con 301 y destino exacto |
+| URLs nuevas ES/EN | 280 / 280 con 200 |
+| URLs ES/EN de los 9 slugs conservados | 18 / 18 con 200 |
+| Portada, reservas, selección de vehículo, pago y hoteles | 8 / 8 con 200 |
+| Total de URLs distintas verificadas | **866 / 866** |
+| Entradas publicadas conservadas | 149 / 149 |
+| Canonical de entradas españolas | 149 / 149 correctos |
+| Directivas robots | 149 / 149 conservadas |
+| URLs de entradas presentes en el sitemap | 149 / 149 |
 
-Copia externa al repositorio:
+Durante la migración se compararon título, texto renderizado completo, extracto, autor, fecha de publicación, estado, categorías y etiquetas. Los ocho campos coinciden con el estado posterior a las reparaciones de contenido. Los primeros cambios también se contrastaron con lecturas autenticadas de los cuerpos originales.
+
+Los controles comerciales son **comprobaciones de carga**, no una compra real ni un pago de prueba. Las reglas se limitan a los slugs exactos del blog; el formulario de reservas, los puntos de venta, las cuentas de pago y las claves de Google no se editaron.
+
+Los canonical y las directivas robots se conservaron para mantener la coherencia de indexación. Esta intervención no certifica posiciones en Google ni la traducción completa de los 149 artículos ingleses. En la muestra inglesa revisada, el título y la navegación están traducidos, pero hay texto principal todavía en español; queda como cuestión editorial independiente.
+
+Evidencia resumida: [VERIFICACION-BLOG-2026-10-02.json](VERIFICACION-BLOG-2026-10-02.json).
+
+![Entrada verificada tras corregir el slug](blog-correccion-verificada-2026-10-02.jpg)
+
+## 6. Copia de seguridad y diarios
+
+Carpeta externa al repositorio:
 
 `C:/Users/merch/OneDrive/Escritorio/metransfers-backups/blog-2026-10-01-mcp/`
 
 Archivos principales:
 
-- `all-posts-before.json`: los cuerpos originales y el estado de las 149 entradas y sus campos SEO.
-- `all-posts-after-content.json`: estado esperado después de las reparaciones.
-- `applied-journal.json`: cambios iniciales antes de detener la migración de slugs.
-- `slug-rollback-journal.json`: restauración de los 39 slugs.
+- `all-posts-before.json`: cuerpos y campos SEO originales de las 149 entradas.
+- `all-posts-after-content.json`: estado esperado después de reparar los cuerpos.
+- `slug-rollback-journal.json`: restauración inicial de los 39 slugs.
 - `content-applied-journal.json`: guardados de contenido y comprobaciones.
-- `content-cleanup.json`: propuestas preparadas desde los cuerpos originales.
+- `final-slug-journal-140.json`: migración definitiva.
+- `yoast-rules-before-php-method.json`: configuración anterior al cambio de método.
+- `yoast-final-verification.json`: contraste de reglas guardadas.
+- `first-full-http-results.tsv`: primer pase y caso numérico detectado.
+- `final-http-results.tsv` y `final-http-verification.json`: respuestas y contraste final.
+- `final-slug-content-verification.json`: contraste de las 149 entradas.
 
-SHA-256 de `all-posts-before.json`:
+SHA-256 de la copia original, comprobado sin cambios:
 
 `02A0D492629AE46553BA95DB31F4FDFE5DDB0BF3987836A2C1130ACA8BC4C530`
 
-Las copias originales se conservan fuera de Git. Una restauración posterior debe leer primero la entrada actual para no sobrescribir nuevas ediciones.
+Los cuerpos completos y los datos de respaldo se mantienen fuera de Git. Una restauración debe comprobar las ediciones posteriores para no sobrescribir trabajo nuevo.
 
-## 7. Solución pendiente para las URLs inglesas
+## 7. Código guardado en el repositorio y alcance
 
-El router del tema utiliza `mt_lang` y `mt_page`. La función nativa de WordPress para slugs antiguos requiere `name`, por lo que no encuentra esa URL inglesa. Esta condición está en el [código oficial de wp_old_slug_redirect](https://developer.wordpress.org/reference/functions/wp_old_slug_redirect/).
+La solución aplicada a esta migración es **Yoast Premium en modo PHP**, con el mapa CSV de URLs. No requirió instalar el archivo del tema preparado.
 
-La corrección preparada consulta el historial `_wp_old_slug` en un verdadero 404 inglés, exige un único artículo publicado sin contraseña, conserva el idioma y los parámetros y excluye reservas, pagos, administración y rutas anidadas. No modifica la aprobación SEO de las traducciones.
+El código `app/SEO/BlogSlugRedirects.php` queda en el repositorio como alternativa para recuperar futuros slugs ingleses mediante `_wp_old_slug`. Su despliegue en producción sigue pendiente de acceso a los archivos activos. Una futura modificación de permalink necesita su regla inglesa correspondiente mientras ese fallback no esté instalado.
 
-Antes de reanudar los 140 slugs:
+El generador `tools/prepare-blog-block-repair.php` reconstruye propuestas desde el respaldo autenticado, conserva referencias y rechaza HTML interactivo. No escribe en WordPress.
 
-1. Instalar el parche en la versión activa del tema y comprobar que la clase se registra.
-2. Repetir una sola entrada de prueba en español e inglés.
-3. Exigir 301 correcto en las URLs antiguas, 200 en las nuevas y canonical correcto.
-4. Volver a leer cada entrada antes de cambiar su slug y conservar el diario.
-5. Comprobar los 140 pares de URLs y el sitemap final.
+Validación del código ya integrado mediante los PR [64](https://github.com/merchandev/metransfers.es/pull/64) y [65](https://github.com/merchandev/metransfers.es/pull/65):
 
-Está abierta una pestaña del panel de WordPress para completar el acceso a los archivos. El inicio de sesión sigue pendiente. La autorización del usuario para corregir el blog ya está concedida.
+- PHPUnit: **107 pruebas y 947 aserciones**, sin fallos; una deprecación existente del ejecutor.
+- PHPStan y WPCS: sin errores.
+- Preparación reproducible: **35 propuestas y 0 rechazos**.
+- Los **8 controles de CI** aprobaron, incluidas las integraciones con WordPress 6.8.6, 7.0.2 y 7.1.
 
-La instalación está detallada en [la guía de redirecciones](CORRECCION-REDIRECCIONES-BLOG-EN-2026-10-01.md).
-
-### Validación del código preparado
-
-- PHPUnit: **107 pruebas, 947 aserciones**, sin fallos; una deprecación existente del ejecutor.
-- PHPStan: sin errores.
-- PHPCS de los PHP modernos modificados: sin infracciones.
-- Regresiones locales de migración/reversión e idioma: aprobadas.
-- Preparación reproducible desde la copia original: **35 propuestas, 0 rechazos**.
-- Se añadieron comprobaciones de integración con WordPress real para el historial nativo inglés y la restauración. Su ejecución corresponde a CI.
+A continuación se conservan las métricas de los 35 artículos reparados y el código completo utilizado.
 
 ## 8. Artículos con bloques reparados
 
