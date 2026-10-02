@@ -1,0 +1,254 @@
+{
+  "audit_date": "2026-10-02",
+  "production_modified": false,
+  "scope": {
+    "published": {
+      "post": 149,
+      "page": 104,
+      "ruta": 97
+    },
+    "main_requests": 705,
+    "additional_internal_links": 15,
+    "control_requests": 3,
+    "sitemap_html_urls": 275
+  },
+  "status": {
+    "main_final_http_200": 705,
+    "additional_link_http_404": [
+      "https://metransfers.es/en/category/taxi-en-barcelona/",
+      "https://metransfers.es/en/category/tours-desde-barcelona/",
+      "https://metransfers.es/en/category/traslados-desde-barcelona/",
+      "https://metransfers.es/en/blog/page/2/",
+      "https://metransfers.es/en/blog/page/3/",
+      "https://metransfers.es/en/blog/page/15/"
+    ]
+  },
+  "indexability_groups": {
+    "es/page/index/direct": 23,
+    "es/post/index/direct": 149,
+    "es/page/index/redirect": 75,
+    "es/archive/index/direct": 4,
+    "es/ruta/index/direct": 97,
+    "es/page/noindex/direct": 6,
+    "en/page/noindex/direct": 31,
+    "en/archive/noindex/direct": 1,
+    "en/post/noindex/direct": 149,
+    "en/ruta/noindex/direct": 97,
+    "en/page/index/redirect": 72,
+    "en/page/noindex/redirect": 1
+  },
+  "english_direct_200_noindex": 278,
+  "spanish_direct_200_indexable": 273,
+  "intentional_spanish_noindex": [
+    "https://metransfers.es/gracias/",
+    "https://metransfers.es/reservaciones/",
+    "https://metransfers.es/reservas-hotel/",
+    "https://metransfers.es/pago/",
+    "https://metransfers.es/seleccionar-vehiculo/",
+    "https://metransfers.es/reservas-metransfers/"
+  ],
+  "sitemap_redirected_urls": [
+    {
+      "url": "https://metransfers.es/recuperar-el-iva-en-el-aeropuerto-2/",
+      "effective_url": "https://metransfers.es/beneficios-de-usar-un-servicio-de-traslado-privado-en-barcelona/",
+      "redirects": 2
+    },
+    {
+      "url": "https://metransfers.es/cookies/",
+      "effective_url": "https://metransfers.es/politica-de-cookies/",
+      "redirects": 1
+    }
+  ],
+  "missing_meta_descriptions": [
+    "https://metransfers.es/rutas/barcelona-taull/",
+    "https://metransfers.es/rutas/barcelona-besalu/",
+    "https://metransfers.es/rutas/barcelona-morella/",
+    "https://metransfers.es/rutas/barcelona-altea/",
+    "https://metransfers.es/rutas/barcelona-valderrobres/",
+    "https://metransfers.es/rutas/barcelona-alquezar/",
+    "https://metransfers.es/rutas/barcelona-collioure/",
+    "https://metransfers.es/rutas/barcelona-carcassonne/"
+  ],
+  "duplicate_indexable_titles": [
+    {
+      "title": "Transfer privado Barcelona a Andorra | MeTransfers",
+      "urls": [
+        "https://metransfers.es/transfer-privado-barcelona-a-andorra/",
+        "https://metransfers.es/transfer-privado-barcelona-a-andorra-esqui-compras-duty-free/"
+      ]
+    }
+  ],
+  "traffic": {
+    "source": "Site Kit: read-only DOM of Search Console and Analytics charts",
+    "captured_at": "2026-10-02T13:00:56.667Z",
+    "settled_cutoff_used": "2026-09-28",
+    "cutoff_note": "Excludes 2026-09-29 through 2026-10-02 to avoid recent incomplete days; no API final-state metadata available.",
+    "ranges": {
+      "current": {
+        "start": "2026-09-01",
+        "end": "2026-09-28"
+      },
+      "previous": {
+        "start": "2026-08-04",
+        "end": "2026-08-31"
+      }
+    },
+    "impressions": {
+      "current": {
+        "start": "2026-09-01",
+        "end": "2026-09-28",
+        "days": 28,
+        "sum": 14920
+      },
+      "previous": {
+        "start": "2026-08-04",
+        "end": "2026-08-31",
+        "days": 28,
+        "sum": 17979
+      },
+      "change_percent": -17.014294454641522
+    },
+    "clicks": {
+      "current": {
+        "start": "2026-09-01",
+        "end": "2026-09-28",
+        "days": 28,
+        "sum": 128
+      },
+      "previous": {
+        "start": "2026-08-04",
+        "end": "2026-08-31",
+        "days": 28,
+        "sum": 109
+      },
+      "change_percent": 17.431192660550465
+    },
+    "users_daily_sum": {
+      "current": {
+        "start": "2026-09-01",
+        "end": "2026-09-28",
+        "days": 28,
+        "sum": 219
+      },
+      "previous": {
+        "start": "2026-08-04",
+        "end": "2026-08-31",
+        "days": 28,
+        "sum": 524
+      },
+      "change_percent": -58.206106870229
+    },
+    "paid_search_daily_sum": {
+      "current": {
+        "start": "2026-09-01",
+        "end": "2026-09-28",
+        "days": 28,
+        "sum": 0
+      },
+      "previous": {
+        "start": "2026-08-04",
+        "end": "2026-08-31",
+        "days": 28,
+        "sum": 135
+      },
+      "change_percent": -100
+    },
+    "cross_network_daily_sum": {
+      "current": {
+        "start": "2026-09-01",
+        "end": "2026-09-28",
+        "days": 28,
+        "sum": 0
+      },
+      "previous": {
+        "start": "2026-08-04",
+        "end": "2026-08-31",
+        "days": 28,
+        "sum": 190
+      },
+      "change_percent": -100
+    },
+    "daily_user_sum_note": "Sum of daily user counts; it is not the number of distinct users over the full period.",
+    "default_28_day": {
+      "range": {
+        "start": "2026-09-05",
+        "end": "2026-10-02"
+      },
+      "visitors": 200,
+      "visitors_change_percent": -56,
+      "impressions": 13628,
+      "clicks": 120,
+      "click_change_percent": 4.3,
+      "organic_visitors": 66,
+      "organic_visitors_change_percent": 100,
+      "channel_percent": {
+        "Direct": 61.5,
+        "Organic Search": 33,
+        "AI Assistant": 3.5,
+        "Unassigned": 1,
+        "Other": 1
+      },
+      "recent_days_incomplete": true
+    },
+    "paid_last_nonzero": {
+      "date": "2026-08-26",
+      "value": 6
+    },
+    "cross_last_nonzero": {
+      "date": "2026-08-31",
+      "value": 18
+    },
+    "organic_daily_sum": {
+      "current": {
+        "start": "2026-09-01",
+        "end": "2026-09-28",
+        "days": 28,
+        "sum": 66
+      },
+      "previous": {
+        "start": "2026-08-04",
+        "end": "2026-08-31",
+        "days": 28,
+        "sum": 31
+      },
+      "change_percent": 112.9032258064516
+    },
+    "ctr": {
+      "current": 0.8579088471849867,
+      "previous": 0.6062628622281551
+    }
+  },
+  "performance": {
+    "source": "Site Kit PageSpeed Insights",
+    "page": "https://metransfers.es/",
+    "device": "mobile",
+    "mode": "laboratory",
+    "lcp_s": 4.3,
+    "cls": 0.001,
+    "tbt_ms": 30,
+    "field_data_available": false,
+    "latest_visible_snapshot": {
+      "captured_at": "2026-10-02T13:19:42.186Z",
+      "mode": "laboratory",
+      "device": "mobile",
+      "lcp_s": 13.5,
+      "cls": 0,
+      "tbt_ms": 160,
+      "note": "Read on Site Kit reload; not a field average; initial snapshot preserved"
+    }
+  },
+  "limitations": [
+    "No direct Search Console page-indexing report or URL Inspection",
+    "No Google Ads campaign data",
+    "No SiteGround/server logs or full remote code comparison",
+    "No live booking or payment submitted",
+    "Technical indexability does not certify Google indexed status"
+  ],
+  "session_verification": {
+    "wordpress_access": true,
+    "wordpress_display_name": "Gabriel Molina",
+    "sitekit_access": true,
+    "wordpress_mcp_discovery": true,
+    "direct_google_search_console_access": false
+  }
+}

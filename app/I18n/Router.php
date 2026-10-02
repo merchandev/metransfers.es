@@ -2,7 +2,7 @@
 namespace MeTransfers\I18n;
 
 final class Router {
-	const RULES_VERSION = 'v7-es-en-us-only';
+	const RULES_VERSION = 'v8-translated-archives';
 
 	public function register() {
 		add_action( 'init', array( __CLASS__, 'registerRewriteRules' ), 5 );
@@ -92,6 +92,28 @@ final class Router {
 		return null;
 	}
 
+	/** Resolve archives before treating a translated path as a singular slug. */
+	public static function archiveRequest( string $page, string $category_base = 'category' ): ?array {
+		if ( preg_match( '#^(blog|noticias|rutas)(?:/page/([1-9][0-9]*))?$#D', $page, $matches ) ) {
+			return array(
+				'page'     => $matches[1],
+				'type'     => 'rutas' === $matches[1] ? 'ruta' : 'post',
+				'paged'    => isset( $matches[2] ) ? (int) $matches[2] : 1,
+				'category' => '',
+			);
+		}
+		$base = preg_quote( trim( $category_base, '/' ), '#' );
+		if ( preg_match( '#^' . $base . '/(.+?)(?:/page/([1-9][0-9]*))?$#D', $page, $matches ) ) {
+			return array(
+				'page'     => 'blog',
+				'type'     => 'post',
+				'paged'    => isset( $matches[2] ) ? (int) $matches[2] : 1,
+				'category' => $matches[1],
+			);
+		}
+		return null;
+	}
+
 	public static function registerRewriteRules() {
 		$languages = array_values(
 			array_filter(
@@ -139,7 +161,9 @@ final class Router {
 		Language::set( $language );
 		$page          = trim( (string) get_query_var( 'mt_page', 'home' ), '/' );
 		$page          = '' !== $page ? $page : 'home';
-		$template      = self::fixedTemplate( $page );
+		$category_base = (string) get_option( 'category_base', 'category' );
+		$archive       = self::archiveRequest( $page, $category_base ? $category_base : 'category' );
+		$template      = self::fixedTemplate( $archive ? $archive['page'] : $page );
 		$original_post = null;
 
 		$booking_flow_pages = array(
@@ -155,10 +179,11 @@ final class Router {
 			'contacto',
 		);
 
-		if ( in_array( $page, array( 'blog', 'noticias' ), true ) ) {
-			self::hydrateArchive( 'post' );
-		} elseif ( 'rutas' === $page ) {
-			self::hydrateArchive( 'ruta' );
+		if ( $archive ) {
+			if ( ! self::hydrateArchive( $archive ) ) {
+				self::setNotFound();
+				return;
+			}
 		} elseif ( in_array( $page, $booking_flow_pages, true ) || null === $template ) {
 			$post_id = url_to_postid( home_url( '/' . $page . '/' ) );
 			if ( ! $post_id ) {
@@ -192,7 +217,7 @@ final class Router {
 
 		if ( $original_post ) {
 			self::hydrateSingular( $original_post );
-		} elseif ( ! in_array( $page, array( 'blog', 'noticias', 'rutas' ), true ) ) {
+		} elseif ( ! $archive ) {
 			if ( ! self::hydrateVirtualPage( $page ) ) {
 				self::setNotFound();
 				return;
@@ -251,31 +276,49 @@ final class Router {
 		return 'post' === $post->post_type ? 'single.php' : 'page.php';
 	}
 
-	private static function hydrateArchive( $post_type ) {
+	private static function hydrateArchive( array $archive ): bool {
 		global $wp_query;
-		$paged                          = max( 1, (int) get_query_var( 'paged', 1 ) );
-		$query                          = new \WP_Query(
-			array(
-				'post_type'   => $post_type,
-				'post_status' => 'publish',
-				'paged'       => $paged,
-			)
+		$category  = null;
+		$post_type = $archive['type'];
+		$args      = array(
+			'post_type'    => $post_type,
+			'post_status'  => 'publish',
+			'paged'        => $archive['paged'],
+			'has_password' => false,
 		);
+		if ( '' !== $archive['category'] ) {
+			$category = get_category_by_path( $archive['category'], true );
+			if ( ! $category || is_wp_error( $category ) ) {
+				return false;
+			}
+			$args['cat'] = (int) $category->term_id;
+		}
+		$query = new \WP_Query( $args );
+		if ( $archive['paged'] > 1 && 0 === $query->post_count ) {
+			return false;
+		}
+		$wp_query->query_vars           = array_merge( $wp_query->query_vars, $query->query_vars );
 		$wp_query->posts                = $query->posts;
 		$wp_query->post_count           = $query->post_count;
 		$wp_query->found_posts          = $query->found_posts;
 		$wp_query->max_num_pages        = $query->max_num_pages;
 		$wp_query->current_post         = -1;
 		$wp_query->is_404               = false;
-		$wp_query->is_home              = 'post' === $post_type;
-		$wp_query->is_archive           = 'ruta' === $post_type;
+		$wp_query->is_home              = 'post' === $post_type && ! $category;
+		$wp_query->is_archive           = 'ruta' === $post_type || (bool) $category;
 		$wp_query->is_post_type_archive = 'ruta' === $post_type;
+		$wp_query->is_category          = (bool) $category;
+		$wp_query->is_paged             = $archive['paged'] > 1;
+		$wp_query->is_tax               = false;
 		$wp_query->is_singular          = false;
 		$wp_query->is_single            = false;
 		$wp_query->is_page              = false;
 		$wp_query->is_front_page        = false;
 
-		if ( 'post' === $post_type ) {
+		if ( $category ) {
+			$wp_query->queried_object    = $category;
+			$wp_query->queried_object_id = (int) $category->term_id;
+		} elseif ( 'post' === $post_type ) {
 			$blog_id = (int) get_option( 'page_for_posts' );
 			if ( $blog_id ) {
 				$blog_post                   = get_post( $blog_id );
@@ -283,8 +326,10 @@ final class Router {
 				$wp_query->queried_object_id = $blog_id;
 			}
 		} else {
-			$wp_query->queried_object = get_post_type_object( 'ruta' );
+			$wp_query->queried_object    = get_post_type_object( 'ruta' );
+			$wp_query->queried_object_id = 0;
 		}
+		return true;
 	}
 
 	private static function hydrateSingular( $original_post ) {

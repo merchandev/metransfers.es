@@ -1,0 +1,8 @@
+﻿"metrica","unidad","periodo_anterior","valor_anterior","periodo_actual","valor_actual","cambio_porcentual"
+"Impresiones Google","impresiones","2026-08-04 a 2026-08-31","17979","2026-09-01 a 2026-09-28","14920","-17.014294454641522"
+"Clics Google","clics","2026-08-04 a 2026-08-31","109","2026-09-01 a 2026-09-28","128","17.431192660550465"
+"Analytics todos los canales","suma de usuarios diarios; no usuarios unicos del periodo","2026-08-04 a 2026-08-31","524","2026-09-01 a 2026-09-28","219","-58.206106870229"
+"Analytics Organic Search","suma de usuarios diarios; no usuarios unicos del periodo","2026-08-04 a 2026-08-31","31","2026-09-01 a 2026-09-28","66","112.9032258064516"
+"Analytics Paid Search","suma de usuarios diarios; no usuarios unicos del periodo","2026-08-04 a 2026-08-31","135","2026-09-01 a 2026-09-28","0","-100"
+"Analytics Cross-Network","suma de usuarios diarios; no usuarios unicos del periodo","2026-08-04 a 2026-08-31","190","2026-09-01 a 2026-09-28","0","-100"
+"CTR Google","porcentaje","2026-08-04 a 2026-08-31","0.6062628622281551","2026-09-01 a 2026-09-28","0.8579088471849867","cambio de +0.251646 puntos porcentuales"

@@ -9,6 +9,8 @@ final class LegacyUrlMap {
 	 * @var array<string,string>
 	 */
 	private static $redirects = array(
+		'recuperar-el-iva-en-el-aeropuerto'          => 'recuperar-iva-aeropuerto-barcelona-tax-free',
+		'recuperar-el-iva-en-el-aeropuerto-2'        => 'recuperar-iva-aeropuerto-barcelona-tax-free',
 		'destinos'                                   => 'rutas',
 		'transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v' => 'grupos',
 		'taxis-privado-barcelona'                    => 'traslados-privados',

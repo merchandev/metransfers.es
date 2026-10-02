@@ -6,11 +6,10 @@ namespace MeTransfers\Tests\Unit;
 
 use MeTransfers\SEO\LegacyUrlMap;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class LegacyUrlMapTest extends TestCase {
-	/**
-	 * @dataProvider exactLegacyRedirects
-	 */
+	#[DataProvider( 'exactLegacyRedirects' )]
 	public function testLegacyAliasesMapToFinalRoutes( string $legacy, string $target ): void {
 		self::assertTrue( LegacyUrlMap::hasRedirect( $legacy ) );
 		self::assertSame( $target, LegacyUrlMap::getTarget( $legacy ) );
