@@ -15,6 +15,17 @@ La consolidación conserva autores, fechas, mensajes y SHA. Los commits `483d5c1
 
 ## Cronología
 
+### 2 de octubre de 2026 — Corrección técnica de indexación y recuperación de contenido
+
+- Auditoría pública de 705 URLs y enlaces adicionales: el español no tiene un bloqueo global; las variantes inglesas permanecen noindex por el requisito de aprobación del tema. Se conservan métricas y fuentes en `docs/AUDITORIA-INDEXACION-TRAFICO-2026-10-02.md` y sus CSV/JSON.
+- Respaldo completo WPvivid `wpvivid-2073ca51bbebc`, 423,00 MB, base de datos y archivos, terminado con estado Succeeded el 2 de octubre a las 13:48 UTC.
+- En producción: ocho descripciones de rutas completadas, título SEO de Andorra 27519 diferenciado, enlace de Montserrat 29556 corregido y guía de IVA 29076 recuperada en una URL correspondiente a su tema. Las reglas de Yoast apuntan a la guía; se verifica aparte la caché de redirecciones históricas.
+- Tema 5.0.7 / plataforma 6.9.5 preparado: categorías y paginación inglesa, pantalla protegida de revisión SEO, validación del lote antes de escribir, restauración ante fallos y huellas que no se invalidan al guardar contenido idéntico. La aprobación editorial se conserva; no se indexan automáticamente traducciones incompletas.
+- Sitemap de variantes revisadas compatible con Yoast y WordPress, hreflang de la portada tras aprobación y exclusión del alias legal cookies. El ZIP permite conservar el directorio real del tema activo `mtseo01102026`.
+- Validación local: 114 pruebas unitarias, 984 aserciones, PHPStan/WPCS y regresiones de ventas/hoteles/pagos aprobadas. Se amplían contratos HTTP de integración. CI e instalación en producción pendientes al registrar esta entrada.
+- La caída de tráfico coincide con Paid Search y Cross-network en cero; los clics orgánicos de Search Console aumentan en la comparación de 28 días. Causa exacta en Ads pendiente; no se reactiva gasto.
+- Detalle y estado de aplicación: [CORRECCIONES-INDEXACION-2026-10-02.md](docs/CORRECCIONES-INDEXACION-2026-10-02.md).
+
 ### 2 de octubre de 2026 — Slugs del blog corregidos en producción y redirecciones verificadas
 
 - Se completa la migración mediante el MCP de WordPress: 140 slugs corresponden al título y tema actuales; los 9 slugs coherentes se conservan.

@@ -12,6 +12,7 @@ final class Indexability {
 		}
 
 		$excluded_slugs = array(
+			'cookies',
 			'reservaciones',
 			'reservas-hotel',
 			'reservas-metransfers',

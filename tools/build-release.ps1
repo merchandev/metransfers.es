@@ -1,5 +1,6 @@
-param([string]$OutputPath = '', [string]$Ref = 'HEAD')
+param([string]$OutputPath = '', [string]$Ref = 'HEAD', [string]$ThemeSlug = 'metransfers')
 $ErrorActionPreference = 'Stop'
+if ($ThemeSlug -cnotmatch '^[a-z0-9][a-z0-9_-]*$') { throw 'ThemeSlug must be a single lowercase directory name.' }
 $repoPath = Split-Path -Parent $PSScriptRoot
 Push-Location -LiteralPath $repoPath
 try {
@@ -8,16 +9,17 @@ try {
     if (-not $OutputPath) { $OutputPath = Join-Path $repoPath ('metransfers-' + $commit.Substring(0, 12) + '.zip') }
     $OutputPath = [IO.Path]::GetFullPath($OutputPath)
     if (Test-Path -LiteralPath $OutputPath) { throw "Output already exists: $OutputPath" }
-    git archive --format=zip --prefix=metransfers/ "--output=$OutputPath" $commit
+    git archive --format=zip "--prefix=$ThemeSlug/" "--output=$OutputPath" $commit
     if ($LASTEXITCODE -ne 0) { throw 'git archive failed.' }
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $archive = [IO.Compression.ZipFile]::OpenRead($OutputPath)
     try {
         $names = @($archive.Entries | ForEach-Object FullName)
-        $unexpected = @($names | Where-Object { $_ -match '^metransfers/(\.git/|\.github/|vendor/|node_modules/|\.phpstan-cache/|\.phpunit.cache/|test-results/|tests/|tools/|docs/|fix_[^/]*\.php$)' })
+        $prefixPattern = '^' + [regex]::Escape($ThemeSlug) + '/'
+        $unexpected = @($names | Where-Object { $_ -match ($prefixPattern + '(\.git/|\.github/|vendor/|node_modules/|\.phpstan-cache/|\.phpunit.cache/|test-results/|tests/|tools/|docs/|fix_[^/]*\.php$)') })
         if ($unexpected.Count) { throw ('Unexpected development files: ' + ($unexpected -join ', ')) }
         foreach ($required in @('style.css', 'functions.php', 'index.php', 'app/bootstrap.php')) {
-            if ($names -cnotcontains "metransfers/$required") { throw "Missing runtime file: $required" }
+            if ($names -cnotcontains "$ThemeSlug/$required") { throw "Missing runtime file: $required" }
         }
     } finally { $archive.Dispose() }
     Write-Output "Commit: $commit"

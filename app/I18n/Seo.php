@@ -95,14 +95,14 @@ final class Seo {
 
 		// Los hubs permanecen ES hasta disponer de una revisión editorial EN-US
 		// completa. Así nunca anunciamos hreflang hacia contenido parcial.
-		if ( in_array( $trimmed, array( '', 'rutas', 'blog' ), true ) ) {
+		if ( in_array( $trimmed, array( 'rutas', 'blog' ), true ) ) {
 			$seo_languages = array( 'es' );
 		} else {
-			$post_id = url_to_postid( home_url( '/' . $trimmed . '/' ) );
-			if ( ! $post_id || ! \MeTransfers\SEO\Indexability::isIndexable( $post_id ) ) {
+			$post = \MeTransfers\SEO\UrlPolicy::postForPath( $trimmed );
+			if ( ! $post || ! \MeTransfers\SEO\Indexability::isIndexable( $post ) ) {
 				return;
 			}
-			$seo_languages = \MeTransfers\SEO\Indexability::languagesForPost( $post_id, $seo_languages );
+			$seo_languages = \MeTransfers\SEO\Indexability::languagesForPost( $post, $seo_languages );
 		}
 
 		foreach ( self::alternatesForRequest( $request_uri, $seo_languages ) as $language => $url ) {

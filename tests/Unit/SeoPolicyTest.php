@@ -22,6 +22,7 @@ final class SeoPolicyTest extends TestCase {
 				'post_name'     => 'barcelona-salou',
 				'post_title'    => 'Barcelona - Salou',
 				'post_content'  => 'Contenido de Salou.',
+				'post_excerpt'  => '',
 				'post_modified' => '2026-09-08 10:00:00',
 			),
 		);
@@ -167,6 +168,7 @@ final class SeoPolicyTest extends TestCase {
 		// revisada explícitamente; sin registro de aprobación no hay opt-in.
 		self::assertSame( array( 'es' ), Indexability::languagesForPost( 1, array( 'es', 'en' ) ) );
 		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_variant_en'] = array(
+			'schema_version'      => \MeTransfers\SEO\Variants::SCHEMA_VERSION,
 			'translated_reviewed' => true,
 			'http_status'         => 200,
 			'canonical'           => 'https://example.test/en/rutas/barcelona-salou/',
@@ -209,6 +211,7 @@ final class SeoPolicyTest extends TestCase {
 		// Un registro explícito y válido (revisado, hash y canonical vigentes)
 		// es el único camino para que un enlace conserve el prefijo /en/.
 		$GLOBALS['mt_test_post_meta'][1]['_mt_seo_variant_en'] = array(
+			'schema_version'      => \MeTransfers\SEO\Variants::SCHEMA_VERSION,
 			'translated_reviewed' => true,
 			'http_status'         => 200,
 			'canonical'           => 'https://example.test/en/rutas/barcelona-salou/',

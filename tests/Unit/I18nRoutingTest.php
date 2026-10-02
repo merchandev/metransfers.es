@@ -14,6 +14,48 @@ require_once dirname( __DIR__ ) . '/Support/RouterWordPress.php';
 final class I18nRoutingTest extends TestCase {
 	private const LANGUAGES = array( 'es', 'en' );
 
+	public function testTranslatedBlogPaginationAndNestedCategoryPathsResolveAsArchives(): void {
+		self::assertSame(
+			array(
+				'page'     => 'blog',
+				'type'     => 'post',
+				'paged'    => 15,
+				'category' => '',
+			),
+			Router::archiveRequest( 'blog/page/15' )
+		);
+		self::assertSame(
+			array(
+				'page'     => 'blog',
+				'type'     => 'post',
+				'paged'    => 2,
+				'category' => 'transfers/airport',
+			),
+			Router::archiveRequest( 'category/transfers/airport/page/2' )
+		);
+		self::assertSame(
+			array(
+				'page'     => 'blog',
+				'type'     => 'post',
+				'paged'    => 1,
+				'category' => 'taxi-en-barcelona',
+			),
+			Router::archiveRequest( 'temas/taxi-en-barcelona', 'temas' )
+		);
+		self::assertSame(
+			array(
+				'page'     => 'rutas',
+				'type'     => 'ruta',
+				'paged'    => 2,
+				'category' => '',
+			),
+			Router::archiveRequest( 'rutas/page/2' )
+		);
+		self::assertNull( Router::archiveRequest( 'rutas/barcelona-salou' ) );
+		self::assertNull( Router::archiveRequest( 'blog/page/0' ) );
+		self::assertNull( Router::archiveRequest( 'blog/page/2/extra' ) );
+	}
+
 	public function testOnlyPublicUnprotectedPostsCanBeHydrated(): void {
 		foreach ( array( 'draft', 'private', 'trash', 'pending', 'future' ) as $status ) {
 			self::assertFalse(

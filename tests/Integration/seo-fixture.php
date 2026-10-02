@@ -41,5 +41,12 @@ foreach ( $fixtures as $fixture ) {
 		update_post_meta( $id, '_mt_ruta_destino', ucfirst( str_replace( 'barcelona-', '', $fixture[1] ) ) );
 	}
 }
+$category_id = wp_create_category( 'MT archive fixture' );
+foreach ( range( 1, 6 ) as $number ) {
+	$id = wp_insert_post( array( 'post_type' => 'post', 'post_name' => 'mt-archive-' . $number, 'post_title' => 'MT_ARCHIVE_PUBLIC_' . $number, 'post_content' => 'Archive public fixture.', 'post_status' => 'publish', 'post_category' => array( $category_id ) ) );
+}
+foreach ( array( 'draft', 'private', 'publish' ) as $status ) {
+	wp_insert_post( array( 'post_type' => 'post', 'post_title' => 'MT_ARCHIVE_PROTECTED_SENTINEL', 'post_content' => 'MT_ARCHIVE_PROTECTED_SENTINEL', 'post_status' => $status, 'post_password' => 'publish' === $status ? 'fixture-secret' : '', 'post_category' => array( $category_id ) ) );
+}
 flush_rewrite_rules();
 WP_CLI::success( 'SEO fixture prepared.' );

@@ -100,7 +100,8 @@ if ( $yoast ) {
 	mt_seo_assert( '' !== mt_seo_attr( $body, '//meta[@name="description"]', 'content' ), 'Yoast route description is required.' );
 }
 
-update_post_meta( $salou->ID, '_mt_seo_variant_en', array( 'translated_reviewed' => true, 'http_status' => 200, 'canonical' => home_url( '/en/rutas/barcelona-salou/' ), 'source_hash' => \MeTransfers\SEO\Variants::fingerprint( $salou ) ) );
+$batch = \MeTransfers\SEO\VariantApproval::prepare( array( array( 'id' => $salou->ID, 'language' => 'en', 'editorial_approved' => true ) ) );
+mt_seo_assert( ! $batch['errors'] && ! \MeTransfers\SEO\VariantApproval::apply( $batch ), 'Reviewed variant approval must succeed on a real database.' );
 $english      = mt_seo_fetch( '/en/rutas/barcelona-salou/' );
 $english_body = wp_remote_retrieve_body( $english );
 mt_seo_assert( 200 === wp_remote_retrieve_response_code( $english ), 'Approved English must exist.' );
@@ -109,6 +110,11 @@ mt_seo_assert( home_url( '/en/rutas/barcelona-salou/' ) === mt_seo_attr( $englis
 mt_seo_assert( home_url( '/rutas/barcelona-salou/' ) === mt_seo_attr( $english_body, '//link[@hreflang="es-ES"]', 'href' ), 'English must reciprocate Spanish.' );
 $spanish = wp_remote_retrieve_body( mt_seo_fetch( '/rutas/barcelona-salou/' ) );
 mt_seo_assert( home_url( '/en/rutas/barcelona-salou/' ) === mt_seo_attr( $spanish, '//link[@hreflang="en-US"]', 'href' ), 'Spanish must reciprocate approved US English.' );
+$language_sitemap = wp_remote_retrieve_body( mt_seo_fetch( '/mt-language-sitemap.xml' ) );
+mt_seo_assert( false !== strpos( $language_sitemap, home_url( '/en/rutas/barcelona-salou/' ) ), 'Language sitemap must include approved variant.' );
+mt_seo_assert( false === strpos( $language_sitemap, '/en/sobre-nosotros/' ), 'Language sitemap must exclude unreviewed variants.' );
+$sitemap_index = wp_remote_retrieve_body( mt_seo_fetch( $yoast ? '/sitemap_index.xml' : '/wp-sitemap.xml' ) );
+mt_seo_assert( false !== strpos( $sitemap_index, $yoast ? '/mt-language-sitemap.xml' : 'wp-sitemap-mtlanguages-' ), 'Active sitemap index must discover reviewed variants.' );
 delete_post_meta( $salou->ID, '_mt_seo_variant_en' );
 
 // Retired languages must collapse to Spanish without exposing old language trees.
@@ -139,4 +145,19 @@ mt_seo_assert( 404 === wp_remote_retrieve_response_code( mt_seo_fetch( '/en/taxi
 $home_body = wp_remote_retrieve_body( mt_seo_fetch( '/' ) );
 $blog_body = wp_remote_retrieve_body( mt_seo_fetch( '/en/blog/' ) );
 mt_seo_assert( mt_seo_attr( $home_body, '//meta[@name="description"]', 'content' ) !== mt_seo_attr( $blog_body, '//meta[@name="description"]', 'content' ), 'Home and Blog need distinct descriptions.' );
+
+// Follow the English category and pagination links that previously returned 404.
+$posts_per_page = get_option( 'posts_per_page' );
+update_option( 'posts_per_page', 2 );
+$category = get_term_by( 'name', 'MT archive fixture', 'category' );
+foreach ( array( '/en/blog/page/2/', '/en/category/' . $category->slug . '/', '/en/category/' . $category->slug . '/page/2/' ) as $path ) {
+	$response = mt_seo_fetch( $path );
+	mt_seo_assert( 200 === wp_remote_retrieve_response_code( $response ), 'Translated archive must work: ' . $path );
+	$html = wp_remote_retrieve_body( $response );
+	mt_seo_assert( false !== strpos( $html, 'MT_ARCHIVE_PUBLIC_' ), 'Translated archive must list actual public posts: ' . $path );
+	mt_seo_assert( false === strpos( $html, 'MT_ARCHIVE_PROTECTED_SENTINEL' ), 'Archives must not leak draft, private or password-protected posts.' );
+}
+mt_seo_assert( 404 === wp_remote_retrieve_response_code( mt_seo_fetch( '/en/blog/page/9999/' ) ), 'Out-of-range pagination must remain 404.' );
+mt_seo_assert( 404 === wp_remote_retrieve_response_code( mt_seo_fetch( '/en/category/nonexistent-mt-category/' ) ), 'Missing categories must remain 404.' );
+update_option( 'posts_per_page', $posts_per_page );
 WP_CLI::success( 'SEO HTTP contracts passed with ' . ( $yoast ? 'Yoast' : 'WordPress core' ) . '.' );

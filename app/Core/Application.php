@@ -11,7 +11,7 @@ class Application {
 		self::$booted = true;
 
 		if ( ! defined( 'MT_PLATFORM_VERSION' ) ) {
-			define( 'MT_PLATFORM_VERSION', '6.9.4' );
+			define( 'MT_PLATFORM_VERSION', '6.9.5' );
 		}
 		if ( ! defined( 'MT_PLATFORM_DB_VERSION' ) ) {
 			define( 'MT_PLATFORM_DB_VERSION', '6.10.0' );
@@ -81,6 +81,8 @@ class Application {
 		( new \MeTransfers\SEO\Policy() )->register();
 		( new \MeTransfers\SEO\Meta() )->register();
 		( new \MeTransfers\SEO\Links() )->register();
+		( new \MeTransfers\SEO\VariantAdmin() )->register();
+		( new \MeTransfers\SEO\LanguageSitemap() )->register();
 
 		$outbox = new \MeTransfers\Core\Outbox();
 		$outbox->register();

@@ -177,13 +177,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Setup PHP and WP-CLI
+      - name: Setup PHP
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: '8.2'
           coverage: none
           extensions: mysqli
-          tools: wp-cli
+          tools: none
+        env:
+          fail-fast: true
+
+      - name: Install verified WP-CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --retry-all-errors --connect-timeout 15 --max-time 120 \
+            https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar \
+            --output "$RUNNER_TEMP/wp-cli.phar"
+          echo "ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  $RUNNER_TEMP/wp-cli.phar" | sha256sum --check --strict
+          sudo install -m 755 "$RUNNER_TEMP/wp-cli.phar" /usr/local/bin/wp
+          wp --info
 
       - name: Install WordPress fixture
         env:
