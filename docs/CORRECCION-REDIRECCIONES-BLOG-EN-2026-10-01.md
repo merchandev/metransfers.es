@@ -1,60 +1,68 @@
-# Corrección de las URLs antiguas del blog en inglés
+# Redirecciones antiguas del blog en español e inglés
 
-Fecha de trabajo: 1 de octubre de 2026, hora del usuario. Estado: código probado localmente; instalación en producción pendiente.
+**Estado final: aplicadas en producción el 1–2 de octubre de 2026 y verificadas sobre 866 URLs.**
 
-## Problema confirmado
+## Solución aplicada
 
-Una edición ordinaria del slug mediante el MCP de WordPress conserva la redirección nativa de la URL española, pero la URL antigua bajo `/en/` devuelve 404. La prueba de la entrada 29746 dio:
+Se utilizó **Yoast SEO Premium**, ya instalado, con el método **PHP**. El método anterior de servidor y archivo separado guardaba las reglas, pero no las ejecutaba públicamente. No fue necesario editar el tema activo ni la configuración de SiteGround.
 
-| Petición durante la prueba | Resultado |
-|---|---|
-| URL española antigua | 301 hacia el slug nuevo |
-| URL española nueva | 200 y canonical nuevo |
-| URL inglesa antigua | 404 |
-| URL inglesa nueva | 200 |
+Los 140 slugs se cambiaron mediante el MCP de WordPress. Las reglas del gestor se contrastaron y se comprobaron las URLs antiguas y nuevas en ambos idiomas, con y sin parámetros de campaña.
 
-La migración masiva de slugs se detuvo y se inició la restauración de las 39 URLs modificadas. Después de restaurar la entrada de prueba, sus URLs originales en español e inglés volvieron a responder 200. Las correcciones de contenido se conservan.
+- 560 URLs antiguas: 301 al destino correcto.
+- 280 URLs nuevas: 200.
+- 18 URLs de artículos que conservaron su slug: 200.
+- 8 páginas de control de ventas: 200.
+- 149 canonical correctos, robots conservados y 149 entradas en el sitemap.
+- Ninguna regla temporal 302 restante.
+- 12 reglas históricas ajenas a esta migración conservadas.
 
-## Causa
+El inventario está en [BLOG-URLS-FINAL-2026-10-02.csv](BLOG-URLS-FINAL-2026-10-02.csv). El mapa de reglas aplicado es [REDIRECCIONES-BLOG-2026-10-02.csv](REDIRECCIONES-BLOG-2026-10-02.csv). El reporte completo y el código están en [RESULTADO-BLOG-MCP-2026-10-01.md](RESULTADO-BLOG-MCP-2026-10-01.md).
 
-El router del tema interpreta las URLs inglesas con las variables `mt_lang` y `mt_page`. La función nativa `wp_old_slug_redirect()` requiere la variable `name`; por eso no encuentra el historial del slug en esa ruta. La condición puede comprobarse en el [código oficial de WordPress](https://developer.wordpress.org/reference/functions/wp_old_slug_redirect/). El registro `_wp_old_slug` se crea al editar el permalink, pero el router de idiomas no lo consulta.
+## Patrones de las reglas
 
-## Código preparado
+Para slugs que empiezan por letras, una regla exacta conserva el prefijo inglés y la cadena de consulta:
 
-La implementación está en `app/SEO/BlogSlugRedirects.php`. Amplía el manejador existente: cuando no hay una coincidencia en el mapa explícito, busca el antiguo slug en `_wp_old_slug` y conserva el prefijo `/en/` y la cadena de consulta.
+```text
+Origen: ^/?(en/)?slug-antiguo/?(\?.*)?$
+Destino: /$1slug-nuevo/$2
+Tipo: 301
+```
 
-Condiciones para redirigir:
+La entrada de prueba 29746 utiliza la regla de parámetros con dos capturas y sendas reglas simples para las URLs sin parámetros:
 
-- Petición GET o HEAD que WordPress ya ha determinado como 404.
-- Ruta inglesa de un solo segmento; no coincide con rutas anidadas de reservas, administración o API.
-- No existe una página o entrada con el slug solicitado.
-- Existe exactamente una entrada publicada con ese slug antiguo.
-- El destino es una entrada de blog publicada y sin contraseña.
-- El slug de destino es distinto del origen.
+```text
+Origen: ^/?(en/)?lonjas-de-pescado-en-la-costa-de-cataluna/?\?(.*)$
+Destino: /$1como-escoger-el-mejor-servicio-de-transfer-en-barcelona-guia-completa/?$2
+Tipo: 301
+```
 
-El código no modifica aprobaciones de traducción, robots, canonical, reservas ni formularios. Visitar una URL inglesa sigue las reglas de indexación del tema. La redirección no equivale a aprobar o certificar la traducción del artículo.
+Para el artículo cuyo slug empieza por **10-**, se usan reglas independientes. Así los dígitos no se concatenan con una referencia de captura:
 
-## Instalación y verificación
+```text
+Origen ES: ^/?tour-privado-por-los-pueblos-medievales-de-cataluna-desde-barcelona/?(\?.*)?$
+Destino ES: /10-consejos-para-elegir-el-mejor-servicio-de-traslado-en-barcelona/$1
+Origen EN: ^/?en/tour-privado-por-los-pueblos-medievales-de-cataluna-desde-barcelona/?(\?.*)?$
+Destino EN: /en/10-consejos-para-elegir-el-mejor-servicio-de-traslado-en-barcelona/$1
+Tipo: 301
+```
 
-1. Hacer una copia del archivo activo `app/SEO/BlogSlugRedirects.php` y comprobar que `app/Core/Application.php` registra esta clase. Si la versión instalada carece de ella, preparar el parche contra esa versión antes de subir archivos.
-2. Reemplazar únicamente el manejador de redirecciones por el archivo preparado. No usar una actualización completa del tema para esta corrección aislada.
-3. Cambiar una sola entrada de prueba, después de leer su estado actual y conservar una copia.
-4. Verificar URLs antiguas y nuevas en español e inglés, con y sin parámetros de consulta. Exigir 301 correcto en las antiguas, 200 en las nuevas y ausencia de bucles.
-5. Continuar con los 140 slugs del manifiesto solo cuando la prueba anterior pase.
-6. Comprobar cada permalink y el sitemap final; conservar el diario de cambios y los archivos de restauración.
+La primera verificación encontró una concatenación ambigua en ese caso. Las seis URLs afectadas se repitieron después de corregirlo y pasaron. Se preserva el resultado inicial y el resultado final en la copia externa de seguridad.
 
-El MCP conectado permite editar entradas y campos SEO, pero no expone ninguna capacidad para modificar archivos del tema, instalar esta corrección o administrar redirecciones. Se abrió una pestaña del panel de WordPress para completar el acceso a los archivos mediante una sesión administrativa. El inicio de sesión está pendiente; no falta autorización del usuario.
+En 138 artículos se conservaron también las reglas inglesas explícitas, convertidas de protección temporal a 301. Sus destinos coinciden con los de las reglas de ambos idiomas. El total actual es **153 reglas simples y 278 regex**.
 
-## Pruebas locales
+La importación CSV de Yoast añade reglas nuevas y omite los orígenes ya existentes. Para corregir una regla guardada se utilizó su editor; repetir el CSV no sustituye esa edición. Véase la [documentación oficial de importación de Yoast](https://yoast.com/help/import-redirects/).
 
-- PHPUnit: 107 pruebas, 947 aserciones; ninguna prueba fallida. El ejecutor informa una deprecación ya presente en su configuración.
-- PHPStan: sin errores.
-- PHPCS de los archivos PHP modificados: sin infracciones después del ajuste de formato.
-- Casos añadidos: idioma y parámetros preservados; destinos inexistentes, ambiguos, privados o con contraseña rechazados; URLs existentes y rutas anidadas excluidas.
+## Alternativa de código para futuros cambios
 
-Estas pruebas locales no certifican que el archivo esté instalado en producción. La comprobación pública de las redirecciones debe repetirse después de instalarlo.
+El router del tema usa `mt_lang` y `mt_page`; la redirección nativa de slugs antiguos exige `name`. Por eso los enlaces ingleses antiguos no funcionaban con la redirección nativa. La condición está en el [código oficial de WordPress](https://developer.wordpress.org/reference/functions/wp_old_slug_redirect/).
 
-## Código completo preparado
+El fallback de `app/SEO/BlogSlugRedirects.php` consulta `_wp_old_slug` ante un 404 inglés real y preserva idioma y parámetros. Rechaza destinos ambiguos, privados o con contraseña y excluye reservas, pagos, administración y rutas anidadas.
+
+**Este fallback está integrado y probado en el repositorio; no se instaló en el tema de producción.** El editor de archivos del tema denegó el acceso. Mientras no se despliegue, los futuros cambios de permalink requieren mantener su redirección inglesa en Yoast.
+
+La validación de los PR [64](https://github.com/merchandev/metransfers.es/pull/64) y [65](https://github.com/merchandev/metransfers.es/pull/65) aprobó los ocho controles de CI, incluidas tres versiones reales de WordPress. La redirección no aprueba traducciones ni cambia las directivas robots.
+
+## Código del fallback
 
 ```php
 <?php

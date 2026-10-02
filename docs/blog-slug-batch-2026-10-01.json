@@ -1,6 +1,6 @@
 {
-  "version": "2026-10-01-complete-blog-slugs-v1",
-  "status": "prepared_waiting_live_english_redirect_deployment",
+  "version": "2026-10-02-complete-blog-slugs-applied-v2",
+  "status": "applied_live_verified",
   "authorization": "User requested direct blog corrections in this conversation on 2026-10-01.",
   "preflight": {
     "authenticated": true,
@@ -76,7 +76,10 @@
       "public_title": "Traslado Privado de Barcelona a Madrid | Transfer VIP con MeTransfers",
       "source_url": "https://metransfers.es/por-que-elegir-traslados-para-la-operacion-salida-como-evitar-el-caos-en-el-prat-durante-el-inicio-de-vacaciones-3966/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "52899d3547d408734c5bf152906c9b64ad03592656260abd5b5fe9b8ea979fad"
+      "expected_rendered_content_sha256": "52899d3547d408734c5bf152906c9b64ad03592656260abd5b5fe9b8ea979fad",
+      "applied_modified": "2026-10-02T01:53:55",
+      "applied_url": "https://metransfers.es/traslado-privado-de-barcelona-a-madrid/",
+      "applied_verified": true
     },
     {
       "id": 1001,
@@ -87,7 +90,10 @@
       "public_title": "Traslado Barcelona a Valencia en Coche Privado | MeTransfers",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-escapadas-de-un-dia-ruta-por-los-pueblos-blancos-de-la-costa-brava-en-transporte-privado-3753/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "8b9bc44353d88b093b08d19ef993f4eaa1dd63ebdb6d6cc7768241b5f8c0cabb"
+      "expected_rendered_content_sha256": "8b9bc44353d88b093b08d19ef993f4eaa1dd63ebdb6d6cc7768241b5f8c0cabb",
+      "applied_modified": "2026-10-02T01:59:56",
+      "applied_url": "https://metransfers.es/traslado-barcelona-a-valencia-en-coche-privado/",
+      "applied_verified": true
     },
     {
       "id": 1002,
@@ -98,7 +104,10 @@
       "public_title": "Transfer Privado Barcelona a Sevilla | Viaje Cómodo con Conductor",
       "source_url": "https://metransfers.es/por-que-elegir-equipaje-sin-limites-por-que-la-mercedes-clase-v-es-la-mejor-opcion-para-familias-en-semana-santa-5756/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "2130b24d8a3890433d0f8a272a79d48678f7393612777aefaaf2fd415fc09f31"
+      "expected_rendered_content_sha256": "2130b24d8a3890433d0f8a272a79d48678f7393612777aefaaf2fd415fc09f31",
+      "applied_modified": "2026-10-02T02:00:10",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-sevilla/",
+      "applied_verified": true
     },
     {
       "id": 1003,
@@ -109,7 +118,10 @@
       "public_title": "Traslado Barcelona a Málaga con Conductor Privado | MeTransfers VIP",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-tranquilidad-en-el-puerto-traslados-directos-para-cruceros-que-salen-de-barcelona-este-marzo-2926/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "f129464c9355d49b102fe6f42c56361ff616a2687380fb07ff2c6ce42ff5dd79"
+      "expected_rendered_content_sha256": "f129464c9355d49b102fe6f42c56361ff616a2687380fb07ff2c6ce42ff5dd79",
+      "applied_modified": "2026-10-02T02:00:20",
+      "applied_url": "https://metransfers.es/traslado-barcelona-a-malaga-con-conductor-privado/",
+      "applied_verified": true
     },
     {
       "id": 1004,
@@ -120,7 +132,10 @@
       "public_title": "Transfer Barcelona a Zaragoza | Traslado Privado Rápido y Cómodo",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-andorra-en-primavera-ultimos-dias-de-nieve-y-traslados-comodos-desde-el-aeropuerto-2319/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "5021567c604a63d1431ee5f8bfe99ef7edf86d8bae249afa61fab432f9809a68"
+      "expected_rendered_content_sha256": "5021567c604a63d1431ee5f8bfe99ef7edf86d8bae249afa61fab432f9809a68",
+      "applied_modified": "2026-10-02T02:00:23",
+      "applied_url": "https://metransfers.es/transfer-barcelona-a-zaragoza/",
+      "applied_verified": true
     },
     {
       "id": 1005,
@@ -131,7 +146,10 @@
       "public_title": "Traslado Privado Barcelona a Bilbao | Transfer País Vasco con MeTransfers",
       "source_url": "https://metransfers.es/descubre-dia-del-padre-regala-una-experiencia-de-tour-privado-por-los-vinedos-del-penedes-7476/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "431d30d4aa5f575759e8143a6c8e144af70696e6d54ab99fddbbaa3357d93512"
+      "expected_rendered_content_sha256": "431d30d4aa5f575759e8143a6c8e144af70696e6d54ab99fddbbaa3357d93512",
+      "applied_modified": "2026-10-02T02:00:27",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-bilbao/",
+      "applied_verified": true
     },
     {
       "id": 1006,
@@ -142,7 +160,10 @@
       "public_title": "Transfer Privado Barcelona a San Sebastián | Donostia con Conductor",
       "source_url": "https://metransfers.es/descubre-turismo-religioso-traslados-a-montserrat-para-las-celebraciones-de-semana-santa-2318/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "d04550e0c8c3884ec02b7791bba92ec5f75b3e060d876c514e480e8f4256a578"
+      "expected_rendered_content_sha256": "d04550e0c8c3884ec02b7791bba92ec5f75b3e060d876c514e480e8f4256a578",
+      "applied_modified": "2026-10-02T02:00:28",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-san-sebastian/",
+      "applied_verified": true
     },
     {
       "id": 1007,
@@ -153,7 +174,10 @@
       "public_title": "Traslado Barcelona a Granada | Transporte Privado a la Alhambra",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-barcelona-gourmet-traslados-a-los-restaurantes-mas-exclusivos-para-cenas-de-primavera-8956/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "f8b69edeaac220db50f6ce695f68ee3782d3f5eea582fddd591b006688237df2"
+      "expected_rendered_content_sha256": "f8b69edeaac220db50f6ce695f68ee3782d3f5eea582fddd591b006688237df2",
+      "applied_modified": "2026-10-02T02:00:32",
+      "applied_url": "https://metransfers.es/traslado-barcelona-a-granada/",
+      "applied_verified": true
     },
     {
       "id": 1008,
@@ -164,7 +188,10 @@
       "public_title": "Transfer Barcelona a Pamplona | Traslado Privado a los Sanfermines",
       "source_url": "https://metransfers.es/guia-completa-logistica-de-maletas-servicio-de-custodia-y-traslado-de-equipaje-para-escalas-largas-en-el-prat-3561/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "92aead9918d96aa1edb9834ae767c18a548799d6d0d43f683570e6fca5d39d9f"
+      "expected_rendered_content_sha256": "92aead9918d96aa1edb9834ae767c18a548799d6d0d43f683570e6fca5d39d9f",
+      "applied_modified": "2026-10-02T02:00:35",
+      "applied_url": "https://metransfers.es/transfer-barcelona-a-pamplona/",
+      "applied_verified": true
     },
     {
       "id": 1009,
@@ -175,7 +202,10 @@
       "public_title": "Traslado Privado Barcelona a Alicante | Transfer Costa Blanca",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-seguridad-infantil-sillas-homologadas-y-confort-en-todos-nuestros-traslados-familiares-6210/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "9a1047f0752d38a0aadf583bc468774e8939a0e6cc6f9139b9dfd41d5b31799b"
+      "expected_rendered_content_sha256": "9a1047f0752d38a0aadf583bc468774e8939a0e6cc6f9139b9dfd41d5b31799b",
+      "applied_modified": "2026-10-02T02:00:43",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-alicante/",
+      "applied_verified": true
     },
     {
       "id": 1010,
@@ -186,7 +216,10 @@
       "public_title": "Traslado Barcelona a Tarragona | Transfer Privado a las Ruinas Romanas",
       "source_url": "https://metransfers.es/guia-completa-puntualidad-en-festivos-como-garantizamos-tu-recogida-incluso-en-dias-de-alta-demanda-8168/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "f9db3988a34c49b5bc95f41913d11564a669782580f9dc2e1f0144644cba7588"
+      "expected_rendered_content_sha256": "f9db3988a34c49b5bc95f41913d11564a669782580f9dc2e1f0144644cba7588",
+      "applied_modified": "2026-10-02T02:00:49",
+      "applied_url": "https://metransfers.es/traslado-barcelona-a-tarragona/",
+      "applied_verified": true
     },
     {
       "id": 1011,
@@ -197,7 +230,10 @@
       "public_title": "Transfer Privado Barcelona a Girona | Traslado al Aeropuerto y Ciudad",
       "source_url": "https://metransfers.es/guia-completa-tour-de-gaudi-aprovecha-el-sol-de-marzo-para-visitar-la-sagrada-familia-sin-prisas-7721/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "274f5a9884bac09a1f71100423099245084f8e65975c334a7370ea9ce5c8b7d7"
+      "expected_rendered_content_sha256": "274f5a9884bac09a1f71100423099245084f8e65975c334a7370ea9ce5c8b7d7",
+      "applied_modified": "2026-10-02T02:04:13",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-girona/",
+      "applied_verified": true
     },
     {
       "id": 1013,
@@ -208,7 +244,10 @@
       "public_title": "Transfer Barcelona a PortAventura | Traslado Privado al Parque",
       "source_url": "https://metransfers.es/guia-completa-conexiones-interurbanas-traslados-de-barcelona-a-girona-rapidez-y-confort-4977/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "1afe4505c9ba954b9efc5d0c2ef697571ed5bd4179fb3cbed81e17276d9a4261"
+      "expected_rendered_content_sha256": "1afe4505c9ba954b9efc5d0c2ef697571ed5bd4179fb3cbed81e17276d9a4261",
+      "applied_modified": "2026-10-02T02:04:16",
+      "applied_url": "https://metransfers.es/transfer-barcelona-a-portaventura/",
+      "applied_verified": true
     },
     {
       "id": 1014,
@@ -219,7 +258,10 @@
       "public_title": "Traslado Barcelona a Montserrat | Transfer Privado a la Montaña Sagrada",
       "source_url": "https://metransfers.es/por-que-elegir-dia-mundial-del-teatro-traslados-a-los-mejores-espectaculos-del-paral-lel-8639/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "ac59133e8fea6b9602e43a8b492659ef0ca28c1451f661c9d4e16684bc7c9cd3"
+      "expected_rendered_content_sha256": "ac59133e8fea6b9602e43a8b492659ef0ca28c1451f661c9d4e16684bc7c9cd3",
+      "applied_modified": "2026-10-02T02:04:19",
+      "applied_url": "https://metransfers.es/traslado-barcelona-a-montserrat/",
+      "applied_verified": true
     },
     {
       "id": 1015,
@@ -230,7 +272,10 @@
       "public_title": "Transfer Privado Barcelona a Costa Dorada | Traslado a las Mejores Playas",
       "source_url": "https://metransfers.es/guia-completa-cambio-de-hora-como-ajustamos-nuestros-sistemas-para-que-tu-chofer-siempre-este-a-tiempo-1305/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "89f57641eea0ecb074e6fda83c1b0435ce95e403eff6cfddf4d48e9868e20a4f"
+      "expected_rendered_content_sha256": "89f57641eea0ecb074e6fda83c1b0435ce95e403eff6cfddf4d48e9868e20a4f",
+      "applied_modified": "2026-10-02T02:04:21",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-costa-dorada/",
+      "applied_verified": true
     },
     {
       "id": 1016,
@@ -241,7 +286,10 @@
       "public_title": "Traslado Barcelona a Costa Brava | Transfer Privado a las Calas del Mediterráneo",
       "source_url": "https://metransfers.es/guia-completa-primavera-de-negocios-la-importancia-de-un-chofer-privado-para-ejecutivos-en-abril-6512/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "e68dfefabadc242c3e1359316e14ce3f93628ad2b863919fcfc4ff34bb30ce51"
+      "expected_rendered_content_sha256": "e68dfefabadc242c3e1359316e14ce3f93628ad2b863919fcfc4ff34bb30ce51",
+      "applied_modified": "2026-10-02T02:04:25",
+      "applied_url": "https://metransfers.es/traslado-barcelona-a-costa-brava/",
+      "applied_verified": true
     },
     {
       "id": 1017,
@@ -252,7 +300,10 @@
       "public_title": "Transfer Privado Barcelona a Andorra | Traslado Puerta a Puerta al Principado",
       "source_url": "https://metransfers.es/guia-completa-traslados-al-mwc-post-analisis-lecciones-de-movilidad-aprendidas-para-el-proximo-ano-3634/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "e9ff71345aba27f4c482ac429935e7f5be53780483159b94148da012b2835d9e"
+      "expected_rendered_content_sha256": "e9ff71345aba27f4c482ac429935e7f5be53780483159b94148da012b2835d9e",
+      "applied_modified": "2026-10-02T02:04:27",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-andorra/",
+      "applied_verified": true
     },
     {
       "id": 1018,
@@ -263,7 +314,10 @@
       "public_title": "Traslado Barcelona a Lloret de Mar | Transfer Privado Costa Brava",
       "source_url": "https://metransfers.es/guia-completa-barcelona-open-banc-sabadell-traslados-exclusivos-al-real-club-de-tenis-barcelona-9443/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "8b5871ce3cbb9384b982aabe3e8b14abb292aeb6c86d8ea00d107a9d1712ab9c"
+      "expected_rendered_content_sha256": "8b5871ce3cbb9384b982aabe3e8b14abb292aeb6c86d8ea00d107a9d1712ab9c",
+      "applied_modified": "2026-10-02T02:04:30",
+      "applied_url": "https://metransfers.es/traslado-barcelona-a-lloret-de-mar/",
+      "applied_verified": true
     },
     {
       "id": 1019,
@@ -274,7 +328,10 @@
       "public_title": "Transfer Barcelona a Cadaqués | Traslado Privado al Pueblo de Dalí",
       "source_url": "https://metransfers.es/guia-completa-logistica-para-congresos-como-coordinamos-flotas-para-eventos-medicos-en-la-fira-9648/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "371697824e31c4cfc71b7d544abf1bae2402ae3e4261891c146c0e1b6e481b89"
+      "expected_rendered_content_sha256": "371697824e31c4cfc71b7d544abf1bae2402ae3e4261891c146c0e1b6e481b89",
+      "applied_modified": "2026-10-02T02:04:32",
+      "applied_url": "https://metransfers.es/transfer-barcelona-a-cadaques/",
+      "applied_verified": true
     },
     {
       "id": 1020,
@@ -285,7 +342,10 @@
       "public_title": "Traslado Privado Barcelona a Figueres | Transfer al Museo Dalí",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-dia-mundial-de-la-salud-traslados-medicos-privados-con-total-discrecion-4870/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "14d781a6ba919c35f5d4ea215877cd7ca2d779ed5cfcdeb648a7099127a207b6"
+      "expected_rendered_content_sha256": "14d781a6ba919c35f5d4ea215877cd7ca2d779ed5cfcdeb648a7099127a207b6",
+      "applied_modified": "2026-10-02T02:04:36",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-figueres/",
+      "applied_verified": true
     },
     {
       "id": 1021,
@@ -296,7 +356,10 @@
       "public_title": "Transfer Barcelona a Reus | Traslado Privado al Aeropuerto de Reus",
       "source_url": "https://metransfers.es/guia-completa-shopping-tour-visita-a-la-roca-village-con-chofer-privado-y-espacio-para-todas-tus-compras-1963/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "7dce6d26398ebd1233953215e53ddd33357545f5dc55e0f10b4376191da877cb"
+      "expected_rendered_content_sha256": "7dce6d26398ebd1233953215e53ddd33357545f5dc55e0f10b4376191da877cb",
+      "applied_modified": "2026-10-02T02:04:38",
+      "applied_url": "https://metransfers.es/transfer-barcelona-a-reus/",
+      "applied_verified": true
     },
     {
       "id": 1022,
@@ -307,7 +370,10 @@
       "public_title": "Traslado Privado Barcelona a Lleida | Transfer Capital del Segriá",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-ruta-del-romanico-descubre-el-vall-de-boi-con-un-traslado-de-larga-distancia-8497/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "5e28d1b41fa8146daa0099778b52e58a0679d7fe502263ba96f895de95255ab7"
+      "expected_rendered_content_sha256": "5e28d1b41fa8146daa0099778b52e58a0679d7fe502263ba96f895de95255ab7",
+      "applied_modified": "2026-10-02T02:04:40",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-lleida/",
+      "applied_verified": true
     },
     {
       "id": 1023,
@@ -318,7 +384,10 @@
       "public_title": "Transfer Privado Barcelona a Blanes | Traslado a la Puerta de la Costa Brava",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-barcelona-desde-el-aire-traslados-combinados-con-tours-en-helicoptero-3169/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "ada72a6e5460cd1a0dcbb86d3f2975a83acaa692cffc33ad893bf7a60a746c85"
+      "expected_rendered_content_sha256": "ada72a6e5460cd1a0dcbb86d3f2975a83acaa692cffc33ad893bf7a60a746c85",
+      "applied_modified": "2026-10-02T02:04:42",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-blanes/",
+      "applied_verified": true
     },
     {
       "id": 1024,
@@ -329,7 +398,10 @@
       "public_title": "Traslado Barcelona a Tossa de Mar | Transfer Privado a la Villa Amurallada",
       "source_url": "https://metransfers.es/por-que-elegir-atencion-24-7-por-que-nuestro-soporte-humano-marca-la-diferencia-frente-a-las-apps-4655/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "f4f1ddb3246d27d0bd38d832f04b204b01fe4844c057227d02aa930c89c69386"
+      "expected_rendered_content_sha256": "f4f1ddb3246d27d0bd38d832f04b204b01fe4844c057227d02aa930c89c69386",
+      "applied_modified": "2026-10-02T02:04:45",
+      "applied_url": "https://metransfers.es/traslado-barcelona-a-tossa-de-mar/",
+      "applied_verified": true
     },
     {
       "id": 1025,
@@ -340,7 +412,10 @@
       "public_title": "Transfer Barcelona a Perpiñán | Traslado Privado a Francia por La Jonquera",
       "source_url": "https://metransfers.es/guia-completa-viajes-con-mascotas-traslados-pet-friendly-en-barcelona-viaja-con-tu-mejor-amigo-7127/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "9f1026976d32404931dbe592753dc6e6de109d7415ea40ffa972e1c9e5844769"
+      "expected_rendered_content_sha256": "9f1026976d32404931dbe592753dc6e6de109d7415ea40ffa972e1c9e5844769",
+      "applied_modified": "2026-10-02T02:04:48",
+      "applied_url": "https://metransfers.es/transfer-barcelona-a-perpinan/",
+      "applied_verified": true
     },
     {
       "id": 1026,
@@ -351,7 +426,10 @@
       "public_title": "Traslado Privado Barcelona a Montpellier | Transfer al Sur de Francia",
       "source_url": "https://metransfers.es/descubre-traslados-a-la-costa-daurada-preparate-para-el-sol-de-abril-en-salou-y-cambrils-9672/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "13b89b2d1f189dcdef1edae1570eb942f23ad5c61cef8b1dd5f65aaf76144cef"
+      "expected_rendered_content_sha256": "13b89b2d1f189dcdef1edae1570eb942f23ad5c61cef8b1dd5f65aaf76144cef",
+      "applied_modified": "2026-10-02T02:04:51",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-montpellier/",
+      "applied_verified": true
     },
     {
       "id": 1027,
@@ -362,7 +440,10 @@
       "public_title": "Transfer Privado Barcelona a Niza | Traslado a la Costa Azul",
       "source_url": "https://metransfers.es/guia-completa-dia-de-las-americas-conectando-a-viajeros-internacionales-con-el-centro-de-barcelona-3798/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "83f0774d56a13368fe8fa2bdf55369694e06de09c0f6b6c39e321aa0a8d584c9"
+      "expected_rendered_content_sha256": "83f0774d56a13368fe8fa2bdf55369694e06de09c0f6b6c39e321aa0a8d584c9",
+      "applied_modified": "2026-10-02T02:04:53",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-niza/",
+      "applied_verified": true
     },
     {
       "id": 1028,
@@ -373,7 +454,10 @@
       "public_title": "Traslado Privado Barcelona a Marsella | Transfer a la Ciudad Fócida",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-turismo-sostenible-nuestra-flota-hibrida-y-el-compromiso-con-el-medio-ambiente-8123/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "a486e7fee6770accff940e628d18ee0499a8ae5f262e429c01bb1511c7d10c93"
+      "expected_rendered_content_sha256": "a486e7fee6770accff940e628d18ee0499a8ae5f262e429c01bb1511c7d10c93",
+      "applied_modified": "2026-10-02T02:04:55",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-marsella/",
+      "applied_verified": true
     },
     {
       "id": 1029,
@@ -384,7 +468,10 @@
       "public_title": "Transfer Barcelona a Lyon | Traslado Privado a la Capital Gastronómica de Francia",
       "source_url": "https://metransfers.es/por-que-elegir-barcelona-de-noche-seguridad-y-estilo-para-tus-regresos-de-madrugada-7703/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "f6f0f857cf45563d364a301e5068736081e70d56e58fd83f3770b6a912f8e634"
+      "expected_rendered_content_sha256": "f6f0f857cf45563d364a301e5068736081e70d56e58fd83f3770b6a912f8e634",
+      "applied_modified": "2026-10-02T02:05:02",
+      "applied_url": "https://metransfers.es/transfer-barcelona-a-lyon/",
+      "applied_verified": true
     },
     {
       "id": 1030,
@@ -395,7 +482,10 @@
       "public_title": "Traslado Privado Barcelona a Lisboa | Transfer Puerta a Puerta Portugal",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-traslados-vip-al-circuito-de-catalunya-preparate-para-la-velocidad-con-metransfers-2702/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "8dac9d71b4cb371e8893923ef273d650ea4e409dddee557277897172d67a79eb"
+      "expected_rendered_content_sha256": "8dac9d71b4cb371e8893923ef273d650ea4e409dddee557277897172d67a79eb",
+      "applied_modified": "2026-10-02T02:05:08",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-lisboa/",
+      "applied_verified": true
     },
     {
       "id": 1031,
@@ -406,7 +496,10 @@
       "public_title": "Transfer Privado Barcelona a Oporto | Traslado al Corazón de Portugal",
       "source_url": "https://metransfers.es/descubre-visita-a-tarragona-historia-romana-a-solo-un-traslado-de-distancia-7775/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "3285cfaa80b22ed5c042b7230433280d9903dfe68f2f6a63c6e515cda87fccd8"
+      "expected_rendered_content_sha256": "3285cfaa80b22ed5c042b7230433280d9903dfe68f2f6a63c6e515cda87fccd8",
+      "applied_modified": "2026-10-02T02:05:11",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-oporto/",
+      "applied_verified": true
     },
     {
       "id": 1032,
@@ -417,7 +510,10 @@
       "public_title": "Traslado Barcelona a Mónaco | Transfer Privado al Principado del Lujo",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-eficiencia-en-el-aeropuerto-el-punto-de-encuentro-exacto-para-evitar-esperas-1705/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "ee44f32bd4fd592331160204ce9c4b6124314bc20b5c1f2a6fb951edd5dd4210"
+      "expected_rendered_content_sha256": "ee44f32bd4fd592331160204ce9c4b6124314bc20b5c1f2a6fb951edd5dd4210",
+      "applied_modified": "2026-10-02T02:07:28",
+      "applied_url": "https://metransfers.es/traslado-barcelona-a-monaco/",
+      "applied_verified": true
     },
     {
       "id": 1033,
@@ -428,7 +524,10 @@
       "public_title": "Transfer Privado Barcelona a Milán | Traslado Internacional a Italia",
       "source_url": "https://metransfers.es/guia-completa-viajes-de-lujo-que-esperar-de-nuestra-categoria-premium-en-traslados-largos-9022/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "6e9f0081eead7f81a0799f1c92a58724d0d8777db3ab494c4562c36d4035933f"
+      "expected_rendered_content_sha256": "6e9f0081eead7f81a0799f1c92a58724d0d8777db3ab494c4562c36d4035933f",
+      "applied_modified": "2026-10-02T02:07:40",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-milan/",
+      "applied_verified": true
     },
     {
       "id": 1034,
@@ -439,7 +538,10 @@
       "public_title": "Traslado Privado Barcelona a Ginebra | Transfer a Suiza con Conductor",
       "source_url": "https://metransfers.es/guia-completa-dia-de-la-tierra-optimizando-rutas-para-reducir-emisiones-en-la-ciudad-4054/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "34273c13bd8130a2361533efdf43aaaf7dbd1dc3801e16515131c348cff90457"
+      "expected_rendered_content_sha256": "34273c13bd8130a2361533efdf43aaaf7dbd1dc3801e16515131c348cff90457",
+      "applied_modified": "2026-10-02T02:07:43",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-ginebra/",
+      "applied_verified": true
     },
     {
       "id": 1035,
@@ -450,7 +552,10 @@
       "public_title": "Transfer Privado Barcelona a Toulouse | Traslado a la Ciudad Rosa",
       "source_url": "https://metransfers.es/guia-completa-especial-sant-jordi-traslados-romanticos-por-una-barcelona-llena-de-rosas-y-libros-6588/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "a1f9d1f25125b818f634bb778e3705787cde2559c9b2d75dcbaf6cd3a8a60b8b"
+      "expected_rendered_content_sha256": "a1f9d1f25125b818f634bb778e3705787cde2559c9b2d75dcbaf6cd3a8a60b8b",
+      "applied_modified": "2026-10-02T02:07:52",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-toulouse/",
+      "applied_verified": true
     },
     {
       "id": 1036,
@@ -461,7 +566,10 @@
       "public_title": "Traslado Privado Barcelona a Burdeos | Transfer al Corazón del Vino Francés",
       "source_url": "https://metransfers.es/guia-completa-logistica-de-libros-como-ayudamos-a-editoriales-con-traslados-rapidos-durante-sant-jordi-5693/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "14cc541a4a74fbce5e255e7cbcab4591cd9e05338c1d2abc53101b73ad4fa74c"
+      "expected_rendered_content_sha256": "14cc541a4a74fbce5e255e7cbcab4591cd9e05338c1d2abc53101b73ad4fa74c",
+      "applied_modified": "2026-10-02T02:07:55",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-burdeos/",
+      "applied_verified": true
     },
     {
       "id": 1037,
@@ -472,7 +580,10 @@
       "public_title": "Transfer Privado Barcelona a Múnich | Traslado Internacional a Baviera",
       "source_url": "https://metransfers.es/guia-completa-escapada-a-figueres-tras-el-rastro-de-dali-en-un-tour-privado-de-un-dia-4572/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "85e3ad134b8442f0656d056924246a00d47413b526a3c7e1636bed309a35d159"
+      "expected_rendered_content_sha256": "85e3ad134b8442f0656d056924246a00d47413b526a3c7e1636bed309a35d159",
+      "applied_modified": "2026-10-02T02:07:57",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-munich/",
+      "applied_verified": true
     },
     {
       "id": 1038,
@@ -483,7 +594,10 @@
       "public_title": "Traslado Privado Aeropuerto El Prat a Barcelona | Transfer Premium",
       "source_url": "https://metransfers.es/descubre-conductor-por-horas-la-libertad-de-cambiar-de-planes-sin-preocuparte-por-el-parking-9588/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "4065564baf6f10b81328a28d810ee9c8570b47dc660574c8f01fbd6930a83e71"
+      "expected_rendered_content_sha256": "4065564baf6f10b81328a28d810ee9c8570b47dc660574c8f01fbd6930a83e71",
+      "applied_modified": "2026-10-02T02:08:07",
+      "applied_url": "https://metransfers.es/traslado-privado-aeropuerto-el-prat-a-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 1039,
@@ -494,7 +608,10 @@
       "public_title": "Transfer Privado Puerto de Cruceros Barcelona | Traslado VIP desde el Muelle",
       "source_url": "https://metransfers.es/por-que-elegir-traslados-a-montserrat-consejos-para-evitar-las-multitudes-en-primavera-7237/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "ccfacc68347f554ef95acf29fa46a7afb32408233c76a15e791178f1f7fd587a"
+      "expected_rendered_content_sha256": "ccfacc68347f554ef95acf29fa46a7afb32408233c76a15e791178f1f7fd587a",
+      "applied_modified": "2026-10-02T02:08:18",
+      "applied_url": "https://metransfers.es/transfer-privado-puerto-de-cruceros-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 1040,
@@ -505,7 +622,10 @@
       "public_title": "Conductor por Horas en Barcelona | Servicio de Chófer Privado a tu Disposición",
       "source_url": "https://metransfers.es/descubre-dia-de-la-virgen-de-montserrat-guia-de-traslados-a-la-moreneta-5412/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "4ba461bdbb96672375c22b7763e373e26643ff4d6f5b147b1733da97a8a8ff52"
+      "expected_rendered_content_sha256": "4ba461bdbb96672375c22b7763e373e26643ff4d6f5b147b1733da97a8a8ff52",
+      "applied_modified": "2026-10-02T02:08:21",
+      "applied_url": "https://metransfers.es/conductor-por-horas-en-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 1041,
@@ -516,7 +636,10 @@
       "public_title": "Tour Privado Gaudí en Barcelona | Excursión en Coche con Conductor",
       "source_url": "https://metransfers.es/descubre-protocolo-vip-formacion-de-nuestros-conductores-en-atencion-al-cliente-de-alto-nivel-2270/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "904f36741b1baef2ec3faa08ff3facd84719b14d557101c9bcfe77e62820ca84"
+      "expected_rendered_content_sha256": "904f36741b1baef2ec3faa08ff3facd84719b14d557101c9bcfe77e62820ca84",
+      "applied_modified": "2026-10-02T02:08:24",
+      "applied_url": "https://metransfers.es/tour-privado-gaudi-en-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 1042,
@@ -527,7 +650,10 @@
       "public_title": "Tour Panorámico Barcelona en Coche Privado | Las Mejores Vistas con MeTransfers",
       "source_url": "https://metransfers.es/descubre-traslados-a-cadaques-la-guia-definitiva-para-el-viaje-mas-pintoresco-de-catalunya-6468/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "3258432cc1c2dbaec8859c4021fc50c6a0a0c8bb2e6e3108920ab8b271b935e3"
+      "expected_rendered_content_sha256": "3258432cc1c2dbaec8859c4021fc50c6a0a0c8bb2e6e3108920ab8b271b935e3",
+      "applied_modified": "2026-10-02T02:08:26",
+      "applied_url": "https://metransfers.es/tour-panoramico-barcelona-en-coche-privado/",
+      "applied_verified": true
     },
     {
       "id": 1043,
@@ -538,7 +664,10 @@
       "public_title": "Traslado Privado Barcelona a Penedès | Tour del Vino y Cava en Coche",
       "source_url": "https://metransfers.es/guia-completa-gastronomia-de-abril-traslados-a-las-mejores-calcotades-de-la-temporada-6972/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "e9245a62ad3e1af1938ed17e9991dbca47516e8433a815f17b0901faae7089d7"
+      "expected_rendered_content_sha256": "e9245a62ad3e1af1938ed17e9991dbca47516e8433a815f17b0901faae7089d7",
+      "applied_modified": "2026-10-02T02:08:28",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-penedes/",
+      "applied_verified": true
     },
     {
       "id": 1044,
@@ -549,7 +678,10 @@
       "public_title": "Transfer Privado Barcelona a Puigcerdà | Traslado a La Cerdanya y los Pirineos",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-barcelona-para-seniors-comodidad-y-accesibilidad-en-todos-nuestros-vehiculos-9650/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "4c2187cdabfa25e816405ceb9d70f5f75fcdcf7e5daf3935f8c097f95c3ef946"
+      "expected_rendered_content_sha256": "4c2187cdabfa25e816405ceb9d70f5f75fcdcf7e5daf3935f8c097f95c3ef946",
+      "applied_modified": "2026-10-02T02:08:30",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-puigcerda/",
+      "applied_verified": true
     },
     {
       "id": 1045,
@@ -560,7 +692,10 @@
       "public_title": "Traslado Privado Barcelona a La Molina | Transfer a la Estación de Esquí",
       "source_url": "https://metransfers.es/guia-completa-facturacion-para-empresas-simplifica-tus-gastos-de-movilidad-con-merchan-dev-5166/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "21d854c639ad04ecc43235ec22f7947cc8e94432f5535c40b4978d32d2ffb827"
+      "expected_rendered_content_sha256": "21d854c639ad04ecc43235ec22f7947cc8e94432f5535c40b4978d32d2ffb827",
+      "applied_modified": "2026-10-02T02:08:32",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-la-molina/",
+      "applied_verified": true
     },
     {
       "id": 1046,
@@ -571,7 +706,10 @@
       "public_title": "Transfer Barcelona a San Sebastián (Donostia) | Traslado a la Perla del Cantábrico",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-dia-del-trabajador-disponibilidad-total-de-nuestra-flota-en-dias-festivos-9236/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "8144c4d420b08890f8b76d71ffa1351341e743c2d7a6613afa53454cedecbc70"
+      "expected_rendered_content_sha256": "8144c4d420b08890f8b76d71ffa1351341e743c2d7a6613afa53454cedecbc70",
+      "applied_modified": "2026-10-02T02:08:38",
+      "applied_url": "https://metransfers.es/transfer-barcelona-a-san-sebastian-donostia/",
+      "applied_verified": true
     },
     {
       "id": 1047,
@@ -582,7 +720,10 @@
       "public_title": "Traslado Privado Barcelona a Córdoba | Transfer a la Ciudad de la Mezquita",
       "source_url": "https://metransfers.es/guia-completa-girona-temps-de-flors-traslados-exclusivos-para-ver-la-ciudad-de-las-flores-9982/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "33d7b5ba43d96a3e751e1c370ad269b6932f082acb93c6a53484241b71f24b39"
+      "expected_rendered_content_sha256": "33d7b5ba43d96a3e751e1c370ad269b6932f082acb93c6a53484241b71f24b39",
+      "applied_modified": "2026-10-02T02:08:40",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-cordoba/",
+      "applied_verified": true
     },
     {
       "id": 1048,
@@ -593,7 +734,10 @@
       "public_title": "Transfer Barcelona a Toledo | Traslado Privado a la Ciudad Imperial",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-preparativos-de-verano-reserva-tu-traslado-ahora-y-asegura-el-mejor-precio-para-julio-1970/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "33803624a4ef5da391543e365ed3326918ba44e313b0b9dc045504bb4576bab5"
+      "expected_rendered_content_sha256": "33803624a4ef5da391543e365ed3326918ba44e313b0b9dc045504bb4576bab5",
+      "applied_modified": "2026-10-02T02:08:42",
+      "applied_url": "https://metransfers.es/transfer-barcelona-a-toledo/",
+      "applied_verified": true
     },
     {
       "id": 1049,
@@ -604,7 +748,10 @@
       "public_title": "Traslado Barcelona a La Costa del Sol | Transfer Privado a Marbella y Estepona",
       "source_url": "https://metransfers.es/guia-completa-star-wars-day-tours-galacticos-por-la-arquitectura-moderna-de-barcelona-8795/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "7145bf85b5fca5a5c3aa619aadd1bdb0ef3bf878542fbec23275fd2d41a3b5c0"
+      "expected_rendered_content_sha256": "7145bf85b5fca5a5c3aa619aadd1bdb0ef3bf878542fbec23275fd2d41a3b5c0",
+      "applied_modified": "2026-10-02T02:08:47",
+      "applied_url": "https://metransfers.es/traslado-barcelona-a-la-costa-del-sol/",
+      "applied_verified": true
     },
     {
       "id": 1050,
@@ -615,7 +762,10 @@
       "public_title": "Transfer Privado Barcelona a Delta del Ebro | Traslado a la Naturaleza",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-traslados-al-aeropuerto-de-reus-ampliamos-nuestras-rutas-para-tu-comodidad-6244/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "c554f9c083c21672fc3eff65e3c0c320a4fb959028a23c3d2ef4803920dd1c52"
+      "expected_rendered_content_sha256": "c554f9c083c21672fc3eff65e3c0c320a4fb959028a23c3d2ef4803920dd1c52",
+      "applied_modified": "2026-10-02T02:08:49",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-delta-del-ebro/",
+      "applied_verified": true
     },
     {
       "id": 1051,
@@ -626,7 +776,10 @@
       "public_title": "Traslado Privado Barcelona a Begur | Transfer a las Mejores Calas",
       "source_url": "https://metransfers.es/guia-completa-eventos-corporativos-como-organizar-traslados-para-cenas-de-empresa-en-el-port-olimpic-2849/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "7d3f64ede78e6829b97a3bdec04005cc5e14ee39647c1c43781180820284e160"
+      "expected_rendered_content_sha256": "7d3f64ede78e6829b97a3bdec04005cc5e14ee39647c1c43781180820284e160",
+      "applied_modified": "2026-10-02T02:08:51",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-begur/",
+      "applied_verified": true
     },
     {
       "id": 1052,
@@ -637,7 +790,10 @@
       "public_title": "Transfer Privado Barcelona a Palafrugell | Traslado al Corazón del Baix Empordà",
       "source_url": "https://metransfers.es/guia-completa-dia-de-europa-conectando-las-principales-capitales-desde-el-prat-1999/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "4d931d1432142cc2d2263b44099775a9c23287d100fb77b7596b094f36ebf3f8"
+      "expected_rendered_content_sha256": "4d931d1432142cc2d2263b44099775a9c23287d100fb77b7596b094f36ebf3f8",
+      "applied_modified": "2026-10-02T02:09:23",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-palafrugell/",
+      "applied_verified": true
     },
     {
       "id": 1053,
@@ -648,7 +804,10 @@
       "public_title": "Traslado Privado Barcelona a L’Estartit | Transfer a las Islas Medes",
       "source_url": "https://metransfers.es/por-que-elegir-turismo-de-cruceros-calendario-de-llegadas-al-puerto-de-barcelona-para-mayo-6450/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "7031dfc9d09108d0390ed02b3e62858ce7b3bef97f702ad593f98be474b98bae"
+      "expected_rendered_content_sha256": "7031dfc9d09108d0390ed02b3e62858ce7b3bef97f702ad593f98be474b98bae",
+      "applied_modified": "2026-10-02T02:09:38",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-lestartit/",
+      "applied_verified": true
     },
     {
       "id": 1054,
@@ -659,7 +818,10 @@
       "public_title": "Transfer Barcelona a Empuriabrava | Traslado a la Venecia Catalana",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-la-importancia-de-la-puntualidad-en-lunes-como-vencemos-el-trafico-matutino-9176/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "3a29061c860a43ce952171156324bef35b73e6309a1f94a63e4df606cc098218"
+      "expected_rendered_content_sha256": "3a29061c860a43ce952171156324bef35b73e6309a1f94a63e4df606cc098218",
+      "applied_modified": "2026-10-02T02:09:40",
+      "applied_url": "https://metransfers.es/transfer-barcelona-a-empuriabrava/",
+      "applied_verified": true
     },
     {
       "id": 1055,
@@ -670,7 +832,10 @@
       "public_title": "Traslado Privado Barcelona a Roses | Transfer al Paraíso del Alt Empordà",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-los-mejores-hoteles-con-terraza-en-barcelona-te-llevamos-al-afterwork-perfecto-6085/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "176c6fe98f4d04c7656e4f2090ce4664857f678ebe11b906e0b277a5643e2236"
+      "expected_rendered_content_sha256": "176c6fe98f4d04c7656e4f2090ce4664857f678ebe11b906e0b277a5643e2236",
+      "applied_modified": "2026-10-02T02:09:43",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-roses/",
+      "applied_verified": true
     },
     {
       "id": 1056,
@@ -681,7 +846,10 @@
       "public_title": "Transfer Barcelona a L’Escala | Traslado a las Ruinas de Empúries",
       "source_url": "https://metransfers.es/descubre-dia-de-san-isidro-traslados-a-eventos-culturales-y-verbenas-locales-7969/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "8cc41d3e4ca810cc960a1d75c4bcd36aade2d70f5d5e60203b24896b84a3b3c8"
+      "expected_rendered_content_sha256": "8cc41d3e4ca810cc960a1d75c4bcd36aade2d70f5d5e60203b24896b84a3b3c8",
+      "applied_modified": "2026-10-02T02:09:47",
+      "applied_url": "https://metransfers.es/transfer-barcelona-a-lescala/",
+      "applied_verified": true
     },
     {
       "id": 18057,
@@ -692,7 +860,10 @@
       "public_title": "Traslado Privado Barcelona a Palamós | Transfer a la Capital de la Gamba",
       "source_url": "https://metransfers.es/descubre-descubre-la-historia-y-las-obras-maestras-del-museo-picasso-en-barcelona-6111/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "7cdfc3ef7031269c38550cfa7e994ac83f88421d61bd7f77a2be693c807984e7"
+      "expected_rendered_content_sha256": "7cdfc3ef7031269c38550cfa7e994ac83f88421d61bd7f77a2be693c807984e7",
+      "applied_modified": "2026-10-02T02:09:50",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-palamos/",
+      "applied_verified": true
     },
     {
       "id": 18188,
@@ -703,7 +874,10 @@
       "public_title": "Transfer Barcelona a Sant Feliu de Guíxols | Traslado a la Costa Brava del Modernismo",
       "source_url": "https://metransfers.es/descubre-transfer-privado-a-andorra-una-experiencia-de-lujo-para-explorar-los-encantos-de-este-hermoso-pais-9778/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "076575f73c7fef665241bb6a900e399f99eb4471c4da196346e7d34b5539abc4"
+      "expected_rendered_content_sha256": "076575f73c7fef665241bb6a900e399f99eb4471c4da196346e7d34b5539abc4",
+      "applied_modified": "2026-10-02T02:10:00",
+      "applied_url": "https://metransfers.es/transfer-barcelona-a-sant-feliu-de-guixols/",
+      "applied_verified": true
     },
     {
       "id": 20093,
@@ -714,7 +888,10 @@
       "public_title": "Traslado Privado Barcelona a Platja d’Aro | Transfer a la Costa Brava Elegante",
       "source_url": "https://metransfers.es/por-que-elegir-explorando-figueres-dali-y-las-joyas-de-la-costa-brava-8023/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "f8660a2ab70104417b3bf3c16fcebb2363dc549fc7f3f5cdb85229de85bcd411"
+      "expected_rendered_content_sha256": "f8660a2ab70104417b3bf3c16fcebb2363dc549fc7f3f5cdb85229de85bcd411",
+      "applied_modified": "2026-10-02T02:10:18",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-platja-daro/",
+      "applied_verified": true
     },
     {
       "id": 21070,
@@ -725,7 +902,10 @@
       "public_title": "Transfer Privado Barcelona a Tortosa | Traslado a las Tierras del Ebro",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-madrid-y-sus-encantos-9666/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "cc1accf623f94230efdd26e5a34accd73bdd71209887b6887a421a653881ae77"
+      "expected_rendered_content_sha256": "cc1accf623f94230efdd26e5a34accd73bdd71209887b6887a421a653881ae77",
+      "applied_modified": "2026-10-02T02:10:21",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-tortosa/",
+      "applied_verified": true
     },
     {
       "id": 21246,
@@ -736,7 +916,10 @@
       "public_title": "Traslado Privado Barcelona a Montblanc | Transfer a la Vila Medieval i Poblet",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-lonjas-de-pescado-en-la-costa-de-cataluna-8116/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "659321cb945b327a4d2005f13bafd5ab802db0038039d4a24f373b2acd90b5f9"
+      "expected_rendered_content_sha256": "659321cb945b327a4d2005f13bafd5ab802db0038039d4a24f373b2acd90b5f9",
+      "applied_modified": "2026-10-02T02:10:24",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-montblanc/",
+      "applied_verified": true
     },
     {
       "id": 22055,
@@ -747,7 +930,10 @@
       "public_title": "Transfer Privado Barcelona a Mataró | Traslado al Maresme",
       "source_url": "https://metransfers.es/guia-completa-la-costa-dorada-6859/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "df22717fc73539c22ec16b4c0fd52c5600ca6a495a8af8132b5dc14cd1d38246"
+      "expected_rendered_content_sha256": "df22717fc73539c22ec16b4c0fd52c5600ca6a495a8af8132b5dc14cd1d38246",
+      "applied_modified": "2026-10-02T02:10:27",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-mataro/",
+      "applied_verified": true
     },
     {
       "id": 24131,
@@ -758,7 +944,10 @@
       "public_title": "Traslado Privado Barcelona a Vic | Transfer a la Capital de Osona",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-que-ver-en-montserrat-3789/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "120ecde626d6d7b014207c236695aaf7af865d535fe8a62729a5169d2a8a4a25"
+      "expected_rendered_content_sha256": "120ecde626d6d7b014207c236695aaf7af865d535fe8a62729a5169d2a8a4a25",
+      "applied_modified": "2026-10-02T02:10:29",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-vic/",
+      "applied_verified": true
     },
     {
       "id": 27037,
@@ -769,7 +958,10 @@
       "public_title": "Transfer Privado Barcelona a Berga | Traslado a los Pirineos Menores",
       "source_url": "https://metransfers.es/por-que-elegir-top-5-destinos-de-nieve-para-una-escapada-vip-desde-barcelona-con-metransfers-2703/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "a5c3c66531e14a7cc9da7e90c439d9b41572b9009a87f3fc868ad4685532ff1e"
+      "expected_rendered_content_sha256": "a5c3c66531e14a7cc9da7e90c439d9b41572b9009a87f3fc868ad4685532ff1e",
+      "applied_modified": "2026-10-02T02:10:36",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-berga/",
+      "applied_verified": true
     },
     {
       "id": 27219,
@@ -780,7 +972,10 @@
       "public_title": "Traslado Privado Barcelona a Manresa | Transfer a la Ciudad de Sant Ignasi",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-traslados-privados-de-barcelona-a-lloret-de-mar-tu-guia-completa-con-metransfers-3415/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "10ec2f6d43d1405d03ee5453159025f5f460ef9f4dad8ba3e7449e14269ffd54"
+      "expected_rendered_content_sha256": "10ec2f6d43d1405d03ee5453159025f5f460ef9f4dad8ba3e7449e14269ffd54",
+      "applied_modified": "2026-10-02T02:10:39",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-manresa/",
+      "applied_verified": true
     },
     {
       "id": 27253,
@@ -791,7 +986,10 @@
       "public_title": "Transfer Privado Barcelona a Terrassa | Traslado al Museo de la Ciencia y la Técnica",
       "source_url": "https://metransfers.es/descubre-traslados-privados-de-barcelona-a-madrid-viaja-con-total-comodidad-y-exclusividad-1064/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "01ee43538211101d61fe74d11627de51bb4a17a315dc035ec11709f2a4518908"
+      "expected_rendered_content_sha256": "01ee43538211101d61fe74d11627de51bb4a17a315dc035ec11709f2a4518908",
+      "applied_modified": "2026-10-02T02:10:45",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-terrassa/",
+      "applied_verified": true
     },
     {
       "id": 27276,
@@ -802,7 +1000,10 @@
       "public_title": "Traslado Privado Barcelona a Sabadell | Transfer Ejecutivo a la Ciudad del Arte",
       "source_url": "https://metransfers.es/por-que-elegir-el-camp-nou-y-el-sentimiento-cule-una-pasion-que-cruza-fronteras-con-metransfers-3757/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "831126505979af7ac2636eee827701ac0b07b293bbbd9bdc287deb7309abc2d9"
+      "expected_rendered_content_sha256": "831126505979af7ac2636eee827701ac0b07b293bbbd9bdc287deb7309abc2d9",
+      "applied_modified": "2026-10-02T02:10:51",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-sabadell/",
+      "applied_verified": true
     },
     {
       "id": 27301,
@@ -813,7 +1014,10 @@
       "public_title": "Transfer Privado Barcelona a Igualada | Traslado a la Anoia",
       "source_url": "https://metransfers.es/guia-completa-consejos-imprescindibles-para-tu-llegada-al-aeropuerto-de-barcelona-guia-practica-3553/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "f89caa17f922255ca81ab4fd61768e45c5f929cb91561d2575ca9c034b7451f8"
+      "expected_rendered_content_sha256": "f89caa17f922255ca81ab4fd61768e45c5f929cb91561d2575ca9c034b7451f8",
+      "applied_modified": "2026-10-02T02:10:55",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-igualada/",
+      "applied_verified": true
     },
     {
       "id": 27321,
@@ -824,7 +1028,10 @@
       "public_title": "Traslado Privado Barcelona a Granollers | Transfer al Vallès Oriental",
       "source_url": "https://metransfers.es/guia-completa-5-razones-para-elegir-un-traslado-privado-en-tu-proxima-visita-a-barcelona-8049/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "8b8a9cdcff82df634cf0d8b13596278ffca786b5834458e49c373048a34d8dea"
+      "expected_rendered_content_sha256": "8b8a9cdcff82df634cf0d8b13596278ffca786b5834458e49c373048a34d8dea",
+      "applied_modified": "2026-10-02T02:11:02",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-granollers/",
+      "applied_verified": true
     },
     {
       "id": 27345,
@@ -835,7 +1042,10 @@
       "public_title": "Transfer Privado Barcelona a Martorell | Traslado al Baix Llobregat",
       "source_url": "https://metransfers.es/guia-completa-traslados-puerta-a-puerta-la-forma-mas-segura-de-viajar-por-espana-8798/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "5a4dc5da87d7b9b8e1804128e6187d947579bd2cf3d82e0f74e5c30eee4a2fa7"
+      "expected_rendered_content_sha256": "5a4dc5da87d7b9b8e1804128e6187d947579bd2cf3d82e0f74e5c30eee4a2fa7",
+      "applied_modified": "2026-10-02T02:11:04",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-martorell/",
+      "applied_verified": true
     },
     {
       "id": 27360,
@@ -846,7 +1056,10 @@
       "public_title": "Traslado Privado Barcelona a Peñíscola | Transfer al Castillo del Papa Luna",
       "source_url": "https://metransfers.es/descubre-de-barcelona-a-andorra-tu-traslado-directo-a-la-nieve-3872/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "858958b709436942691c05d1f101b970707ec8bb068088989a3e23284321928f"
+      "expected_rendered_content_sha256": "858958b709436942691c05d1f101b970707ec8bb068088989a3e23284321928f",
+      "applied_modified": "2026-10-02T02:11:07",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-peniscola/",
+      "applied_verified": true
     },
     {
       "id": 27442,
@@ -857,7 +1070,10 @@
       "public_title": "Transfer Privado Barcelona a Castellón | Traslado a la Plana de l’Arc",
       "source_url": "https://metransfers.es/descubre-el-placer-de-la-carretera-tu-traslado-privado-de-barcelona-a-lloret-de-mar-9454/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "9f88011f46ae09490b9734ec5dcffe30847524301effb8cb97e7470ab45a8ee5"
+      "expected_rendered_content_sha256": "9f88011f46ae09490b9734ec5dcffe30847524301effb8cb97e7470ab45a8ee5",
+      "applied_modified": "2026-10-02T02:11:58",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-castellon/",
+      "applied_verified": true
     },
     {
       "id": 27457,
@@ -868,7 +1084,10 @@
       "public_title": "Traslado Privado Barcelona a Murcia | Transfer al Jardín de Europa",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-5-iconos-de-lloret-de-mar-que-no-te-puedes-perder-8933/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "af82ad3d6aff395b5dceaf0c10c8bcc236b99af963c82ef33bb7d3ec04c0730c"
+      "expected_rendered_content_sha256": "af82ad3d6aff395b5dceaf0c10c8bcc236b99af963c82ef33bb7d3ec04c0730c",
+      "applied_modified": "2026-10-02T02:12:09",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-murcia/",
+      "applied_verified": true
     },
     {
       "id": 27465,
@@ -879,7 +1098,10 @@
       "public_title": "Transfer Privado Barcelona a Cartagena | Traslado a la Ciudad Romana del Mediterráneo",
       "source_url": "https://metransfers.es/guia-completa-de-villa-de-pescadores-a-icono-mundial-la-historia-completa-de-lloret-de-mar-4850/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "7e121dfe4e63be3b8f9a709260a59179ff5fb65acbd94224ceb414ae42877ff7"
+      "expected_rendered_content_sha256": "7e121dfe4e63be3b8f9a709260a59179ff5fb65acbd94224ceb414ae42877ff7",
+      "applied_modified": "2026-10-02T02:12:17",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-cartagena/",
+      "applied_verified": true
     },
     {
       "id": 27516,
@@ -890,7 +1112,10 @@
       "public_title": "Traslado Privado Barcelona a Benidorm | Transfer a la Playa del Mediterráneo",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-por-que-elegir-metransfers-tu-puerta-de-entrada-a-toda-espana-con-el-maximo-confort-8245/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "182650c530f5c32763f3c76269a6d9cc74fa09549d2ce5974cd78af754989bb2"
+      "expected_rendered_content_sha256": "182650c530f5c32763f3c76269a6d9cc74fa09549d2ce5974cd78af754989bb2",
+      "applied_modified": "2026-10-02T02:12:20",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-benidorm/",
+      "applied_verified": true
     },
     {
       "id": 27519,
@@ -901,7 +1126,10 @@
       "public_title": "Transfer Privado Barcelona a Andorra | Esquí y Compras Duty Free con MeTransfers",
       "source_url": "https://metransfers.es/por-que-elegir-mas-que-un-taxi-5-ventajas-de-elegir-un-transporte-privado-desde-barcelona-para-viajar-por-espana-9507/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "71dc73eda7d67a7fbafd5ec1d4dcc2d1d06816bcb78274a935d38314571c3435"
+      "expected_rendered_content_sha256": "71dc73eda7d67a7fbafd5ec1d4dcc2d1d06816bcb78274a935d38314571c3435",
+      "applied_modified": "2026-10-02T02:12:22",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-andorra-esqui-compras-duty-free/",
+      "applied_verified": true
     },
     {
       "id": 27522,
@@ -912,7 +1140,10 @@
       "public_title": "Traslado Privado Barcelona a Biarritz | Transfer al País Vasco Francés",
       "source_url": "https://metransfers.es/guia-completa-transporte-privado-para-el-mobile-world-congress-2026-guia-para-ejecutivos-6784/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "8f8a7930c579a4c247f39e2b68c48b54a1d0505f16a65bc05294de4c2ec39559"
+      "expected_rendered_content_sha256": "8f8a7930c579a4c247f39e2b68c48b54a1d0505f16a65bc05294de4c2ec39559",
+      "applied_modified": "2026-10-02T02:12:24",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-biarritz/",
+      "applied_verified": true
     },
     {
       "id": 27525,
@@ -923,7 +1154,10 @@
       "public_title": "Transfer Privado Barcelona a Carcasona | Traslado a la Ciudad Medieval Amurallada",
       "source_url": "https://metransfers.es/descubre-como-ir-del-aeropuerto-de-bcn-a-portaventura-comparativa-de-opciones-7898/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "7a20379907b04e2010d862feff6e97d7125cd6a0093d9121d3312748acde8da7"
+      "expected_rendered_content_sha256": "7a20379907b04e2010d862feff6e97d7125cd6a0093d9121d3312748acde8da7",
+      "applied_modified": "2026-10-02T02:12:28",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-carcasona/",
+      "applied_verified": true
     },
     {
       "id": 27530,
@@ -934,7 +1168,10 @@
       "public_title": "Traslado Barcelona a Andorra – Guía Completa para Viajar con Coche Español",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-transporte-en-barcelona-para-grupos-grandes-y-equipaje-extra-la-solucion-mercedes-clase-v-2755/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "ae8118212896b7582b4989ce2678605557443cf962d1954778b86a3aca95398d"
+      "expected_rendered_content_sha256": "ae8118212896b7582b4989ce2678605557443cf962d1954778b86a3aca95398d",
+      "applied_modified": "2026-10-02T02:12:31",
+      "applied_url": "https://metransfers.es/traslado-barcelona-a-andorra-guia-completa-para-viajar-con-coche-espanol/",
+      "applied_verified": true
     },
     {
       "id": 27536,
@@ -945,7 +1182,10 @@
       "public_title": "Transfer Privado Barcelona a París | Traslado de Larga Distancia a la Ciudad de la Luz",
       "source_url": "https://metransfers.es/por-que-elegir-los-5-mejores-restaurantes-con-estrella-michelin-en-barcelona-llega-con-estilo-1633/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "9197679576bb5f326b58ac49a1ee788e07c27f8fcc13b3e58adef5fd5dec8ffa"
+      "expected_rendered_content_sha256": "9197679576bb5f326b58ac49a1ee788e07c27f8fcc13b3e58adef5fd5dec8ffa",
+      "applied_modified": "2026-10-02T02:12:35",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-paris/",
+      "applied_verified": true
     },
     {
       "id": 27586,
@@ -956,7 +1196,10 @@
       "public_title": "Traslado Barcelona a San Sebastián | Tour Gastronómico Privado País Vasco",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-mejores-empresas-de-traslados-en-barcelona-y-espana-top-10-ranking-2026-3795/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "47ba6465f6144f6b8d8d6b1f57bb90fff9cd4c2bd9edbcf1803da91d8c19c4d8"
+      "expected_rendered_content_sha256": "47ba6465f6144f6b8d8d6b1f57bb90fff9cd4c2bd9edbcf1803da91d8c19c4d8",
+      "applied_modified": "2026-10-02T02:12:37",
+      "applied_url": "https://metransfers.es/traslado-barcelona-a-san-sebastian/",
+      "applied_verified": true
     },
     {
       "id": 27622,
@@ -967,7 +1210,10 @@
       "public_title": "Guía Completa: Viajar en Coche desde España a Europa con Documentos Españoles",
       "source_url": "https://metransfers.es/descubre-de-barcelona-a-san-sebastian-guia-para-el-traslado-perfecto-1015/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "df994f48b381d9903c80961b511952a31a7d5211ae5d48c7e40e4a969af3f07d"
+      "expected_rendered_content_sha256": "df994f48b381d9903c80961b511952a31a7d5211ae5d48c7e40e4a969af3f07d",
+      "applied_modified": "2026-10-02T02:12:40",
+      "applied_url": "https://metransfers.es/guia-completa-viajar-en-coche-desde-espana-a-europa-con-documentos-espanoles/",
+      "applied_verified": true
     },
     {
       "id": 27627,
@@ -978,7 +1224,10 @@
       "public_title": "Traslado VIP Barcelona | Servicio Ejecutivo de Lujo con MeTransfers",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-barcelona-a-cadaques-la-guia-definitiva-para-un-traslado-sin-estres-8325/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "4178df87c3b983fe55ea26715dd6ded7a523d4bb6e31aee097f02e29be2d25e1"
+      "expected_rendered_content_sha256": "4178df87c3b983fe55ea26715dd6ded7a523d4bb6e31aee097f02e29be2d25e1",
+      "applied_modified": "2026-10-02T02:12:47",
+      "applied_url": "https://metransfers.es/traslado-vip-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 27631,
@@ -989,7 +1238,10 @@
       "public_title": "Transfer para Grupos Barcelona | Furgonetas Mercedes Clase V hasta 7 Personas",
       "source_url": "https://metransfers.es/guia-completa-traslado-de-barcelona-a-reus-comodidad-y-puntualidad-en-cada-kilometro-5250/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "18def1caa920facde3d2ce34b89de5f29cfa5a386c03a341ccbe75cb842fd3ea"
+      "expected_rendered_content_sha256": "18def1caa920facde3d2ce34b89de5f29cfa5a386c03a341ccbe75cb842fd3ea",
+      "applied_modified": "2026-10-02T02:12:50",
+      "applied_url": "https://metransfers.es/transfer-para-grupos-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 27634,
@@ -1000,7 +1252,10 @@
       "public_title": "Traslado Privado Barcelona a Génova | Transfer a Italia por la Costa Azul",
       "source_url": "https://metransfers.es/guia-completa-private-transfer-barcelona-a-girona-la-forma-mas-exclusiva-de-viajar-9673/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "221edaf41da952977edde55f34c1e3d28c68a9002302c565f0e54b97d690bb0f"
+      "expected_rendered_content_sha256": "221edaf41da952977edde55f34c1e3d28c68a9002302c565f0e54b97d690bb0f",
+      "applied_modified": "2026-10-02T02:12:56",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-genova/",
+      "applied_verified": true
     },
     {
       "id": 27637,
@@ -1011,7 +1266,10 @@
       "public_title": "Transfer Privado Barcelona a Turín | Traslado a la Capital del Piamonte",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-aerolineas-que-operan-en-girona-guia-completa-y-mejores-opciones-de-traslado-4137/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "db113a3b2da8d43d5ad08ca13b69c8ca801017cd0d7e985ee29ad503e80a4d65"
+      "expected_rendered_content_sha256": "db113a3b2da8d43d5ad08ca13b69c8ca801017cd0d7e985ee29ad503e80a4d65",
+      "applied_modified": "2026-10-02T02:13:01",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-turin/",
+      "applied_verified": true
     },
     {
       "id": 27640,
@@ -1022,7 +1280,10 @@
       "public_title": "Traslado Privado Barcelona a Zúrich | Transfer a la Ciudad Financiera de Suiza",
       "source_url": "https://metransfers.es/guia-completa-guia-paso-a-paso-como-recuperar-el-iva-tax-free-en-el-aeropuerto-de-barcelona-7480/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "0bfe3181a92fb5ef5d70ae632af062ba32ac68d6ebdbc63bd7161fc24705bf11"
+      "expected_rendered_content_sha256": "0bfe3181a92fb5ef5d70ae632af062ba32ac68d6ebdbc63bd7161fc24705bf11",
+      "applied_modified": "2026-10-02T02:13:04",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-zurich/",
+      "applied_verified": true
     },
     {
       "id": 27643,
@@ -1033,7 +1294,10 @@
       "public_title": "Transfer Privado Barcelona a Basilea | Traslado al Cruce de Tres Países",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-transporte-ejecutivo-en-el-mobile-world-congress-2026-excelencia-en-movilidad-privada-en-barcelona-8458/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "95b5bf221598727ef166678bdc36a48c5a37ac161d2b71a24085a4e5c6e52b9b"
+      "expected_rendered_content_sha256": "95b5bf221598727ef166678bdc36a48c5a37ac161d2b71a24085a4e5c6e52b9b",
+      "applied_modified": "2026-10-02T02:13:11",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-basilea/",
+      "applied_verified": true
     },
     {
       "id": 27648,
@@ -1044,7 +1308,10 @@
       "public_title": "Traslado Privado Barcelona a Luxemburgo | Transfer al Corazón de Europa",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-domine-el-mobile-world-congress-2026-la-estrategia-de-movilidad-que-define-su-exito-en-barcelona-1172/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "297d6b80a953b51661b5f303927e33426feeaf2c7e5b78401a99e8c7674d9651"
+      "expected_rendered_content_sha256": "297d6b80a953b51661b5f303927e33426feeaf2c7e5b78401a99e8c7674d9651",
+      "applied_modified": "2026-10-02T02:13:16",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-luxemburgo/",
+      "applied_verified": true
     },
     {
       "id": 27653,
@@ -1055,7 +1322,10 @@
       "public_title": "Transfer Privado Barcelona a Bruselas | Traslado a la Capital de Europa",
       "source_url": "https://metransfers.es/guia-completa-por-que-metransfers-es-la-mejor-opcion-para-tus-traslados-en-barcelona-50-razones-que-marcan-la-diferencia-8089/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "7ddc8e46eb0bfecbebd25b13c434260019903524c3eea12546ff40c474b2c880"
+      "expected_rendered_content_sha256": "7ddc8e46eb0bfecbebd25b13c434260019903524c3eea12546ff40c474b2c880",
+      "applied_modified": "2026-10-02T02:13:22",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-bruselas/",
+      "applied_verified": true
     },
     {
       "id": 27656,
@@ -1066,7 +1336,10 @@
       "public_title": "Traslado Privado Barcelona a Fráncfort | Transfer al Centro Financiero de Alemania",
       "source_url": "https://metransfers.es/guia-completa-como-reservar-un-transfer-en-barcelona-en-menos-de-2-minutos-la-guia-rapida-de-metransfers-2235/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "97273db5c2c021a00b25c30d5b518705499afcd53a7272a15794864d8d501b8e"
+      "expected_rendered_content_sha256": "97273db5c2c021a00b25c30d5b518705499afcd53a7272a15794864d8d501b8e",
+      "applied_modified": "2026-10-02T02:13:25",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-francfort/",
+      "applied_verified": true
     },
     {
       "id": 27662,
@@ -1077,7 +1350,10 @@
       "public_title": "Transfer Privado Barcelona a Stuttgart | Traslado a la Ciudad del Automóvil",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-tour-en-barcelona-excursion-privada-de-1-dia-personalizada-por-la-bcn-1789/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "4057a04eff4dd2e79d0534924957883713a43cda45ef5f9a9837d28b0da6486f"
+      "expected_rendered_content_sha256": "4057a04eff4dd2e79d0534924957883713a43cda45ef5f9a9837d28b0da6486f",
+      "applied_modified": "2026-10-02T02:14:05",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-stuttgart/",
+      "applied_verified": true
     },
     {
       "id": 27801,
@@ -1088,7 +1364,10 @@
       "public_title": "Traslado Ejecutivo Barcelona | Corporate Transfer para Empresas con MeTransfers",
       "source_url": "https://metransfers.es/por-que-elegir-como-disenar-tu-excursion-privada-de-1-dia-por-barcelona-con-metransfers-4151/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "9c59819cfeb611498cf561859d0f83c26deacd43e8e383b80f154ab103331011"
+      "expected_rendered_content_sha256": "9c59819cfeb611498cf561859d0f83c26deacd43e8e383b80f154ab103331011",
+      "applied_modified": "2026-10-02T02:14:13",
+      "applied_url": "https://metransfers.es/traslado-ejecutivo-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 27804,
@@ -1099,7 +1378,10 @@
       "public_title": "Transfer Aeropuerto El Prat | Recogida VIP con Seguimiento de Vuelo en Tiempo Real",
       "source_url": "https://metransfers.es/guia-completa-chofer-a-disposicion-por-horas-en-barcelona-que-es-y-como-aprovecharlo-al-maximo-2053/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "b820b902ca51dfec1329c7e670b08c91fdbf5b551fd2c68763bff80d64c50723"
+      "expected_rendered_content_sha256": "b820b902ca51dfec1329c7e670b08c91fdbf5b551fd2c68763bff80d64c50723",
+      "applied_modified": "2026-10-02T02:14:32",
+      "applied_url": "https://metransfers.es/transfer-aeropuerto-el-prat/",
+      "applied_verified": true
     },
     {
       "id": 27807,
@@ -1110,7 +1392,10 @@
       "public_title": "Traslado Privado Barcelona a Huesca | Transfer a los Pirineos Aragoneses",
       "source_url": "https://metransfers.es/guia-completa-tour-panoramico-por-barcelona-las-mejores-vistas-sin-bajar-de-tu-coche-privado-5711/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "11acf1d29805fc028e235bdca2ba133f8da2ba4ceee3966fe21c33c6482e9fbe"
+      "expected_rendered_content_sha256": "11acf1d29805fc028e235bdca2ba133f8da2ba4ceee3966fe21c33c6482e9fbe",
+      "applied_modified": "2026-10-02T02:14:35",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-huesca/",
+      "applied_verified": true
     },
     {
       "id": 27810,
@@ -1121,7 +1406,10 @@
       "public_title": "Transfer Privado Barcelona a Benasque | Traslado al Valle más Bonito del Pirineo",
       "source_url": "https://metransfers.es/descubre-barcelona-en-4-6-u-8-horas-elige-el-tour-en-coche-a-tu-medida-4144/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "1e878972e0040a69797bb111f79c7017af0108ff85cba7085290125237bd5781"
+      "expected_rendered_content_sha256": "1e878972e0040a69797bb111f79c7017af0108ff85cba7085290125237bd5781",
+      "applied_modified": "2026-10-02T02:14:38",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-benasque/",
+      "applied_verified": true
     },
     {
       "id": 27813,
@@ -1132,7 +1420,10 @@
       "public_title": "Traslado Privado Barcelona a Teruel | Transfer a la Ciudad del Amor Modernista",
       "source_url": "https://metransfers.es/guia-completa-excursion-de-1-dia-por-la-barcelona-de-gaudi-de-monumento-a-monumento-con-chofer-puerta-a-puerta-2706/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "9d4ff4cbd77d2f8133a4232bb6f7e58a236c1389a8f06c495f4da18fcf6666bf"
+      "expected_rendered_content_sha256": "9d4ff4cbd77d2f8133a4232bb6f7e58a236c1389a8f06c495f4da18fcf6666bf",
+      "applied_modified": "2026-10-02T02:14:40",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-teruel/",
+      "applied_verified": true
     },
     {
       "id": 27815,
@@ -1143,7 +1434,10 @@
       "public_title": "Transfer Privado Barcelona a Salamanca | Traslado a la Ciudad Dorada",
       "source_url": "https://metransfers.es/guia-completa-conoce-nuestra-flota-los-vehiculos-de-alta-gama-para-tus-tours-por-barcelona-5020/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "054f38fb2aeb47a82612c89755be5a97e96a46f0d437628c68f48e6b4b660255"
+      "expected_rendered_content_sha256": "054f38fb2aeb47a82612c89755be5a97e96a46f0d437628c68f48e6b4b660255",
+      "applied_modified": "2026-10-02T02:14:44",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-salamanca/",
+      "applied_verified": true
     },
     {
       "id": 27817,
@@ -1154,7 +1448,10 @@
       "public_title": "Traslado Privado Barcelona a Valladolid | Transfer a la Capital del Renacimiento",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-la-ventaja-de-un-conductor-local-rutas-sin-trafico-y-puntualidad-en-tu-tour-6197/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "86667ab66507fede49eb247990829ff681595d1a2c887b3b2be72d9d2ce8590c"
+      "expected_rendered_content_sha256": "86667ab66507fede49eb247990829ff681595d1a2c887b3b2be72d9d2ce8590c",
+      "applied_modified": "2026-10-02T02:14:47",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-valladolid/",
+      "applied_verified": true
     },
     {
       "id": 27819,
@@ -1165,7 +1462,10 @@
       "public_title": "Transfer Privado Barcelona a Santander | Traslado a la Perla del Cantábrico",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-precios-cerrados-en-tus-tours-por-barcelona-viaja-sin-taximetros-ni-sorpresas-9609/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "7a4597752487ccbb829d6b95dff744fac1ac9d46b21fce795cb7bcaee136539f"
+      "expected_rendered_content_sha256": "7a4597752487ccbb829d6b95dff744fac1ac9d46b21fce795cb7bcaee136539f",
+      "applied_modified": "2026-10-02T02:14:52",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-santander/",
+      "applied_verified": true
     },
     {
       "id": 27821,
@@ -1176,7 +1476,10 @@
       "public_title": "Traslado Privado Barcelona a La Rioja | Tour de Vinos con Conductor",
       "source_url": "https://metransfers.es/descubre-excursion-privada-a-montserrat-desde-bcn-el-viaje-mas-comodo-hasta-la-montana-3857/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "33800d17543504ecea17b00bf20729a3c80adfe94755d940648bc07e002c57c3"
+      "expected_rendered_content_sha256": "33800d17543504ecea17b00bf20729a3c80adfe94755d940648bc07e002c57c3",
+      "applied_modified": "2026-10-02T02:14:55",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-la-rioja/",
+      "applied_verified": true
     },
     {
       "id": 27824,
@@ -1187,7 +1490,10 @@
       "public_title": "Transfer Privado Barcelona a Pamplona | San Fermín y la Tradición Vasca",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-ruta-en-coche-de-1-dia-por-la-costa-brava-tu-eliges-los-pueblos-nosotros-conducimos-1787/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "39e3f822122790927b6a6c17723ca7f84276ad4a67bb41700ed0b5dab014fbf8"
+      "expected_rendered_content_sha256": "39e3f822122790927b6a6c17723ca7f84276ad4a67bb41700ed0b5dab014fbf8",
+      "applied_modified": "2026-10-02T02:15:00",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-pamplona/",
+      "applied_verified": true
     },
     {
       "id": 27826,
@@ -1198,7 +1504,10 @@
       "public_title": "Traslado Privado Barcelona a Oviedo | Transfer a la Capital del Asturiano",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-traslado-y-tour-de-un-dia-a-girona-transporte-exclusivo-desde-la-puerta-de-tu-hotel-6831/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "a8caa1dfc3ada41f1ba06a5f70b13647635b15ca550d94821b03a7f491ff7244"
+      "expected_rendered_content_sha256": "a8caa1dfc3ada41f1ba06a5f70b13647635b15ca550d94821b03a7f491ff7244",
+      "applied_modified": "2026-10-02T02:15:02",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-oviedo/",
+      "applied_verified": true
     },
     {
       "id": 27828,
@@ -1209,7 +1518,10 @@
       "public_title": "Transfer Privado Barcelona a Santiago de Compostela | Traslado a la Ciudad Santa",
       "source_url": "https://metransfers.es/guia-completa-de-barcelona-a-sitges-transporte-privado-para-una-escapada-perfecta-de-un-dia-8383/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "a5ede81c6f628375223c608a9c02984bcb809e6c105305c899f87e15ae980490"
+      "expected_rendered_content_sha256": "a5ede81c6f628375223c608a9c02984bcb809e6c105305c899f87e15ae980490",
+      "applied_modified": "2026-10-02T02:15:05",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-santiago-de-compostela/",
+      "applied_verified": true
     },
     {
       "id": 27830,
@@ -1220,7 +1532,10 @@
       "public_title": "Traslado Privado Barcelona a Palma | Transfer hasta el Puerto para Viajar a Mallorca",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-ruta-por-el-penedes-visita-las-bodegas-con-un-chofer-privado-y-disfruta-sin-preocuparte-por-conducir-2990/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "22a347ec0758934944db4286d6c208fa7d724b23eb96d1c9dfb9535a1ddb55a0"
+      "expected_rendered_content_sha256": "22a347ec0758934944db4286d6c208fa7d724b23eb96d1c9dfb9535a1ddb55a0",
+      "applied_modified": "2026-10-02T02:15:13",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-palma/",
+      "applied_verified": true
     },
     {
       "id": 27832,
@@ -1231,7 +1546,10 @@
       "public_title": "Transfer Privado Barcelona a Andorra para Spa | Caldea y Relax en el Principado",
       "source_url": "https://metransfers.es/guia-completa-excursion-a-figueres-en-coche-privado-la-forma-mas-directa-de-llegar-al-museo-dali-5752/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "1ccc293d3b7a1ca2e574f6fee1a7972093372e7871a8815cd39dc43a13823ecc"
+      "expected_rendered_content_sha256": "1ccc293d3b7a1ca2e574f6fee1a7972093372e7871a8815cd39dc43a13823ecc",
+      "applied_modified": "2026-10-02T02:15:21",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-andorra-para-spa/",
+      "applied_verified": true
     },
     {
       "id": 27834,
@@ -1242,7 +1560,10 @@
       "public_title": "Guía de Traslados desde Barcelona a Francia | Todo lo que Necesitas Saber",
       "source_url": "https://metransfers.es/descubre-ruta-de-los-pueblos-medievales-de-cataluna-tu-itinerario-personalizado-en-vehiculo-privado-4534/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "9db42893eeee61ccb44da19fe7a9810fb34f8efa4bf65137c565638e246cb664"
+      "expected_rendered_content_sha256": "9db42893eeee61ccb44da19fe7a9810fb34f8efa4bf65137c565638e246cb664",
+      "applied_modified": "2026-10-02T02:15:23",
+      "applied_url": "https://metransfers.es/guia-de-traslados-desde-barcelona-a-francia/",
+      "applied_verified": true
     },
     {
       "id": 27836,
@@ -1253,7 +1574,10 @@
       "public_title": "Traslado Privado Barcelona a Portugal | Guía para Cruzar la Frontera con Coche Español",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-excursiones-de-un-dia-para-grupos-de-hasta-7-personas-todos-juntos-en-un-solo-vehiculo-5779/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "2fa707279887c7af3b9b7b340af7c316d706f330acc85b2494716b32ce25acfe"
+      "expected_rendered_content_sha256": "2fa707279887c7af3b9b7b340af7c316d706f330acc85b2494716b32ce25acfe",
+      "applied_modified": "2026-10-02T02:15:25",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-portugal/",
+      "applied_verified": true
     },
     {
       "id": 27838,
@@ -1264,7 +1588,10 @@
       "public_title": "Transfer Privado Barcelona a Narbona | Traslado a la Ciudad Romana Francesa",
       "source_url": "https://metransfers.es/descubre-mucho-equipaje-cero-problemas-traslados-espaciosos-para-cruceristas-y-familias-3761/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "a42a45a92fa5020cbf7596fce25ed2472b6e61a6a67eb634f754fe67f0efadb6"
+      "expected_rendered_content_sha256": "a42a45a92fa5020cbf7596fce25ed2472b6e61a6a67eb634f754fe67f0efadb6",
+      "applied_modified": "2026-10-02T02:15:27",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-narbona/",
+      "applied_verified": true
     },
     {
       "id": 27855,
@@ -1275,7 +1602,10 @@
       "public_title": "Traslado Privado Barcelona a Avignon | Transfer a la Ciudad de los Papas",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-recogida-vip-en-el-aeropuerto-del-prat-que-pasa-cuando-tu-chofer-te-espera-con-un-cartel-5880/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "03e619bda35758adb74b4ccf4e68e954f26a2f86ed6be1b98c486e7731dc8b66"
+      "expected_rendered_content_sha256": "03e619bda35758adb74b4ccf4e68e954f26a2f86ed6be1b98c486e7731dc8b66",
+      "applied_modified": "2026-10-02T02:15:35",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-avignon/",
+      "applied_verified": true
     },
     {
       "id": 27858,
@@ -1286,7 +1616,10 @@
       "public_title": "Transfer Privado Barcelona a Nimes | Traslado a la Ciudad Romana de la Provenza",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-movilidad-para-congresos-en-barcelona-traslados-directos-del-aeropuerto-a-fira-barcelona-o-tu-hotel-9579/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "5ea9cb39b079476e98e260fbe2d4f1ac07243627c01bf7d75430526912195959"
+      "expected_rendered_content_sha256": "5ea9cb39b079476e98e260fbe2d4f1ac07243627c01bf7d75430526912195959",
+      "applied_modified": "2026-10-02T02:15:42",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-nimes/",
+      "applied_verified": true
     },
     {
       "id": 27861,
@@ -1297,7 +1630,10 @@
       "public_title": "Traslado Privado Barcelona a Lourdes | Transfer al Santuario de Peregrinación",
       "source_url": "https://metransfers.es/descubre-transporte-ejecutivo-en-barcelona-vehiculos-oscuros-discrecion-y-maxima-puntualidad-1999/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "c7cd95370f457dd701a14bb3aa48109b7a4bfb32e786d4f592c4b1fc69148b28"
+      "expected_rendered_content_sha256": "c7cd95370f457dd701a14bb3aa48109b7a4bfb32e786d4f592c4b1fc69148b28",
+      "applied_modified": "2026-10-02T02:16:39",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-lourdes/",
+      "applied_verified": true
     },
     {
       "id": 27864,
@@ -1308,7 +1644,10 @@
       "public_title": "Transfer Privado Barcelona a Albi | Traslado a la Ciudad del Toulouse-Lautrec",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-roadshows-financieros-y-de-negocios-optimiza-tus-reuniones-en-barcelona-con-un-chofer-a-disposicion-3489/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "538b04e4543898bcdb831c12c29e746c2bf27fc6aec99d323781e20d859e7a37"
+      "expected_rendered_content_sha256": "538b04e4543898bcdb831c12c29e746c2bf27fc6aec99d323781e20d859e7a37",
+      "applied_modified": "2026-10-02T02:16:43",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-albi/",
+      "applied_verified": true
     },
     {
       "id": 27867,
@@ -1319,7 +1658,10 @@
       "public_title": "Traslado Privado Barcelona a Montserrat para Grupos | Tour VIP con Furgoneta",
       "source_url": "https://metransfers.es/guia-completa-traslados-para-eventos-nocturnos-o-cenas-de-gala-en-barcelona-llega-con-estilo-y-regresa-con-seguridad-1826/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "3a95b09af5091357c390bf2f5d2a095b283389f553d657121aa2dcadd6d08171"
+      "expected_rendered_content_sha256": "3a95b09af5091357c390bf2f5d2a095b283389f553d657121aa2dcadd6d08171",
+      "applied_modified": "2026-10-02T02:16:46",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-montserrat-para-grupos/",
+      "applied_verified": true
     },
     {
       "id": 27870,
@@ -1330,7 +1672,10 @@
       "public_title": "Transfer Privado Barcelona a Costa Brava | Tour de un Día por las Calas más Bonitas",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-operativa-de-salidas-vip-del-hotel-al-prat-sin-estres-tras-una-intensa-semana-de-negocios-7483/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "0c6cf993f32fa47df0c6b849f2ac84bbaf0b7d38c8690f9d1b798bc0a3ed69f9"
+      "expected_rendered_content_sha256": "0c6cf993f32fa47df0c6b849f2ac84bbaf0b7d38c8690f9d1b798bc0a3ed69f9",
+      "applied_modified": "2026-10-02T02:16:50",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-costa-brava/",
+      "applied_verified": true
     },
     {
       "id": 27873,
@@ -1341,7 +1686,10 @@
       "public_title": "Traslado Privado Barcelona a Céret | Transfer a los Pirineos Orientales Franceses",
       "source_url": "https://metransfers.es/guia-completa-escala-de-crucero-en-barcelona-tour-expres-en-coche-privado-desde-el-puerto-y-regreso-a-tiempo-2315/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "d766098da55950fdcd77ee0401bb6133ffc16bce0f1657d2e58cd005e000f420"
+      "expected_rendered_content_sha256": "d766098da55950fdcd77ee0401bb6133ffc16bce0f1657d2e58cd005e000f420",
+      "applied_modified": "2026-10-02T02:16:52",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-ceret/",
+      "applied_verified": true
     },
     {
       "id": 27876,
@@ -1352,7 +1700,10 @@
       "public_title": "Transfer Privado Barcelona a Le Perthus | Frontera y Compras en la Frontera Hispano-Francesa",
       "source_url": "https://metransfers.es/todo-lo-que-debes-saber-sobre-movilidad-segura-y-exclusiva-para-mujeres-ejecutivas-en-barcelona-6121/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "82db895d35102a6abd8208b9c342046380b39584f0507d77159da333ed87b689"
+      "expected_rendered_content_sha256": "82db895d35102a6abd8208b9c342046380b39584f0507d77159da333ed87b689",
+      "applied_modified": "2026-10-02T02:16:59",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-le-perthus/",
+      "applied_verified": true
     },
     {
       "id": 27880,
@@ -1363,7 +1714,10 @@
       "public_title": "Traslado Privado Barcelona para Boda | Transfer Nupcial con Conductor Elegante",
       "source_url": "https://metransfers.es/guia-completa-logistica-de-movilidad-para-delegaciones-medicas-preparandonos-para-los-congresos-de-primavera-en-barcelona-9184/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "3161dc6bbde67ebd2e2a71a07a58046d5cb6b6c05784ed5dbadede3418a9fc8c"
+      "expected_rendered_content_sha256": "3161dc6bbde67ebd2e2a71a07a58046d5cb6b6c05784ed5dbadede3418a9fc8c",
+      "applied_modified": "2026-10-02T02:17:02",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-boda/",
+      "applied_verified": true
     },
     {
       "id": 27883,
@@ -1374,7 +1728,10 @@
       "public_title": "Transfer Privado Barcelona a Murcia por la Autopista del Mediterráneo",
       "source_url": "https://metransfers.es/descubre-traslados-corporativos-al-ccib-puntualidad-garantizada-para-ponentes-e-invitados-vip-3920/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "6e7d074e331936e789608138c4b61168b09d3fb2436b8f577696f7aafa0f44e7"
+      "expected_rendered_content_sha256": "6e7d074e331936e789608138c4b61168b09d3fb2436b8f577696f7aafa0f44e7",
+      "applied_modified": "2026-10-02T02:17:06",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-murcia-por-la-autopista-del-mediterraneo/",
+      "applied_verified": true
     },
     {
       "id": 27885,
@@ -1385,7 +1742,10 @@
       "public_title": "Traslado Privado Barcelona a Covadonga | Transfer al Santuario de Asturias",
       "source_url": "https://metransfers.es/descubre-alquiler-de-coche-con-conductor-por-horas-la-solucion-a-la-agenda-impredecible-de-los-congresos-en-barcelona-7141/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "e72185fda30942de784b5471f78dc1b501e22022bc767a6738279f373c075065"
+      "expected_rendered_content_sha256": "e72185fda30942de784b5471f78dc1b501e22022bc767a6738279f373c075065",
+      "applied_modified": "2026-10-02T02:17:09",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-covadonga/",
+      "applied_verified": true
     },
     {
       "id": 27887,
@@ -1396,7 +1756,10 @@
       "public_title": "Transfer Privado Barcelona a Costa Verde | Traslado al Norte de España",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-gestion-de-equipaje-en-escalas-cortas-haz-tu-tour-por-barcelona-mientras-tus-maletas-van-seguras-en-el-maletero-7703/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "4125ee7b87128a064f46cb4f81283341aad76f4271e746550d0779c8affda870"
+      "expected_rendered_content_sha256": "4125ee7b87128a064f46cb4f81283341aad76f4271e746550d0779c8affda870",
+      "applied_modified": "2026-10-02T02:17:19",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-costa-verde/",
+      "applied_verified": true
     },
     {
       "id": 27890,
@@ -1407,7 +1770,10 @@
       "public_title": "Traslado Privado Barcelona a Gibraltar | Transfer a la Roca Británica",
       "source_url": "https://metransfers.es/guia-completa-fiestas-de-sant-josep-oriol-transporte-privado-al-barrio-gotico-sin-preocuparte-por-el-aparcamiento-2933/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "760989b586887441d657dfd34d8cf0946c9e4670e58d0b81ce8a75c62ae31e1a"
+      "expected_rendered_content_sha256": "760989b586887441d657dfd34d8cf0946c9e4670e58d0b81ce8a75c62ae31e1a",
+      "applied_modified": "2026-10-02T02:17:22",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-a-gibraltar/",
+      "applied_verified": true
     },
     {
       "id": 27892,
@@ -1418,7 +1784,10 @@
       "public_title": "Transfer Privado Barcelona a Albarracín | Traslado al Pueblo Medieval más Bonito de España",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-movilidad-vip-para-artistas-y-musicos-en-barcelona-discrecion-y-gran-capacidad-de-maletero-para-instrumentos-4906/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "e4029493a3e8e95417601cbddba3f086f1f73e066fd8aa3e58c49de5d5348da3"
+      "expected_rendered_content_sha256": "e4029493a3e8e95417601cbddba3f086f1f73e066fd8aa3e58c49de5d5348da3",
+      "applied_modified": "2026-10-02T02:17:24",
+      "applied_url": "https://metransfers.es/transfer-privado-barcelona-a-albarracin/",
+      "applied_verified": true
     },
     {
       "id": 27894,
@@ -1429,7 +1798,10 @@
       "public_title": "Traslado Privado Barcelona Noche | Transfer Nocturno 24 Horas con MeTransfers",
       "source_url": "https://metransfers.es/la-mejor-opcion-de-reserva-tu-traslado-de-primavera-con-antelacion-evita-las-largas-colas-de-taxis-en-el-prat-7702/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "b16cd18be812d725ce48c3038f6d00c5b6748d42e3e0f3290fffbccfe1b31b77"
+      "expected_rendered_content_sha256": "b16cd18be812d725ce48c3038f6d00c5b6748d42e3e0f3290fffbccfe1b31b77",
+      "applied_modified": "2026-10-02T02:17:27",
+      "applied_url": "https://metransfers.es/traslado-privado-barcelona-noche/",
+      "applied_verified": true
     },
     {
       "id": 29559,
@@ -1440,7 +1812,10 @@
       "public_title": "¿Por Qué Elegir un Servicio de Traslado Privado en Barcelona?",
       "source_url": "https://metransfers.es/taxis-de-lujo-en-barcelona-viaja-con-estilo/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "3b1a6b792581d7aaac7363c783b287322c2ba78009d02ebf65d2c1eed1ffc9c9"
+      "expected_rendered_content_sha256": "3b1a6b792581d7aaac7363c783b287322c2ba78009d02ebf65d2c1eed1ffc9c9",
+      "applied_modified": "2026-10-02T02:17:29",
+      "applied_url": "https://metransfers.es/por-que-elegir-un-servicio-de-traslado-privado-en-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 29561,
@@ -1451,7 +1826,10 @@
       "public_title": "Guía de Testimonios: Clientes Satisfechos con Nuestros Servicios de Traslado en Barcelona",
       "source_url": "https://metransfers.es/taxis-para-grupos-en-barcelona-furgonetas-y-minivans/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "21f4d7dced99958f0b172bb9d3b1e62b87ef55374c81d7c47cbbc1f132284bd1"
+      "expected_rendered_content_sha256": "21f4d7dced99958f0b172bb9d3b1e62b87ef55374c81d7c47cbbc1f132284bd1",
+      "applied_modified": "2026-10-02T02:17:31",
+      "applied_url": "https://metransfers.es/guia-de-testimonios-clientes-satisfechos-con-nuestros-servicios-de-traslado-en-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 29562,
@@ -1462,7 +1840,10 @@
       "public_title": "Los Mejores Servicios de Traslado para Grupos en Barcelona",
       "source_url": "https://metransfers.es/taxi-privado-desde-barcelona-a-la-costa-brava/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "72f68c261e68d1722718a418081b6ebd75bb3a0414a81c553fe2a3c1e838cf0f"
+      "expected_rendered_content_sha256": "72f68c261e68d1722718a418081b6ebd75bb3a0414a81c553fe2a3c1e838cf0f",
+      "applied_modified": "2026-10-02T02:17:33",
+      "applied_url": "https://metransfers.es/los-mejores-servicios-de-traslado-para-grupos-en-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 29563,
@@ -1473,7 +1854,10 @@
       "public_title": "Cómo Aprovechar al Máximo tu Traslado Privado en Barcelona: Consejos y Recomendaciones",
       "source_url": "https://metransfers.es/tour-privado-por-barcelona-descubre-la-magia-de-gaudi/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "47b9c2017e9f34de6afd458fc672e6db6883954d4974048bbb0a030f604e3791"
+      "expected_rendered_content_sha256": "47b9c2017e9f34de6afd458fc672e6db6883954d4974048bbb0a030f604e3791",
+      "applied_modified": "2026-10-02T02:17:35",
+      "applied_url": "https://metransfers.es/como-aprovechar-al-maximo-tu-traslado-privado-en-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 29565,
@@ -1484,7 +1868,10 @@
       "public_title": "Las Mejores Aplicaciones de Transfer en Barcelona: Compara y Encuentra",
       "source_url": "https://metransfers.es/excursion-privada-desde-barcelona-a-montserrat/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "452fb5d64c83e480e09b3639f1cc9c56bec952207aa45b425cae191d36755279"
+      "expected_rendered_content_sha256": "452fb5d64c83e480e09b3639f1cc9c56bec952207aa45b425cae191d36755279",
+      "applied_modified": "2026-10-02T02:17:37",
+      "applied_url": "https://metransfers.es/las-mejores-aplicaciones-de-transfer-en-barcelona-compara-y-encuentra/",
+      "applied_verified": true
     },
     {
       "id": 29566,
@@ -1495,7 +1882,10 @@
       "public_title": "Cómo Planificar un Viaje Perfecto desde Barcelona: Guía Completa",
       "source_url": "https://metransfers.es/tour-privado-desde-barcelona-a-girona-y-museo-dali/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "34d297b23c2b890c84f3ff26a5e564417cc0b23ebe59e955fb5664116fc8a741"
+      "expected_rendered_content_sha256": "34d297b23c2b890c84f3ff26a5e564417cc0b23ebe59e955fb5664116fc8a741",
+      "applied_modified": "2026-10-02T02:17:39",
+      "applied_url": "https://metransfers.es/como-planificar-un-viaje-perfecto-en-barcelona-guia-completa/",
+      "applied_verified": true
     },
     {
       "id": 29567,
@@ -1506,7 +1896,10 @@
       "public_title": "Guía Completa de Transporte en Barcelona: Todo lo que Necesitas Saber",
       "source_url": "https://metransfers.es/ruta-de-vinos-y-cava-por-el-penedes-desde-barcelona/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "516f7a149295351000b33d55654af4fbdaedebeab6f800d733e6d18f9f8d1992"
+      "expected_rendered_content_sha256": "516f7a149295351000b33d55654af4fbdaedebeab6f800d733e6d18f9f8d1992",
+      "applied_modified": "2026-10-02T02:17:41",
+      "applied_url": "https://metransfers.es/guia-completa-de-transporte-en-barcelona-todo-lo-que-necesitas-saber/",
+      "applied_verified": true
     },
     {
       "id": 29568,
@@ -1517,7 +1910,10 @@
       "public_title": "Los Mejores Tours Privados en Barcelona: Guía para Elegir el Perfecto",
       "source_url": "https://metransfers.es/tour-panoramico-por-barcelona-en-coche-privado/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "fe45d867144b5bba1240a606e73201f3ea4c11df811389c314a0cbe758c3057c"
+      "expected_rendered_content_sha256": "fe45d867144b5bba1240a606e73201f3ea4c11df811389c314a0cbe758c3057c",
+      "applied_modified": "2026-10-02T02:18:12",
+      "applied_url": "https://metransfers.es/los-mejores-tours-privados-en-barcelona-guia-para-elegir-el-perfecto/",
+      "applied_verified": true
     },
     {
       "id": 29569,
@@ -1528,7 +1924,10 @@
       "public_title": "Las Mejores Rutas Escénicas Desde Barcelona: Descubre Cataluña en Coche",
       "source_url": "https://metransfers.es/excursion-privada-de-barcelona-a-sitges-y-tarragona/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "3c0b0c579149219957803f57e93fa30daa67693c873fab2aa92e0f185f97e93f"
+      "expected_rendered_content_sha256": "3c0b0c579149219957803f57e93fa30daa67693c873fab2aa92e0f185f97e93f",
+      "applied_modified": "2026-10-02T02:18:14",
+      "applied_url": "https://metransfers.es/las-mejores-rutas-escenicas-desde-barcelona-descubre-cataluna-en-coche/",
+      "applied_verified": true
     },
     {
       "id": 29570,
@@ -1539,7 +1938,10 @@
       "public_title": "Cómo Elegir el Mejor Servicio de Traslado para Eventos Especiales en Barcelona",
       "source_url": "https://metransfers.es/tour-de-compras-vip-en-barcelona-la-roca-village/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "ab3277843da849dea586394c50a82aca49a954cd348ad1932ba58a926fba179b"
+      "expected_rendered_content_sha256": "ab3277843da849dea586394c50a82aca49a954cd348ad1932ba58a926fba179b",
+      "applied_modified": "2026-10-02T02:18:18",
+      "applied_url": "https://metransfers.es/como-elegir-el-mejor-servicio-de-traslado-para-eventos-especiales-en-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 29571,
@@ -1550,7 +1952,10 @@
       "public_title": "Guía Completa de Traslados desde el Aeropuerto de Barcelona: Todo lo que Necesitas Saber",
       "source_url": "https://metransfers.es/ruta-de-juego-de-tronos-tour-desde-barcelona-a-girona/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "eed538ee85daca165091c0db724a3e8e0eef0f2c96317511777985e54c9899ce"
+      "expected_rendered_content_sha256": "eed538ee85daca165091c0db724a3e8e0eef0f2c96317511777985e54c9899ce",
+      "applied_modified": "2026-10-02T02:18:22",
+      "applied_url": "https://metransfers.es/guia-completa-de-traslados-desde-el-aeropuerto-de-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 29572,
@@ -1561,7 +1966,10 @@
       "public_title": "10 Consejos para Elegir el Mejor Servicio de Traslado en Barcelona",
       "source_url": "https://metransfers.es/tour-privado-por-los-pueblos-medievales-de-cataluna-desde-barcelona/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "5a4e513e517e4679fcf280a5211fd3922eb03a1e7af72635a184cf93575f9594"
+      "expected_rendered_content_sha256": "5a4e513e517e4679fcf280a5211fd3922eb03a1e7af72635a184cf93575f9594",
+      "applied_modified": "2026-10-02T02:18:28",
+      "applied_url": "https://metransfers.es/10-consejos-para-elegir-el-mejor-servicio-de-traslado-en-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 29735,
@@ -1572,7 +1980,10 @@
       "public_title": "Los Beneficios de Usar un Servicio de Traslado Privado en Barcelona",
       "source_url": "https://metransfers.es/recuperar-el-iva-en-el-aeropuerto/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "e9009414fae3a5d13c84ce2a185b9d08b0b8817489799aa0fb1e99da5d9798cb"
+      "expected_rendered_content_sha256": "e9009414fae3a5d13c84ce2a185b9d08b0b8817489799aa0fb1e99da5d9798cb",
+      "applied_modified": "2026-10-02T02:18:36",
+      "applied_url": "https://metransfers.es/beneficios-de-usar-un-servicio-de-traslado-privado-en-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 29744,
@@ -1583,7 +1994,10 @@
       "public_title": "Experiencias Únicas: Tours Temáticos en Barcelona",
       "source_url": "https://metransfers.es/movilidad-vip-para-artistas-y-musicos-en-barcelona-discrecion-y-gran-capacidad-de-maletero-para-instrumentos/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "baab886d2e32f2b8b113f3bd21b0004fd5ff6bb5a627de66682c14cb9ca3a057"
+      "expected_rendered_content_sha256": "baab886d2e32f2b8b113f3bd21b0004fd5ff6bb5a627de66682c14cb9ca3a057",
+      "applied_modified": "2026-10-02T02:18:42",
+      "applied_url": "https://metransfers.es/experiencias-unicas-tours-tematicos-en-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 29745,
@@ -1594,7 +2008,10 @@
       "public_title": "Diferencias Entre Servicios de Traslado: Taxi vs. Transfer Privado en Barcelona",
       "source_url": "https://metransfers.es/barcelona-seniors-comodidad-accesibilidad-vehiculos/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "d1b821af2e203f8d47131e1c586986a4d0dc726999c071331d7b7b81e08a7d1a"
+      "expected_rendered_content_sha256": "d1b821af2e203f8d47131e1c586986a4d0dc726999c071331d7b7b81e08a7d1a",
+      "applied_modified": "2026-10-02T02:18:53",
+      "applied_url": "https://metransfers.es/diferencias-entre-servicios-de-traslado-taxi-vs-transfer-privado-en-barcelona/",
+      "applied_verified": true
     },
     {
       "id": 29746,
@@ -1605,7 +2022,20 @@
       "public_title": "Cómo Escoger el Mejor Servicio de Transfer en Barcelona: Guía Completa",
       "source_url": "https://metransfers.es/lonjas-de-pescado-en-la-costa-de-cataluna/",
       "raw_title_requires_authenticated_check": true,
-      "expected_rendered_content_sha256": "03b306cfdfe4d52b53973c404488ca2ed9d797a45d3656e9f777a21538e92a7b"
+      "expected_rendered_content_sha256": "03b306cfdfe4d52b53973c404488ca2ed9d797a45d3656e9f777a21538e92a7b",
+      "applied_modified": "2026-10-02T01:22:34",
+      "applied_url": "https://metransfers.es/como-escoger-el-mejor-servicio-de-transfer-en-barcelona-guia-completa/",
+      "applied_verified": true
     }
-  ]
+  ],
+  "execution": {
+    "user_date": "2026-10-02",
+    "slugs_applied": 140,
+    "coherent_slugs_preserved": 9,
+    "redirect_method": "Yoast Premium PHP",
+    "http_urls_verified": 866,
+    "remaining_failures": 0,
+    "verification_file": "docs/VERIFICACION-BLOG-2026-10-02.json",
+    "raw_originals_stored_outside_git": true
+  }
 }
