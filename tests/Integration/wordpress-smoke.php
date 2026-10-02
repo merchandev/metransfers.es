@@ -179,11 +179,13 @@ mt_wp_integration_assert( 'mt-editorial-transfer-guide' === $blog_applied->post_
 mt_wp_integration_assert( $blog_original->post_content === $blog_applied->post_content && $blog_original->post_title === $blog_applied->post_title, 'Body, title and sales links must remain unchanged.' );
 mt_wp_integration_assert( get_permalink( $blog_id ) === get_post_meta( $blog_id, '_yoast_wpseo_canonical', true ), 'Explicit self-canonical must follow the renamed post.' );
 mt_wp_integration_assert( '/mt-editorial-transfer-guide/?utm_source=test' === \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/mt-editorial-old-topic/?utm_source=test', get_option( \MeTransfers\SEO\BlogSlugRedirects::OPTION ) ), 'Applied migration must preserve old inbound links and query parameters.' );
+mt_wp_integration_assert( '/en/mt-editorial-transfer-guide/?utm_source=test' === \MeTransfers\SEO\BlogSlugRedirects::nativeEnglishTargetForRequest( '/en/mt-editorial-old-topic/?utm_source=test' ), 'Native WordPress slug history must also preserve English links without a migration map.' );
 include $blog_tools . 'restore-blog-slugs.php';
 $blog_restored = get_post( $blog_id );
 mt_wp_integration_assert( $blog_original->post_name === $blog_restored->post_name && $blog_original->post_excerpt === $blog_restored->post_excerpt, 'Rollback must restore original URL and excerpt.' );
 mt_wp_integration_assert( $blog_old_url === get_post_meta( $blog_id, '_yoast_wpseo_canonical', true ), 'Rollback must restore explicit self-canonical.' );
 mt_wp_integration_assert( ! isset( get_option( \MeTransfers\SEO\BlogSlugRedirects::OPTION, array() )[ $blog_original->post_name ] ), 'Rollback must remove only its migration redirect.' );
+mt_wp_integration_assert( null === \MeTransfers\SEO\BlogSlugRedirects::nativeEnglishTargetForRequest( '/en/mt-editorial-old-topic/' ), 'A restored current slug must not redirect through native slug history.' );
 wp_delete_post( $blog_id, true );
 wp_delete_file( $blog_manifest_file );
 delete_option( 'mt_blog_slugs_backup_' . $blog_version );

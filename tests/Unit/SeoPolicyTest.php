@@ -17,6 +17,7 @@ final class SeoPolicyTest extends TestCase {
 			1 => (object) array(
 				'ID'            => 1,
 				'post_status'   => 'publish',
+				'post_password' => '',
 				'post_type'     => 'ruta',
 				'post_name'     => 'barcelona-salou',
 				'post_title'    => 'Barcelona - Salou',
@@ -244,5 +245,54 @@ final class SeoPolicyTest extends TestCase {
 		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/old-topic/', $map ) );
 		unset( $GLOBALS['mt_seo_posts'][1] );
 		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::targetForRequest( '/old-topic/', $map ) );
+	}
+
+	public function testNativeEnglishBlogHistoryPreservesLanguageAndQuery(): void {
+		$GLOBALS['mt_seo_posts'][1]->post_type = 'post';
+		$GLOBALS['mt_seo_posts'][1]->post_name = 'transfer-guide';
+		$GLOBALS['mt_test_get_posts']          = static function ( $args ) {
+			self::assertSame( 'post', $args['post_type'] );
+			self::assertSame( 'publish', $args['post_status'] );
+			self::assertSame( '_wp_old_slug', $args['meta_key'] );
+			self::assertSame( 'old-topic', $args['meta_value'] );
+			self::assertSame( 2, $args['posts_per_page'] );
+			return array( 1 );
+		};
+		self::assertSame( '/en/transfer-guide/?utm_source=google&ref=hotel', \MeTransfers\SEO\BlogSlugRedirects::nativeEnglishTargetForRequest( '/en/old-topic/?utm_source=google&ref=hotel' ) );
+	}
+
+	public function testNativeEnglishBlogHistoryRejectsExistingAndNonBlogPaths(): void {
+		$GLOBALS['mt_seo_posts'][1]->post_type = 'post';
+		$GLOBALS['mt_seo_posts'][1]->post_name = 'transfer-guide';
+		$GLOBALS['mt_test_get_posts']          = static function () {
+			self::fail( 'Excluded paths must not query slug history.' );
+		};
+		foreach ( array( '/old-topic/', '/es/old-topic/', '/fr/old-topic/', '/en/', '/en/transfer-guide/', '/en/rutas/old-topic/', '/en/wp-json/posts', '/en/bad.slug/', '/en/old-topic/feed/', '/en/pago/', '/en/reservas-hotel/', '/en/seleccionar-vehiculo/' ) as $request ) {
+			self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::nativeEnglishTargetForRequest( $request ) );
+		}
+	}
+
+	public function testNativeEnglishBlogHistoryRejectsAmbiguityAndProtectedTargets(): void {
+		$GLOBALS['mt_seo_posts'][1]->post_type = 'post';
+		$GLOBALS['mt_seo_posts'][1]->post_name = 'transfer-guide';
+		$GLOBALS['mt_test_get_posts']          = static function () {
+			return array();
+		};
+		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::nativeEnglishTargetForRequest( '/en/old-topic/' ) );
+		$GLOBALS['mt_test_get_posts'] = static function () {
+			return array( 1, 2 );
+		};
+		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::nativeEnglishTargetForRequest( '/en/old-topic/' ) );
+		$GLOBALS['mt_test_get_posts']              = static function () {
+			return array( 1 );
+		};
+		$GLOBALS['mt_seo_posts'][1]->post_password = 'secret';
+		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::nativeEnglishTargetForRequest( '/en/old-topic/' ) );
+		$GLOBALS['mt_seo_posts'][1]->post_password = '';
+		$GLOBALS['mt_seo_posts'][1]->post_status   = 'private';
+		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::nativeEnglishTargetForRequest( '/en/old-topic/' ) );
+		$GLOBALS['mt_seo_posts'][1]->post_status = 'publish';
+		$GLOBALS['mt_seo_posts'][1]->post_type   = 'page';
+		self::assertNull( \MeTransfers\SEO\BlogSlugRedirects::nativeEnglishTargetForRequest( '/en/old-topic/' ) );
 	}
 }

@@ -1,3 +1,62 @@
+# Corrección de las URLs antiguas del blog en inglés
+
+Fecha de trabajo: 1 de octubre de 2026, hora del usuario. Estado: código probado localmente; instalación en producción pendiente.
+
+## Problema confirmado
+
+Una edición ordinaria del slug mediante el MCP de WordPress conserva la redirección nativa de la URL española, pero la URL antigua bajo `/en/` devuelve 404. La prueba de la entrada 29746 dio:
+
+| Petición durante la prueba | Resultado |
+|---|---|
+| URL española antigua | 301 hacia el slug nuevo |
+| URL española nueva | 200 y canonical nuevo |
+| URL inglesa antigua | 404 |
+| URL inglesa nueva | 200 |
+
+La migración masiva de slugs se detuvo y se inició la restauración de las 39 URLs modificadas. Después de restaurar la entrada de prueba, sus URLs originales en español e inglés volvieron a responder 200. Las correcciones de contenido se conservan.
+
+## Causa
+
+El router del tema interpreta las URLs inglesas con las variables `mt_lang` y `mt_page`. La función nativa `wp_old_slug_redirect()` requiere la variable `name`; por eso no encuentra el historial del slug en esa ruta. La condición puede comprobarse en el [código oficial de WordPress](https://developer.wordpress.org/reference/functions/wp_old_slug_redirect/). El registro `_wp_old_slug` se crea al editar el permalink, pero el router de idiomas no lo consulta.
+
+## Código preparado
+
+La implementación está en `app/SEO/BlogSlugRedirects.php`. Amplía el manejador existente: cuando no hay una coincidencia en el mapa explícito, busca el antiguo slug en `_wp_old_slug` y conserva el prefijo `/en/` y la cadena de consulta.
+
+Condiciones para redirigir:
+
+- Petición GET o HEAD que WordPress ya ha determinado como 404.
+- Ruta inglesa de un solo segmento; no coincide con rutas anidadas de reservas, administración o API.
+- No existe una página o entrada con el slug solicitado.
+- Existe exactamente una entrada publicada con ese slug antiguo.
+- El destino es una entrada de blog publicada y sin contraseña.
+- El slug de destino es distinto del origen.
+
+El código no modifica aprobaciones de traducción, robots, canonical, reservas ni formularios. Visitar una URL inglesa sigue las reglas de indexación del tema. La redirección no equivale a aprobar o certificar la traducción del artículo.
+
+## Instalación y verificación
+
+1. Hacer una copia del archivo activo `app/SEO/BlogSlugRedirects.php` y comprobar que `app/Core/Application.php` registra esta clase. Si la versión instalada carece de ella, preparar el parche contra esa versión antes de subir archivos.
+2. Reemplazar únicamente el manejador de redirecciones por el archivo preparado. No usar una actualización completa del tema para esta corrección aislada.
+3. Cambiar una sola entrada de prueba, después de leer su estado actual y conservar una copia.
+4. Verificar URLs antiguas y nuevas en español e inglés, con y sin parámetros de consulta. Exigir 301 correcto en las antiguas, 200 en las nuevas y ausencia de bucles.
+5. Continuar con los 140 slugs del manifiesto solo cuando la prueba anterior pase.
+6. Comprobar cada permalink y el sitemap final; conservar el diario de cambios y los archivos de restauración.
+
+El MCP conectado permite editar entradas y campos SEO, pero no expone ninguna capacidad para modificar archivos del tema, instalar esta corrección o administrar redirecciones. Se abrió una pestaña del panel de WordPress para completar el acceso a los archivos mediante una sesión administrativa. El inicio de sesión está pendiente; no falta autorización del usuario.
+
+## Pruebas locales
+
+- PHPUnit: 107 pruebas, 947 aserciones; ninguna prueba fallida. El ejecutor informa una deprecación ya presente en su configuración.
+- PHPStan: sin errores.
+- PHPCS de los archivos PHP modificados: sin infracciones después del ajuste de formato.
+- Casos añadidos: idioma y parámetros preservados; destinos inexistentes, ambiguos, privados o con contraseña rechazados; URLs existentes y rutas anidadas excluidas.
+
+Estas pruebas locales no certifican que el archivo esté instalado en producción. La comprobación pública de las redirecciones debe repetirse después de instalarlo.
+
+## Código completo preparado
+
+```php
 <?php
 namespace MeTransfers\SEO;
 
@@ -103,3 +162,5 @@ final class BlogSlugRedirects {
 		return $prefix . $target . '/' . ( is_string( $query ) && '' !== $query ? '?' . $query : '' );
 	}
 }
+
+```
