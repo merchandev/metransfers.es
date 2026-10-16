@@ -333,6 +333,13 @@
 
 	<div class="footer-inner">
 
+		<?php
+		// Newsletter signup block (app/Newsletter/PublicController::footerForm), escaped inside.
+		if ( class_exists( '\MeTransfers\Newsletter\PublicController' ) ) {
+			echo \MeTransfers\Newsletter\PublicController::footerForm(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+		?>
+
 		<!-- Grid 5 columnas -->
 		<div class="footer-grid">
 

@@ -19,6 +19,7 @@ final class Capabilities {
 	const HOTEL_MANAGE_USERS    = 'mt_hotel_manage_users';
 	const HOTEL_ACCESS_ALL      = 'mt_hotel_access_all';       // Acceso global a todos los hoteles (solo supervisores)
 	const HOTEL_IMPORT_BOOKINGS = 'mt_hotel_import_bookings';  // Importar reservas desde Excel
+	const MANAGE_NEWSLETTER     = 'mt_manage_newsletter';      // Newsletter: suscriptores, campañas e importación
 
 	public function register() {
 		add_action( 'init', array( __CLASS__, 'ensureRoles' ), 1 );
@@ -92,6 +93,7 @@ final class Capabilities {
 					self::HOTEL_MANAGE_USERS,
 					self::HOTEL_ACCESS_ALL,
 					self::HOTEL_IMPORT_BOOKINGS,
+					self::MANAGE_NEWSLETTER,
 					'edit_posts',
 					'read_transfer_requests',
 					'edit_transfer_requests',
@@ -151,6 +153,7 @@ final class Capabilities {
 			self::HOTEL_MANAGE_USERS,
 			self::HOTEL_ACCESS_ALL,
 			self::HOTEL_IMPORT_BOOKINGS,
+			self::MANAGE_NEWSLETTER,
 		);
 	}
 

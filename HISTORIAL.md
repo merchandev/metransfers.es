@@ -15,6 +15,68 @@ La consolidación conserva autores, fechas, mensajes y SHA. Los commits `483d5c1
 
 ## Cronología
 
+### 16 de octubre de 2026 — Sistema de newsletter
+
+El propietario pidió un newsletter: popup a los 10 segundos para recoger nombre y correo, saber qué páginas visitó la persona en la sesión en que se registró y una sección en el menú de WordPress para enviar correos según el estado, importar contactos y crear correos a medida, «robusto y sin fallas». Después pidió el mismo diseño que la web, un popup menos invasivo y un bloque de suscripción en el pie.
+
+- **Módulo `app/Newsletter/`.**
+  - `Settings`: ajustes y textos ES/EN editables.
+  - `Subscribers`: alta, doble confirmación, baja, estados y páginas visitadas.
+  - `Mailer`: plantilla HTML con texto plano, pie legal y cabeceras de baja en un clic.
+  - `Brand`: diseño de la web para correos y páginas.
+  - `Campaigns`: borradores, cola de envío y worker.
+  - `Importer`: CSV y XLSX.
+  - `PublicController`: popup, bloque del pie, alta, límite por IP y enlaces de los correos.
+  - `Admin`: menú **Newsletter** → Suscriptores, Campañas, Importar y Ajustes.
+  - `Privacy`: exportar y borrar datos personales.
+  - Tablas nuevas con la migración `20261016_001_newsletter_schema` (esquema 6.11.0) y permiso nuevo `mt_manage_newsletter` (solo administradores).
+- **Popup** (`assets/js/newsletter.js`, `assets/css/newsletter.css`).
+  - Accesible: diálogo modal, foco atrapado, Escape y vuelta del foco. En móvil se muestra como hoja inferior.
+  - Espera a que se cierre el banner de cookies y no aparece en los pasos de reserva y pago ni en el Portal de Hoteles.
+  - El historial de páginas solo se guarda con las cookies analíticas aceptadas (`mt_cookie_consent_v2`). Sin ellas se envía solo la página de registro.
+  - **Menos invasivo:** como máximo una vez por sesión y una vez cada 24 horas (Ajustes → «Mostrar como máximo una vez cada N horas») por navegador y por IP.
+    - El navegador apunta en `sessionStorage` y `localStorage` que ya tocó y no vuelve a preguntar. Solo cuando le toca mostrarlo hace **una** consulta a `admin-ajax` (`mt_newsletter_slot`); así no hay una petición por página vista.
+    - El servidor responde que sí una vez por IP en el plazo y guarda solo un hash con sal de la IP, en un transient que caduca solo.
+    - Si la consulta falla, no se muestra. Si lo cierran, no vuelve en 14 días; si se suscriben, nunca.
+    - Consecuencia asumida: en una red compartida (oficina, hotel, datos móviles con IP compartida) lo verá una sola persona al día.
+- **Bloque de suscripción en el pie** («Recibe nuestras ofertas por email»): franja arriba del footer de todas las páginas públicas (`PublicController::footerForm()`, llamado desde `footer.php`).
+  - Usa el mismo envío, consentimiento, doble confirmación y protección contra bots que el popup, y guarda `source = footer` («Formulario del pie» en Suscriptores).
+  - Aparece también durante la reserva, donde el popup no se abre, porque no interrumpe. Quien se suscribe desde el pie ya no ve el popup.
+  - El formulario usa `method="post"` para que el correo nunca acabe en una URL si el script no carga. En móvil la casilla de consentimiento va antes del botón.
+  - Se activa en Ajustes, con título y texto editables en ES y EN.
+- **Mismo diseño que la web.** Los colores, tipografías y componentes se tomaron de la web en directo.
+  - **Popup:** cabecera azul marino `#0B1F35` con el brillo azul de las secciones oscuras, etiqueta en ámbar `#FFB547` con su raya y título blanco en Outfit. Debajo, cuerpo blanco con los campos del formulario de reserva (`#F9FAFB`, borde `#D1D5DB`, radio de 12 px) y el botón azul marino de «Buscar vehículos» (radio de 16 px).
+  - **Bloque del pie:** sobre el footer oscuro, con la etiqueta en ámbar, título blanco, los campos claros y el botón azul primario de la web (`#0066CC`). En escritorio va en una fila; en móvil, apilado.
+  - **Correos:** fondo `#F0F5FA` y cabecera azul marino con el logo blanco de la web (el logo personalizado de WordPress, o el del tema si no hay). Llevan la etiqueta en ámbar, títulos en Outfit, texto en Inter, el botón azul marino, enlaces en azul `#075EA8` y el pie oscuro `#051126` de la web, con todos los estilos en línea (`app/Newsletter/Brand.php`). El correo de confirmación incluye además el enlace en texto por si el botón no funciona.
+  - **Páginas de confirmar y de baja:** fondo de la portada (degradado oscuro con brillo azul), logo blanco y etiqueta en ámbar, tarjeta blanca y botón píldora como «Ver todas las rutas».
+  - Todo se revisó a ojo en escritorio y en móvil. La etiqueta por defecto se acortó a «Ofertas exclusivas» para que quepa en una línea en móvil; es editable.
+- **Robustez.**
+  - Cada campaña y suscriptor tiene un único envío, y cada campaña solo puede ponerse en cola una vez (doble clic).
+  - Un solo worker con `GET_LOCK`, en tandas bajo el límite por hora y con 3 reintentos.
+  - Un envío interrumpido nunca se repite.
+  - Las bajas durante una campaña se omiten, y las campañas sin pendientes se cierran solas.
+  - La confirmación de alta se reintenta por el outbox si el SMTP falla.
+  - Ninguna importación vuelve a suscribir a quien se dio de baja.
+  - Las respuestas del alta no revelan si un correo ya estaba suscrito.
+- **Fallos encontrados por las pruebas durante el desarrollo, y corregidos.**
+  1. Quien se daba de baja y volvía a suscribirse en menos de 10 minutos no recibía un correo de confirmación nuevo.
+  2. El `h2 { color: … !important }` global de `style.css` oscurecía el título del popup.
+  3. Una campaña cuyos destinatarios restantes se habían dado de baja se quedaba en «Enviando».
+  4. El editor visual puede codificar `{{baja}}` dentro de un enlace (`%7B%7Bbaja%7D%7D`); ahora se reconocen las dos formas.
+  5. La casilla de consentimiento repetía «política de privacidad»; ahora esas palabras son el enlace.
+- **Reutilizado.** El envío SMTP (`NotificationService::configureSmtp`), el outbox, `RequestRateLimiter`, `XlsxWorkbook` para exportar suscriptores y `BookingSpreadsheetReader` (ahora con límite de filas configurable) para importar.
+- **Verificación.**
+  - Prueba nueva `tests/test-newsletter.php`: ajustes, páginas, doble confirmación, enlaces HMAC, bajas, importación, escape de datos, cabeceras, diseño de los correos, ritmo de envío, límite por IP y enlace de consentimiento del pie. Detecta los fallos que se introdujeron a propósito para comprobarla.
+  - 13 pruebas Playwright nuevas con el `style.css` real.
+    - Popup (`fixtures/newsletter.html`): retardo, foco, cierre recordado, espera al banner de cookies, envío con y sin consentimiento analítico, error del servidor, diseño de la web y móvil, una vez por sesión, 24 horas por IP sin volver a preguntar y oculto si el servidor no responde.
+    - Bloque del pie, con el HTML real pintado por PHP (`tests/e2e/render-newsletter-footer.php`): envío con `source=footer`, el popup no vuelve a salir, error del servidor, diseño en escritorio y móvil, e inglés.
+  - La prueba de integración ejecuta el flujo completo sobre WordPress y MariaDB reales: alta, confirmación, campaña con cabeceras, baja a mitad de campaña, importación, reintentos, interrupción, outbox, límite por IP, bloque del pie, pantallas de wp-admin y borrado RGPD.
+  - Suite legacy (21 scripts), PHPUnit, PHPStan, PHPCS y ESLint en verde; `app/Newsletter` entra en el alcance de PHPStan y PHPCS.
+  - **Pendiente:** la prueba de integración no se pudo ejecutar en local porque Docker Desktop no arrancaba en el PC; se ejecuta en el CI de GitHub.
+- **Antes de usarlo:** añadir el newsletter (nombre, correo y páginas visitadas) a la política de privacidad y ajustar el máximo de correos por hora al plan de SiteGround.
+
+Archivos: `app/Newsletter/{Admin,Brand,Campaigns,Importer,Mailer,Module,Privacy,PublicController,Settings,Subscribers}.php` (nuevos), `assets/{css,js}/newsletter.*` (nuevos), `footer.php`, `app/Core/{Application,Migrations,OutboxHandler,Schema}.php`, `app/Admin/Capabilities.php`, `app/HotelPortal/Services/BookingSpreadsheetReader.php`, `tests/test-newsletter.php`, `tests/e2e/fixtures/newsletter.html` y `tests/e2e/render-newsletter-footer.php` (nuevos), `tests/e2e/{runtime.spec.js,server.mjs}`, `tests/Integration/wordpress-smoke.php`, `phpcs.xml.dist`, `phpstan.neon`, `.github/workflows/php-lint.yml`, `README.md`, `HISTORIAL.md`.
+
 ### 2 de octubre de 2026 — Slugs del blog corregidos en producción y redirecciones verificadas
 
 - Se completa la migración mediante el MCP de WordPress: 140 slugs corresponden al título y tema actuales; los 9 slugs coherentes se conservan.

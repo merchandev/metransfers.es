@@ -143,6 +143,11 @@ class Migrations {
 				'version'  => '6.10.0',
 				'callback' => array( Schema::class, 'installAddressCacheTables' ),
 			),
+			array(
+				'id'       => '20261016_001_newsletter_schema',
+				'version'  => '6.11.0',
+				'callback' => array( Schema::class, 'installNewsletterTables' ),
+			),
 		);
 	}
 

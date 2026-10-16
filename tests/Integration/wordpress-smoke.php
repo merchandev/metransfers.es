@@ -50,6 +50,9 @@ $tables = array(
 	'mt_admin_audit',
 	'mt_addresses',
 	'mt_routes',
+	'mt_newsletter_subscribers',
+	'mt_newsletter_campaigns',
+	'mt_newsletter_deliveries',
 );
 foreach ( $tables as $suffix ) {
 	$table = $wpdb->prefix . $suffix;
@@ -64,8 +67,8 @@ $succeeded = (int) $wpdb->get_var(
 		$journal
 	)
 );
-mt_wp_integration_assert( 13 === $succeeded, 'All thirteen discrete migrations must be journaled as succeeded.' );
-foreach ( array( '20260928_001_purge_retired_language_data', '20260929_001_single_maps_key', '20260929_002_address_cache_schema' ) as $migration_id ) {
+mt_wp_integration_assert( 14 === $succeeded, 'All fourteen discrete migrations must be journaled as succeeded.' );
+foreach ( array( '20260928_001_purge_retired_language_data', '20260929_001_single_maps_key', '20260929_002_address_cache_schema', '20261016_001_newsletter_schema' ) as $migration_id ) {
 	$status = $wpdb->get_var(
 		$wpdb->prepare(
 			'SELECT status FROM %i WHERE migration_id = %s',
@@ -139,6 +142,202 @@ $export_zip->close();
 wp_delete_file( $export_file );
 $wpdb->query( $wpdb->prepare( 'DELETE FROM %i WHERE id IN (%d, %d)', $bookings_table, $export_ids[0], $export_ids[1] ) );
 wp_delete_post( $export_hotel, true );
+
+// Newsletter: signup, double opt-in, campaigns, unsubscribe, import, retries and erasure on a real database.
+$nl_smtp_fixture = array( 'wptb_smtp_host' => 'smtp.example.test', 'wptb_smtp_user' => 'newsletter@example.test', 'wptb_smtp_password' => 'test-only-password', 'wptb_smtp_from' => 'newsletter@example.test', 'wptb_smtp_port' => 587, 'wptb_smtp_encryption' => 'tls' );
+$nl_smtp_filter = static function ( $value, $option ) use ( $nl_smtp_fixture ) { return $nl_smtp_fixture[ $option ] ?? $value; };
+foreach ( array_keys( $nl_smtp_fixture ) as $nl_smtp_option ) {
+	add_filter( 'pre_option_' . $nl_smtp_option, $nl_smtp_filter, 10, 2 );
+}
+// The CI web fixture uses HTTP; mail URLs must exercise the production HTTPS policy.
+$nl_https_url = static function ( $url ) { return set_url_scheme( $url, 'https' ); };
+add_filter( 'home_url', $nl_https_url );
+add_filter( 'admin_url', $nl_https_url );
+$nl_subscribers           = \MeTransfers\Newsletter\Subscribers::class;
+$nl_campaigns             = \MeTransfers\Newsletter\Campaigns::class;
+$nl_deliveries            = $wpdb->prefix . 'mt_newsletter_deliveries';
+$GLOBALS['mt_nl_mails']   = array();
+$GLOBALS['mt_nl_mail_ok'] = true;
+$nl_capture               = static function ( $short_circuit, $atts ) {
+	$GLOBALS['mt_nl_mails'][] = $atts;
+	return $GLOBALS['mt_nl_mail_ok'];
+};
+add_filter( 'pre_wp_mail', $nl_capture, 10, 2 );
+$nl_mails_to = static function ( $email ) {
+	return array_values( array_filter( $GLOBALS['mt_nl_mails'], static fn( $mail ) => in_array( $email, (array) $mail['to'], true ) ) );
+};
+mt_wp_integration_assert( false !== wp_next_scheduled( $nl_campaigns::CRON_HOOK ), 'The newsletter sending worker must be scheduled.' );
+$nl_slot_ip = '198.51.100.' . wp_rand( 1, 254 );
+mt_wp_integration_assert( \MeTransfers\Newsletter\PublicController::claimSlot( $nl_slot_ip ) && ! \MeTransfers\Newsletter\PublicController::claimSlot( $nl_slot_ip ), 'The popup must be allowed once per IP per 24 hours on a real WordPress.' );
+delete_transient( 'mt_nl_slot_' . substr( hash_hmac( 'sha256', $nl_slot_ip, wp_salt( 'nonce' ) ), 0, 40 ) );
+mt_wp_integration_assert( $administrator->has_cap( \MeTransfers\Admin\Capabilities::MANAGE_NEWSLETTER ), 'Administrators must be able to manage the newsletter.' );
+mt_wp_integration_assert( ! get_role( 'check_hoteles' )->has_cap( \MeTransfers\Admin\Capabilities::MANAGE_NEWSLETTER ), 'Hotel users must never manage the newsletter.' );
+
+$nl_tag   = strtolower( wp_generate_password( 6, false, false ) );
+$nl_email = 'nl-' . $nl_tag . '@example.test';
+$signup   = $nl_subscribers::subscribe(
+	array(
+		'email'        => strtoupper( $nl_email ),
+		'name'         => 'Ana',
+		'language'     => 'es',
+		'signup_page'  => home_url( '/traslados-aeropuerto/?utm_source=newsletter' ),
+		'referrer'     => 'https://www.google.com/',
+		'pages'        => wp_json_encode(
+			array(
+				array( 'u' => '/', 't' => 'Inicio', 'at' => '2026-10-16T10:00:00Z' ),
+				array( 'u' => 'https://evil.example/phish', 't' => 'Otra web', 'at' => '2026-10-16T10:01:00Z' ),
+				array( 'u' => '/traslados-aeropuerto/?utm_source=newsletter', 't' => 'Traslados', 'at' => '2026-10-16T10:02:00Z' ),
+			)
+		),
+		'consent_text' => 'Acepto recibir comunicaciones comerciales.',
+	)
+);
+$nl_id = (int) $signup['subscriber']['id'];
+mt_wp_integration_assert( 'pending' === $signup['result'] && $signup['send_confirmation'] && $nl_email === $signup['subscriber']['email'], 'A popup signup must wait for email confirmation (double opt-in), stored in lowercase.' );
+mt_wp_integration_assert( '/traslados-aeropuerto/?utm_source=newsletter' === $signup['subscriber']['signup_page'] && 2 === count( $nl_subscribers::pages( $signup['subscriber'] ) ), 'The signup page and the visited pages of this site (no other domains) must be stored.' );
+mt_wp_integration_assert( \MeTransfers\Newsletter\PublicController::sendConfirmation( $signup['subscriber'] ) && 1 === count( $nl_mails_to( $nl_email ) ), 'The confirmation email must be sent.' );
+$confirm_mail = $nl_mails_to( $nl_email )[0];
+mt_wp_integration_assert( false !== strpos( $confirm_mail['message'], esc_url( $nl_subscribers::confirmUrl( $signup['subscriber'] ) ) ), 'The confirmation email must carry its link.' );
+mt_wp_integration_assert( 'invalid' === $nl_subscribers::confirm( $nl_id, str_repeat( '0', 64 ) ), 'A forged confirmation token must be rejected.' );
+mt_wp_integration_assert( 'confirmed' === $nl_subscribers::confirm( $nl_id, $nl_subscribers::token( 'confirm', $signup['subscriber'] ) ) && 'subscribed' === $nl_subscribers::find( $nl_id )['status'], 'The confirmation link must subscribe.' );
+$again = $nl_subscribers::subscribe( array( 'email' => $nl_email, 'pages' => wp_json_encode( array( array( 'u' => '/flota/', 't' => 'Flota', 'at' => '2026-10-16T11:00:00Z' ) ) ) ) );
+mt_wp_integration_assert( 'subscribed' === $again['result'] && ! $again['send_confirmation'] && 3 === count( $nl_subscribers::pages( $again['subscriber'] ) ), 'Signing up again must not resend confirmation and must add the new pages.' );
+
+$report = \MeTransfers\Newsletter\Importer::import(
+	array(
+		array( 'Correo electrónico', 'Nombre', 'Idioma' ),
+		array( $nl_email, 'Ana María', 'es' ),
+		array( 'import-' . $nl_tag . '@example.test', 'Bob', 'English' ),
+		array( 'no-es-un-correo', 'X', '' ),
+		array( 'IMPORT-' . $nl_tag . '@example.test', 'Repetido', '' ),
+	),
+	'pending',
+	'es',
+	true,
+	'Importado en la prueba de integración'
+);
+mt_wp_integration_assert( 1 === $report['added'] && 1 === $report['updated'] && 1 === $report['invalid'] && 1 === $report['duplicates'], 'Import must add, update names, reject invalid addresses and skip duplicates: ' . wp_json_encode( $report ) );
+$imported = $nl_subscribers::findByEmail( 'import-' . $nl_tag . '@example.test' );
+mt_wp_integration_assert( 'pending' === $imported['status'] && 'en' === $imported['language'] && 'import' === $imported['source'], 'Imported contacts must keep the chosen status, their language and the source.' );
+
+$campaign_id = $nl_campaigns::save(
+	array(
+		'subject'         => 'Hola {{nombre}}',
+		'preheader'       => 'Solo para suscriptores',
+		'body'            => '<p>Oferta para {{nombre}}.</p><script>alert(1)</script>',
+		'audience_status' => 'subscribed',
+	)
+);
+mt_wp_integration_assert( false === strpos( $nl_campaigns::find( $campaign_id )['body'], '<script' ), 'Campaign content must be filtered with wp_kses_post.' );
+$audience               = $nl_campaigns::audienceCount( 'subscribed', '' );
+$GLOBALS['mt_nl_mails'] = array();
+mt_wp_integration_assert( $audience === $nl_campaigns::queue( $campaign_id ) && false === $nl_campaigns::queue( $campaign_id ), 'Queuing must freeze the audience once, even with a double click.' );
+$nl_campaigns::dispatch();
+$campaign_mail = $nl_mails_to( $nl_email );
+mt_wp_integration_assert( 1 === count( $campaign_mail ) && 'Hola Ana María' === $campaign_mail[0]['subject'] && false !== strpos( $campaign_mail[0]['message'], 'Oferta para Ana María.' ), 'The campaign must reach the subscriber, personalised. Mailer: ' . \MeTransfers\Newsletter\Mailer::lastError() );
+mt_wp_integration_assert( false !== strpos( implode( "\n", (array) $campaign_mail[0]['headers'] ), 'List-Unsubscribe-Post: List-Unsubscribe=One-Click' ) && false !== strpos( $campaign_mail[0]['message'], esc_url( $nl_subscribers::unsubscribeUrl( $nl_subscribers::find( $nl_id ) ) ) ), 'Every campaign email must carry the one-click unsubscribe header and link.' );
+mt_wp_integration_assert( ! $nl_mails_to( 'import-' . $nl_tag . '@example.test' ), 'Pending contacts must not receive a campaign for subscribers.' );
+mt_wp_integration_assert( 'sent' === $nl_campaigns::find( $campaign_id )['status'] && $audience === (int) $nl_campaigns::find( $campaign_id )['sent'], 'The campaign must close as sent with its counters.' );
+
+$second = $nl_campaigns::save(
+	array(
+		'subject' => 'Segunda',
+		'body'    => '<p>Texto</p>',
+	)
+);
+$nl_campaigns::queue( $second );
+mt_wp_integration_assert( 'unsubscribed' === $nl_subscribers::unsubscribe( $nl_id, $nl_subscribers::token( 'unsubscribe', $nl_subscribers::find( $nl_id ) ) ), 'The unsubscribe link must unsubscribe.' );
+$GLOBALS['mt_nl_mails'] = array();
+$nl_campaigns::dispatch();
+mt_wp_integration_assert( ! $nl_mails_to( $nl_email ) && $nl_campaigns::deliveryCounts( $second )['skipped'] >= 1, 'Someone who unsubscribed during a campaign must not receive it.' );
+mt_wp_integration_assert( 'sent' === $nl_campaigns::find( $second )['status'], 'A campaign whose remaining recipients all left must still close instead of staying in «Enviando».' );
+$blocked = \MeTransfers\Newsletter\Importer::import( array( array( $nl_email ) ), 'subscribed', 'es', true, 'test' );
+mt_wp_integration_assert( 1 === $blocked['blocked'] && 'unsubscribed' === $nl_subscribers::find( $nl_id )['status'], 'An import must never re-subscribe someone who unsubscribed.' );
+$back = $nl_subscribers::subscribe(
+	array(
+		'email'        => $nl_email,
+		'consent_text' => 'Acepto',
+	)
+);
+mt_wp_integration_assert( 'pending' === $back['result'] && $back['send_confirmation'], 'Signing up again on the website after unsubscribing must ask for confirmation again.' );
+
+// Temporary failure: retried, then failed after MAX_ATTEMPTS; an interrupted send is never repeated.
+$third = $nl_campaigns::save(
+	array(
+		'subject'           => 'Third',
+		'body'              => '<p>Text</p>',
+		'audience_status'   => 'pending',
+		'audience_language' => 'en',
+	)
+);
+$nl_campaigns::queue( $third );
+$GLOBALS['mt_nl_mail_ok'] = false;
+$bob_delivery             = static fn() => $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE campaign_id = %d AND subscriber_id = %d', $nl_deliveries, $third, (int) $imported['id'] ), ARRAY_A );
+for ( $attempt = 1; $attempt <= $nl_campaigns::MAX_ATTEMPTS; $attempt++ ) {
+	$wpdb->query( $wpdb->prepare( 'UPDATE %i SET available_at = %s WHERE campaign_id = %d', $nl_deliveries, gmdate( 'Y-m-d H:i:s', time() - 60 ), $third ) );
+	$nl_campaigns::dispatch();
+}
+$failed = $bob_delivery();
+mt_wp_integration_assert( 'failed' === $failed['status'] && $nl_campaigns::MAX_ATTEMPTS === (int) $failed['attempts'] && 'wp_mail_failed' === $failed['last_error'], 'A failing address must be retried and then marked failed with its reason.' );
+$GLOBALS['mt_nl_mail_ok'] = true;
+$wpdb->query( $wpdb->prepare( "UPDATE %i SET status = 'sending', locked_at = %s WHERE id = %d", $nl_deliveries, gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS ), (int) $failed['id'] ) );
+$GLOBALS['mt_nl_mails'] = array();
+$nl_campaigns::dispatch();
+mt_wp_integration_assert( 'interrupted' === $bob_delivery()['last_error'] && ! $nl_mails_to( 'import-' . $nl_tag . '@example.test' ), 'A send interrupted mid-way must not be repeated.' );
+
+// A mail server outage on signup leaves the confirmation in the outbox for a retry.
+$GLOBALS['mt_nl_mail_ok'] = false;
+$outage                   = $nl_subscribers::subscribe(
+	array(
+		'email'        => 'outage-' . $nl_tag . '@example.test',
+		'consent_text' => 'Acepto',
+	)
+);
+mt_wp_integration_assert( false === \MeTransfers\Newsletter\PublicController::sendConfirmation( $outage['subscriber'] ), 'A failed confirmation must be reported.' );
+mt_wp_integration_assert( '1' === (string) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM %i WHERE event_type = 'newsletter.confirm' AND aggregate_id = %d", $wpdb->prefix . 'mt_outbox', (int) $outage['subscriber']['id'] ) ), 'The confirmation must be queued for a retry.' );
+$GLOBALS['mt_nl_mail_ok'] = true;
+mt_wp_integration_assert( \MeTransfers\Core\OutboxHandler::handle( 'newsletter.confirm', (int) $outage['subscriber']['id'], array() ) && null !== $nl_subscribers::find( (int) $outage['subscriber']['id'] )['confirmation_sent_at'], 'The outbox must deliver the confirmation once the mail server is back.' );
+
+// The footer signup block renders on a real WordPress and can be switched off (before any admin screen is set).
+$nl_footer = \MeTransfers\Newsletter\PublicController::footerForm();
+mt_wp_integration_assert( false !== strpos( $nl_footer, 'data-mt-newsletter-footer' ) && false !== strpos( $nl_footer, 'name="consent"' ) && false !== strpos( $nl_footer, 'method="post"' ), 'The footer signup block must render.' );
+update_option( \MeTransfers\Newsletter\Settings::OPTION, array( 'footer_enabled' => false ) );
+mt_wp_integration_assert( '' === \MeTransfers\Newsletter\PublicController::footerForm(), 'The footer signup block must disappear when switched off.' );
+delete_option( \MeTransfers\Newsletter\Settings::OPTION );
+
+// wp-admin screens render on a real WordPress.
+require_once ABSPATH . 'wp-admin/includes/admin.php';
+wp_set_current_user( 1 );
+set_current_screen( 'toplevel_page_mt-newsletter' );
+foreach ( array( 'renderSubscribers' => 'Newsletter · Suscriptores', 'renderCampaigns' => 'Newsletter · Campañas', 'renderImport' => 'Importar contactos', 'renderSettings' => 'Newsletter · Ajustes' ) as $nl_screen => $nl_title ) {
+	ob_start();
+	\MeTransfers\Newsletter\Admin::$nl_screen();
+	mt_wp_integration_assert( false !== strpos( (string) ob_get_clean(), $nl_title ), "The admin screen $nl_screen must render." );
+}
+$_GET['subscriber'] = (string) $nl_id;
+ob_start();
+\MeTransfers\Newsletter\Admin::renderSubscribers();
+mt_wp_integration_assert( false !== strpos( (string) ob_get_clean(), '/flota/' ), 'The subscriber screen must list the pages visited before subscribing.' );
+unset( $_GET['subscriber'] );
+$_GET['new'] = '1';
+ob_start();
+\MeTransfers\Newsletter\Admin::renderCampaigns();
+mt_wp_integration_assert( false !== strpos( (string) ob_get_clean(), 'name="body"' ), 'The campaign editor must render.' );
+unset( $_GET['new'] );
+
+// Right to erasure: the subscriber and their delivery history are gone.
+$erased = \MeTransfers\Newsletter\Privacy::erase( $nl_email );
+mt_wp_integration_assert( $erased['items_removed'] && null === $nl_subscribers::findByEmail( $nl_email ) && '0' === (string) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE subscriber_id = %d', $nl_deliveries, $nl_id ) ), 'Erasing personal data must delete the subscriber and their deliveries.' );
+
+remove_filter( 'pre_wp_mail', $nl_capture, 10 );
+remove_filter( 'home_url', $nl_https_url );
+remove_filter( 'admin_url', $nl_https_url );
+foreach ( array_keys( $nl_smtp_fixture ) as $nl_smtp_option ) {
+	remove_filter( 'pre_option_' . $nl_smtp_option, $nl_smtp_filter, 10 );
+}
+$wpdb->query( $wpdb->prepare( 'DELETE FROM %i WHERE email LIKE %s', $wpdb->prefix . 'mt_newsletter_subscribers', '%' . $wpdb->esc_like( $nl_tag ) . '@example.test' ) );
+$wpdb->query( $wpdb->prepare( 'DELETE FROM %i WHERE campaign_id IN (%d, %d, %d)', $nl_deliveries, $campaign_id, $second, $third ) );
+$wpdb->query( $wpdb->prepare( 'DELETE FROM %i WHERE id IN (%d, %d, %d)', $wpdb->prefix . 'mt_newsletter_campaigns', $campaign_id, $second, $third ) );
 
 $public_query_vars = apply_filters( 'query_vars', array() );
 mt_wp_integration_assert( in_array( 'mt_lang', $public_query_vars, true ), 'The language query variable must be public.' );

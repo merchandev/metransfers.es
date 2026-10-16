@@ -214,3 +214,285 @@ test('hotel portal password labels use localized values', async ({ page }) => {
   await passwordToggle.click();
   await expect(passwordToggle).toHaveText('Ver');
 });
+
+function formField(body, name) {
+  const match = body.match(new RegExp('name="' + name + '"\\r\\n\\r\\n([\\s\\S]*?)\\r\\n--'));
+  return match ? match[1] : null;
+}
+
+// Stands in for admin-ajax: the popup's permission check (slot) and the signup.
+async function mockNewsletter(page, { slot = true, status = 200, payload = { success: true, data: { message: 'OK' } } } = {}) {
+  const calls = { slot: 0, body: '' };
+  await page.context().route('**/newsletter-endpoint', async (route) => {
+    const body = route.request().postData() || '';
+    if (formField(body, 'action') === 'mt_newsletter_slot') {
+      calls.slot += 1;
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true, data: { show: slot } }) });
+      return;
+    }
+    calls.body = body;
+    await route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(payload) });
+  });
+  return calls;
+}
+
+test('newsletter popup opens after its delay, keeps focus inside and remembers a dismissal', async ({ page }) => {
+  const calls = await mockNewsletter(page);
+  await page.goto('/tests/e2e/fixtures/newsletter.html');
+  const dialog = page.getByRole('dialog', { name: 'Ofertas y novedades de MeTransfers' });
+  await expect(dialog).toHaveCount(0);
+  await expect(dialog).toBeVisible({ timeout: 3000 });
+  await expect(page.getByLabel('Nombre')).toBeFocused();
+
+  await page.getByRole('button', { name: 'Cerrar' }).focus();
+  await page.keyboard.press('Shift+Tab');
+  await expect(page.getByRole('button', { name: 'Suscribirme' })).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('button', { name: 'Cerrar' })).toBeFocused();
+
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  const state = await page.evaluate(() => JSON.parse(window.localStorage.getItem('mt_newsletter_state')));
+  expect(state.status).toBe('dismissed');
+  expect(state.until).toBeGreaterThan(Date.now() + 13 * 86400000);
+
+  // Even with a new session and the daily check expired, a dismissal is honoured without asking the server.
+  await page.evaluate(() => {
+    window.sessionStorage.removeItem('mt_newsletter_session');
+    window.localStorage.removeItem('mt_newsletter_checked_at');
+  });
+  await page.reload();
+  await page.waitForTimeout(1500);
+  await expect(page.locator('[data-mt-newsletter]')).toHaveCount(0);
+  expect(calls.slot).toBe(1);
+});
+
+test('newsletter popup waits until the cookie banner is closed', async ({ page }) => {
+  await mockNewsletter(page);
+  await page.goto('/tests/e2e/fixtures/newsletter.html?banner=1');
+  await page.waitForTimeout(1500);
+  await expect(page.locator('[data-mt-newsletter]')).toHaveCount(0);
+  await page.evaluate(() => document.getElementById('mt-cookie-banner').classList.remove('show'));
+  await expect(page.getByRole('dialog')).toBeVisible({ timeout: 4000 });
+});
+
+test('newsletter signup validates, then sends name, consent and the pages of the visit when analytics cookies are accepted', async ({ page, context }) => {
+  await context.addCookies([{
+    name: 'mt_cookie_consent_v2',
+    value: encodeURIComponent(JSON.stringify({ necessary: true, analytics: true, marketing: false })),
+    url: 'http://127.0.0.1:4173'
+  }]);
+  const sent = await mockNewsletter(page, { payload: { success: true, data: { message: 'Casi listo: revisa tu correo.' } } });
+  await page.goto('/tests/e2e/fixtures/newsletter.html?delay=30&from=home');
+  await page.goto('/tests/e2e/fixtures/newsletter.html?delay=0.3&from=second');
+  await expect(page.getByRole('dialog')).toBeVisible();
+
+  await page.getByLabel('Nombre').fill('Ana');
+  await page.getByLabel('Correo electrónico').fill('ana@example');
+  await page.getByRole('button', { name: 'Suscribirme' }).click();
+  await expect(page.getByRole('status')).toHaveText('Escribe un correo electrónico válido.');
+  await page.getByLabel('Correo electrónico').fill('ana@example.com');
+  await page.getByRole('button', { name: 'Suscribirme' }).click();
+  await expect(page.getByRole('status')).toHaveText('Para suscribirte tienes que aceptar recibir nuestras comunicaciones.');
+  expect(sent.body).toBe('');
+
+  await page.getByRole('checkbox').check();
+  await page.getByRole('button', { name: 'Suscribirme' }).click();
+  await expect(page.getByRole('status')).toHaveText('Casi listo: revisa tu correo.');
+  expect(formField(sent.body, 'action')).toBe('mt_newsletter_subscribe');
+  expect(formField(sent.body, 'name')).toBe('Ana');
+  expect(formField(sent.body, 'email')).toBe('ana@example.com');
+  expect(formField(sent.body, 'consent')).toBe('1');
+  expect(formField(sent.body, 'website')).toBe('');
+  expect(formField(sent.body, 'page')).toBe('/tests/e2e/fixtures/newsletter.html?delay=0.3&from=second');
+  const pages = JSON.parse(formField(sent.body, 'pages'));
+  expect(pages.map((visited) => visited.u)).toEqual([
+    '/tests/e2e/fixtures/newsletter.html?delay=30&from=home',
+    '/tests/e2e/fixtures/newsletter.html?delay=0.3&from=second'
+  ]);
+  expect(pages[0].t).toBe('Traslados aeropuerto');
+  const state = await page.evaluate(() => JSON.parse(window.localStorage.getItem('mt_newsletter_state')));
+  expect(state.status).toBe('subscribed');
+});
+
+test('without analytics consent only the signup page is sent and the visit is not stored in the browser', async ({ page }) => {
+  const sent = await mockNewsletter(page);
+  await page.goto('/tests/e2e/fixtures/newsletter.html?delay=30&from=home');
+  await page.goto('/tests/e2e/fixtures/newsletter.html?delay=0.3&from=second');
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await page.getByLabel('Correo electrónico').fill('bob@example.com');
+  await page.getByRole('checkbox').check();
+  await page.getByRole('button', { name: 'Suscribirme' }).click();
+  await expect(page.getByRole('status')).toHaveText('OK');
+
+  const pages = JSON.parse(formField(sent.body, 'pages'));
+  expect(pages.map((visited) => visited.u)).toEqual(['/tests/e2e/fixtures/newsletter.html?delay=0.3&from=second']);
+  expect(await page.evaluate(() => window.sessionStorage.getItem('mt_newsletter_pages'))).toBeNull();
+});
+
+test('a server refusal is shown and the visitor can try again', async ({ page }) => {
+  await mockNewsletter(page, { status: 429, payload: { success: false, data: { message: 'Demasiados intentos.' } } });
+  await page.goto('/tests/e2e/fixtures/newsletter.html?delay=0.2');
+  await page.getByLabel('Correo electrónico').fill('eve@example.com');
+  await page.getByRole('checkbox').check();
+  await page.getByRole('button', { name: 'Suscribirme' }).click();
+  await expect(page.getByRole('status')).toHaveText('Demasiados intentos.');
+  await expect(page.getByRole('button', { name: 'Suscribirme' })).toBeEnabled();
+  expect(await page.evaluate(() => window.localStorage.getItem('mt_newsletter_state'))).toBeNull();
+});
+
+test('newsletter popup has the website look over the theme stylesheet and fits a phone', async ({ page }) => {
+  await mockNewsletter(page);
+  await page.goto('/tests/e2e/fixtures/newsletter.html?delay=0.1');
+  await expect(page.getByRole('dialog')).toBeVisible();
+  // Same tokens as the live site: navy sections, amber eyebrow, white Outfit title, navy booking button.
+  await expect(page.locator('.mt-nl__eyebrow')).toHaveText('Ofertas exclusivas');
+  await expect(page.locator('.mt-nl__eyebrow')).toHaveCSS('color', 'rgb(255, 181, 71)');
+  await expect(page.locator('.mt-nl__title')).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(page.locator('.mt-nl__title')).toHaveCSS('font-family', /Outfit/);
+  await expect(page.locator('.mt-nl__submit')).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(page.locator('.mt-nl__submit')).toHaveCSS('background-color', 'rgb(11, 31, 53)');
+  await expect(page.locator('.mt-nl__submit')).toHaveCSS('border-radius', '16px');
+  await expect(page.getByLabel('Correo electrónico')).toHaveCSS('background-color', 'rgb(249, 250, 251)');
+  await expect(page.getByLabel('Correo electrónico')).toHaveCSS('border-radius', '12px');
+  const consent = page.locator('.mt-nl__consent');
+  await expect(consent).toHaveText('Acepto recibir comunicaciones comerciales de MeTransfers y he leído la política de privacidad.');
+  await expect(consent.getByRole('link')).toHaveText('política de privacidad');
+  await expect(consent.getByRole('link')).toHaveAttribute('href', '/politica-de-privacidad/');
+
+  await page.setViewportSize({ width: 375, height: 700 });
+  // On a phone the popup is a bottom sheet; wait for its slide-in to finish.
+  await expect.poll(async () => {
+    const sheet = await page.getByRole('dialog').boundingBox();
+    return Math.round(sheet.y + sheet.height);
+  }).toBe(700);
+  const box = await page.getByRole('dialog').boundingBox();
+  expect(box.width).toBeLessThanOrEqual(375);
+  // The eyebrow and its amber dash stay on one line next to the close button.
+  const eyebrowLines = await page.locator('.mt-nl__eyebrow').evaluate((node) => Math.round(node.getBoundingClientRect().height / parseFloat(getComputedStyle(node).lineHeight)));
+  expect(eyebrowLines).toBe(1);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
+});
+
+test('newsletter popup appears once per session and asks the server only once', async ({ page }) => {
+  const calls = await mockNewsletter(page);
+  await page.goto('/tests/e2e/fixtures/newsletter.html?delay=0.3&from=first');
+  await expect(page.getByRole('dialog')).toBeVisible();
+  expect(calls.slot).toBe(1);
+
+  // The visitor ignores it and keeps browsing: no second popup and no second request in this session.
+  await page.goto('/tests/e2e/fixtures/newsletter.html?delay=0.3&from=second');
+  await page.waitForTimeout(1500);
+  await expect(page.locator('[data-mt-newsletter]')).toHaveCount(0);
+  expect(calls.slot).toBe(1);
+});
+
+test('newsletter popup stays hidden when this IP already saw it and waits 24 hours before asking again', async ({ page }) => {
+  const calls = await mockNewsletter(page, { slot: false });
+  await page.goto('/tests/e2e/fixtures/newsletter.html?delay=0.3');
+  await page.waitForTimeout(1500);
+  await expect(page.locator('[data-mt-newsletter]')).toHaveCount(0);
+  expect(calls.slot).toBe(1);
+
+  // A new session (another tab) within 24 hours does not even ask the server.
+  const tab = await page.context().newPage();
+  await tab.goto('/tests/e2e/fixtures/newsletter.html?delay=0.3&tab=2');
+  await tab.waitForTimeout(1500);
+  expect(calls.slot).toBe(1);
+
+  // 25 hours later, a new session asks once more.
+  await tab.evaluate(() => window.localStorage.setItem('mt_newsletter_checked_at', String(Date.now() - 25 * 3600000)));
+  const later = await page.context().newPage();
+  await later.goto('/tests/e2e/fixtures/newsletter.html?delay=0.3&tab=3');
+  await expect.poll(() => calls.slot).toBe(2);
+});
+
+test('without an answer from the server the popup does not open', async ({ page }) => {
+  await page.context().route('**/newsletter-endpoint', (route) => route.fulfill({ status: 500, body: 'error' }));
+  await page.goto('/tests/e2e/fixtures/newsletter.html?delay=0.3');
+  await page.waitForTimeout(1500);
+  await expect(page.locator('[data-mt-newsletter]')).toHaveCount(0);
+});
+
+test('footer newsletter block subscribes with the same rules and works where the popup never opens', async ({ page }) => {
+  const calls = await mockNewsletter(page, { payload: { success: true, data: { message: 'Casi listo: revisa tu correo.' } } });
+  await page.goto('/tests/e2e/newsletter-footer?popup=0');
+  const block = page.getByRole('region', { name: 'Recibe nuestras ofertas por email' });
+  await expect(block).toBeVisible();
+
+  await block.getByLabel('Nombre').fill('Lucía');
+  await block.getByLabel('Correo electrónico').fill('lucia@example.com');
+  await block.getByRole('button', { name: 'Suscribirme' }).click();
+  await expect(block.getByRole('status')).toHaveText('Para suscribirte tienes que aceptar recibir nuestras comunicaciones.');
+  expect(calls.body).toBe('');
+
+  await block.getByRole('checkbox').check();
+  await block.getByRole('button', { name: 'Suscribirme' }).click();
+  await expect(block.getByRole('status')).toHaveText('Casi listo: revisa tu correo.');
+  await expect(block.locator('form')).toBeHidden();
+  expect(formField(calls.body, 'source')).toBe('footer');
+  expect(formField(calls.body, 'email')).toBe('lucia@example.com');
+  expect(formField(calls.body, 'consent')).toBe('1');
+  expect(formField(calls.body, 'website')).toBe('');
+  expect(calls.slot).toBe(0);
+  await expect(page.locator('[data-mt-newsletter]')).toHaveCount(0);
+
+  // Subscribed in the footer: on a page where the popup is allowed it no longer opens, nor asks the server.
+  await page.goto('/tests/e2e/newsletter-footer?popup=1');
+  await page.waitForTimeout(1500);
+  await expect(page.locator('[data-mt-newsletter]')).toHaveCount(0);
+  expect(calls.slot).toBe(0);
+});
+
+test('footer newsletter block shows a server refusal and lets the visitor try again', async ({ page }) => {
+  await mockNewsletter(page, { status: 429, payload: { success: false, data: { message: 'Demasiados intentos.' } } });
+  await page.goto('/tests/e2e/newsletter-footer?popup=0');
+  const block = page.locator('[data-mt-newsletter-footer]');
+  await block.getByLabel('Correo electrónico').fill('eve@example.com');
+  await block.getByRole('checkbox').check();
+  await block.getByRole('button', { name: 'Suscribirme' }).click();
+  await expect(block.getByRole('status')).toHaveText('Demasiados intentos.');
+  await expect(block.getByRole('button', { name: 'Suscribirme' })).toBeEnabled();
+  await expect(block.locator('form')).toBeVisible();
+});
+
+test('footer newsletter block has the website look, one row on desktop and stacked on a phone', async ({ page }) => {
+  await mockNewsletter(page);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/tests/e2e/newsletter-footer?popup=0');
+  const block = page.locator('[data-mt-newsletter-footer]');
+  await expect(block.locator('.mt-nlf__eyebrow')).toHaveCSS('color', 'rgb(255, 181, 71)');
+  await expect(block.locator('.mt-nlf__title')).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(block.locator('.mt-nlf__title')).toHaveCSS('font-family', /Outfit/);
+  await expect(block.getByRole('button', { name: 'Suscribirme' })).toHaveCSS('background-color', 'rgb(0, 102, 204)');
+  await expect(block.getByLabel('Correo electrónico')).toHaveCSS('background-color', 'rgb(249, 250, 251)');
+  await expect(block.getByRole('link', { name: 'política de privacidad' })).toHaveAttribute('href', '/politica-de-privacidad/');
+
+  const row = async () => Promise.all([
+    block.getByLabel('Nombre').boundingBox(),
+    block.getByLabel('Correo electrónico').boundingBox(),
+    block.getByRole('button', { name: 'Suscribirme' }).boundingBox()
+  ]);
+  let [name, email, button] = await row();
+  expect(Math.round(name.y)).toBe(Math.round(email.y));
+  expect(Math.round(button.y + button.height)).toBe(Math.round(email.y + email.height));
+  expect(email.x).toBeGreaterThan(name.x);
+
+  await page.setViewportSize({ width: 375, height: 800 });
+  [name, email, button] = await row();
+  expect(email.y).toBeGreaterThan(name.y);
+  expect(button.y).toBeGreaterThan(email.y);
+  // On a phone the consent box sits between the fields and the button.
+  const consent = await block.getByRole('checkbox').boundingBox();
+  expect(consent.y).toBeGreaterThan(email.y);
+  expect(button.y).toBeGreaterThan(consent.y);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
+});
+
+test('footer newsletter block speaks English on English pages', async ({ page }) => {
+  await mockNewsletter(page);
+  await page.goto('/tests/e2e/newsletter-footer?lang=en&popup=0');
+  const block = page.getByRole('region', { name: 'Get our offers by email' });
+  await expect(block.getByRole('button', { name: 'Subscribe' })).toBeVisible();
+  await expect(block.getByRole('link', { name: 'privacy policy' })).toHaveAttribute('href', '/en/politica-de-privacidad/');
+});

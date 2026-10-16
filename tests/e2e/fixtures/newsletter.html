@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Traslados aeropuerto</title>
+  <!-- Same order as WordPress: the theme stylesheet first, then the newsletter styles. -->
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/assets/css/newsletter.css">
+  <script>
+    window.mtNewsletter = {
+      ajaxUrl: '/newsletter-endpoint',
+      action: 'mt_newsletter_subscribe',
+      slotAction: 'mt_newsletter_slot',
+      hours: 24,
+      delay: Number(new URLSearchParams(window.location.search).get('delay') || '0.6'),
+      dismissDays: 14,
+      language: 'es',
+      privacyUrl: '/politica-de-privacidad/',
+      texts: {
+        eyebrow: 'Ofertas exclusivas',
+        title: 'Ofertas y novedades de MeTransfers',
+        text: 'Suscríbete y recibe descuentos en traslados.',
+        button: 'Suscribirme',
+        consent: 'Acepto recibir comunicaciones comerciales de MeTransfers y he leído la política de privacidad.',
+        success_pending: '¡Casi listo! Te hemos enviado un correo para confirmar tu suscripción.',
+        success_subscribed: '¡Gracias! Ya estás suscrito.',
+        name: 'Nombre',
+        email: 'Correo electrónico',
+        close: 'Cerrar',
+        privacy: 'Política de privacidad',
+        sending: 'Enviando…',
+        error: 'No hemos podido completar la suscripción.',
+        invalid_email: 'Escribe un correo electrónico válido.',
+        need_consent: 'Para suscribirte tienes que aceptar recibir nuestras comunicaciones.'
+      }
+    };
+  </script>
+</head>
+<body>
+  <main>
+    <h1>Traslados al aeropuerto de Barcelona</h1>
+    <a id="page-link" href="#">Un enlace de la página</a>
+  </main>
+  <script>
+    if (new URLSearchParams(window.location.search).get('banner') === '1') {
+      var banner = document.createElement('div');
+      banner.id = 'mt-cookie-banner';
+      banner.className = 'mt-cookie-banner show';
+      banner.textContent = 'Gestión de cookies';
+      document.body.appendChild(banner);
+    }
+  </script>
+  <script src="/assets/js/newsletter.js"></script>
+</body>
+</html>
