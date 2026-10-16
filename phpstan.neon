@@ -6,6 +6,7 @@ parameters:
         - app/Admin/Capabilities.php
         - app/Admin/HotelBookingsExport.php
         - app/Admin/XlsxWorkbook.php
+        - app/Newsletter
         - app/Booking/BookingDatePolicy.php
         - app/Booking/I18n.php
         - app/Booking/AddressCache.php

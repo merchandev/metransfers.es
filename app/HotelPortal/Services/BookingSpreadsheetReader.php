@@ -5,11 +5,15 @@ namespace MeTransfers\HotelPortal\Services;
 final class BookingSpreadsheetReader {
 	const MAX_ROWS = 2000;
 
-	public static function read( $path, $extension ) {
-		return 'csv' === strtolower( (string) $extension ) ? self::readCsv( $path ) : self::readXlsx( $path );
+	/**
+	 * @param int $max_rows Data rows to read (the header row comes on top).
+	 */
+	public static function read( $path, $extension, $max_rows = self::MAX_ROWS ) {
+		$max_rows = max( 1, (int) $max_rows );
+		return 'csv' === strtolower( (string) $extension ) ? self::readCsv( $path, $max_rows ) : self::readXlsx( $path, $max_rows );
 	}
 
-	private static function readCsv( $path ) {
+	private static function readCsv( $path, $max_rows ) {
 		$handle = fopen( $path, 'rb' );
 		if ( false === $handle ) {
 			throw new \RuntimeException( 'spreadsheet_unreadable' );
@@ -18,7 +22,7 @@ final class BookingSpreadsheetReader {
 		$delimiter = substr_count( (string) $first, ';' ) > substr_count( (string) $first, ',' ) ? ';' : ',';
 		rewind( $handle );
 		$rows = array();
-		while ( count( $rows ) <= self::MAX_ROWS ) {
+		while ( count( $rows ) <= $max_rows ) {
 			$row = fgetcsv( $handle, 0, $delimiter );
 			if ( false === $row ) {
 				break;
@@ -29,7 +33,7 @@ final class BookingSpreadsheetReader {
 		return $rows;
 	}
 
-	private static function readXlsx( $path ) {
+	private static function readXlsx( $path, $max_rows ) {
 		if ( ! class_exists( 'ZipArchive' ) ) {
 			throw new \RuntimeException( 'xlsx_not_supported' );
 		}
@@ -53,7 +57,7 @@ final class BookingSpreadsheetReader {
 		$xpath->registerNamespace( 'x', 'http://schemas.openxmlformats.org/spreadsheetml/2006/main' );
 		$rows = array();
 		foreach ( $xpath->query( '//x:sheetData/x:row' ) as $row_node ) {
-			if ( count( $rows ) >= self::MAX_ROWS + 1 ) {
+			if ( count( $rows ) >= $max_rows + 1 ) {
 				break;
 			}
 			$row = array();

@@ -26,6 +26,13 @@ const server = createServer(async (request, response) => {
       response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }).end(stdout);
       return;
     }
+    if (url.pathname === '/tests/e2e/newsletter-footer') {
+      const language = url.searchParams.get('lang') === 'en' ? 'en' : 'es';
+      const popup = url.searchParams.get('popup') === '1' ? '1' : '0';
+      const { stdout } = await runFile('php', [resolve(root, 'tests/e2e/render-newsletter-footer.php'), language, popup]);
+      response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }).end(stdout);
+      return;
+    }
     const relativePath = decodeURIComponent(url.pathname).replace(/^\/+/, '');
     const filePath = resolve(root, relativePath || 'tests/e2e/fixtures/i18n.html');
     if (filePath !== root && !filePath.startsWith(root + sep)) {

@@ -79,6 +79,7 @@ jobs:
           php tests/test-maps-provider.php
           php tests/test-address-cache.php
           php tests/test-hotel-bookings-export.php
+          php tests/test-newsletter.php
           php tests/test-booking-policies.php
           php tests/test-redsys-gateway.php
           php tests/test-hardening-phase1.php

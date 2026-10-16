@@ -19,6 +19,9 @@ final class OutboxHandler {
 		if ( 'booking.paid' === $event_type ) {
 			return BookingEvents::expand( 'paid', $aggregate_id );
 		}
+		if ( 0 === strpos( $event_type, 'newsletter.' ) ) {
+			return \MeTransfers\Newsletter\PublicController::handleEvent( $event_type, $aggregate_id );
+		}
 
 		$booking = self::booking( $aggregate_id );
 		if ( ! $booking ) {

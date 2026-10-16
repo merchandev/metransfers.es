@@ -8,6 +8,7 @@ final class Schema {
 		self::installEventTables();
 		self::installFleetTables();
 		self::installAddressCacheTables();
+		self::installNewsletterTables();
 	}
 
 	public static function installMigrationJournal() {
@@ -331,6 +332,91 @@ final class Schema {
                 UNIQUE KEY route_hash (route_hash),
                 KEY measured_at (measured_at),
                 KEY last_seen_at (last_seen_at)
+            ) $charset_collate;"
+		);
+	}
+
+	/**
+	 * Newsletter (see app/Newsletter): subscribers with their consent and the
+	 * pages of the visit in which they subscribed, campaigns, and one delivery
+	 * row per campaign and subscriber so nobody receives a campaign twice.
+	 */
+	public static function installNewsletterTables() {
+		global $wpdb;
+		self::loadUpgradeApi();
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$table_subscribers = $wpdb->prefix . 'mt_newsletter_subscribers';
+		self::apply(
+			"CREATE TABLE $table_subscribers (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                email varchar(191) NOT NULL,
+                name varchar(120) NOT NULL DEFAULT '',
+                status varchar(20) NOT NULL DEFAULT 'pending',
+                language varchar(5) NOT NULL DEFAULT 'es',
+                source varchar(20) NOT NULL DEFAULT 'popup',
+                signup_page varchar(500) NOT NULL DEFAULT '',
+                referrer varchar(500) NOT NULL DEFAULT '',
+                pages longtext,
+                consent_text varchar(255) NOT NULL DEFAULT '',
+                consent_at datetime DEFAULT NULL,
+                confirmed_at datetime DEFAULT NULL,
+                confirmation_sent_at datetime DEFAULT NULL,
+                unsubscribed_at datetime DEFAULT NULL,
+                last_sent_at datetime DEFAULT NULL,
+                sends int(10) unsigned NOT NULL DEFAULT 0,
+                created_at datetime NOT NULL,
+                updated_at datetime NOT NULL,
+                PRIMARY KEY  (id),
+                UNIQUE KEY email (email),
+                KEY status_language (status, language),
+                KEY created_at (created_at)
+            ) $charset_collate;"
+		);
+
+		$table_campaigns = $wpdb->prefix . 'mt_newsletter_campaigns';
+		self::apply(
+			"CREATE TABLE $table_campaigns (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                subject varchar(200) NOT NULL DEFAULT '',
+                preheader varchar(200) NOT NULL DEFAULT '',
+                body longtext NOT NULL,
+                audience_status varchar(40) NOT NULL DEFAULT 'subscribed',
+                audience_language varchar(5) NOT NULL DEFAULT '',
+                status varchar(20) NOT NULL DEFAULT 'draft',
+                total int(10) unsigned NOT NULL DEFAULT 0,
+                sent int(10) unsigned NOT NULL DEFAULT 0,
+                failed int(10) unsigned NOT NULL DEFAULT 0,
+                skipped int(10) unsigned NOT NULL DEFAULT 0,
+                created_by bigint(20) unsigned NOT NULL DEFAULT 0,
+                created_at datetime NOT NULL,
+                updated_at datetime NOT NULL,
+                queued_at datetime DEFAULT NULL,
+                finished_at datetime DEFAULT NULL,
+                PRIMARY KEY  (id),
+                KEY status (status)
+            ) $charset_collate;"
+		);
+
+		$table_deliveries = $wpdb->prefix . 'mt_newsletter_deliveries';
+		self::apply(
+			"CREATE TABLE $table_deliveries (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                campaign_id bigint(20) unsigned NOT NULL,
+                subscriber_id bigint(20) unsigned NOT NULL,
+                email varchar(191) NOT NULL,
+                status varchar(20) NOT NULL DEFAULT 'pending',
+                attempts smallint(5) unsigned NOT NULL DEFAULT 0,
+                last_error varchar(255) NOT NULL DEFAULT '',
+                available_at datetime NOT NULL,
+                locked_at datetime DEFAULT NULL,
+                sent_at datetime DEFAULT NULL,
+                created_at datetime NOT NULL,
+                PRIMARY KEY  (id),
+                UNIQUE KEY campaign_subscriber (campaign_id, subscriber_id),
+                KEY status_available (status, available_at),
+                KEY subscriber_id (subscriber_id),
+                KEY sent_at (sent_at)
             ) $charset_collate;"
 		);
 	}
