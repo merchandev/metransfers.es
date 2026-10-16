@@ -149,6 +149,10 @@ $nl_smtp_filter = static function ( $value, $option ) use ( $nl_smtp_fixture ) {
 foreach ( array_keys( $nl_smtp_fixture ) as $nl_smtp_option ) {
 	add_filter( 'pre_option_' . $nl_smtp_option, $nl_smtp_filter, 10, 2 );
 }
+// The CI web fixture uses HTTP; mail URLs must exercise the production HTTPS policy.
+$nl_https_url = static function ( $url ) { return set_url_scheme( $url, 'https' ); };
+add_filter( 'home_url', $nl_https_url );
+add_filter( 'admin_url', $nl_https_url );
 $nl_subscribers           = \MeTransfers\Newsletter\Subscribers::class;
 $nl_campaigns             = \MeTransfers\Newsletter\Campaigns::class;
 $nl_deliveries            = $wpdb->prefix . 'mt_newsletter_deliveries';
@@ -230,7 +234,7 @@ $GLOBALS['mt_nl_mails'] = array();
 mt_wp_integration_assert( $audience === $nl_campaigns::queue( $campaign_id ) && false === $nl_campaigns::queue( $campaign_id ), 'Queuing must freeze the audience once, even with a double click.' );
 $nl_campaigns::dispatch();
 $campaign_mail = $nl_mails_to( $nl_email );
-mt_wp_integration_assert( 1 === count( $campaign_mail ) && 'Hola Ana María' === $campaign_mail[0]['subject'] && false !== strpos( $campaign_mail[0]['message'], 'Oferta para Ana María.' ), 'The campaign must reach the subscriber, personalised.' );
+mt_wp_integration_assert( 1 === count( $campaign_mail ) && 'Hola Ana María' === $campaign_mail[0]['subject'] && false !== strpos( $campaign_mail[0]['message'], 'Oferta para Ana María.' ), 'The campaign must reach the subscriber, personalised. Mailer: ' . \MeTransfers\Newsletter\Mailer::lastError() );
 mt_wp_integration_assert( false !== strpos( implode( "\n", (array) $campaign_mail[0]['headers'] ), 'List-Unsubscribe-Post: List-Unsubscribe=One-Click' ) && false !== strpos( $campaign_mail[0]['message'], esc_url( $nl_subscribers::unsubscribeUrl( $nl_subscribers::find( $nl_id ) ) ) ), 'Every campaign email must carry the one-click unsubscribe header and link.' );
 mt_wp_integration_assert( ! $nl_mails_to( 'import-' . $nl_tag . '@example.test' ), 'Pending contacts must not receive a campaign for subscribers.' );
 mt_wp_integration_assert( 'sent' === $nl_campaigns::find( $campaign_id )['status'] && $audience === (int) $nl_campaigns::find( $campaign_id )['sent'], 'The campaign must close as sent with its counters.' );
@@ -326,6 +330,8 @@ $erased = \MeTransfers\Newsletter\Privacy::erase( $nl_email );
 mt_wp_integration_assert( $erased['items_removed'] && null === $nl_subscribers::findByEmail( $nl_email ) && '0' === (string) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE subscriber_id = %d', $nl_deliveries, $nl_id ) ), 'Erasing personal data must delete the subscriber and their deliveries.' );
 
 remove_filter( 'pre_wp_mail', $nl_capture, 10 );
+remove_filter( 'home_url', $nl_https_url );
+remove_filter( 'admin_url', $nl_https_url );
 foreach ( array_keys( $nl_smtp_fixture ) as $nl_smtp_option ) {
 	remove_filter( 'pre_option_' . $nl_smtp_option, $nl_smtp_filter, 10 );
 }

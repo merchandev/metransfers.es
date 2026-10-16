@@ -263,6 +263,7 @@ foreach ( array( "bob@example.com\r\nBcc: eve@example.com", 'bob@example.com,eve
 	assert_nl( ! Mailer::send( $recipient, 'S', '<p>H</p>', '' ) && 'invalid_recipient' === Mailer::lastError(), 'Multiple recipients and injected recipient headers must be rejected.' );
 }
 assert_nl( ! Mailer::send( 'bob@example.com', 'S', '<p>H</p>', 'https://evil.example/unsubscribe' ) && 'invalid_unsubscribe_url' === Mailer::lastError(), 'One-click unsubscribe must stay on the HTTPS site.' );
+assert_nl( ! Mailer::send( 'bob@example.com', 'S', '<p>H</p>', 'http://metransfers.test/unsubscribe' ) && 'invalid_unsubscribe_url' === Mailer::lastError(), 'HTTP unsubscribe must be rejected even on the correct domain.' );
 $GLOBALS['mt_options']['wptb_smtp_encryption'] = 'none';
 assert_nl( ! Mailer::send( 'bob@example.com', 'S', '<p>H</p>', '' ) && 'newsletter_smtp_requires_tls' === Mailer::lastError(), 'Unencrypted SMTP must be blocked.' );
 $GLOBALS['mt_options']['wptb_smtp_encryption'] = 'tls';
