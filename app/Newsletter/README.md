@@ -12,11 +12,11 @@
 - La cola participa en la exportación y el borrado de datos personales. Nueva migración `20261016_002_newsletter_manual_queue`, esquema `6.12.0`.
 - Pruebas nuevas: `php tests/test-newsletter-manual.php` y escenarios WordPress/MariaDB sobre carga diferida, tandas, cron, borrado y privacidad.
 
-Versión actual del tema: **5.0.12**. El apartado «Añadir por lotes · cola manual» se encuentra en Newsletter → Ajustes, está cerrado por defecto y se despliega al pulsar su título. Alcance: módulo Newsletter, migraciones de sus tablas, pruebas y metadatos del tema. Los ajustes SMTP compartidos, reservas, pagos, DNS y servidor de producción no se modifican con este cambio.
+Versión actual del tema: **5.0.13**. El apartado «Añadir por lotes · cola manual» se encuentra en Newsletter → Ajustes, está cerrado por defecto y se despliega al pulsar su título. Alcance: módulo Newsletter, migraciones de sus tablas, pruebas y metadatos del tema. Los ajustes SMTP compartidos, reservas, pagos, DNS y servidor de producción no se modifican con este cambio.
 
 ## Actualización 5.0.11: seguimiento de bienvenida y confirmación
 
-- Panel siempre visible en Newsletter → Suscriptores, con la carga por lotes ubicada en Ajustes. Se actualiza cada 10 segundos y permite actualizar manualmente sin recargar la página.
+- Panel siempre visible en Newsletter → Ajustes, junto a la carga por lotes. Se actualiza cada 10 segundos y permite actualizar manualmente sin recargar la página.
 - Muestra la cola manual, los contactos pendientes de correo, los que tienen un evento en procesamiento, los contactos con envío aceptado, fallos/rebotes y suscritos. Los contadores son globales y no dependen del filtro de la tabla de suscriptores; cuentan contactos y pueden solaparse cuando alguien tiene un envío anterior y un reintento nuevo.
 - Próxima tanda con fecha y cuenta atrás, y resultado de la última tanda. Al llegar la hora se indica que está pendiente la ejecución del cron, sin inventar progreso ni adelantar el intervalo de seis horas.
 - Últimos 20 contactos incorporados: correo, estado real del primer correo, intentos de la cola, fecha de aceptación, próximo intento y último error registrado. Usa únicamente el último evento `newsletter.confirm` de cada contacto; los fallos antiguos no ocultan eventos nuevos.
@@ -90,4 +90,9 @@ Las pruebas de transporte usan un doble de PHPMailer; las de enlaces ejecutan lo
 ## Actualización 5.0.12: carga por lotes en Ajustes
 
 - El desplegable de carga y cancelación de la cola manual pasa de Suscriptores a Ajustes, fuera del formulario de configuración para evitar formularios anidados.
-- Las cargas, cancelaciones y sus avisos regresan a Ajustes. El seguimiento de bienvenida sigue visible en Suscriptores.
+- Las cargas, cancelaciones y sus avisos regresan a Ajustes. Desde la versión 5.0.13, el seguimiento de bienvenida también está en Ajustes.
+
+## Actualización 5.0.13: seguimiento en Ajustes
+
+- El seguimiento de bienvenida y confirmación pasa a Newsletter → Ajustes, debajo de la carga por lotes y fuera del formulario de configuración.
+- Mantiene la actualización automática cada 10 segundos, el botón de actualización y la cuenta atrás. Suscriptores queda dedicado a la gestión de contactos.

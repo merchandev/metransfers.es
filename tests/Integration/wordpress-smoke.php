@@ -328,6 +328,8 @@ foreach ( array( 'renderSubscribers' => 'Newsletter · Suscriptores', 'renderCam
 	mt_wp_integration_assert( false !== strpos( $nl_html, $nl_title ), "The admin screen $nl_screen must render." );
 	if ( in_array( $nl_screen, array( 'renderSubscribers', 'renderSettings' ), true ) ) {
 		mt_wp_integration_assert( ( 'renderSettings' === $nl_screen ) === ( false !== strpos( $nl_html, 'Añadir por lotes · cola manual' ) ), 'Manual batch signup must appear only in newsletter settings.' );
+		mt_wp_integration_assert( ( 'renderSettings' === $nl_screen ) === ( false !== strpos( $nl_html, 'data-mt-welcome-monitor' ) ), 'The welcome monitor must appear only in newsletter settings.' );
+		mt_wp_integration_assert( ( 'renderSettings' === $nl_screen ) === wp_script_is( 'mt-newsletter-monitor', 'enqueued' ), 'Live monitor updates must load with the settings screen.' );
 	}
 }
 $_GET['subscriber'] = (string) $nl_id;
