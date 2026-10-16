@@ -57,7 +57,7 @@ if ( ! defined( 'ME_TRANSFERS_ENABLE_MIGRATIONS' ) ) {
 
 // Centralized Versioning
 if ( ! defined( 'ME_TRANSFERS_VERSION' ) ) {
-	define( 'ME_TRANSFERS_VERSION', '5.0.10' );
+	define( 'ME_TRANSFERS_VERSION', '5.0.11' );
 }
 
 // Non-sensitive marker so a live audit can tell which release is actually

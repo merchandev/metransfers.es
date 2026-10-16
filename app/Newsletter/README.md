@@ -12,7 +12,17 @@
 - La cola participa en la exportación y el borrado de datos personales. Nueva migración `20261016_002_newsletter_manual_queue`, esquema `6.12.0`.
 - Pruebas nuevas: `php tests/test-newsletter-manual.php` y escenarios WordPress/MariaDB sobre carga diferida, tandas, cron, borrado y privacidad.
 
-Versión actual del tema: **5.0.10**. El apartado «Añadir por lotes · cola manual» está cerrado por defecto y se despliega al pulsar su título. Alcance: módulo Newsletter, migraciones de sus tablas, pruebas y metadatos del tema. Los ajustes SMTP compartidos, reservas, pagos, DNS y servidor de producción no se modifican con este cambio.
+Versión actual del tema: **5.0.11**. El apartado «Añadir por lotes · cola manual» está cerrado por defecto y se despliega al pulsar su título. Alcance: módulo Newsletter, migraciones de sus tablas, pruebas y metadatos del tema. Los ajustes SMTP compartidos, reservas, pagos, DNS y servidor de producción no se modifican con este cambio.
+
+## Actualización 5.0.11: seguimiento de bienvenida y confirmación
+
+- Panel siempre visible en Newsletter → Suscriptores, fuera del desplegable de carga. Se actualiza cada 10 segundos y permite actualizar manualmente sin recargar la página.
+- Muestra la cola manual, los contactos pendientes de correo, los que tienen un evento en procesamiento, los contactos con envío aceptado, fallos/rebotes y suscritos. Los contadores son globales y no dependen del filtro de la tabla de suscriptores; cuentan contactos y pueden solaparse cuando alguien tiene un envío anterior y un reintento nuevo.
+- Próxima tanda con fecha y cuenta atrás, y resultado de la última tanda. Al llegar la hora se indica que está pendiente la ejecución del cron, sin inventar progreso ni adelantar el intervalo de seis horas.
+- Últimos 20 contactos incorporados: correo, estado real del primer correo, intentos de la cola, fecha de aceptación, próximo intento y último error registrado. Usa únicamente el último evento `newsletter.confirm` de cada contacto; los fallos antiguos no ocultan eventos nuevos.
+- Un evento outbox procesado no prueba que se haya enviado un correo: la aceptación se obtiene de `confirmation_sent_at`. Tampoco acredita entrega en bandeja de entrada. Los contactos incorporados como suscritos con consentimiento no requieren correo de confirmación y no se presentan como correos enviados.
+- El correo inicial existente es una solicitud de confirmación, no un segundo mensaje de bienvenida independiente. Esta actualización añade seguimiento; no envía mensajes adicionales ni procesa colas al consultar el estado.
+- La consulta exige permiso de newsletter, nonce y POST y devuelve datos sin caché. Correos y errores se escapan tanto en PHP como en JavaScript; ante un error de consulta se conservan los últimos datos.
 
 ## Actualización 5.0.10: arranque y recuperación de campañas
 

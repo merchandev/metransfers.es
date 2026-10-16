@@ -347,6 +347,8 @@ for ( $manual_index = 0; $manual_index < 110; ++$manual_index ) {
 }
 $manual_report = \MeTransfers\Newsletter\Importer::import( $manual_rows, 'subscribed', 'es', false, 'Consent confirmed in fixture', true );
 mt_wp_integration_assert( 110 === $manual_report['queued'] && 110 === $manual_queue::count() && 0 === $manual_queue::dispatch(), 'File imports must enter the durable manual queue without an immediate release.' );
+$welcome_snapshot = \MeTransfers\Newsletter\WelcomeMonitor::snapshot();
+mt_wp_integration_assert( 110 === $welcome_snapshot['counts']['manual_waiting'] && $welcome_snapshot['remaining_seconds'] > 0 && 110 === $manual_queue::count(), 'The live monitor must report the manual backlog and countdown without processing it.' );
 mt_wp_integration_assert( null === $nl_subscribers::findByEmail( $manual_rows[1][0] ) && wp_next_scheduled( $manual_queue::HOOK ) >= time() + 6 * HOUR_IN_SECONDS - 10, 'The first batch must be scheduled six hours after the first enqueue.' );
 $manual_popup = $nl_subscribers::subscribe( array( 'email' => 'manual-organic-' . $nl_tag . '@example.test', 'source' => 'popup', 'consent_text' => 'Organic signup' ) );
 mt_wp_integration_assert( 'pending' === $manual_popup['result'] && $manual_popup['subscriber'] && 110 === $manual_queue::count(), 'Organic signup must remain immediate and independent of the manual backlog.' );
@@ -366,6 +368,19 @@ update_option( $manual_queue::NEXT, time() - 1, false );
 mt_wp_integration_assert( 1 === $manual_queue::dispatch() && 0 === $manual_queue::count(), 'A pending manual subscriber must be admitted transactionally.' );
 $manual_pending = $nl_subscribers::findByEmail( $manual_pending_email );
 mt_wp_integration_assert( 'pending' === $manual_pending['status'] && '1' === (string) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM %i WHERE event_type = 'newsletter.confirm' AND aggregate_id = %d", $wpdb->prefix . 'mt_outbox', $manual_pending['id'] ) ), 'Manual pending admission must persist exactly one confirmation in the outbox.' );
+$wpdb->query( $wpdb->prepare( "UPDATE %i SET status = 'failed', last_error = 'old_failure' WHERE event_type = 'newsletter.confirm' AND aggregate_id = %d", $wpdb->prefix . 'mt_outbox', $manual_pending['id'] ) );
+\MeTransfers\Core\Outbox::enqueue( 'newsletter.confirm', 'newsletter.monitor.' . $manual_pending['id'], $manual_pending['id'] );
+$welcome_snapshot = \MeTransfers\Newsletter\WelcomeMonitor::snapshot();
+$welcome_rows = array_column( $welcome_snapshot['recent'], null, 'email' );
+mt_wp_integration_assert( 'En cola / esperando reintento' === $welcome_rows[ $manual_pending_email ]['state'], 'The monitor must show a real confirmation event waiting in the outbox.' );
+$wpdb->query( $wpdb->prepare( "UPDATE %i SET status = 'processing' WHERE event_type = 'newsletter.confirm' AND aggregate_id = %d", $wpdb->prefix . 'mt_outbox', $manual_pending['id'] ) );
+$welcome_snapshot = \MeTransfers\Newsletter\WelcomeMonitor::snapshot();
+$welcome_rows = array_column( $welcome_snapshot['recent'], null, 'email' );
+mt_wp_integration_assert( 'Enviándose' === $welcome_rows[ $manual_pending_email ]['state'] && $welcome_snapshot['counts']['mail_processing'] >= 1, 'Real outbox processing must be visible in both the table and counters.' );
+$wpdb->query( $wpdb->prepare( "UPDATE %i SET status = 'processed' WHERE event_type = 'newsletter.confirm' AND aggregate_id = %d", $wpdb->prefix . 'mt_outbox', $manual_pending['id'] ) );
+$welcome_snapshot = \MeTransfers\Newsletter\WelcomeMonitor::snapshot();
+$welcome_rows = array_column( $welcome_snapshot['recent'], null, 'email' );
+mt_wp_integration_assert( 'Sin envío registrado' === $welcome_rows[ $manual_pending_email ]['state'], 'A processed event without a sent timestamp must not be presented as a successful mail.' );
 
 $erased = \MeTransfers\Newsletter\Privacy::erase( $nl_email );
 mt_wp_integration_assert( $erased['items_removed'] && null === $nl_subscribers::findByEmail( $nl_email ) && '0' === (string) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE subscriber_id = %d', $nl_deliveries, $nl_id ) ), 'Erasing personal data must delete the subscriber and their deliveries.' );

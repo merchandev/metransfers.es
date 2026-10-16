@@ -60,6 +60,7 @@ final class Admin {
 	public function register() {
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
 		add_action( 'wp_ajax_mt_nl_dispatch', array( __CLASS__, 'ajaxDispatch' ) );
+		add_action( 'wp_ajax_mt_nl_welcome_status', array( __CLASS__, 'ajaxWelcomeStatus' ) );
 		foreach ( self::ACTIONS as $action => $method ) {
 			add_action( 'admin_post_' . $action, array( __CLASS__, $method ) );
 		}
@@ -123,6 +124,7 @@ final class Admin {
 
 		self::renderAddForm();
 		self::renderManualQueue();
+		self::renderWelcomeMonitor();
 
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" onsubmit="return this.elements.namedItem(\'bulk\').value!==\'delete\'||confirm(\'¿Eliminar los suscriptores seleccionados y su historial? No se puede deshacer.\')">';
 		echo '<input type="hidden" name="action" value="mt_nl_bulk">';
@@ -157,6 +159,43 @@ final class Admin {
 			echo '<td>' . (int) $row['sends'] . '</td></tr>';
 		}
 		echo '</tbody></table></form></div>';
+	}
+
+	private static function renderWelcomeMonitor() {
+		$data = WelcomeMonitor::snapshot();
+		echo '<section class="mt-nl-card" data-mt-welcome-monitor data-url="' . esc_url( admin_url( 'admin-ajax.php' ) ) . '" data-nonce="' . esc_attr( wp_create_nonce( 'mt_nl_welcome_status' ) ) . '" data-remaining="' . esc_attr( null === $data['remaining_seconds'] ? '' : (string) $data['remaining_seconds'] ) . '"><h2>Seguimiento de bienvenida y confirmación</h2>';
+		echo '<p>El primer correo actual solicita confirmar la suscripción. Los contactos manuales esperan su tanda de seis horas; los añadidos como suscritos con consentimiento no necesitan ese correo.</p>';
+		echo '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin:16px 0">';
+		foreach ( WelcomeMonitor::COUNTERS as $key => $label ) {
+			echo '<div style="padding:12px;background:#f6f7f7;border:1px solid #dcdcde;border-radius:6px"><span>' . esc_html( $label ) . '</span><br><strong style="font-size:24px" data-nl-count="' . esc_attr( $key ) . '">' . (int) $data['counts'][ $key ] . '</strong></div>';
+		}
+		echo '</div><p><strong>Próxima tanda manual:</strong> <span data-nl-next>' . esc_html( $data['next_manual'] ) . '</span> · <span data-nl-countdown></span></p>';
+		echo '<p><strong>Última tanda:</strong> <span data-nl-last>' . esc_html( $data['last_batch'] ) . '</span></p><p>Se actualiza cada 10 segundos. Hora del sitio. «Aceptado» indica aceptación por el transporte de correo, no recepción en la bandeja de entrada.</p>';
+		echo '<button type="button" class="button" data-nl-refresh>Actualizar ahora</button> <span data-nl-monitor-status role="status" aria-live="polite">Última actualización: ' . esc_html( $data['updated_at'] ) . '</span>';
+		echo '<h3>Últimos 20 contactos incorporados</h3><div style="overflow-x:auto"><table class="widefat striped"><thead><tr><th>Correo</th><th>Estado del correo</th><th>Intentos en cola</th><th>Último envío aceptado</th><th>Próximo intento</th><th>Último error registrado</th></tr></thead><tbody data-nl-monitor-rows>';
+		foreach ( $data['recent'] as $row ) {
+			echo '<tr>';
+			foreach ( array( 'email', 'state', 'attempts', 'sent_at', 'retry_at', 'error' ) as $key ) {
+				echo '<td style="overflow-wrap:anywhere">' . esc_html( (string) $row[ $key ] ) . '</td>';
+			}
+			echo '</tr>';
+		}
+		if ( ! $data['recent'] ) {
+			echo '<tr><td colspan="6">Aún no hay contactos incorporados. Los que esperan su tanda se cuentan arriba.</td></tr>';
+		}
+		echo '</tbody></table></div></section>';
+		$script = '/assets/js/newsletter-monitor.js';
+		wp_enqueue_script( 'mt-newsletter-monitor', get_template_directory_uri() . $script, array(), (string) filemtime( get_template_directory() . $script ), true );
+	}
+
+	public static function ajaxWelcomeStatus() {
+		self::guard();
+		check_ajax_referer( 'mt_nl_welcome_status', 'nonce' );
+		if ( 'POST' !== ( $_SERVER['REQUEST_METHOD'] ?? '' ) ) {
+			wp_send_json_error( array( 'message' => 'Método no permitido.' ), 405 );
+		}
+		nocache_headers();
+		wp_send_json_success( WelcomeMonitor::snapshot() );
 	}
 
 	private static function renderManualQueue() {
