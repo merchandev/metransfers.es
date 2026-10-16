@@ -421,6 +421,27 @@ final class Schema {
 		);
 	}
 
+	public static function installNewsletterManualQueue() {
+		global $wpdb;
+		self::loadUpgradeApi();
+		$table           = $wpdb->prefix . 'mt_newsletter_manual_queue';
+		$charset_collate = $wpdb->get_charset_collate();
+		self::apply(
+			"CREATE TABLE $table (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                email varchar(191) NOT NULL,
+                name varchar(120) NOT NULL DEFAULT '',
+                language varchar(5) NOT NULL DEFAULT 'es',
+                subscriber_status varchar(20) NOT NULL DEFAULT 'pending',
+                source varchar(20) NOT NULL DEFAULT 'admin',
+                consent_text varchar(255) NOT NULL DEFAULT '',
+                created_at datetime NOT NULL,
+                PRIMARY KEY  (id),
+                UNIQUE KEY email (email)
+            ) $charset_collate;"
+		);
+	}
+
 	private static function loadUpgradeApi() {
 		if ( ! function_exists( 'dbDelta' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/upgrade.php';

@@ -294,6 +294,17 @@ final class Subscribers {
 	 * @param array<int, int> $ids
 	 */
 	public static function delete( array $ids ) {
+		if ( ! ManualQueue::acquireLock() ) {
+			return false;
+		}
+		try {
+			return self::deleteLocked( $ids );
+		} finally {
+			ManualQueue::releaseLock();
+		}
+	}
+
+	private static function deleteLocked( array $ids ) {
 		global $wpdb;
 		$ids = array_values( array_filter( array_map( 'absint', $ids ) ) );
 		if ( ! $ids ) {
@@ -302,10 +313,22 @@ final class Subscribers {
 		$placeholders = implode( ', ', array_fill( 0, count( $ids ), '%d' ) );
 		$deliveries   = "DELETE FROM %i WHERE subscriber_id IN ($placeholders)";
 		$subscribers  = "DELETE FROM %i WHERE id IN ($placeholders)";
+		$waiting      = "DELETE q FROM %i q INNER JOIN %i s ON q.email = s.email WHERE s.id IN ($placeholders)";
+		if ( false === $wpdb->query( 'START TRANSACTION' ) ) {
+			return false;
+		}
+		// Delete a matching waiting entry too, so a later batch cannot recreate it.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Fixed placeholders built from integer ids above.
+		$waiting_deleted = $wpdb->query( $wpdb->prepare( $waiting, array_merge( array( ManualQueue::table(), self::table() ), $ids ) ) );
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Built above from fixed fragments; every value is a placeholder.
-		$wpdb->query( $wpdb->prepare( $deliveries, array_merge( array( Campaigns::deliveriesTable() ), $ids ) ) );
+		$history_deleted = $wpdb->query( $wpdb->prepare( $deliveries, array_merge( array( Campaigns::deliveriesTable() ), $ids ) ) );
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Built above from fixed fragments; every value is a placeholder.
-		return (int) $wpdb->query( $wpdb->prepare( $subscribers, array_merge( array( self::table() ), $ids ) ) );
+		$deleted = $wpdb->query( $wpdb->prepare( $subscribers, array_merge( array( self::table() ), $ids ) ) );
+		if ( false === $waiting_deleted || false === $history_deleted || false === $deleted || false === $wpdb->query( 'COMMIT' ) ) {
+			$wpdb->query( 'ROLLBACK' );
+			return false;
+		}
+		return (int) $deleted;
 	}
 
 	/**

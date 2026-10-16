@@ -148,6 +148,11 @@ class Migrations {
 				'version'  => '6.11.0',
 				'callback' => array( Schema::class, 'installNewsletterTables' ),
 			),
+			array(
+				'id'       => '20261016_002_newsletter_manual_queue',
+				'version'  => '6.12.0',
+				'callback' => array( Schema::class, 'installNewsletterManualQueue' ),
+			),
 		);
 	}
 

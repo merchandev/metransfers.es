@@ -20,6 +20,8 @@ final class Admin {
 	const ACTIONS = array(
 		'mt_nl_bulk'          => 'handleBulk',
 		'mt_nl_add'           => 'handleAdd',
+		'mt_nl_paste'         => 'handlePaste',
+		'mt_nl_queue_cancel'  => 'handleQueueCancel',
 		'mt_nl_export'        => 'handleExport',
 		'mt_nl_save_campaign' => 'handleCampaign',
 		'mt_nl_campaign'      => 'handleCampaignAction',
@@ -33,11 +35,12 @@ final class Admin {
 		'saved'       => 'Cambios guardados.',
 		'added'       => 'Suscriptor añadido.',
 		'updated'     => 'Suscriptor actualizado.',
-		'blocked'     => 'Esa dirección se dio de baja o rebotó: solo la propia persona puede volver a suscribirse desde la web.',
+		'blocked'     => 'Esa dirección se dio de baja o está marcada como rebotada. No se ha reactivado.',
 		'invalid'     => 'El correo no es válido.',
 		'bulk'        => 'Acción aplicada a %d suscriptores.',
 		'resent'      => 'Correo de confirmación enviado a %d suscriptores pendientes.',
 		'deleted'     => '%d suscriptores eliminados, con su historial de envíos.',
+		'manual'      => '%s',
 		'draft'       => 'Borrador guardado.',
 		'locked'      => 'Esta campaña ya se está enviando o se envió: no se puede modificar. Duplícala para crear otra.',
 		'test_sent'   => 'Correo de prueba enviado a %s.',
@@ -118,8 +121,9 @@ final class Admin {
 		echo '<button class="button">Filtrar</button></form>';
 
 		self::renderAddForm();
+		self::renderManualQueue();
 
-		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" onsubmit="return this.bulk.value!==\'delete\'||confirm(\'¿Eliminar los suscriptores seleccionados y su historial? No se puede deshacer.\')">';
+		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" onsubmit="return this.elements.namedItem(\'bulk\').value!==\'delete\'||confirm(\'¿Eliminar los suscriptores seleccionados y su historial? No se puede deshacer.\')">';
 		echo '<input type="hidden" name="action" value="mt_nl_bulk">';
 		wp_nonce_field( 'mt_nl_bulk' );
 		echo '<div class="tablenav top"><select name="bulk" aria-label="Acción en lote"><option value="">Acciones en lote</option>';
@@ -141,7 +145,7 @@ final class Admin {
 		foreach ( $result['rows'] as $row ) {
 			$link = add_query_arg( 'subscriber', (int) $row['id'], $base );
 			echo '<tr><th scope="row" class="check-column"><input type="checkbox" class="mt-nl-check" name="ids[]" value="' . (int) $row['id'] . '" aria-label="Seleccionar ' . esc_attr( $row['email'] ) . '"></th>';
-			echo '<td><a href="' . esc_url( $link ) . '"><strong>' . esc_html( $row['email'] ) . '</strong></a></td>';
+			echo '<td><a href="' . esc_url( $link ) . '"><strong>' . esc_html( $row['email'] ) . '</strong></a><div class="row-actions"><button type="submit" class="button-link-delete" name="delete_id" value="' . (int) $row['id'] . '" onclick="return confirm(\'¿Eliminar este suscriptor y su historial?\')">Eliminar</button></div></td>';
 			echo '<td>' . esc_html( $row['name'] ) . '</td>';
 			echo '<td>' . self::badge( $row['status'] ) . '</td>';
 			echo '<td>' . esc_html( strtoupper( $row['language'] ) ) . '</td>';
@@ -152,6 +156,71 @@ final class Admin {
 			echo '<td>' . (int) $row['sends'] . '</td></tr>';
 		}
 		echo '</tbody></table></form></div>';
+	}
+
+	private static function renderManualQueue() {
+		$count = ManualQueue::count();
+		$next  = (int) get_option( ManualQueue::NEXT, 0 );
+		echo '<div class="mt-nl-card"><h2>Añadir por lotes · cola manual</h2><p><strong>' . (int) $count . ' contactos en espera.</strong> Se incorporan en orden, en tandas aleatorias de 12 a 98 cada 6 horas. Puedes seguir cargando listas sin límite total de cola. Las altas del popup y del pie entran directamente y no esperan estas tandas.</p>';
+		if ( $count && $next ) {
+			echo '<p>Próxima tanda: <strong>' . esc_html( wp_date( 'd/m/Y H:i', $next ) ) . '</strong> (hora del sitio). WP-Cron la ejecutará cuando el sitio reciba tráfico; un cron real permite ejecutarla puntualmente.</p>';
+		}
+		$last = get_option( ManualQueue::LAST, array() );
+		if ( is_array( $last ) && ! empty( $last['at'] ) ) {
+			echo '<p>Última tanda: ' . esc_html( wp_date( 'd/m/Y H:i', $last['at'] ) ) . ' · ' . (int) $last['added'] . ' incorporados · ' . (int) $last['failed'] . ' con error y conservados en espera.</p>';
+		}
+		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="mt_nl_paste">';
+		wp_nonce_field( 'mt_nl_paste' );
+		echo '<p><label for="mt-nl-emails">Pega los correos separados por comas, punto y coma o saltos de línea</label><br><textarea id="mt-nl-emails" name="emails" rows="5" class="large-text" required placeholder="persona@ejemplo.com, otra@ejemplo.com"></textarea></p>';
+		echo '<p><label>Idioma <select name="language">' . self::options(
+			array(
+				'es' => 'Español',
+				'en' => 'Inglés',
+			),
+			'es'
+		) . '</select></label></p>';
+		echo '<p><label><input type="radio" name="status" value="pending" checked> Solicitar confirmación cuando llegue su tanda</label><br><label><input type="radio" name="status" value="subscribed"> Incorporar como suscritos</label></p>';
+		echo '<p><label><input type="checkbox" name="consent" value="1"> Confirmo que estos contactos aceptaron recibir nuestras comunicaciones (obligatorio para incorporarlos como suscritos).</label></p>';
+		echo '<button type="submit" class="button button-primary">Añadir a la cola manual</button></form>';
+		if ( $count ) {
+			echo '<details><summary>Ver y cancelar contactos en espera (primeros 50)</summary><form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="mt_nl_queue_cancel">';
+			wp_nonce_field( 'mt_nl_queue_cancel' );
+			echo '<ul>';
+			foreach ( ManualQueue::preview() as $row ) {
+				echo '<li>' . esc_html( $row['email'] ) . ' <button type="submit" name="queue_id" value="' . (int) $row['id'] . '" class="button-link-delete">Quitar de la cola</button></li>';
+			}
+			echo '</ul><button type="submit" name="clear_all" value="1" class="button" onclick="return confirm(\'¿Vaciar todos los contactos en espera? Los suscriptores ya incorporados no cambian.\')">Vaciar cola manual</button></form></details>';
+		}
+		echo '</div>';
+	}
+
+	public static function handlePaste() {
+		self::guard( 'mt_nl_paste' );
+		$back   = admin_url( 'admin.php?page=' . self::SLUG );
+		$status = isset( $_POST['status'] ) && 'subscribed' === $_POST['status'] ? 'subscribed' : 'pending';
+		if ( 'subscribed' === $status && empty( $_POST['consent'] ) ) {
+			self::redirect( $back, 'consent' );
+		}
+		$text = isset( $_POST['emails'] ) && is_string( $_POST['emails'] ) ? wp_unslash( $_POST['emails'] ) : '';
+		if ( '' === trim( $text ) || strlen( $text ) > Importer::MAX_BYTES ) {
+			self::redirect( $back, 'error', 'Pega una lista de correos de hasta 10 MB por carga. Puedes realizar tantas cargas como necesites.' );
+		}
+		if ( function_exists( 'set_time_limit' ) ) {
+			set_time_limit( 300 ); // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Large manual lists, like file imports.
+		}
+		$report = ManualQueue::paste( $text, isset( $_POST['language'] ) ? sanitize_key( wp_unslash( $_POST['language'] ) ) : 'es', $status, 'Carga manual por ' . wp_get_current_user()->user_login . ( 'subscribed' === $status ? ', que confirma su consentimiento' : ', pendiente de confirmación' ) );
+		AuditLog::record( 'newsletter.manual_queued', 'newsletter', 0, $report );
+		self::redirect( $back, $report['error'] ? 'error' : 'manual', sprintf( '%d en cola, %d duplicados, %d bloqueados por baja o rebote, %d inválidos y %d errores de guardado.', $report['queued'], $report['duplicate'], $report['blocked'], $report['invalid'], $report['error'] ) );
+	}
+
+	public static function handleQueueCancel() {
+		self::guard( 'mt_nl_queue_cancel' );
+		$id = isset( $_POST['queue_id'] ) ? absint( $_POST['queue_id'] ) : 0;
+		if ( ! $id && empty( $_POST['clear_all'] ) ) {
+			self::redirect( admin_url( 'admin.php?page=' . self::SLUG ), 'error', 'Selecciona un contacto en espera.' );
+		}
+		$removed = ManualQueue::cancel( $id );
+		self::redirect( admin_url( 'admin.php?page=' . self::SLUG ), false === $removed ? 'error' : 'manual', false === $removed ? 'La cola está ocupada o no se pudo actualizar. Inténtalo de nuevo.' : sprintf( '%d contactos retirados de la cola.', $removed ) );
 	}
 
 	private static function renderAddForm() {
@@ -168,7 +237,7 @@ final class Admin {
 		) . '</select></label></p>';
 		echo '<p><label><input type="radio" name="status" value="pending" checked> Pendiente: le enviamos un correo para que confirme</label><br>';
 		echo '<label><input type="radio" name="status" value="subscribed"> Suscrito: me ha dado su consentimiento (por escrito, en persona…)</label></p>';
-		echo '<p><button class="button button-primary">Añadir</button></p></form></div>';
+		echo '<p>Las altas manuales esperan una tanda de 12 a 98 contactos cada 6 horas.</p><p><button class="button button-primary">Añadir a la cola manual</button></p></form></div>';
 	}
 
 	private static function renderSubscriber( $id ) {
@@ -206,14 +275,14 @@ final class Admin {
 		}
 		echo '</table>';
 
-		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" class="mt-nl-inline" onsubmit="return this.bulk.value!==\'delete\'||confirm(\'¿Eliminar este suscriptor y su historial? No se puede deshacer.\')">';
+		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" class="mt-nl-inline" onsubmit="return this.elements.namedItem(\'bulk\').value!==\'delete\'||confirm(\'¿Eliminar este suscriptor y su historial? No se puede deshacer.\')">';
 		echo '<input type="hidden" name="action" value="mt_nl_bulk"><input type="hidden" name="ids[]" value="' . (int) $subscriber['id'] . '"><input type="hidden" name="return" value="' . (int) $subscriber['id'] . '">';
 		wp_nonce_field( 'mt_nl_bulk' );
 		echo '<select name="bulk" aria-label="Acción">';
 		foreach ( Subscribers::STATUSES as $status => $label ) {
 			echo '<option value="status:' . esc_attr( $status ) . '"' . selected( $subscriber['status'], $status, false ) . '>Estado: ' . esc_html( $label ) . '</option>';
 		}
-		echo '<option value="resend">Reenviar email de confirmación</option><option value="delete">Eliminar (con su historial)</option></select> <button class="button">Aplicar</button></form></div>';
+		echo '<option value="resend">Reenviar email de confirmación</option><option value="delete">Eliminar (con su historial)</option></select> <button class="button">Aplicar</button> <button type="submit" class="button-link-delete" name="delete_id" value="' . (int) $id . '" onclick="return confirm(\'¿Eliminar este suscriptor y su historial?\')">Eliminar suscriptor</button></form></div>';
 
 		$pages = Subscribers::pages( $subscriber );
 		echo '<div class="mt-nl-card"><h2>Páginas que visitó antes de suscribirse</h2>';
@@ -249,12 +318,19 @@ final class Admin {
 		$return = isset( $_POST['return'] ) ? absint( $_POST['return'] ) : 0;
 		$target = $return ? admin_url( 'admin.php?page=' . self::SLUG . '&subscriber=' . $return ) : admin_url( 'admin.php?page=' . self::SLUG );
 		$ids    = array_values( array_filter( $ids ) );
+		if ( ! empty( $_POST['delete_id'] ) ) {
+			$ids    = array( absint( $_POST['delete_id'] ) );
+			$action = 'delete';
+		}
 		if ( ! $ids || '' === $action ) {
-			self::redirect( $target );
+			self::redirect( $target, 'error', 'Selecciona al menos un suscriptor y una acción.' );
 		}
 
 		if ( 'delete' === $action ) {
 			$deleted = Subscribers::delete( $ids );
+			if ( false === $deleted ) {
+				self::redirect( $target, 'error', 'No se pudo eliminar. No se ha confirmado el borrado; vuelve a intentarlo.' );
+			}
 			AuditLog::record( 'newsletter.subscribers_deleted', 'newsletter', 0, array( 'count' => $deleted ) );
 			self::redirect( admin_url( 'admin.php?page=' . self::SLUG ), 'deleted', $deleted );
 		}
@@ -289,7 +365,7 @@ final class Admin {
 		self::guard( 'mt_nl_add' );
 		$status = isset( $_POST['status'] ) && 'subscribed' === $_POST['status'] ? 'subscribed' : 'pending';
 		$email  = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
-		$result = Subscribers::upsert(
+		$result = ManualQueue::enqueue(
 			$email,
 			isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '',
 			isset( $_POST['language'] ) ? sanitize_key( wp_unslash( $_POST['language'] ) ) : 'es',
@@ -297,13 +373,15 @@ final class Admin {
 			'admin',
 			'Añadido a mano por ' . wp_get_current_user()->user_login . ( 'subscribed' === $status ? ', que confirma tener su consentimiento' : '' )
 		);
-		if ( 'added' === $result && 'pending' === $status ) {
-			$subscriber = Subscribers::findByEmail( $email );
-			if ( $subscriber ) {
-				PublicController::sendConfirmation( $subscriber );
-			}
+		if ( 'queued' === $result ) {
+			self::redirect( admin_url( 'admin.php?page=' . self::SLUG ), 'manual', 'Contacto en cola: se incorporará en una tanda de 12 a 98 cada 6 horas.' );
+		}
+		if ( 'duplicate' === $result || 'error' === $result ) {
+			self::redirect( admin_url( 'admin.php?page=' . self::SLUG ), 'error' === $result ? 'error' : 'manual', 'error' === $result ? 'No se pudo guardar el contacto. La cola puede estar ocupada; vuelve a intentarlo.' : 'El contacto ya existe o está en cola. No se ha duplicado ni modificado.' );
 		}
 		$codes = array(
+			'duplicate' => 'updated',
+			'error'     => 'error',
 			'added'     => 'added',
 			'updated'   => 'updated',
 			'unchanged' => 'updated',
@@ -645,6 +723,8 @@ final class Admin {
 			delete_transient( 'mt_nl_import_' . get_current_user_id() );
 			echo '<div class="mt-nl-card"><h2>Resultado de la importación</h2><ul>';
 			$lines = array(
+				'error'      => 'con error de guardado; vuelve a cargar esos contactos',
+				'queued'     => 'añadidos a la cola manual (12 a 98 cada 6 horas)',
 				'added'      => 'añadidos',
 				'updated'    => 'actualizados',
 				'unchanged'  => 'ya estaban y no cambian',
@@ -653,7 +733,7 @@ final class Admin {
 				'invalid'    => 'con correo no válido',
 			);
 			foreach ( $lines as $key => $label ) {
-				echo '<li><strong>' . (int) $report[ $key ] . '</strong> ' . esc_html( $label ) . '</li>';
+				echo '<li><strong>' . (int) ( $report[ $key ] ?? 0 ) . '</strong> ' . esc_html( $label ) . '</li>';
 			}
 			echo '</ul>';
 			if ( $report['errors'] ) {
@@ -672,7 +752,7 @@ final class Admin {
 		echo '<p><label for="mt-nl-file"><strong>Archivo CSV o Excel (.xlsx)</strong></label><br><input type="file" id="mt-nl-file" name="file" accept=".csv,.txt,.xlsx" required></p>';
 		echo '<p class="description">Una fila por contacto. Columnas reconocidas por su título: <code>email</code> o <code>correo</code> (obligatoria), <code>nombre</code> o <code>name</code>, <code>idioma</code> o <code>language</code> (es/en). Sin títulos, la primera columna con @ es el correo y la siguiente el nombre. Hasta ' . (int) Importer::MAX_ROWS . ' filas y 10 MB.</p>';
 		echo '<fieldset><legend><strong>Estado de los contactos nuevos</strong></legend>';
-		echo '<p><label><input type="radio" name="status" value="pending" checked> Pendiente de confirmar (recomendado). Después, envíales la plantilla «Pedir confirmación a pendientes» desde Campañas.</label></p>';
+		echo '<p><label><input type="radio" name="status" value="pending" checked> Pendiente de confirmar: se solicitará la confirmación automáticamente al incorporarlo en su tanda.</label></p>';
 		echo '<p><label><input type="radio" name="status" value="subscribed"> Suscrito</label><br><label class="mt-nl-indent"><input type="checkbox" name="consent" value="1"> Confirmo que estos contactos aceptaron recibir comunicaciones comerciales de MeTransfers (RGPD y LSSI).</label></p></fieldset>';
 		echo '<p><label>Idioma si el archivo no lo indica <select name="language">' . self::options(
 			array(
@@ -681,9 +761,9 @@ final class Admin {
 			),
 			'es'
 		) . '</select></label></p>';
-		echo '<p><label><input type="checkbox" name="update_names" value="1" checked> Actualizar el nombre de los contactos que ya existen</label></p>';
+		echo '<p>Los contactos existentes se omiten sin cambiar su nombre, estado ni consentimiento.</p>';
 		echo '<p class="description">Los contactos que se dieron de baja o rebotaron nunca se vuelven a suscribir con una importación.</p>';
-		echo '<p><button class="button button-primary">Importar</button></p></form></div></div>';
+		echo '<p>Los contactos del archivo se guardan en la cola manual y se incorporan en tandas aleatorias de 12 a 98 cada 6 horas. Los duplicados no modifican contactos existentes.</p><p><button class="button button-primary">Importar a la cola manual</button></p></form></div></div>';
 	}
 
 	public static function handleImport() {
@@ -708,7 +788,8 @@ final class Admin {
 			$status,
 			isset( $_POST['language'] ) ? sanitize_key( wp_unslash( $_POST['language'] ) ) : 'es',
 			! empty( $_POST['update_names'] ),
-			'Importado por ' . $user->user_login . ' el ' . wp_date( 'Y-m-d' ) . ( 'subscribed' === $status ? ', que confirma su consentimiento' : '' )
+			'Importado por ' . $user->user_login . ' el ' . wp_date( 'Y-m-d' ) . ( 'subscribed' === $status ? ', que confirma su consentimiento' : '' ),
+			true
 		);
 		set_transient( 'mt_nl_import_' . get_current_user_id(), $report, HOUR_IN_SECONDS );
 		AuditLog::record( 'newsletter.imported', 'newsletter', 0, array_diff_key( $report, array( 'errors' => true ) ) + array( 'status' => $status ) );
