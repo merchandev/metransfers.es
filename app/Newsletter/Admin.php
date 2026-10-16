@@ -161,7 +161,7 @@ final class Admin {
 	private static function renderManualQueue() {
 		$count = ManualQueue::count();
 		$next  = (int) get_option( ManualQueue::NEXT, 0 );
-		echo '<div class="mt-nl-card"><h2>Añadir por lotes · cola manual</h2><p><strong>' . (int) $count . ' contactos en espera.</strong> Se incorporan en orden, en tandas aleatorias de 12 a 98 cada 6 horas. Puedes seguir cargando listas sin límite total de cola. Las altas del popup y del pie entran directamente y no esperan estas tandas.</p>';
+		echo '<details class="mt-nl-card"><summary style="cursor:pointer;font-size:14px;font-weight:600;padding:8px 0">Añadir por lotes · cola manual</summary><p><strong>' . (int) $count . ' contactos en espera.</strong> Se incorporan en orden, en tandas aleatorias de 12 a 98 cada 6 horas. Puedes seguir cargando listas sin límite total de cola. Las altas del popup y del pie entran directamente y no esperan estas tandas.</p>';
 		if ( $count && $next ) {
 			echo '<p>Próxima tanda: <strong>' . esc_html( wp_date( 'd/m/Y H:i', $next ) ) . '</strong> (hora del sitio). WP-Cron la ejecutará cuando el sitio reciba tráfico; un cron real permite ejecutarla puntualmente.</p>';
 		}
@@ -191,7 +191,7 @@ final class Admin {
 			}
 			echo '</ul><button type="submit" name="clear_all" value="1" class="button" onclick="return confirm(\'¿Vaciar todos los contactos en espera? Los suscriptores ya incorporados no cambian.\')">Vaciar cola manual</button></form></details>';
 		}
-		echo '</div>';
+		echo '</details>';
 	}
 
 	public static function handlePaste() {

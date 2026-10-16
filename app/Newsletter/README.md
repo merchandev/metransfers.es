@@ -12,7 +12,7 @@
 - La cola participa en la exportación y el borrado de datos personales. Nueva migración `20261016_002_newsletter_manual_queue`, esquema `6.12.0`.
 - Pruebas nuevas: `php tests/test-newsletter-manual.php` y escenarios WordPress/MariaDB sobre carga diferida, tandas, cron, borrado y privacidad.
 
-Versión actual del tema: **5.0.8**. Alcance: módulo Newsletter, migraciones de sus tablas, pruebas y metadatos del tema. Los ajustes SMTP compartidos, reservas, pagos, DNS y servidor de producción no se modifican con este cambio.
+Versión actual del tema: **5.0.9**. El apartado «Añadir por lotes · cola manual» está cerrado por defecto y se despliega al pulsar su título. Alcance: módulo Newsletter, migraciones de sus tablas, pruebas y metadatos del tema. Los ajustes SMTP compartidos, reservas, pagos, DNS y servidor de producción no se modifican con este cambio.
 
 ## Hallazgos
 
