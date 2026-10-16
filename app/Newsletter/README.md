@@ -2,7 +2,7 @@
 
 ## Actualización 5.0.8: altas manuales por tandas y eliminación
 
-- Newsletter → Suscriptores permite pegar listas separadas por comas, punto y coma, espacios o saltos de línea. Las altas individuales del administrador y los archivos CSV/XLSX también usan la cola manual.
+- Newsletter → Ajustes permite pegar listas separadas por comas, punto y coma, espacios o saltos de línea. Las altas individuales del administrador y los archivos CSV/XLSX también usan la cola manual.
 - La cola no tiene un máximo total acumulado. Se conserva en una tabla propia, con índice único por email, y se puede seguir alimentando mientras se procesa. Cada carga sigue sujeta a los límites de tamaño del servidor; los archivos mantienen el límite de 20.000 filas y 10 MB por carga.
 - Primera incorporación: seis horas después de la primera carga. Después, una tanda aleatoria de 12 a 98 filas cada seis horas; el último resto puede contener menos de 12. Orden FIFO. Las cargas posteriores no posponen la próxima tanda. No hay ráfagas para recuperar ventanas perdidas.
 - Popup y pie de página entran directamente sin cupo de altas acumuladas ni espera de seis horas; mantienen doble confirmación y controles contra bots. Si alguien se registra por la web mientras esperaba en la cola, su registro y consentimiento prevalecen.
@@ -12,11 +12,11 @@
 - La cola participa en la exportación y el borrado de datos personales. Nueva migración `20261016_002_newsletter_manual_queue`, esquema `6.12.0`.
 - Pruebas nuevas: `php tests/test-newsletter-manual.php` y escenarios WordPress/MariaDB sobre carga diferida, tandas, cron, borrado y privacidad.
 
-Versión actual del tema: **5.0.11**. El apartado «Añadir por lotes · cola manual» está cerrado por defecto y se despliega al pulsar su título. Alcance: módulo Newsletter, migraciones de sus tablas, pruebas y metadatos del tema. Los ajustes SMTP compartidos, reservas, pagos, DNS y servidor de producción no se modifican con este cambio.
+Versión actual del tema: **5.0.12**. El apartado «Añadir por lotes · cola manual» se encuentra en Newsletter → Ajustes, está cerrado por defecto y se despliega al pulsar su título. Alcance: módulo Newsletter, migraciones de sus tablas, pruebas y metadatos del tema. Los ajustes SMTP compartidos, reservas, pagos, DNS y servidor de producción no se modifican con este cambio.
 
 ## Actualización 5.0.11: seguimiento de bienvenida y confirmación
 
-- Panel siempre visible en Newsletter → Suscriptores, fuera del desplegable de carga. Se actualiza cada 10 segundos y permite actualizar manualmente sin recargar la página.
+- Panel siempre visible en Newsletter → Suscriptores, con la carga por lotes ubicada en Ajustes. Se actualiza cada 10 segundos y permite actualizar manualmente sin recargar la página.
 - Muestra la cola manual, los contactos pendientes de correo, los que tienen un evento en procesamiento, los contactos con envío aceptado, fallos/rebotes y suscritos. Los contadores son globales y no dependen del filtro de la tabla de suscriptores; cuentan contactos y pueden solaparse cuando alguien tiene un envío anterior y un reintento nuevo.
 - Próxima tanda con fecha y cuenta atrás, y resultado de la última tanda. Al llegar la hora se indica que está pendiente la ejecución del cron, sin inventar progreso ni adelantar el intervalo de seis horas.
 - Últimos 20 contactos incorporados: correo, estado real del primer correo, intentos de la cola, fecha de aceptación, próximo intento y último error registrado. Usa únicamente el último evento `newsletter.confirm` de cada contacto; los fallos antiguos no ocultan eventos nuevos.
@@ -86,3 +86,8 @@ php vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress --memo
 ```
 
 Las pruebas de transporte usan un doble de PHPMailer; las de enlaces ejecutan los controladores en procesos PHP separados y verifican los cambios de estado. La prueba de integración WordPress mantiene una configuración SMTP ficticia mediante filtros temporales y no envía mensajes reales. Su ejecución requiere una instalación WordPress y base de datos de pruebas.
+
+## Actualización 5.0.12: carga por lotes en Ajustes
+
+- El desplegable de carga y cancelación de la cola manual pasa de Suscriptores a Ajustes, fuera del formulario de configuración para evitar formularios anidados.
+- Las cargas, cancelaciones y sus avisos regresan a Ajustes. El seguimiento de bienvenida sigue visible en Suscriptores.

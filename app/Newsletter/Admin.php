@@ -123,7 +123,6 @@ final class Admin {
 		echo '<button class="button">Filtrar</button></form>';
 
 		self::renderAddForm();
-		self::renderManualQueue();
 		self::renderWelcomeMonitor();
 
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" onsubmit="return this.elements.namedItem(\'bulk\').value!==\'delete\'||confirm(\'¿Eliminar los suscriptores seleccionados y su historial? No se puede deshacer.\')">';
@@ -236,7 +235,7 @@ final class Admin {
 
 	public static function handlePaste() {
 		self::guard( 'mt_nl_paste' );
-		$back   = admin_url( 'admin.php?page=' . self::SLUG );
+		$back   = admin_url( 'admin.php?page=' . self::SETTINGS_PAGE );
 		$status = isset( $_POST['status'] ) && 'subscribed' === $_POST['status'] ? 'subscribed' : 'pending';
 		if ( 'subscribed' === $status && empty( $_POST['consent'] ) ) {
 			self::redirect( $back, 'consent' );
@@ -257,10 +256,10 @@ final class Admin {
 		self::guard( 'mt_nl_queue_cancel' );
 		$id = isset( $_POST['queue_id'] ) ? absint( $_POST['queue_id'] ) : 0;
 		if ( ! $id && empty( $_POST['clear_all'] ) ) {
-			self::redirect( admin_url( 'admin.php?page=' . self::SLUG ), 'error', 'Selecciona un contacto en espera.' );
+			self::redirect( admin_url( 'admin.php?page=' . self::SETTINGS_PAGE ), 'error', 'Selecciona un contacto en espera.' );
 		}
 		$removed = ManualQueue::cancel( $id );
-		self::redirect( admin_url( 'admin.php?page=' . self::SLUG ), false === $removed ? 'error' : 'manual', false === $removed ? 'La cola está ocupada o no se pudo actualizar. Inténtalo de nuevo.' : sprintf( '%d contactos retirados de la cola.', $removed ) );
+		self::redirect( admin_url( 'admin.php?page=' . self::SETTINGS_PAGE ), false === $removed ? 'error' : 'manual', false === $removed ? 'La cola está ocupada o no se pudo actualizar. Inténtalo de nuevo.' : sprintf( '%d contactos retirados de la cola.', $removed ) );
 	}
 
 	private static function renderAddForm() {
@@ -873,6 +872,7 @@ final class Admin {
 		echo '<div class="wrap mt-nl-admin"><h1>Newsletter · Ajustes</h1>';
 		self::notice();
 		self::styles();
+		self::renderManualQueue();
 
 		$errors = Mailer::configurationErrors();
 		echo '<div class="mt-nl-card"><p><strong>Servidor de correo:</strong> ' . ( ! $errors ? 'Configuración local SMTP completa, con cifrado obligatorio. Falta verificar la autenticación en un correo recibido.' : '<span class="mt-nl-bad">Envío del newsletter bloqueado.</span> Revisa las credenciales, el remitente, el puerto y el cifrado SMTP en Reservas → Ajustes Generales.' ) . '</p>';
