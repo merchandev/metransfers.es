@@ -193,6 +193,9 @@ final class PublicController {
 	 */
 	public static function subscribe() {
 		nocache_headers();
+		if ( 'POST' !== ( $_SERVER['REQUEST_METHOD'] ?? '' ) ) {
+			wp_send_json_error( array( 'message' => Settings::label( 'error', 'es' ) ), 405 );
+		}
 		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Public form on cached pages: protected by honeypot, timing, rate limit and double opt-in.
 		$language = Settings::language( isset( $_POST['language'] ) ? sanitize_key( wp_unslash( $_POST['language'] ) ) : 'es' );
 		$double   = (bool) Settings::get( 'double_opt_in' );
@@ -242,9 +245,16 @@ final class PublicController {
 	 * Sends now; if the mail server fails, the outbox retries later.
 	 */
 	public static function sendConfirmation( array $subscriber ) {
+		if ( ! empty( $subscriber['confirmation_sent_at'] ) && strtotime( $subscriber['confirmation_sent_at'] . ' UTC' ) > time() - Subscribers::RESEND_SECONDS ) {
+			return true;
+		}
 		if ( Mailer::sendConfirmation( $subscriber ) ) {
 			Subscribers::markConfirmationSent( (int) $subscriber['id'] );
 			return true;
+		}
+		if ( Mailer::isPermanentRecipientFailure( Mailer::lastError() ) ) {
+			Subscribers::setStatus( array( (int) $subscriber['id'] ), 'bounced' );
+			return false;
 		}
 		\MeTransfers\Core\Outbox::enqueue( 'newsletter.confirm', 'newsletter.confirm.' . (int) $subscriber['id'] . '.' . (int) floor( time() / Subscribers::RESEND_SECONDS ), (int) $subscriber['id'] );
 		return false;
@@ -261,7 +271,14 @@ final class PublicController {
 		if ( ! $subscriber || 'pending' !== $subscriber['status'] ) {
 			return true;
 		}
+		if ( ! empty( $subscriber['confirmation_sent_at'] ) && strtotime( $subscriber['confirmation_sent_at'] . ' UTC' ) > time() - Subscribers::RESEND_SECONDS ) {
+			return true;
+		}
 		if ( ! Mailer::sendConfirmation( $subscriber ) ) {
+			if ( Mailer::isPermanentRecipientFailure( Mailer::lastError() ) ) {
+				Subscribers::setStatus( array( (int) $subscriber['id'] ), 'bounced' );
+				return true;
+			}
 			return false;
 		}
 		Subscribers::markConfirmationSent( (int) $subscriber['id'] );
@@ -272,15 +289,29 @@ final class PublicController {
 	 * admin-post: link of the confirmation email.
 	 */
 	public static function confirm() {
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- The HMAC token in the link authenticates the request.
-		$id    = isset( $_GET['s'] ) ? absint( $_GET['s'] ) : 0;
-		$token = isset( $_GET['t'] ) ? sanitize_text_field( wp_unslash( $_GET['t'] ) ) : '';
-		// phpcs:enable WordPress.Security.NonceVerification.Recommended
+		$post = 'POST' === ( $_SERVER['REQUEST_METHOD'] ?? '' );
+		// phpcs:disable WordPress.Security.NonceVerification -- The HMAC token in the link authenticates the request.
+		$source = $post ? $_POST : $_GET;
+		$id     = isset( $source['s'] ) ? absint( $source['s'] ) : 0;
+		$token  = isset( $source['t'] ) ? sanitize_text_field( wp_unslash( $source['t'] ) ) : '';
+		// phpcs:enable WordPress.Security.NonceVerification
 		$subscriber = Subscribers::find( $id );
 		$language   = Settings::language( $subscriber ? (string) $subscriber['language'] : 'es' );
-		$result     = Subscribers::confirm( $id, $token );
-		if ( 'invalid' === $result ) {
+		if ( ! $subscriber || ! Subscribers::verify( 'confirm', $subscriber, $token ) || ! in_array( $subscriber['status'], array( 'pending', 'subscribed' ), true ) ) {
 			self::page( 'es' === $language ? 'Enlace no válido' : 'Invalid link', 'es' === $language ? 'Este enlace de confirmación no es válido o ya no se puede usar.' : 'This confirmation link is not valid or can no longer be used.', $language );
+		}
+		// Antivirus and mailbox previewers open GET links automatically.
+		if ( ! $post && 'pending' === $subscriber['status'] ) {
+			$form = '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">'
+				. '<input type="hidden" name="action" value="mt_nl_confirm">'
+				. '<input type="hidden" name="s" value="' . (int) $id . '">'
+				. '<input type="hidden" name="t" value="' . esc_attr( $token ) . '">'
+				. '<button type="submit">' . esc_html( Settings::label( 'confirm', $language ) ) . '</button></form>';
+			self::page( Settings::text( 'confirm_subject', $language ), 'es' === $language ? 'Pulsa el botón para confirmar que quieres recibir nuestras novedades.' : 'Press the button to confirm you want to receive our news.', $language, $form );
+		}
+		$result = Subscribers::confirm( $id, $token );
+		if ( 'invalid' === $result ) {
+			self::page( 'es' === $language ? 'Enlace no válido' : 'Invalid link', 'es' === $language ? 'Este enlace ya no se puede usar.' : 'This link can no longer be used.', $language );
 		}
 		self::page( 'es' === $language ? '¡Suscripción confirmada!' : 'Subscription confirmed!', 'es' === $language ? 'Gracias. A partir de ahora recibirás nuestras ofertas y novedades.' : 'Thank you. From now on you will receive our offers and news.', $language );
 	}
@@ -336,6 +367,10 @@ final class PublicController {
 	 */
 	private static function page( $title, $message, $language, $form = '' ) {
 		nocache_headers();
+		// Signed tokens must not leak to external fonts or links via Referer.
+		header( 'Referrer-Policy: no-referrer' );
+		header( 'X-Content-Type-Options: nosniff' );
+		header( 'X-Frame-Options: DENY' );
 		header( 'Content-Type: text/html; charset=UTF-8' );
 		header( 'X-Robots-Tag: noindex, nofollow' );
 		status_header( 200 );

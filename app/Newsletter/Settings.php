@@ -91,9 +91,12 @@ final class Settings {
 	 * @return array<string, mixed>
 	 */
 	public static function all() {
-		$saved = get_option( self::OPTION, array() );
-		$saved = is_array( $saved ) ? $saved : array();
-		return array_merge( self::DEFAULTS, array_intersect_key( $saved, self::DEFAULTS ) ) + array( 'texts' => isset( $saved['texts'] ) && is_array( $saved['texts'] ) ? $saved['texts'] : array() );
+		$saved    = get_option( self::OPTION, array() );
+		$saved    = is_array( $saved ) ? $saved : array();
+		$settings = array_merge( self::DEFAULTS, array_intersect_key( $saved, self::DEFAULTS ) ) + array( 'texts' => isset( $saved['texts'] ) && is_array( $saved['texts'] ) ? $saved['texts'] : array() );
+		// Public signup always verifies ownership, including previously saved settings.
+		$settings['double_opt_in'] = true;
+		return $settings;
 	}
 
 	public static function get( $key ) {
@@ -152,7 +155,7 @@ final class Settings {
 			'delay'           => max( 3, min( 120, (int) ( $input['delay'] ?? self::DEFAULTS['delay'] ) ) ),
 			'dismiss_days'    => max( 1, min( 365, (int) ( $input['dismiss_days'] ?? self::DEFAULTS['dismiss_days'] ) ) ),
 			'frequency_hours' => max( 1, min( 720, (int) ( $input['frequency_hours'] ?? self::DEFAULTS['frequency_hours'] ) ) ),
-			'double_opt_in'   => ! empty( $input['double_opt_in'] ),
+			'double_opt_in'   => true,
 			'rate_per_hour'   => max( 10, min( 5000, (int) ( $input['rate_per_hour'] ?? self::DEFAULTS['rate_per_hour'] ) ) ),
 			'from_name'       => sanitize_text_field( (string) ( $input['from_name'] ?? '' ) ),
 			'from_email'      => is_email( $from_email ) ? $from_email : '',
