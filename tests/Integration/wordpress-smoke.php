@@ -324,7 +324,11 @@ set_current_screen( 'toplevel_page_mt-newsletter' );
 foreach ( array( 'renderSubscribers' => 'Newsletter · Suscriptores', 'renderCampaigns' => 'Newsletter · Campañas', 'renderImport' => 'Importar contactos', 'renderSettings' => 'Newsletter · Ajustes' ) as $nl_screen => $nl_title ) {
 	ob_start();
 	\MeTransfers\Newsletter\Admin::$nl_screen();
-	mt_wp_integration_assert( false !== strpos( (string) ob_get_clean(), $nl_title ), "The admin screen $nl_screen must render." );
+	$nl_html = (string) ob_get_clean();
+	mt_wp_integration_assert( false !== strpos( $nl_html, $nl_title ), "The admin screen $nl_screen must render." );
+	if ( in_array( $nl_screen, array( 'renderSubscribers', 'renderSettings' ), true ) ) {
+		mt_wp_integration_assert( ( 'renderSettings' === $nl_screen ) === ( false !== strpos( $nl_html, 'Añadir por lotes · cola manual' ) ), 'Manual batch signup must appear only in newsletter settings.' );
+	}
 }
 $_GET['subscriber'] = (string) $nl_id;
 ob_start();
