@@ -53,6 +53,7 @@ $tables = array(
 	'mt_newsletter_subscribers',
 	'mt_newsletter_campaigns',
 	'mt_newsletter_deliveries',
+	'mt_newsletter_manual_queue',
 );
 foreach ( $tables as $suffix ) {
 	$table = $wpdb->prefix . $suffix;
@@ -67,8 +68,8 @@ $succeeded = (int) $wpdb->get_var(
 		$journal
 	)
 );
-mt_wp_integration_assert( 14 === $succeeded, 'All fourteen discrete migrations must be journaled as succeeded.' );
-foreach ( array( '20260928_001_purge_retired_language_data', '20260929_001_single_maps_key', '20260929_002_address_cache_schema', '20261016_001_newsletter_schema' ) as $migration_id ) {
+mt_wp_integration_assert( 15 === $succeeded, 'All fifteen discrete migrations must be journaled as succeeded.' );
+foreach ( array( '20260928_001_purge_retired_language_data', '20260929_001_single_maps_key', '20260929_002_address_cache_schema', '20261016_001_newsletter_schema', '20261016_002_newsletter_manual_queue' ) as $migration_id ) {
 	$status = $wpdb->get_var(
 		$wpdb->prepare(
 			'SELECT status FROM %i WHERE migration_id = %s',
