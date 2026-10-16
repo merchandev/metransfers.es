@@ -12,7 +12,17 @@
 - La cola participa en la exportación y el borrado de datos personales. Nueva migración `20261016_002_newsletter_manual_queue`, esquema `6.12.0`.
 - Pruebas nuevas: `php tests/test-newsletter-manual.php` y escenarios WordPress/MariaDB sobre carga diferida, tandas, cron, borrado y privacidad.
 
-Versión actual del tema: **5.0.9**. El apartado «Añadir por lotes · cola manual» está cerrado por defecto y se despliega al pulsar su título. Alcance: módulo Newsletter, migraciones de sus tablas, pruebas y metadatos del tema. Los ajustes SMTP compartidos, reservas, pagos, DNS y servidor de producción no se modifican con este cambio.
+Versión actual del tema: **5.0.10**. El apartado «Añadir por lotes · cola manual» está cerrado por defecto y se despliega al pulsar su título. Alcance: módulo Newsletter, migraciones de sus tablas, pruebas y metadatos del tema. Los ajustes SMTP compartidos, reservas, pagos, DNS y servidor de producción no se modifican con este cambio.
+
+## Actualización 5.0.10: arranque y recuperación de campañas
+
+- La acción «Enviar» congela los destinatarios e intenta una primera tanda inmediatamente, sin esperar a WP-Cron. El método de bajo nivel `queue()` sigue disponible para encolar sin enviar.
+- La pantalla de campañas con correos pendientes comprueba la cola por AJAX cada 30 segundos. El trabajador autenticado exige permiso, nonce y POST, y limita los intentos automáticos a una tanda por minuto mediante el mismo bloqueo de base de datos que usa el cron. Conserva el límite de correos por hora y los reintentos con espera.
+- Este mecanismo también recupera campañas existentes si el cron no se ejecuta. Muestra el último error de una entrega pendiente y el límite horario cuando corresponde. Al terminar indica que se deben actualizar los contadores y revisar los fallos; aceptar por SMTP no acredita la llegada a la bandeja de entrada.
+- Si se cierra la pantalla, las tandas restantes siguen dependiendo del cron del servidor o de WP-Cron. No se configura el cron real del alojamiento desde el tema.
+- Las altas manuales conservan su cola separada de 12 a 98 cada seis horas. El trabajador de campañas no adelanta esas altas.
+- La cabecera del correo utiliza el PNG solicitado: `https://metransfers.es/wp-content/uploads/2026/03/MT-MeTransfers-2048x475.png`, con dimensiones y texto alternativo. El recurso respondió HTTP 200 con tipo image/png al comprobarlo. Los clientes de correo pueden bloquear imágenes externas.
+- SMTP tiene un tiempo de espera de 15 segundos para no mantener indefinidamente un intento pendiente; se restaura después del envío junto con las demás propiedades del transporte.
 
 ## Hallazgos
 
@@ -42,7 +52,7 @@ El SPF de `merchan.dev` autoriza explícitamente a Hostinger. Su aparente uso a 
 - La identidad por defecto del newsletter es MeTransfers y la dirección procede del remitente SMTP o su usuario, sin recurrir al correo administrativo del sitio.
 - Las visitas GET a confirmación muestran un formulario; únicamente el POST firmado confirma. Esto evita altas por previsualizadores y antivirus. Se conserva la baja POST RFC 8058 sin inicio de sesión.
 - Páginas de enlaces firmados con `Referrer-Policy: no-referrer`, protección contra marcos y `nosniff`. Altas públicas limitadas a POST.
-- Correos con marca en texto en vez del logotipo remoto roto y sin hoja externa de fuentes. La confirmación omite el reclamo promocional. Se mantiene HTML con idioma y versión en texto plano.
+- Correos con el PNG de marca verificado y sin hoja externa de fuentes. La confirmación omite el reclamo promocional. Se mantiene HTML con idioma y versión en texto plano.
 - Ajustes de newsletter muestran errores de configuración y avisan si el dominio del remitente difiere del sitio; no presentan una configuración local completa como autenticación ya verificada.
 
 ## Comprobaciones pendientes en producción

@@ -232,13 +232,23 @@ $campaign_id = $nl_campaigns::save(
 mt_wp_integration_assert( false === strpos( $nl_campaigns::find( $campaign_id )['body'], '<script' ), 'Campaign content must be filtered with wp_kses_post.' );
 $audience               = $nl_campaigns::audienceCount( 'subscribed', '' );
 $GLOBALS['mt_nl_mails'] = array();
-mt_wp_integration_assert( $audience === $nl_campaigns::queue( $campaign_id ) && false === $nl_campaigns::queue( $campaign_id ), 'Queuing must freeze the audience once, even with a double click.' );
+mt_wp_integration_assert( $audience === $nl_campaigns::start( $campaign_id ) && false === $nl_campaigns::start( $campaign_id ), 'Starting must freeze the audience once, even with a double click.' );
+mt_wp_integration_assert( 1 === count( $nl_mails_to( $nl_email ) ), 'Starting a campaign must attempt its first batch immediately, without executing WP-Cron.' );
+mt_wp_integration_assert( 0 === $nl_campaigns::dispatch( true ), 'Concurrent admin polling must respect the dispatch interval.' );
 $nl_campaigns::dispatch();
 $campaign_mail = $nl_mails_to( $nl_email );
 mt_wp_integration_assert( 1 === count( $campaign_mail ) && 'Hola Ana María' === $campaign_mail[0]['subject'] && false !== strpos( $campaign_mail[0]['message'], 'Oferta para Ana María.' ), 'The campaign must reach the subscriber, personalised. Mailer: ' . \MeTransfers\Newsletter\Mailer::lastError() );
 mt_wp_integration_assert( false !== strpos( implode( "\n", (array) $campaign_mail[0]['headers'] ), 'List-Unsubscribe-Post: List-Unsubscribe=One-Click' ) && false !== strpos( $campaign_mail[0]['message'], esc_url( $nl_subscribers::unsubscribeUrl( $nl_subscribers::find( $nl_id ) ) ) ), 'Every campaign email must carry the one-click unsubscribe header and link.' );
 mt_wp_integration_assert( ! $nl_mails_to( 'import-' . $nl_tag . '@example.test' ), 'Pending contacts must not receive a campaign for subscribers.' );
 mt_wp_integration_assert( 'sent' === $nl_campaigns::find( $campaign_id )['status'] && $audience === (int) $nl_campaigns::find( $campaign_id )['sent'], 'The campaign must close as sent with its counters.' );
+
+$recovery_campaign = $nl_campaigns::save( array( 'subject' => 'Recovery without cron', 'body' => '<p>Recovery</p>' ) );
+$nl_campaigns::queue( $recovery_campaign );
+$GLOBALS['mt_nl_mails'] = array();
+mt_wp_integration_assert( 0 === $nl_campaigns::dispatch( true ) && ! $nl_mails_to( $nl_email ), 'Admin polling must not consume another batch inside its minimum interval.' );
+update_option( $nl_campaigns::LAST_RUN, time() - $nl_campaigns::ADMIN_INTERVAL - 1, false );
+$nl_campaigns::dispatch( true );
+mt_wp_integration_assert( 1 === count( $nl_mails_to( $nl_email ) ) && 'sent' === $nl_campaigns::find( $recovery_campaign )['status'], 'An overdue existing campaign must progress from the authenticated worker without running WP-Cron.' );
 
 $second = $nl_campaigns::save(
 	array(
@@ -249,7 +259,8 @@ $second = $nl_campaigns::save(
 $nl_campaigns::queue( $second );
 mt_wp_integration_assert( 'unsubscribed' === $nl_subscribers::unsubscribe( $nl_id, $nl_subscribers::token( 'unsubscribe', $nl_subscribers::find( $nl_id ) ) ), 'The unsubscribe link must unsubscribe.' );
 $GLOBALS['mt_nl_mails'] = array();
-$nl_campaigns::dispatch();
+update_option( $nl_campaigns::LAST_RUN, time() - $nl_campaigns::ADMIN_INTERVAL - 1, false );
+$nl_campaigns::dispatch( true );
 mt_wp_integration_assert( ! $nl_mails_to( $nl_email ) && $nl_campaigns::deliveryCounts( $second )['skipped'] >= 1, 'Someone who unsubscribed during a campaign must not receive it.' );
 mt_wp_integration_assert( 'sent' === $nl_campaigns::find( $second )['status'], 'A campaign whose remaining recipients all left must still close instead of staying in «Enviando».' );
 $blocked = \MeTransfers\Newsletter\Importer::import( array( array( $nl_email ) ), 'subscribed', 'es', true, 'test' );
@@ -366,8 +377,8 @@ foreach ( array_keys( $nl_smtp_fixture ) as $nl_smtp_option ) {
 	remove_filter( 'pre_option_' . $nl_smtp_option, $nl_smtp_filter, 10 );
 }
 $wpdb->query( $wpdb->prepare( 'DELETE FROM %i WHERE email LIKE %s', $wpdb->prefix . 'mt_newsletter_subscribers', '%' . $wpdb->esc_like( $nl_tag ) . '@example.test' ) );
-$wpdb->query( $wpdb->prepare( 'DELETE FROM %i WHERE campaign_id IN (%d, %d, %d)', $nl_deliveries, $campaign_id, $second, $third ) );
-$wpdb->query( $wpdb->prepare( 'DELETE FROM %i WHERE id IN (%d, %d, %d)', $wpdb->prefix . 'mt_newsletter_campaigns', $campaign_id, $second, $third ) );
+$wpdb->query( $wpdb->prepare( 'DELETE FROM %i WHERE campaign_id IN (%d, %d, %d, %d)', $nl_deliveries, $campaign_id, $second, $third, $recovery_campaign ) );
+$wpdb->query( $wpdb->prepare( 'DELETE FROM %i WHERE id IN (%d, %d, %d, %d)', $wpdb->prefix . 'mt_newsletter_campaigns', $campaign_id, $second, $third, $recovery_campaign ) );
 
 $public_query_vars = apply_filters( 'query_vars', array() );
 mt_wp_integration_assert( in_array( 'mt_lang', $public_query_vars, true ), 'The language query variable must be public.' );

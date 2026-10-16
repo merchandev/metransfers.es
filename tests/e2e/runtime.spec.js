@@ -496,3 +496,45 @@ test('footer newsletter block speaks English on English pages', async ({ page })
   await expect(block.getByRole('button', { name: 'Subscribe' })).toBeVisible();
   await expect(block.getByRole('link', { name: 'privacy policy' })).toHaveAttribute('href', '/en/politica-de-privacidad/');
 });
+
+test('admin newsletter worker progresses pending batches and stops when the queue drains', async ({ page }) => {
+  await page.clock.install();
+  let requests = 0;
+  await page.route('**/wp-admin/admin-ajax.php', async route => {
+    const body = new URLSearchParams(route.request().postData());
+    expect(body.get('action')).toBe('mt_nl_dispatch');
+    expect(body.get('nonce')).toBe('admin-fixture');
+    expect(route.request().method()).toBe('POST');
+    requests += 1;
+    await route.fulfill({ json: { success: true, data: { sent: 1, pending: requests === 1 ? 1 : 0, error: '' } } });
+  });
+  await page.goto('/tests/e2e/fixtures/i18n.html');
+  await page.setContent('<div data-mt-nl-worker data-url="/wp-admin/admin-ajax.php" data-nonce="admin-fixture"><p data-mt-nl-worker-status role="status"></p></div>');
+  await page.addScriptTag({ url: '/assets/js/newsletter-admin.js' });
+  await expect(page.getByRole('status')).toContainText('1 pendientes');
+  await page.clock.fastForward(30000);
+  await expect(page.getByRole('status')).toContainText('Procesamiento terminado');
+  expect(requests).toBe(2);
+  await page.clock.fastForward(60000);
+  expect(requests).toBe(2);
+});
+
+test('admin newsletter worker recovers from request errors and renders SMTP errors as text', async ({ page }) => {
+  await page.clock.install();
+  let requests = 0;
+  await page.route('**/wp-admin/admin-ajax.php', async route => {
+    requests += 1;
+    if (requests === 1) {
+      await route.fulfill({ status: 403, json: { success: false } });
+      return;
+    }
+    await route.fulfill({ json: { success: true, data: { sent: 0, pending: 1, error: '<img src=x onerror=alert(1)> SMTP refused' } } });
+  });
+  await page.goto('/tests/e2e/fixtures/i18n.html');
+  await page.setContent('<div data-mt-nl-worker data-url="/wp-admin/admin-ajax.php" data-nonce="admin-fixture"><p data-mt-nl-worker-status role="status"></p></div>');
+  await page.addScriptTag({ url: '/assets/js/newsletter-admin.js' });
+  await expect(page.getByRole('status')).toContainText('No se pudo comprobar');
+  await page.clock.fastForward(30000);
+  await expect(page.getByRole('status')).toContainText('SMTP refused');
+  await expect(page.getByRole('status').locator('img')).toHaveCount(0);
+});

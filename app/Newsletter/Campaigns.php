@@ -23,12 +23,14 @@ final class Campaigns {
 		'subscribed,pending' => 'Suscritos y confirmación a pendientes',
 	);
 
-	const CRON_HOOK     = 'mt_newsletter_dispatch';
-	const CRON_SCHEDULE = 'mt_every_five_minutes';
-	const MAX_ATTEMPTS  = 3;
-	const BATCH_LIMIT   = 100;
-	const TIME_BUDGET   = 25;
-	const STALE_MINUTES = 15;
+	const CRON_HOOK      = 'mt_newsletter_dispatch';
+	const CRON_SCHEDULE  = 'mt_every_five_minutes';
+	const MAX_ATTEMPTS   = 3;
+	const BATCH_LIMIT    = 100;
+	const TIME_BUDGET    = 25;
+	const STALE_MINUTES  = 15;
+	const LAST_RUN       = 'mt_newsletter_last_dispatch';
+	const ADMIN_INTERVAL = 60;
 
 	public function register() {
 		add_filter( 'cron_schedules', array( __CLASS__, 'cronSchedules' ) );
@@ -187,12 +189,17 @@ final class Campaigns {
 	 *
 	 * @return int Emails sent in this run.
 	 */
-	public static function dispatch() {
+	public static function dispatch( $respect_interval = false ) {
 		global $wpdb;
 		$lock = $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 0)', self::lockName() ) );
 		if ( '1' !== (string) $lock ) {
 			return 0;
 		}
+		if ( $respect_interval && (int) get_option( self::LAST_RUN, 0 ) > time() - self::ADMIN_INTERVAL ) {
+			$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', self::lockName() ) );
+			return 0;
+		}
+		update_option( self::LAST_RUN, time(), false );
 
 		$sent = 0;
 		// Every running campaign is recounted, including one whose remaining
@@ -248,6 +255,21 @@ final class Campaigns {
 			self::scheduleSoon();
 		}
 		return $sent;
+	}
+
+	/** Explicit send starts one bounded batch immediately, even when WP-Cron cannot run. */
+	public static function start( $id ) {
+		$queued = self::queue( $id );
+		if ( false !== $queued && $queued > 0 ) {
+			self::dispatch();
+		}
+		return $queued;
+	}
+
+	/** The last SMTP/local configuration error of an unfinished delivery. */
+	public static function pendingError() {
+		global $wpdb;
+		return (string) $wpdb->get_var( $wpdb->prepare( "SELECT d.last_error FROM %i d INNER JOIN %i c ON c.id = d.campaign_id WHERE d.status = 'pending' AND c.status = 'sending' AND d.last_error <> '' ORDER BY d.id DESC LIMIT 1", self::deliveriesTable(), self::table() ) );
 	}
 
 	/**
