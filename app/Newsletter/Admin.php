@@ -45,7 +45,7 @@ final class Admin {
 		'locked'      => 'Esta campaña ya se está enviando o se envió: no se puede modificar. Duplícala para crear otra.',
 		'test_sent'   => 'Correo de prueba enviado a %s.',
 		'test_failed' => 'No se pudo enviar la prueba: %s',
-		'queued'      => 'Campaña en cola: %d destinatarios. Se envía poco a poco respetando el límite por hora.',
+		'queued'      => 'Campaña iniciada: %d destinatarios. Consulta abajo los enviados, pendientes y errores.',
 		'empty'       => 'La campaña necesita asunto y contenido.',
 		'no_audience' => 'No hay suscriptores en esa audiencia.',
 		'cancelled'   => 'Campaña cancelada. Los correos que faltaban no se enviarán.',
@@ -59,6 +59,7 @@ final class Admin {
 
 	public function register() {
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
+		add_action( 'wp_ajax_mt_nl_dispatch', array( __CLASS__, 'ajaxDispatch' ) );
 		foreach ( self::ACTIONS as $action => $method ) {
 			add_action( 'admin_post_' . $action, array( __CLASS__, $method ) );
 		}
@@ -500,13 +501,23 @@ final class Admin {
 	private static function renderQueueStatus() {
 		$pending = Campaigns::pendingCount();
 		$next    = wp_next_scheduled( Campaigns::CRON_HOOK );
-		echo '<div class="mt-nl-card mt-nl-queue"><p><strong>Cola de envío:</strong> ' . (int) $pending . ' correos pendientes · límite ' . (int) Settings::get( 'rate_per_hour' ) . ' por hora';
+		echo '<div class="mt-nl-card mt-nl-queue"' . ( $pending ? ' data-mt-nl-worker data-url="' . esc_url( admin_url( 'admin-ajax.php' ) ) . '" data-nonce="' . esc_attr( wp_create_nonce( 'mt_nl_dispatch' ) ) . '"' : '' ) . '><p><strong>Cola de envío:</strong> ' . (int) $pending . ' correos pendientes · límite ' . (int) Settings::get( 'rate_per_hour' ) . ' por hora';
 		echo $next ? ' · próxima tanda ' . esc_html( wp_date( 'H:i', $next ) ) : '';
 		echo '</p>';
 		if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) {
 			echo '<p class="description">WP-Cron está desactivado en wp-config.php: asegúrate de que el hosting ejecuta <code>wp-cron.php</code> cada pocos minutos, o pulsa «Procesar ahora».</p>';
 		}
 		if ( $pending ) {
+			if ( $next && $next < time() - 2 * MINUTE_IN_SECONDS ) {
+				echo '<p class="description">La tarea programada acumula retraso. Esta pantalla intentará recuperar la cola sin depender del cron.</p>';
+			}
+			echo '<p data-mt-nl-worker-status role="status" aria-live="polite">La cola se comprueba automáticamente mientras esta pantalla permanezca abierta.</p>';
+			$error = Campaigns::pendingError();
+			if ( '' !== $error ) {
+				echo '<p class="mt-nl-bad">Último error de envío: ' . esc_html( $error ) . '</p>';
+			}
+			$script = '/assets/js/newsletter-admin.js';
+			wp_enqueue_script( 'mt-newsletter-admin', get_template_directory_uri() . $script, array(), (string) filemtime( get_template_directory() . $script ), true );
 			echo '<p><a class="button" href="' . esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=mt_nl_process' ), 'mt_nl_process' ) ) . '">Procesar ahora una tanda</a></p>';
 		}
 		echo '</div>';
@@ -648,7 +659,7 @@ final class Admin {
 			if ( 0 === Campaigns::audienceCount( $campaign['audience_status'], $campaign['audience_language'] ) ) {
 				self::redirect( $edit, 'no_audience' );
 			}
-			$queued = Campaigns::queue( $saved );
+			$queued = Campaigns::start( $saved );
 			if ( false === $queued ) {
 				self::redirect( admin_url( 'admin.php?page=' . self::CAMPAIGNS . '&view=' . $saved ), 'locked' );
 			}
@@ -709,6 +720,25 @@ final class Admin {
 		self::guard( 'mt_nl_process' );
 		$sent = Campaigns::dispatch();
 		self::redirect( admin_url( 'admin.php?page=' . self::CAMPAIGNS ), 'processed', $sent );
+	}
+
+	/** Authenticated recovery path: no public endpoint and no dependence on loopback cron. */
+	public static function ajaxDispatch() {
+		self::guard();
+		check_ajax_referer( 'mt_nl_dispatch', 'nonce' );
+		if ( 'POST' !== ( $_SERVER['REQUEST_METHOD'] ?? '' ) ) {
+			wp_send_json_error( array( 'message' => 'Método no permitido.' ), 405 );
+		}
+		$sent    = Campaigns::dispatch( true );
+		$pending = Campaigns::pendingCount();
+		wp_send_json_success(
+			array(
+				'sent'    => $sent,
+				'pending' => $pending,
+				'error'   => Campaigns::pendingError(),
+				'message' => $pending && 0 === Campaigns::allowance() ? 'Límite horario alcanzado. La cola continuará cuando haya cupo.' : '',
+			)
+		);
 	}
 
 	// ── Importar ──────────────────────────────────────────────────────────

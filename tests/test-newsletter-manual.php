@@ -26,6 +26,8 @@ namespace {
 	function wp_clear_scheduled_hook( $hook ) { unset( $GLOBALS['manual_cron'][$hook] ); }
 	function current_user_can( $cap ) { return $GLOBALS['manual_can'] ?? true; }
 	function check_admin_referer( $nonce ) { if ( ! ( $GLOBALS['manual_nonce'] ?? true ) ) { throw new \RuntimeException( 'nonce_rejected' ); } }
+	function check_ajax_referer( ...$args ) { check_admin_referer( 'mt_nl_dispatch' ); }
+	function wp_send_json_error( $data, $status = 400 ) { throw new \RuntimeException( 'json_error_' . $status ); }
 	function wp_die( ...$args ) { throw new \RuntimeException( 'access_denied' ); }
 	function wp_safe_redirect( $url ) { throw new \RuntimeException( $url ); }
 	function wp_get_current_user() { return (object) array( 'user_login' => 'test-admin' ); }
@@ -137,10 +139,15 @@ namespace {
 	$_POST = array( 'delete_id' => $organic['subscriber']['id'] );
 	try { Admin::handleBulk(); } catch ( \RuntimeException $denied ) { assert_nl( 'nonce_rejected' === $denied->getMessage(), 'Deletion must require a valid nonce.' ); }
 	assert_nl( null !== Subs::find( $organic['subscriber']['id'] ), 'Rejected requests cannot delete subscribers.' );
+	try { Admin::ajaxDispatch(); } catch ( \RuntimeException $denied ) { assert_nl( 'nonce_rejected' === $denied->getMessage(), 'The AJAX worker requires a valid nonce.' ); }
 	$GLOBALS['manual_nonce'] = true;
 	$GLOBALS['manual_can'] = false;
 	try { Admin::handleBulk(); } catch ( \RuntimeException $denied ) { assert_nl( 'access_denied' === $denied->getMessage(), 'Deletion must require newsletter capability.' ); }
+	try { Admin::ajaxDispatch(); } catch ( \RuntimeException $denied ) { assert_nl( 'access_denied' === $denied->getMessage(), 'The AJAX worker must reject users without newsletter capability.' ); }
 	$GLOBALS['manual_can'] = true;
+	$_SERVER['REQUEST_METHOD'] = 'GET';
+	try { Admin::ajaxDispatch(); } catch ( \RuntimeException $denied ) { assert_nl( 'json_error_405' === $denied->getMessage(), 'The AJAX worker must reject GET requests.' ); }
+	$_SERVER['REQUEST_METHOD'] = 'POST';
 	$db->lock = false;
 	assert_nl( 0 === Queue::dispatch() && false === Subs::delete( array( $organic['subscriber']['id'] ) ), 'A busy manual worker must prevent concurrent releases and conflicting deletion.' );
 	$db->lock = true;

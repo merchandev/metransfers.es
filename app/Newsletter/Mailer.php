@@ -186,13 +186,14 @@ final class Mailer {
 	public static function finishMessage( $mailer ) {
 		// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- PHPMailer properties.
 		self::$transport = $mailer;
-		foreach ( array( 'Mailer', 'Host', 'Port', 'SMTPAuth', 'Username', 'Password', 'SMTPSecure', 'SMTPAutoTLS', 'SMTPOptions', 'SMTPDebug', 'SMTPKeepAlive', 'Sender', 'From', 'FromName', 'AltBody', 'DKIM_extraHeaders' ) as $property ) {
+		foreach ( array( 'Mailer', 'Host', 'Port', 'SMTPAuth', 'Username', 'Password', 'SMTPSecure', 'SMTPAutoTLS', 'SMTPOptions', 'SMTPDebug', 'SMTPKeepAlive', 'Timeout', 'Sender', 'From', 'FromName', 'AltBody', 'DKIM_extraHeaders' ) as $property ) {
 			self::$transport_state[ $property ] = $mailer->$property;
 		}
 		NotificationService::configureSmtp( $mailer );
 		$mailer->SMTPAutoTLS        = true;
 		$mailer->SMTPDebug          = 0;
 		$mailer->SMTPKeepAlive      = false;
+		$mailer->Timeout            = 15;
 		$mailer->SMTPOptions['ssl'] = array_merge(
 			$mailer->SMTPOptions['ssl'] ?? array(),
 			array(

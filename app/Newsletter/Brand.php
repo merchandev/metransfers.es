@@ -21,6 +21,7 @@ final class Brand {
 	const FONT_TITLE = "'Outfit', 'Segoe UI', Arial, sans-serif";
 	const FONT_BODY  = "'Inter', 'Segoe UI', Arial, sans-serif";
 	const FONTS_URL  = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@600;700&display=swap';
+	const EMAIL_LOGO = 'https://metransfers.es/wp-content/uploads/2026/03/MT-MeTransfers-2048x475.png';
 
 	/**
 	 * The white logo of the site header (Appearance → Customize → Logo),
@@ -54,7 +55,7 @@ final class Brand {
 	public static function header( $eyebrow = '', $email = false ) {
 		return '<tr><td style="background:' . self::NAVY . ';padding:26px 24px 22px;text-align:center">'
 			. ( $email
-				? '<p style="margin:0;color:#ffffff;font-family:' . esc_attr( self::FONT_TITLE ) . ';font-size:24px;font-weight:700">MeTransfers</p>'
+				? '<img src="' . esc_url( self::EMAIL_LOGO ) . '" width="190" height="44" alt="MeTransfers" style="display:inline-block;width:190px;max-width:100%;height:auto;border:0;color:#ffffff;font-family:' . esc_attr( self::FONT_TITLE ) . ';font-size:24px;font-weight:700">'
 				: '<img src="' . esc_url( self::logoUrl() ) . '" width="190" alt="MeTransfers" style="display:inline-block;width:190px;max-width:70%;height:auto;border:0;color:#ffffff;font-family:' . esc_attr( self::FONT_TITLE ) . ';font-size:24px;font-weight:700">' )
 			. ( '' !== $eyebrow ? '<p style="margin:14px 0 0;color:' . self::AMBER . ';font-family:' . esc_attr( self::FONT_BODY ) . ';font-size:12px;letter-spacing:2px;text-transform:uppercase">' . esc_html( $eyebrow ) . '</p>' : '' )
 			. '</td></tr>';
