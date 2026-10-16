@@ -82,6 +82,7 @@ jobs:
           php tests/test-newsletter.php
           php tests/test-newsletter-links.php
           php tests/test-newsletter-manual.php
+          php tests/test-newsletter-monitor.php
           php tests/test-booking-policies.php
           php tests/test-redsys-gateway.php
           php tests/test-hardening-phase1.php

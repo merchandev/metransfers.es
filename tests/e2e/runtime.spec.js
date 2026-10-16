@@ -538,3 +538,66 @@ test('admin newsletter worker recovers from request errors and renders SMTP erro
   await expect(page.getByRole('status')).toContainText('SMTP refused');
   await expect(page.getByRole('status').locator('img')).toHaveCount(0);
 });
+
+async function mountWelcomeMonitor(page) {
+  await page.goto('/tests/e2e/fixtures/i18n.html');
+  await page.setContent('<section data-mt-welcome-monitor data-url="/wp-admin/admin-ajax.php" data-nonce="monitor-fixture" data-remaining="21600"><strong data-nl-count="manual_waiting">0</strong><strong data-nl-count="mail_processing">0</strong><strong data-nl-count="mail_sent">0</strong><span data-nl-next></span><span data-nl-last></span><span data-nl-countdown></span><button data-nl-refresh>Actualizar ahora</button><span data-nl-monitor-status role="status"></span><table><tbody data-nl-monitor-rows></tbody></table></section>');
+  await page.addScriptTag({ url: '/assets/js/newsletter-monitor.js' });
+}
+
+function welcomeSnapshot(waiting = 11015, state = 'En cola / esperando reintento') {
+  return { counts: { manual_waiting: waiting, mail_processing: 0, mail_sent: 0 }, next_manual: '17/10/2026 00:30:00', remaining_seconds: 21600, last_batch: 'Sin tanda anterior', updated_at: '16/10/2026 18:30:00', recent: [{ email: 'contact@example.test', state, attempts: 0, sent_at: '—', retry_at: '17/10/2026 00:30:00', error: '' }] };
+}
+
+test('welcome monitor polls real status every ten seconds and supports manual refresh without sending mail', async ({ page }) => {
+  await page.clock.install();
+  let requests = 0;
+  await page.route('**/wp-admin/admin-ajax.php', async route => {
+    const body = new URLSearchParams(route.request().postData());
+    expect(body.get('action')).toBe('mt_nl_welcome_status');
+    expect(body.get('nonce')).toBe('monitor-fixture');
+    expect(route.request().method()).toBe('POST');
+    requests += 1;
+    const data = welcomeSnapshot(11016 - requests, requests === 1 ? 'En cola / esperando reintento' : 'Enviándose');
+    if (requests >= 2) data.counts.mail_processing = 1;
+    await route.fulfill({ json: { success: true, data } });
+  });
+  await mountWelcomeMonitor(page);
+  await expect(page.locator('[data-nl-count="manual_waiting"]')).toHaveText('11015');
+  await expect(page.locator('[data-nl-monitor-rows]')).toContainText('En cola / esperando reintento');
+  await page.clock.fastForward(3000);
+  await expect(page.locator('[data-nl-countdown]')).toContainText('5 h 59 min 57 s');
+  expect(requests).toBe(1);
+  await page.clock.fastForward(7000);
+  await expect(page.locator('[data-nl-count="mail_processing"]')).toHaveText('1');
+  await expect(page.locator('[data-nl-monitor-rows]')).toContainText('Enviándose');
+  await page.getByRole('button', { name: 'Actualizar ahora' }).click();
+  await expect(page.locator('[data-nl-count="manual_waiting"]')).toHaveText('11013');
+  expect(requests).toBe(3);
+});
+
+test('welcome monitor retains its last counters on failure and escapes server error text', async ({ page }) => {
+  await page.clock.install();
+  let requests = 0;
+  await page.route('**/wp-admin/admin-ajax.php', async route => {
+    requests += 1;
+    if (requests === 2) {
+      await route.fulfill({ status: 503, json: { success: false } });
+      return;
+    }
+    const data = welcomeSnapshot(7);
+    data.remaining_seconds = 1;
+    data.recent[0].error = '<img src=x onerror=alert(1)> SMTP refused';
+    await route.fulfill({ json: { success: true, data } });
+  });
+  await mountWelcomeMonitor(page);
+  await expect(page.locator('[data-nl-count="manual_waiting"]')).toHaveText('7');
+  await expect(page.locator('[data-nl-monitor-rows]')).toContainText('SMTP refused');
+  await expect(page.locator('[data-nl-monitor-rows] img')).toHaveCount(0);
+  await page.clock.fastForward(1000);
+  await expect(page.locator('[data-nl-countdown]')).toContainText('esperando ejecución del cron');
+  await page.clock.fastForward(9000);
+  await expect(page.getByRole('status')).toContainText('Se conservan los últimos datos');
+  await expect(page.locator('[data-nl-count="manual_waiting"]')).toHaveText('7');
+  await expect(page.getByRole('button', { name: 'Actualizar ahora' })).toBeEnabled();
+});
