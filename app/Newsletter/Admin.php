@@ -123,7 +123,6 @@ final class Admin {
 		echo '<button class="button">Filtrar</button></form>';
 
 		self::renderAddForm();
-		self::renderWelcomeMonitor();
 
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" onsubmit="return this.elements.namedItem(\'bulk\').value!==\'delete\'||confirm(\'¿Eliminar los suscriptores seleccionados y su historial? No se puede deshacer.\')">';
 		echo '<input type="hidden" name="action" value="mt_nl_bulk">';
@@ -873,6 +872,7 @@ final class Admin {
 		self::notice();
 		self::styles();
 		self::renderManualQueue();
+		self::renderWelcomeMonitor();
 
 		$errors = Mailer::configurationErrors();
 		echo '<div class="mt-nl-card"><p><strong>Servidor de correo:</strong> ' . ( ! $errors ? 'Configuración local SMTP completa, con cifrado obligatorio. Falta verificar la autenticación en un correo recibido.' : '<span class="mt-nl-bad">Envío del newsletter bloqueado.</span> Revisa las credenciales, el remitente, el puerto y el cifrado SMTP en Reservas → Ajustes Generales.' ) . '</p>';
