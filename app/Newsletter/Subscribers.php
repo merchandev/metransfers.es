@@ -73,6 +73,14 @@ final class Subscribers {
 		$pages    = self::sanitizePages( $data['pages'] ?? array() );
 		$language = Settings::language( (string) ( $data['language'] ?? 'es' ) );
 		$existing = self::findByEmail( $email );
+		// A public request must never reactivate a mailbox suppressed for bouncing.
+		if ( $existing && 'bounced' === $existing['status'] ) {
+			return array(
+				'result'            => 'bounced',
+				'subscriber'        => $existing,
+				'send_confirmation' => false,
+			);
+		}
 
 		if ( ! $existing ) {
 			$inserted = $wpdb->insert(

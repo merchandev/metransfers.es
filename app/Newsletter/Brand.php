@@ -51,9 +51,11 @@ final class Brand {
 	/**
 	 * Header band: logo on navy, as the site header; an optional amber eyebrow.
 	 */
-	public static function header( $eyebrow = '' ) {
+	public static function header( $eyebrow = '', $email = false ) {
 		return '<tr><td style="background:' . self::NAVY . ';padding:26px 24px 22px;text-align:center">'
-			. '<img src="' . esc_url( self::logoUrl() ) . '" width="190" alt="MeTransfers" style="display:inline-block;width:190px;max-width:70%;height:auto;border:0;color:#ffffff;font-family:' . esc_attr( self::FONT_TITLE ) . ';font-size:24px;font-weight:700">'
+			. ( $email
+				? '<p style="margin:0;color:#ffffff;font-family:' . esc_attr( self::FONT_TITLE ) . ';font-size:24px;font-weight:700">MeTransfers</p>'
+				: '<img src="' . esc_url( self::logoUrl() ) . '" width="190" alt="MeTransfers" style="display:inline-block;width:190px;max-width:70%;height:auto;border:0;color:#ffffff;font-family:' . esc_attr( self::FONT_TITLE ) . ';font-size:24px;font-weight:700">' )
 			. ( '' !== $eyebrow ? '<p style="margin:14px 0 0;color:' . self::AMBER . ';font-family:' . esc_attr( self::FONT_BODY ) . ';font-size:12px;letter-spacing:2px;text-transform:uppercase">' . esc_html( $eyebrow ) . '</p>' : '' )
 			. '</td></tr>';
 	}

@@ -39,9 +39,22 @@ function get_theme_mod( $name ) { return ''; }
 function get_template_directory_uri() { return 'https://metransfers.test/wp-content/themes/metransfers'; }
 function get_transient( $key ) { return $GLOBALS['mt_transients'][ $key ]['v'] ?? false; }
 function set_transient( $key, $value, $ttl ) { $GLOBALS['mt_transients'][ $key ] = array( 'v' => $value, 'ttl' => $ttl ); return true; }
-function add_action() {}
-function remove_action() {}
+function add_action( $hook, $callback, $priority = 10 ) { $GLOBALS['mt_hooks'][ $hook ][ $priority ][] = $callback; }
+function remove_action( $hook, $callback, $priority = 10 ) { $GLOBALS['mt_hooks'][ $hook ][ $priority ] = array_filter( $GLOBALS['mt_hooks'][ $hook ][ $priority ] ?? array(), static fn( $registered ) => $registered !== $callback ); }
+class Fake_Newsletter_Mailer {
+	public $Mailer = 'mail', $Host = '', $Port = 25, $SMTPAuth = false, $Username = '', $Password = '', $SMTPSecure = '', $SMTPAutoTLS = false, $SMTPOptions = array( 'ssl' => array( 'verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true ) ), $SMTPDebug = 2, $SMTPKeepAlive = true, $Sender = 'previous@example.com', $From = 'previous@example.com', $FromName = 'Previous', $AltBody = 'Previous body', $DKIM_extraHeaders = array( 'X-Custom' );
+	public function isSMTP() { $this->Mailer = 'smtp'; }
+}
 function wp_mail( $to, $subject, $message, $headers ) {
+	if ( isset( $GLOBALS['mt_transport'] ) ) {
+		$hooks = $GLOBALS['mt_hooks']['phpmailer_init'] ?? array();
+		ksort( $hooks );
+		foreach ( $hooks as $callbacks ) {
+			foreach ( $callbacks as $callback ) { $callback( $GLOBALS['mt_transport'] ); }
+		}
+		$GLOBALS['mt_sent_transport'] = clone $GLOBALS['mt_transport'];
+	}
+	if ( ! empty( $GLOBALS['mt_mail_throw'] ) ) { throw new RuntimeException( 'Simulated transport exception' ); }
 	$GLOBALS['mt_mails'][] = compact( 'to', 'subject', 'message', 'headers' );
 	return $GLOBALS['mt_mail_ok'];
 }
@@ -118,6 +131,7 @@ class Fake_Newsletter_Db {
 }
 
 require_once __DIR__ . '/../app/Core/Settings.php';
+require_once __DIR__ . '/../app/Notifications/NotificationService.php';
 foreach ( array( 'Brand', 'Settings', 'Subscribers', 'Mailer', 'Campaigns', 'Importer', 'PublicController' ) as $class ) {
 	require_once __DIR__ . '/../app/Newsletter/' . $class . '.php';
 }
@@ -157,11 +171,14 @@ $clean = Settings::sanitize(
 		),
 	)
 );
-assert_nl( 3 === $clean['delay'] && 5000 === $clean['rate_per_hour'] && '' === $clean['from_email'] && false === $clean['double_opt_in'], 'Settings must be clamped and an invalid sender dropped.' );
+assert_nl( 3 === $clean['delay'] && 5000 === $clean['rate_per_hour'] && '' === $clean['from_email'] && true === $clean['double_opt_in'], 'Settings must be clamped, an invalid sender dropped and double opt-in enforced.' );
 assert_nl( "/contacto/\n/gracias/" === $clean['excluded_paths'], 'Excluded paths must be normalised to /path/.' );
 assert_nl( array( 'es' => array( 'title' => 'Descuentos para ti' ) ) === $clean['texts'], 'Only texts that differ from the default must be stored.' );
 $GLOBALS['mt_options'][ Settings::OPTION ] = $clean;
 assert_nl( 'Descuentos para ti' === Settings::text( 'title', 'es' ) && Settings::TEXTS['en']['title'] === Settings::text( 'title', 'en' ), 'Custom texts must apply per language, falling back to the default.' );
+$GLOBALS['mt_options'][ Settings::OPTION ] = array();
+$GLOBALS['mt_options'][ Settings::OPTION ] = array( 'double_opt_in' => false );
+assert_nl( true === Settings::get( 'double_opt_in' ), 'Previously saved settings cannot bypass public ownership verification.' );
 $GLOBALS['mt_options'][ Settings::OPTION ] = array();
 
 // 2. Visited pages: only this site, clipped, the last 30.
@@ -207,10 +224,20 @@ assert_nl( false === strpos( $rendered['html'], '<script>alert' ) && false !== s
 assert_nl( false === strpos( $rendered['subject'], "\n" ) && false === strpos( $rendered['subject'], "\r" ), 'A subject must stay one header line.' );
 assert_nl( false !== strpos( $rendered['html'], esc_url( Subscribers::unsubscribeUrl( $bob_evil ) ) ) && false !== strpos( $rendered['html'], 'Vista previa' ) && false !== strpos( $rendered['html'], '<img style="max-width:100%;height:auto;' ), 'The email must carry the unsubscribe link, the preheader and responsive images.' );
 assert_nl( substr_count( $rendered['html'], Settings::LABELS['en']['unsubscribe'] ) >= 1, 'The footer must be in the subscriber language.' );
-assert_nl( false !== strpos( $rendered['html'], 'background:' . Brand::NAVY ) && false !== strpos( $rendered['html'], 'MT%20-%20MeTransfers.png' ) && false !== strpos( $rendered['html'], 'background:' . Brand::NAVY_DEEP ) && false !== strpos( $rendered['html'], Brand::AMBER ), 'The email must use the website look: navy header with the logo, amber eyebrow and the dark footer.' );
+assert_nl( false !== strpos( $rendered['html'], 'background:' . Brand::NAVY ) && false !== strpos( $rendered['html'], '>MeTransfers</p>' ) && false !== strpos( $rendered['html'], 'background:' . Brand::NAVY_DEEP ) && false !== strpos( $rendered['html'], Brand::AMBER ) && false === strpos( $rendered['html'], 'fonts.googleapis.com' ), 'The email must retain the brand using readable text, without a remote logo or font dependency.' );
 assert_nl( '<a href="' . esc_url( Subscribers::unsubscribeUrl( $bob ) ) . '">x</a>' === Mailer::personalize( '<a href="%7B%7Bbaja%7D%7D">x</a>', $bob ), 'A tag the visual editor URL-encoded inside a link must still be replaced.' );
 $GLOBALS['mt_mails'] = array();
+assert_nl( ! Mailer::send( 'bob@example.com', 'Hi', '<p>Text</p>', '' ) && false !== strpos( Mailer::lastError(), 'newsletter_missing_smtp_host' ) && ! $GLOBALS['mt_mails'], 'Missing SMTP must stop newsletter mail instead of falling back to PHP mail.' );
+$smtp_fixture = array( 'wptb_smtp_host' => 'smtp.example.test', 'wptb_smtp_user' => 'newsletter@metransfers.test', 'wptb_smtp_password' => 'test-only-password', 'wptb_smtp_from' => 'newsletter@metransfers.test', 'wptb_smtp_encryption' => 'tls', 'wptb_smtp_port' => 587 );
+$GLOBALS['mt_options'] = array_merge( $GLOBALS['mt_options'], $smtp_fixture );
+$GLOBALS['mt_transport'] = new Fake_Newsletter_Mailer();
+$previous_transport = clone $GLOBALS['mt_transport'];
 assert_nl( Mailer::sendCampaign( array( 'subject' => 'Hi', 'body' => 'Text' ), $bob ), 'A campaign email must be sent.' );
+$transport = $GLOBALS['mt_sent_transport'];
+assert_nl( 'smtp' === $transport->Mailer && $transport->SMTPAuth && 'tls' === $transport->SMTPSecure && 587 === $transport->Port && $transport->SMTPAutoTLS && 0 === $transport->SMTPDebug && ! $transport->SMTPKeepAlive, 'Newsletter must use authenticated encrypted SMTP without debug output or connection reuse.' );
+assert_nl( true === $transport->SMTPOptions['ssl']['verify_peer'] && true === $transport->SMTPOptions['ssl']['verify_peer_name'] && false === $transport->SMTPOptions['ssl']['allow_self_signed'], 'TLS certificate and peer verification must override insecure mailer defaults.' );
+assert_nl( $transport->Sender === $transport->From && false !== strpos( $transport->AltBody, 'Text' ) && false !== strpos( $transport->AltBody, Subscribers::unsubscribeUrl( $bob ) ) && in_array( 'List-Unsubscribe-Post', $transport->DKIM_extraHeaders, true ) && in_array( 'X-Custom', $transport->DKIM_extraHeaders, true ), 'Envelope identity, readable text and DKIM unsubscribe coverage must be set while preserving existing DKIM headers.' );
+assert_nl( $previous_transport == $GLOBALS['mt_transport'], 'The shared mailer must be restored so other site emails are unaffected.' );
 $headers = implode( "\n", $GLOBALS['mt_mails'][0]['headers'] );
 assert_nl( false !== strpos( $headers, 'List-Unsubscribe: <https://metransfers.test/wp-admin/admin-post.php?action=mt_nl_unsubscribe' ) && false !== strpos( $headers, 'List-Unsubscribe-Post: List-Unsubscribe=One-Click' ) && false !== strpos( $headers, 'Content-Type: text/html; charset=UTF-8' ), 'Campaigns must carry one-click unsubscribe headers (Gmail and Yahoo bulk sender rules).' );
 $GLOBALS['mt_mails'] = array();
@@ -220,6 +247,42 @@ assert_nl( false === strpos( implode( "\n", $GLOBALS['mt_mails'][0]['headers'] )
 $GLOBALS['mt_mail_ok'] = false;
 assert_nl( ! Mailer::send( 'x@example.com', 'S', '<p>H</p>', '' ) && 'wp_mail_failed' === Mailer::lastError(), 'A failed send must report a reason.' );
 $GLOBALS['mt_mail_ok'] = true;
+assert_nl( $previous_transport == $GLOBALS['mt_transport'], 'Transport state must also be restored after a failed send.' );
+$GLOBALS['mt_mail_throw'] = true;
+try {
+	Mailer::send( 'bob@example.com', 'S', '<p>H</p>', '' );
+	assert_nl( false, 'The transport exception must propagate.' );
+} catch ( RuntimeException $exception ) {
+	assert_nl( 'Simulated transport exception' === $exception->getMessage(), 'Unexpected exception.' );
+} finally {
+	$GLOBALS['mt_mail_throw'] = false;
+}
+assert_nl( $previous_transport == $GLOBALS['mt_transport'], 'Transport state must also be restored after an exception.' );
+$before = count( $GLOBALS['mt_mails'] );
+foreach ( array( "bob@example.com\r\nBcc: eve@example.com", 'bob@example.com,eve@example.com', 'invalid' ) as $recipient ) {
+	assert_nl( ! Mailer::send( $recipient, 'S', '<p>H</p>', '' ) && 'invalid_recipient' === Mailer::lastError(), 'Multiple recipients and injected recipient headers must be rejected.' );
+}
+assert_nl( ! Mailer::send( 'bob@example.com', 'S', '<p>H</p>', 'https://evil.example/unsubscribe' ) && 'invalid_unsubscribe_url' === Mailer::lastError(), 'One-click unsubscribe must stay on the HTTPS site.' );
+assert_nl( ! Mailer::send( 'bob@example.com', 'S', '<p>H</p>', 'http://metransfers.test/unsubscribe' ) && 'invalid_unsubscribe_url' === Mailer::lastError(), 'HTTP unsubscribe must be rejected even on the correct domain.' );
+$GLOBALS['mt_options']['wptb_smtp_encryption'] = 'none';
+assert_nl( ! Mailer::send( 'bob@example.com', 'S', '<p>H</p>', '' ) && 'newsletter_smtp_requires_tls' === Mailer::lastError(), 'Unencrypted SMTP must be blocked.' );
+$GLOBALS['mt_options']['wptb_smtp_encryption'] = 'tls';
+assert_nl( $before === count( $GLOBALS['mt_mails'] ), 'Rejected messages must never reach wp_mail.' );
+$pending = Subscribers::findByEmail( 'eve@example.com' );
+assert_nl( Mailer::sendCampaign( array( 'subject' => 'PROMOTION', 'body' => 'PROMOTION' ), $pending ), 'A pending campaign recipient must receive a confirmation request.' );
+$pending_mail = end( $GLOBALS['mt_mails'] );
+assert_nl( false === strpos( $pending_mail['message'], 'PROMOTION' ) && false !== strpos( $pending_mail['message'], 'action=mt_nl_confirm' ) && false === strpos( implode( "\n", $pending_mail['headers'] ), 'List-Unsubscribe' ), 'Promotional campaign content must never reach pending contacts.' );
+assert_nl( ! Mailer::sendCampaign( array( 'subject' => 'S', 'body' => 'H' ), Subscribers::findByEmail( 'eve@example.com' ) ) && 'confirmation_recent' === Mailer::lastError(), 'Pending campaign confirmations must respect the resend cooldown.' );
+$mail_count = count( $GLOBALS['mt_mails'] );
+assert_nl( PublicController::sendConfirmation( Subscribers::findByEmail( 'eve@example.com' ) ) && PublicController::handleEvent( 'newsletter.confirm', (int) $pending['id'] ) && $mail_count === count( $GLOBALS['mt_mails'] ), 'Admin resends and queued retries must not duplicate a recently delivered confirmation.' );
+assert_nl( ! Mailer::sendCampaign( array( 'subject' => 'S', 'body' => 'H' ), array( 'status' => 'bounced' ) ) && 'subscriber_not_confirmed' === Mailer::lastError(), 'Suppressed subscribers must be blocked at the mailer too.' );
+assert_nl( ! Mailer::sendConfirmation( array( 'status' => 'bounced' ) ) && 'subscriber_not_pending' === Mailer::lastError(), 'Confirmation mail must also respect suppressed states.' );
+assert_nl( Mailer::isPermanentRecipientFailure( '550 5.1.1 User unknown' ) && ! Mailer::isPermanentRecipientFailure( '550 5.7.1 Authentication required' ) && ! Mailer::isPermanentRecipientFailure( '451 4.1.1 Temporary failure' ), 'Only explicit nonexistent-mailbox errors suppress the address; authentication and transient errors do not.' );
+Subscribers::setStatus( array( (int) $pending['id'] ), 'bounced' );
+$bounced_signup = Subscribers::subscribe( array( 'email' => $pending['email'] ) );
+assert_nl( 'bounced' === $bounced_signup['subscriber']['status'] && ! $bounced_signup['send_confirmation'], 'Public signup cannot reactivate a bounced address.' );
+// Restore this fixture to pending for the isolated public-link probes.
+Subscribers::setStatus( array( (int) $pending['id'] ), 'pending' );
 
 // 7. Sending pace and audiences.
 assert_nl( 25 === Campaigns::batchSize( 300, 0 ) && 10 === Campaigns::batchSize( 300, 290 ) && 0 === Campaigns::batchSize( 300, 300 ) && 100 === Campaigns::batchSize( 5000, 0 ), 'Batches must follow the hourly limit: a twelfth per run, never above what the hour left or 100.' );

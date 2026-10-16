@@ -724,10 +724,21 @@ final class Admin {
 		self::notice();
 		self::styles();
 
-		$smtp = '' !== (string) \MeTransfers\Core\Settings::get( 'smtp_host', '' );
-		echo '<div class="mt-nl-card"><p><strong>Servidor de correo:</strong> ' . ( $smtp ? 'SMTP configurado en Reservas → Ajustes Generales.' : '<span class="mt-nl-bad">no hay SMTP configurado</span>: los correos saldrán por el servidor de la web y pueden acabar en spam. Configúralo en Reservas → Ajustes Generales.' ) . '</p>';
+		$errors = Mailer::configurationErrors();
+		echo '<div class="mt-nl-card"><p><strong>Servidor de correo:</strong> ' . ( ! $errors ? 'Configuración local SMTP completa, con cifrado obligatorio. Falta verificar la autenticación en un correo recibido.' : '<span class="mt-nl-bad">Envío del newsletter bloqueado.</span> Revisa las credenciales, el remitente, el puerto y el cifrado SMTP en Reservas → Ajustes Generales.' ) . '</p>';
+		foreach ( $errors as $error ) {
+			echo '<p class="mt-nl-bad">' . esc_html( $error ) . '</p>';
+		}
 		$sender = Mailer::sender();
-		echo '<p><strong>Remitente:</strong> ' . esc_html( $sender['name'] . ' <' . $sender['email'] . '>' ) . '</p></div>';
+		echo '<p><strong>Remitente:</strong> ' . esc_html( $sender['name'] . ' <' . $sender['email'] . '>' ) . '</p>';
+		$sender_parts  = explode( '@', $sender['email'] );
+		$sender_domain = strtolower( (string) ( $sender_parts[1] ?? '' ) );
+		$site_domain   = strtolower( (string) wp_parse_url( home_url( '/' ), PHP_URL_HOST ) );
+		if ( '' !== $sender_domain && preg_replace( '/^www\./', '', $site_domain ) !== $sender_domain ) {
+			echo '<p class="mt-nl-bad">El dominio del remitente (' . esc_html( $sender_domain ) . ') difiere del dominio de la web. Verifica SPF, DKIM y DMARC en el dominio del remitente y la autorización del proveedor SMTP.</p>';
+		}
+		echo '<p>Usa un buzón autorizado por el proveedor SMTP, preferiblemente del dominio de la web. El dominio del remitente debe autenticar mediante SPF y DKIM y alinear SPF o DKIM con DMARC. Cambiar solo la dirección del remitente no autentica el dominio.</p>';
+		echo '<p>Comprueba en Gmail → Mostrar original: SPF, DKIM y DMARC con resultado PASS. El proveedor debe firmar también List-Unsubscribe y List-Unsubscribe-Post para la baja en un clic. Estos resultados no se pueden confirmar desde los ajustes locales.</p></div>';
 
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="mt_nl_settings">';
 		wp_nonce_field( 'mt_nl_settings' );
@@ -741,7 +752,7 @@ final class Admin {
 		echo '</table></div>';
 
 		echo '<div class="mt-nl-card"><h2>Suscripción y envío</h2><table class="form-table" role="presentation">';
-		echo '<tr><th scope="row">Doble confirmación</th><td><label><input type="checkbox" name="double_opt_in" value="1"' . checked( $settings['double_opt_in'], true, false ) . '> Enviar un correo para que confirmen su dirección (recomendado: prueba el consentimiento y evita direcciones falsas)</label></td></tr>';
+		echo '<tr><th scope="row">Doble confirmación</th><td><input type="hidden" name="double_opt_in" value="1"><label><input type="checkbox" checked disabled> Obligatoria en las altas públicas: verificamos la dirección antes de enviar promociones.</label></td></tr>';
 		echo '<tr><th scope="row"><label for="mt-nl-rate">Máximo de correos por hora</label></th><td><input type="number" id="mt-nl-rate" name="rate_per_hour" min="10" max="5000" value="' . (int) $settings['rate_per_hour'] . '" class="small-text"><p class="description">Ajústalo al límite de tu proveedor de correo (en SiteGround depende del plan). Las campañas grandes se reparten en varias horas.</p></td></tr>';
 		echo '<tr><th scope="row"><label for="mt-nl-from-name">Nombre del remitente</label></th><td><input type="text" id="mt-nl-from-name" name="from_name" value="' . esc_attr( $settings['from_name'] ) . '" class="regular-text" placeholder="El de Ajustes Generales"></td></tr>';
 		echo '<tr><th scope="row"><label for="mt-nl-from-email">Correo del remitente</label></th><td><input type="email" id="mt-nl-from-email" name="from_email" value="' . esc_attr( $settings['from_email'] ) . '" class="regular-text" placeholder="El de Ajustes Generales"><p class="description">Déjalo vacío para usar el del SMTP. Si pones otro, tu servidor SMTP debe permitir enviar con él.</p></td></tr>';

@@ -19,8 +19,8 @@ final class Campaigns {
 
 	const AUDIENCES = array(
 		'subscribed'         => 'Suscritos (confirmados)',
-		'pending'            => 'Pendientes de confirmar',
-		'subscribed,pending' => 'Suscritos y pendientes',
+		'pending'            => 'Pendientes (solo correo de confirmación)',
+		'subscribed,pending' => 'Suscritos y confirmación a pendientes',
 	);
 
 	const CRON_HOOK     = 'mt_newsletter_dispatch';
@@ -365,6 +365,19 @@ final class Campaigns {
 			return false;
 		}
 
+		if ( 'pending' === $subscriber['status'] && ! empty( $subscriber['confirmation_sent_at'] ) && strtotime( $subscriber['confirmation_sent_at'] . ' UTC' ) > time() - Subscribers::RESEND_SECONDS ) {
+			$wpdb->update(
+				$table,
+				array(
+					'status'     => 'skipped',
+					'last_error' => 'confirmation_recent',
+					'locked_at'  => null,
+				),
+				array( 'id' => (int) $delivery['id'] )
+			);
+			return false;
+		}
+
 		try {
 			$ok    = Mailer::sendCampaign( $campaign, $subscriber );
 			$error = Mailer::lastError();
@@ -388,8 +401,12 @@ final class Campaigns {
 			return true;
 		}
 
-		$attempts = (int) $delivery['attempts'] + 1;
-		$retry    = $attempts < self::MAX_ATTEMPTS;
+		$attempts  = (int) $delivery['attempts'] + 1;
+		$permanent = Mailer::isPermanentRecipientFailure( $error );
+		if ( $permanent ) {
+			Subscribers::setStatus( array( (int) $subscriber['id'] ), 'bounced' );
+		}
+		$retry = ! $permanent && $attempts < self::MAX_ATTEMPTS;
 		$wpdb->update(
 			$table,
 			array(
