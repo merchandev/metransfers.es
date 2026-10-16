@@ -34,6 +34,37 @@ final class Privacy {
 		unset( $page );
 		$subscriber = Subscribers::findByEmail( $email );
 		if ( ! $subscriber ) {
+			$waiting = ManualQueue::findByEmail( $email );
+			if ( $waiting ) {
+				return array(
+					'data' => array(
+						array(
+							'group_id'    => 'mt-newsletter',
+							'group_label' => 'Newsletter',
+							'item_id'     => 'mt-newsletter-manual-' . (int) $waiting['id'],
+							'data'        => array(
+								array(
+									'name'  => 'Correo',
+									'value' => $waiting['email'],
+								),
+								array(
+									'name'  => 'Estado',
+									'value' => 'En cola manual',
+								),
+								array(
+									'name'  => 'Consentimiento',
+									'value' => $waiting['consent_text'],
+								),
+								array(
+									'name'  => 'Fecha de carga',
+									'value' => $waiting['created_at'],
+								),
+							),
+						),
+					),
+					'done' => true,
+				);
+			}
 			return array(
 				'data' => array(),
 				'done' => true,
@@ -78,10 +109,11 @@ final class Privacy {
 	public static function erase( $email, $page = 1 ) {
 		unset( $page );
 		$subscriber = Subscribers::findByEmail( $email );
+		$removed    = $subscriber ? Subscribers::delete( array( (int) $subscriber['id'] ) ) : ManualQueue::eraseEmail( $email );
 		return array(
-			'items_removed'  => $subscriber ? Subscribers::delete( array( (int) $subscriber['id'] ) ) > 0 : false,
-			'items_retained' => false,
-			'messages'       => array(),
+			'items_removed'  => $removed > 0,
+			'items_retained' => false === $removed,
+			'messages'       => false === $removed ? array( 'No se pudieron borrar los datos del newsletter. Vuelve a intentarlo.' ) : array(),
 			'done'           => true,
 		);
 	}

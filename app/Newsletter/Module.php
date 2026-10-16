@@ -7,6 +7,7 @@ namespace MeTransfers\Newsletter;
  */
 final class Module {
 	public function register() {
+		( new ManualQueue() )->register();
 		( new Campaigns() )->register();
 		( new PublicController() )->register();
 		( new Privacy() )->register();

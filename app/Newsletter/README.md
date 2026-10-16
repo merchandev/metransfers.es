@@ -1,6 +1,18 @@
 # Seguridad y entregabilidad del newsletter — 16/10/2026
 
-Versión del tema: **5.0.7**. Alcance: módulo Newsletter, sus pruebas, incorporación de sus pruebas de enlaces a CI y metadatos de versión/descripción del tema. Los ajustes SMTP compartidos, reservas, pagos, DNS y servidor de producción no se modifican con este cambio.
+## Actualización 5.0.8: altas manuales por tandas y eliminación
+
+- Newsletter → Suscriptores permite pegar listas separadas por comas, punto y coma, espacios o saltos de línea. Las altas individuales del administrador y los archivos CSV/XLSX también usan la cola manual.
+- La cola no tiene un máximo total acumulado. Se conserva en una tabla propia, con índice único por email, y se puede seguir alimentando mientras se procesa. Cada carga sigue sujeta a los límites de tamaño del servidor; los archivos mantienen el límite de 20.000 filas y 10 MB por carga.
+- Primera incorporación: seis horas después de la primera carga. Después, una tanda aleatoria de 12 a 98 filas cada seis horas; el último resto puede contener menos de 12. Orden FIFO. Las cargas posteriores no posponen la próxima tanda. No hay ráfagas para recuperar ventanas perdidas.
+- Popup y pie de página entran directamente sin cupo de altas acumuladas ni espera de seis horas; mantienen doble confirmación y controles contra bots. Si alguien se registra por la web mientras esperaba en la cola, su registro y consentimiento prevalecen.
+- En cada carga se elige solicitar confirmación o incorporar suscritos con consentimiento acreditado. Los pendientes reciben confirmación mediante outbox cuando se incorporan; no se les envían promociones. Los duplicados, las bajas y los rebotados no se reactivan ni sobrescriben.
+- La pantalla muestra contactos en espera, próxima tanda y resultado de la anterior. Permite retirar contactos individuales o vaciar la espera. WP-Cron depende del tráfico: para puntualidad, el servidor debe ejecutar el cron de WordPress regularmente.
+- La eliminación tiene botón por fila y en la ficha, además de la acción masiva. Requiere permiso y nonce, borra historial y entradas manuales coincidentes, comprueba errores y revierte el borrado si falla. Comparte bloqueo con el trabajador para evitar recreaciones concurrentes.
+- La cola participa en la exportación y el borrado de datos personales. Nueva migración `20261016_002_newsletter_manual_queue`, esquema `6.12.0`.
+- Pruebas nuevas: `php tests/test-newsletter-manual.php` y escenarios WordPress/MariaDB sobre carga diferida, tandas, cron, borrado y privacidad.
+
+Versión actual del tema: **5.0.8**. Alcance: módulo Newsletter, migraciones de sus tablas, pruebas y metadatos del tema. Los ajustes SMTP compartidos, reservas, pagos, DNS y servidor de producción no se modifican con este cambio.
 
 ## Hallazgos
 

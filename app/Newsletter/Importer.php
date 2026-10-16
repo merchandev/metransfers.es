@@ -49,9 +49,11 @@ final class Importer {
 	 * @param array<int, array<int, string>> $rows
 	 * @return array{added: int, updated: int, unchanged: int, blocked: int, invalid: int, duplicates: int, errors: array<int, string>}
 	 */
-	public static function import( array $rows, $status, $language, $update_names, $consent_text ) {
+	public static function import( array $rows, $status, $language, $update_names, $consent_text, $defer = false ) {
 		$report = array(
 			'added'      => 0,
+			'queued'     => 0,
+			'error'      => 0,
 			'updated'    => 0,
 			'unchanged'  => 0,
 			'blocked'    => 0,
@@ -93,7 +95,8 @@ final class Importer {
 
 			$name   = null !== $columns['name'] ? (string) ( $row[ $columns['name'] ] ?? '' ) : '';
 			$lang   = null !== $columns['language'] ? self::language( (string) ( $row[ $columns['language'] ] ?? '' ), $language ) : Settings::language( $language );
-			$result = Subscribers::upsert( $email, $name, $lang, $status, 'import', $consent_text, $update_names );
+			$result = $defer ? ManualQueue::enqueue( $email, $name, $lang, $status, 'import', $consent_text ) : Subscribers::upsert( $email, $name, $lang, $status, 'import', $consent_text, $update_names );
+			$result = 'duplicate' === $result ? 'duplicates' : $result;
 			if ( 'blocked' === $result ) {
 				self::error( $report, 'Fila ' . $line . ': ' . $email . ' se dio de baja o rebotó; no se ha vuelto a suscribir.' );
 			}

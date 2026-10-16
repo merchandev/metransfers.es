@@ -326,6 +326,35 @@ mt_wp_integration_assert( false !== strpos( (string) ob_get_clean(), 'name="body
 unset( $_GET['new'] );
 
 // Right to erasure: the subscriber and their delivery history are gone.
+
+// Manual additions wait six hours, admit a random bounded batch and never delay popup signups.
+$manual_queue = \MeTransfers\Newsletter\ManualQueue::class;
+$manual_rows = array( array( 'email', 'name' ) );
+for ( $manual_index = 0; $manual_index < 110; ++$manual_index ) {
+	$manual_rows[] = array( 'manual-' . $manual_index . '-' . $nl_tag . '@example.test', 'Manual ' . $manual_index );
+}
+$manual_report = \MeTransfers\Newsletter\Importer::import( $manual_rows, 'subscribed', 'es', false, 'Consent confirmed in fixture', true );
+mt_wp_integration_assert( 110 === $manual_report['queued'] && 110 === $manual_queue::count() && 0 === $manual_queue::dispatch(), 'File imports must enter the durable manual queue without an immediate release.' );
+mt_wp_integration_assert( null === $nl_subscribers::findByEmail( $manual_rows[1][0] ) && wp_next_scheduled( $manual_queue::HOOK ) >= time() + 6 * HOUR_IN_SECONDS - 10, 'The first batch must be scheduled six hours after the first enqueue.' );
+$manual_popup = $nl_subscribers::subscribe( array( 'email' => 'manual-organic-' . $nl_tag . '@example.test', 'source' => 'popup', 'consent_text' => 'Organic signup' ) );
+mt_wp_integration_assert( 'pending' === $manual_popup['result'] && $manual_popup['subscriber'] && 110 === $manual_queue::count(), 'Organic signup must remain immediate and independent of the manual backlog.' );
+update_option( $manual_queue::NEXT, time() - DAY_IN_SECONDS, false );
+$manual_released = $manual_queue::dispatch();
+mt_wp_integration_assert( $manual_released >= 12 && $manual_released <= 98 && 110 - $manual_released === $manual_queue::count(), 'One delayed cron must release only one FIFO batch of 12 to 98 contacts.' );
+mt_wp_integration_assert( 0 === $manual_queue::dispatch() && 'subscribed' === $nl_subscribers::findByEmail( $manual_rows[1][0] )['status'], 'A second worker invocation cannot release another batch in the same six-hour window.' );
+$manual_first = $nl_subscribers::findByEmail( $manual_rows[1][0] );
+mt_wp_integration_assert( 1 === $nl_subscribers::delete( array( $manual_first['id'] ) ) && null === $nl_subscribers::findByEmail( $manual_rows[1][0] ), 'An administrator can actually delete an admitted manual subscriber on WordPress/MariaDB.' );
+$manual_waiting = 'manual-waiting-' . $nl_tag . '@example.test';
+$manual_queue::enqueue( $manual_waiting, '', 'es', 'pending', 'admin', 'Consent request' );
+mt_wp_integration_assert( count( \MeTransfers\Newsletter\Privacy::export( $manual_waiting )['data'] ) && \MeTransfers\Newsletter\Privacy::erase( $manual_waiting )['items_removed'], 'Privacy tools must export and erase contacts waiting in the manual queue.' );
+mt_wp_integration_assert( $manual_queue::count() === $manual_queue::cancel() && 0 === $manual_queue::count() && ! wp_next_scheduled( $manual_queue::HOOK ), 'Cancelling the manual backlog must clear its schedule without affecting admitted subscribers.' );
+$manual_pending_email = 'manual-pending-' . $nl_tag . '@example.test';
+$manual_queue::enqueue( $manual_pending_email, '', 'es', 'pending', 'admin', 'Confirmation requested' );
+update_option( $manual_queue::NEXT, time() - 1, false );
+mt_wp_integration_assert( 1 === $manual_queue::dispatch() && 0 === $manual_queue::count(), 'A pending manual subscriber must be admitted transactionally.' );
+$manual_pending = $nl_subscribers::findByEmail( $manual_pending_email );
+mt_wp_integration_assert( 'pending' === $manual_pending['status'] && '1' === (string) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM %i WHERE event_type = 'newsletter.confirm' AND aggregate_id = %d", $wpdb->prefix . 'mt_outbox', $manual_pending['id'] ) ), 'Manual pending admission must persist exactly one confirmation in the outbox.' );
+
 $erased = \MeTransfers\Newsletter\Privacy::erase( $nl_email );
 mt_wp_integration_assert( $erased['items_removed'] && null === $nl_subscribers::findByEmail( $nl_email ) && '0' === (string) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE subscriber_id = %d', $nl_deliveries, $nl_id ) ), 'Erasing personal data must delete the subscriber and their deliveries.' );
 
